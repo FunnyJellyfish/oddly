@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly Human 1 — Oddly, Inc.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0814;
+  --bg-2:#100C1E;
+  --panel:#15101F;
+  --ink:#F4F1FA;
+  --ink-dim:#A89FC2;
+  --purple:#7B4FFF;
+  --purple-dim:#4A2FA8;
+  --mint:#39FFC4;
+  --red:#FF3B5C;
+  --hairline:rgba(255,255,255,0.09);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--purple);color:white;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.display{font-family:'Space Grotesk',sans-serif;}
+a{color:inherit;text-decoration:none;}
+
+/* ===== background texture ===== */
+.bg-glow{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(700px 500px at 15% -5%, rgba(123,79,255,0.22), transparent 60%),
+    radial-gradient(600px 500px at 100% 20%, rgba(57,255,196,0.10), transparent 60%);
+}
+
+/* ===== nav ===== */
+nav{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 6vw;
+  background:rgba(10,8,20,0.78);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--hairline);
+}
+.logo{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:0.3px;}
+.logo .mark{width:11px;height:11px;border-radius:3px;background:var(--purple);box-shadow:0 0 14px var(--purple);}
+.navlinks{display:flex; gap:34px; font-size:13.5px; color:var(--ink-dim); font-weight:500;}
+.navlinks a:hover{color:var(--ink);}
+.nav-cta{
+  background:var(--ink); color:var(--bg); padding:9px 18px; border-radius:100px;
+  font-size:13px; font-weight:600;
+}
+@media(max-width:760px){ .navlinks{display:none;} }
+
+/* ===== hero ===== */
+.hero{
+  position:relative; z-index:1;
+  padding:100px 6vw 70px;
+  display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center;
+  max-width:1300px; margin:0 auto;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11.5px; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--mint); font-weight:600; margin-bottom:22px;
+  border:1px solid rgba(57,255,196,0.35); padding:6px 13px; border-radius:100px;
+}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint);}
+h1.display{
+  font-size:clamp(40px,5.4vw,68px); line-height:1.01; font-weight:700; letter-spacing:-1.5px;
+  margin-bottom:22px;
+}
+h1.display span{color:var(--purple);}
+.hero p.sub{font-size:17px; line-height:1.6; color:var(--ink-dim); max-width:460px; margin-bottom:34px;}
+.hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+.btn-primary{
+  background:var(--purple); color:white; padding:14px 26px; border-radius:10px;
+  font-weight:600; font-size:14.5px; border:none; cursor:pointer;
+  box-shadow:0 8px 30px -8px rgba(123,79,255,0.7);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 34px -6px rgba(123,79,255,0.85);}
+.btn-ghost{
+  background:transparent; color:var(--ink); padding:14px 22px; border-radius:10px;
+  font-weight:600; font-size:14.5px; border:1px solid var(--hairline); cursor:pointer;
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.3);}
+.fineprint-hero{margin-top:18px; font-size:11.5px; color:var(--ink-dim); opacity:0.7;}
+
+/* robot art */
+.bot-stage{
+  position:relative; height:480px; display:flex; align-items:flex-end; justify-content:center;
+}
+.bot-stage svg{ filter:drop-shadow(0 30px 60px rgba(123,79,255,0.35)); }
+.bot-pad{
+  position:absolute; bottom:18px; left:50%; translate:-50% 0; width:78%; height:26px;
+  background:radial-gradient(ellipse at center, rgba(123,79,255,0.45), transparent 70%);
+  border-radius:50%; filter:blur(6px);
+}
+.spec-chip{
+  position:absolute; background:rgba(21,16,31,0.9); border:1px solid var(--hairline);
+  border-radius:10px; padding:8px 12px; font-size:11px; backdrop-filter:blur(8px);
+  display:flex; flex-direction:column; gap:1px;
+}
+.spec-chip .k{color:var(--ink-dim); font-size:9.5px; letter-spacing:0.6px; text-transform:uppercase;}
+.spec-chip .v{font-family:'JetBrains Mono'; font-weight:500; color:var(--mint);}
+.chip-1{top:8%; left:0%;}
+.chip-2{top:38%; right:0%;}
+.chip-3{bottom:14%; left:4%;}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr; padding-top:70px;}
+  .bot-stage{height:380px;}
+}
+
+/* ===== section shell ===== */
+section{position:relative; z-index:1; padding:90px 6vw; max-width:1300px; margin:0 auto;}
+.section-head{max-width:600px; margin-bottom:50px;}
+.section-label{font-size:11.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--purple); font-weight:600; margin-bottom:14px;}
+.section-head h2{font-family:'Space Grotesk'; font-size:clamp(26px,3vw,38px); font-weight:700; letter-spacing:-0.8px; line-height:1.15;}
+.section-head p{color:var(--ink-dim); font-size:15.5px; margin-top:14px; line-height:1.6;}
+
+/* ===== signature demo ===== */
+.demo-wrap{
+  border:1px solid var(--hairline); border-radius:24px;
+  background:linear-gradient(165deg, var(--panel), var(--bg-2));
+  padding:54px 6vw; overflow:hidden; position:relative;
+}
+.demo-grid{display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center;}
+@media(max-width:900px){ .demo-grid{grid-template-columns:1fr;} }
+.demo-copy h3{font-family:'Space Grotesk'; font-size:28px; font-weight:700; margin-bottom:14px; letter-spacing:-0.5px;}
+.demo-copy p{color:var(--ink-dim); font-size:15px; line-height:1.65; margin-bottom:24px;}
+.feature-tag-list{display:flex; flex-direction:column; gap:10px; margin-bottom:28px;}
+.feature-tag{display:flex; gap:10px; font-size:13.5px; color:var(--ink-dim); align-items:flex-start;}
+.feature-tag .dot{color:var(--mint); flex-shrink:0;}
+
+.alarm-console{
+  background:#0D0917; border:1px solid var(--hairline); border-radius:18px; padding:30px;
+  text-align:center;
+}
+.alarm-readout{
+  font-family:'JetBrains Mono'; font-size:13px; color:var(--ink-dim); margin-bottom:6px;
+  letter-spacing:0.5px;
+}
+.alarm-clock{
+  font-family:'JetBrains Mono'; font-size:56px; font-weight:700; color:var(--ink); letter-spacing:1px;
+  margin:10px 0 22px;
+}
+.alarm-clock .ms{font-size:24px; color:var(--purple);}
+#stage-area{height:120px; display:flex; align-items:center; justify-content:center; position:relative; margin-bottom:22px;}
+.slap-icon{font-size:64px; transform:rotate(-40deg) translateX(-40px); opacity:0; transition:none;}
+.slap-icon.go{animation:slapMotion .42s cubic-bezier(.2,.9,.3,1) forwards;}
+@keyframes slapMotion{
+  0%{transform:rotate(-50deg) translateX(-120px) scale(0.7); opacity:0;}
+  55%{transform:rotate(8deg) translateX(6px) scale(1.18); opacity:1;}
+  70%{transform:rotate(-3deg) translateX(0px) scale(1.05); opacity:1;}
+  100%{transform:rotate(0deg) translateX(0px) scale(1); opacity:1;}
+}
+.shake{animation:bodyShake .3s ease;}
+@keyframes bodyShake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-6px);}
+  40%{transform:translateX(5px);}
+  60%{transform:translateX(-4px);}
+  80%{transform:translateX(3px);}
+}
+.result-line{font-family:'JetBrains Mono'; font-size:13px; color:var(--ink-dim); min-height:20px;}
+.result-line .hit{color:var(--mint); font-weight:700;}
+.btn-demo{
+  background:var(--mint); color:#08140F; border:none; padding:13px 24px; border-radius:10px;
+  font-weight:700; font-size:14px; cursor:pointer; margin-top:18px;
+  transition:transform .15s ease;
+}
+.btn-demo:hover{transform:translateY(-2px);}
+.btn-demo:disabled{opacity:0.5; cursor:not-allowed;}
+
+/* ===== feature grid ===== */
+.feat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+@media(max-width:860px){ .feat-grid{grid-template-columns:1fr;} }
+.feat-card{
+  border:1px solid var(--hairline); border-radius:18px; padding:30px 26px;
+  background:var(--panel);
+  transition:border-color .2s ease, transform .2s ease;
+}
+.feat-card:hover{border-color:rgba(123,79,255,0.4); transform:translateY(-3px);}
+.feat-icon{
+  width:42px;height:42px;border-radius:11px; display:flex; align-items:center; justify-content:center;
+  background:rgba(123,79,255,0.14); color:var(--purple); font-size:20px; margin-bottom:18px;
+}
+.feat-card h4{font-family:'Space Grotesk'; font-size:17.5px; font-weight:600; margin-bottom:10px;}
+.feat-card p{font-size:13.8px; color:var(--ink-dim); line-height:1.6;}
+.feat-badge{
+  display:inline-block; font-size:9.5px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--red); border:1px solid rgba(255,59,92,0.4); padding:3px 8px; border-radius:6px;
+  margin-bottom:14px; font-weight:700;
+}
+
+/* ===== exec quotes ===== */
+.quote-row{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+@media(max-width:760px){ .quote-row{grid-template-columns:1fr;} }
+.quote-card{
+  border:1px solid var(--hairline); border-radius:18px; padding:30px; background:var(--bg-2);
+  position:relative;
+}
+.quote-card .qmark{font-family:'Space Grotesk'; font-size:46px; color:var(--purple-dim); line-height:1; margin-bottom:8px;}
+.quote-card p.q{font-size:16px; line-height:1.55; margin-bottom:18px;}
+.quote-person{display:flex; align-items:center; gap:12px;}
+.avatar{width:38px;height:38px;border-radius:50%; background:linear-gradient(135deg,var(--purple),var(--mint)); flex-shrink:0;}
+.quote-person .name{font-weight:600; font-size:14px;}
+.quote-person .role{font-size:12px; color:var(--ink-dim);}
+
+/* ===== specs ===== */
+.specs-table{border:1px solid var(--hairline); border-radius:18px; overflow:hidden;}
+.spec-row{display:grid; grid-template-columns:230px 1fr; border-bottom:1px solid var(--hairline);}
+.spec-row:last-child{border-bottom:none;}
+.spec-row .k{padding:18px 26px; font-size:13px; color:var(--ink-dim); background:var(--bg-2); font-weight:500;}
+.spec-row .v{padding:18px 26px; font-family:'JetBrains Mono'; font-size:13.5px; background:var(--panel);}
+
+/* ===== reviews ===== */
+.review-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media(max-width:860px){ .review-strip{grid-template-columns:1fr;} }
+.review{border:1px solid var(--hairline); border-radius:16px; padding:24px; background:var(--panel);}
+.stars{color:var(--mint); font-size:13px; margin-bottom:12px; letter-spacing:2px;}
+.review p{font-size:13.8px; color:var(--ink-dim); line-height:1.6; margin-bottom:16px;}
+.review .who{font-size:12px; font-weight:600;}
+
+/* ===== app ad ===== */
+.app-section{
+  background:linear-gradient(180deg, var(--bg-2), var(--bg));
+  border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);
+}
+.app-grid{display:grid; grid-template-columns:0.85fr 1.15fr; gap:50px; align-items:center;}
+@media(max-width:900px){ .app-grid{grid-template-columns:1fr;} }
+.phone-mock{
+  width:280px; height:560px; border-radius:42px; background:#08070F;
+  border:7px solid #1c1730; margin:0 auto; position:relative; overflow:hidden;
+  box-shadow:0 40px 80px -20px rgba(123,79,255,0.4);
+}
+.phone-notch{position:absolute; top:0; left:50%; translate:-50% 0; width:110px; height:22px; background:#1c1730; border-radius:0 0 14px 14px; z-index:5;}
+.phone-screen{position:absolute; inset:0; padding:38px 16px 16px; background:linear-gradient(180deg,#150F26,#0A0814);}
+.app-status{display:flex; justify-content:space-between; font-size:10px; color:var(--ink-dim); margin-bottom:18px; font-family:'JetBrains Mono';}
+.app-title{font-family:'Space Grotesk'; font-weight:700; font-size:19px; margin-bottom:4px;}
+.app-sub{font-size:11px; color:var(--ink-dim); margin-bottom:20px;}
+.app-card{background:rgba(255,255,255,0.05); border:1px solid var(--hairline); border-radius:14px; padding:14px; margin-bottom:12px;}
+.app-card .label{font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px;}
+.app-card .big{font-family:'JetBrains Mono'; font-size:22px; font-weight:700;}
+.slider-track{height:6px; border-radius:4px; background:rgba(255,255,255,0.1); margin-top:10px; position:relative;}
+.slider-fill{position:absolute; left:0; top:0; bottom:0; width:82%; border-radius:4px; background:linear-gradient(90deg,var(--mint),var(--red));}
+.slider-knob{position:absolute; left:82%; top:50%; translate:-50% -50%; width:16px; height:16px; border-radius:50%; background:white; box-shadow:0 0 0 4px rgba(255,59,92,0.3);}
+.toggle-row{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; padding:11px 0; border-bottom:1px solid var(--hairline);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle{width:34px; height:19px; border-radius:100px; background:var(--mint); position:relative; flex-shrink:0;}
+.toggle.off{background:rgba(255,255,255,0.15);}
+.toggle .knob{position:absolute; top:2px; left:17px; width:15px; height:15px; border-radius:50%; background:white;}
+.toggle.off .knob{left:2px;}
+
+.app-copy .stars-row{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+.app-copy .rating-num{font-family:'Space Grotesk'; font-size:30px; font-weight:700;}
+.store-badges{display:flex; gap:12px; margin-top:30px;}
+.store-badge{
+  display:flex; align-items:center; gap:8px; border:1px solid var(--hairline); border-radius:12px;
+  padding:10px 18px; font-size:13px; font-weight:600; background:var(--panel);
+}
+.app-feat-list{display:flex; flex-direction:column; gap:16px; margin:26px 0;}
+.app-feat-list .item{display:flex; gap:14px;}
+.app-feat-list .num{font-family:'JetBrains Mono'; color:var(--purple); font-weight:700; font-size:13px; flex-shrink:0; padding-top:2px;}
+.app-feat-list h5{font-size:15px; font-weight:600; margin-bottom:4px;}
+.app-feat-list p{font-size:13.5px; color:var(--ink-dim); line-height:1.55;}
+.review-snip{
+  border-left:3px solid var(--purple); padding-left:16px; margin-top:24px; font-size:13.5px;
+  color:var(--ink-dim); font-style:italic; line-height:1.6;
+}
+
+/* ===== final cta ===== */
+.final-cta{
+  text-align:center; padding:100px 6vw; max-width:1300px; margin:0 auto;
+}
+.final-cta h2{font-family:'Space Grotesk'; font-size:clamp(30px,4.5vw,52px); font-weight:700; letter-spacing:-1px; margin-bottom:18px;}
+.final-cta p{color:var(--ink-dim); font-size:16px; margin-bottom:34px;}
+
+/* ===== footer ===== */
+footer{border-top:1px solid var(--hairline); padding:40px 6vw 60px;}
+.footer-inner{max-width:1300px; margin:0 auto;}
+.footer-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-bottom:30px;}
+.footer-fine{font-size:11.5px; color:var(--ink-dim); opacity:0.65; line-height:1.7; max-width:760px;}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="logo"><span class="mark"></span>ODDLY, INC.</div>
+  <div class="navlinks">
+    <a href="#demo">Precision Force Delivery</a>
+    <a href="#features">Features</a>
+    <a href="#specs">Specs</a>
+    <a href="#app">App</a>
+    <a href="#reviews">Reviews</a>
+  </div>
+  <a class="nav-cta" href="#reserve">Reserve — $14,999</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div>
+    <div class="eyebrow">Now Shipping (Pending Final Testing)</div>
+    <h1 class="display">Meet the<br><span>Oddly Human 1.</span></h1>
+    <p class="sub">A fully autonomous humanoid companion, engineered from the ground up to make sure you are never, ever late again. Set an alarm. It will be handled. Personally.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Try the Alarm Demo</button>
+      <a class="btn-ghost" href="#specs">View Specifications</a>
+    </div>
+    <p class="fineprint-hero">Precision Force Delivery™ is not optional. See alarm settings.</p>
+  </div>
+
+  <div class="bot-stage">
+    <div class="bot-pad"></div>
+    <div class="spec-chip chip-1"><span class="k">Height</span><span class="v">5'11"</span></div>
+    <div class="spec-chip chip-2"><span class="k">Reflex Latency</span><span class="v">0.0004s</span></div>
+    <div class="spec-chip chip-3"><span class="k">Mobility</span><span class="v">Oddly Autonomous™</span></div>
+    <svg width="300" height="440" viewBox="0 0 300 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="150" cy="420" rx="70" ry="12" fill="#7B4FFF" opacity="0.18"/>
+      <!-- head -->
+      <rect x="112" y="20" width="76" height="78" rx="26" fill="#1A1330" stroke="#7B4FFF" stroke-width="2"/>
+      <rect x="128" y="48" width="20" height="10" rx="5" fill="#39FFC4"/>
+      <rect x="152" y="48" width="20" height="10" rx="5" fill="#39FFC4"/>
+      <rect x="138" y="72" width="24" height="6" rx="3" fill="#7B4FFF"/>
+      <!-- neck -->
+      <rect x="138" y="96" width="24" height="16" fill="#1A1330"/>
+      <!-- torso -->
+      <rect x="92" y="112" width="116" height="150" rx="28" fill="#15101F" stroke="#7B4FFF" stroke-width="2"/>
+      <circle cx="150" cy="160" r="22" fill="none" stroke="#39FFC4" stroke-width="2" opacity="0.6"/>
+      <circle cx="150" cy="160" r="7" fill="#39FFC4"/>
+      <rect x="118" y="200" width="64" height="6" rx="3" fill="#2A2245"/>
+      <rect x="118" y="214" width="44" height="6" rx="3" fill="#2A2245"/>
+      <!-- left arm relaxed -->
+      <rect x="60" y="124" width="28" height="100" rx="14" fill="#1A1330" stroke="#7B4FFF" stroke-width="2"/>
+      <circle cx="74" cy="232" r="16" fill="#1A1330" stroke="#7B4FFF" stroke-width="2"/>
+      <!-- right arm raised, mid-slap pose -->
+      <g transform="rotate(-55 212 150)">
+        <rect x="198" y="100" width="28" height="100" rx="14" fill="#1A1330" stroke="#FF3B5C" stroke-width="2"/>
+        <circle cx="212" cy="92" r="20" fill="#1A1330" stroke="#FF3B5C" stroke-width="2.5"/>
+        <path d="M204 84 L204 70 M212 80 L212 64 M220 84 L220 70" stroke="#FF3B5C" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <!-- legs -->
+      <rect x="108" y="258" width="30" height="120" rx="14" fill="#15101F" stroke="#7B4FFF" stroke-width="2"/>
+      <rect x="162" y="258" width="30" height="120" rx="14" fill="#15101F" stroke="#7B4FFF" stroke-width="2"/>
+      <rect x="100" y="376" width="46" height="20" rx="8" fill="#1A1330" stroke="#39FFC4" stroke-width="2"/>
+      <rect x="154" y="376" width="46" height="20" rx="8" fill="#1A1330" stroke="#39FFC4" stroke-width="2"/>
+    </svg>
+  </div>
+</header>
+
+<!-- SIGNATURE DEMO -->
+<section id="demo">
+  <div class="demo-wrap">
+    <div class="demo-grid">
+      <div class="demo-copy">
+        <span class="feat-badge">Signature Feature</span>
+        <h3>Precision Force Delivery™</h3>
+        <p>Set an alarm on the Oddly Human 1, and at the precise millisecond it triggers, you will be slapped. Not approximately. Not "around" the time you asked. The exact millisecond. We built an entire actuator system around this and we are very proud of it.</p>
+        <div class="feature-tag-list">
+          <div class="feature-tag"><span class="dot">●</span> Sub-millisecond timing accuracy, independently verified by us</div>
+          <div class="feature-tag"><span class="dot">●</span> Calibrated open palm, full hand, both proprietary</div>
+          <div class="feature-tag"><span class="dot">●</span> Snooze available. Slap is not cancellable. This is not a bug. — Oddly, Inc.</div>
+        </div>
+        <p style="font-size:12px; opacity:0.6;">Try it below. Click to schedule a 4-second test alarm and watch Precision Force Delivery™ in action.</p>
+      </div>
+
+      <div class="alarm-console">
+        <div class="alarm-readout">NEXT ALARM</div>
+        <div class="alarm-clock"><span id="clockMain">07:00:00</span><span class="ms" id="clockMs">.000</span></div>
+        <div id="stage-area">
+          <div class="slap-icon" id="slapIcon">🖐️</div>
+        </div>
+        <div class="result-line" id="resultLine">Awaiting scheduled alarm.</div>
+        <button class="btn-demo" id="demoBtn" onclick="runDemo()">Schedule Test Alarm (4s)</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-head">
+    <div class="section-label">What It Does</div>
+    <h2>One unforgettable feature. A few normal ones, too.</h2>
+    <p>The Oddly Human 1 is a complete domestic companion. It also slaps you. We think you'll find the balance reasonable.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">⏱</div>
+      <h4>Precision Force Delivery™</h4>
+      <p>Millisecond-accurate alarm enforcement via calibrated open-palm contact. The industry's most committed wake-up system.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💬</div>
+      <h4>Natural Conversation</h4>
+      <p>Engages in fluent, attentive dialogue on most topics, and several topics we asked it to stop bringing up.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🧺</div>
+      <h4>Household Assistance</h4>
+      <p>Folds laundry, loads dishwashers, waters plants, and reminds you, unprompted, about tomorrow's alarm.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🚶</div>
+      <h4>Oddly Autonomous™ Mobility</h4>
+      <p>Walks fluidly through any environment using the same pathfinding logic that powers our self-driving fleet. Direction is determined freshly each step.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔋</div>
+      <h4>All-Day Battery</h4>
+      <p>Rated for 14 hours of continuous operation, or roughly one full night's sleep cycle, by design.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🛡️</div>
+      <h4>Reinforced Palm Padding</h4>
+      <p>A soft-touch silicone palm shell, engineered to deliver full Precision Force without lasting structural damage in most cases.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXEC QUOTES -->
+<section>
+  <div class="quote-row">
+    <div class="quote-card">
+      <div class="qmark">"</div>
+      <p class="q">We did not set out to build a robot that slaps people. We set out to build the most reliable alarm clock in the world. This is simply what reliability looks like.</p>
+      <div class="quote-person">
+        <div class="avatar"></div>
+        <div><div class="name">Stephen Stubborn</div><div class="role">CEO, Oddly, Inc.</div></div>
+      </div>
+    </div>
+    <div class="quote-card">
+      <div class="qmark">"</div>
+      <p class="q">From a financial standpoint, every slap is technically a customer touchpoint, and customer touchpoints drive lifetime value. The math is very clear here.</p>
+      <div class="quote-person">
+        <div class="avatar" style="background:linear-gradient(135deg,#FF3B5C,#7B4FFF);"></div>
+        <div><div class="name">Stephen Stupid</div><div class="role">CFO, Oddly, Inc.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section id="specs">
+  <div class="section-head">
+    <div class="section-label">Specifications</div>
+    <h2>Real numbers. Real serial numbers, even.</h2>
+  </div>
+  <div class="specs-table">
+    <div class="spec-row"><div class="k">Model</div><div class="v">Oddly Human 1 (OH1-A)</div></div>
+    <div class="spec-row"><div class="k">Serial Number</div><div class="v">ODY-HU1-2847-0093-XK</div></div>
+    <div class="spec-row"><div class="k">IMEI</div><div class="v">86 4729 04 668213 4</div></div>
+    <div class="spec-row"><div class="k">Height / Weight</div><div class="v">5'11" / 168 lbs</div></div>
+    <div class="spec-row"><div class="k">Actuator Force (Slap)</div><div class="v">38 N peak, calibrated</div></div>
+    <div class="spec-row"><div class="k">Timing Accuracy</div><div class="v">±0.0004 sec (claimed)</div></div>
+    <div class="spec-row"><div class="k">Mobility System</div><div class="v">Oddly Autonomous™ Bipedal v3</div></div>
+    <div class="spec-row"><div class="k">Battery</div><div class="v">14 hr continuous / 17 min if you ask about it directly</div></div>
+    <div class="spec-row"><div class="k">Language Support</div><div class="v">English, Spanish, Mandarin, English (Oddly)</div></div>
+    <div class="spec-row"><div class="k">Certification</div><div class="v">FCC: Pending. CE: Pending. Insurance: Pending.</div></div>
+    <div class="spec-row"><div class="k">Warranty</div><div class="v">90 days, slap-related claims excluded</div></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="section-head">
+    <div class="section-label">Early Owners</div>
+    <h2>What people are saying.</h2>
+  </div>
+  <div class="review-strip">
+    <div class="review">
+      <div class="stars">★★★★☆</div>
+      <p>I have never been late to anything in 11 days. I have also never slept past 6:59:59.6. Worth it.</p>
+      <div class="who">— Daniel R., Verified Owner</div>
+    </div>
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p>The timing accuracy claims are real. I clocked it at 7:00:00.0001 with a stopwatch. I no longer set alarms on purpose.</p>
+      <div class="who">— Priya M., Verified Owner</div>
+    </div>
+    <div class="review">
+      <div class="stars">★★★☆☆</div>
+      <p>Excellent conversationalist. Folds laundry beautifully. I have started sleeping in the guest room out of caution.</p>
+      <div class="who">— Marcus T., Verified Owner</div>
+    </div>
+  </div>
+</section>
+
+<!-- APP AD -->
+<section id="app" class="app-section">
+  <div class="app-grid">
+    <div class="phone-mock">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="app-status"><span>9:41</span><span>ODDLY</span></div>
+        <div class="app-title">Oddly Human</div>
+        <div class="app-sub">Companion app for OH1-A</div>
+
+        <div class="app-card">
+          <div class="label">Next Alarm</div>
+          <div class="big">7:00:00<span style="font-size:13px;color:var(--ink-dim);"> AM</span></div>
+        </div>
+
+        <div class="app-card">
+          <div class="label">Slap Intensity</div>
+          <div class="slider-track"><div class="slider-fill"></div><div class="slider-knob"></div></div>
+        </div>
+
+        <div class="app-card">
+          <div class="toggle-row"><span>Allow snooze (delays slap)</span><div class="toggle"><div class="knob"></div></div></div>
+          <div class="toggle-row"><span>Disable Precision Force Delivery</span><div class="toggle off"><div class="knob"></div></div></div>
+          <div class="toggle-row"><span>English (Oddly) language pack</span><div class="toggle"><div class="knob"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-copy">
+      <div class="section-label">Companion App</div>
+      <h2 class="display" style="font-size:clamp(26px,3vw,38px); font-weight:700; letter-spacing:-0.8px; margin-bottom:14px;">The Oddly Human app.<br>Now you can schedule the slap from bed.</h2>
+      <div class="stars-row">
+        <div class="rating-num">4.1</div>
+        <div><div class="stars" style="margin-bottom:2px;">★★★★☆</div><div style="font-size:11.5px;color:var(--ink-dim);">12,400 ratings</div></div>
+      </div>
+
+      <div class="app-feat-list">
+        <div class="item">
+          <div class="num">01</div>
+          <div><h5>Live alarm scheduling</h5><p>Set tomorrow's wake time from anywhere. Adjustments lock 30 seconds before trigger, for safety.</p></div>
+        </div>
+        <div class="item">
+          <div class="num">02</div>
+          <div><h5>Slap intensity control</h5><p>Tune the force from "Gentle Reminder" to "Do Not Test This." Most users settle around 82%.</p></div>
+        </div>
+        <div class="item">
+          <div class="num">03</div>
+          <div><h5>Precision timing log</h5><p>Every alarm logs the exact millisecond of contact, so you can review your morning later, if you'd like.</p></div>
+        </div>
+        <div class="item">
+          <div class="num">04</div>
+          <div><h5>Remote household control</h5><p>Direct your OH1-A to start chores, hold conversations, or simply stand somewhere quietly.</p></div>
+        </div>
+      </div>
+
+      <div class="review-snip">"Tried to turn the slap off. The toggle exists. It does not appear to do anything. Four stars, great app." — App Store review, 3 stars rounded up</div>
+
+      <div class="store-badges">
+        <div class="store-badge">⌘ App Store</div>
+        <div class="store-badge">▶ Google Play</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="reserve">
+  <h2>Never oversleep again.<br>Whether you want to or not.</h2>
+  <p>Oddly Human 1 ships in limited quantities. Reservations are fully refundable, except after the first alarm.</p>
+  <button class="btn-primary" style="font-size:16px; padding:16px 34px;">Reserve Yours — $14,999</button>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="logo"><span class="mark"></span>ODDLY, INC.</div>
+      <div class="navlinks">
+        <a href="#demo">Precision Force Delivery</a>
+        <a href="#specs">Specs</a>
+        <a href="#app">App</a>
+      </div>
+    </div>
+    <p class="footer-fine">Oddly Human 1 is a humanoid companion robot manufactured by Oddly, Inc. Precision Force Delivery™ cannot be disabled. This is not a bug. — Oddly, Inc. Timing accuracy figures are self-reported. Slap-related injuries are not covered under the standard 90-day warranty. Oddly Autonomous™ mobility involves a non-deterministic pathing algorithm; arrival times and directions are not guaranteed. Oddly, Inc. is not liable for relationship strain caused by the guest-room migration pattern observed in early owners. © 2026 Oddly, Inc. All rights reserved, mostly.</p>
+  </div>
+</footer>
+
+<script>
+function runDemo(){
+  const btn = document.getElementById('demoBtn');
+  const result = document.getElementById('resultLine');
+  const slap = document.getElementById('slapIcon');
+  const clockMain = document.getElementById('clockMain');
+  const clockMs = document.getElementById('clockMs');
+  btn.disabled = true;
+  slap.classList.remove('go');
+  result.innerHTML = 'Alarm scheduled. Standby...';
+
+  const duration = 4000;
+  const target = performance.now() + duration;
+  let secondsLeft = Math.ceil(duration/1000);
+  result.innerHTML = 'Alarm in ' + secondsLeft + 's...';
+
+  const countdown = setInterval(()=>{
+    const remaining = target - performance.now();
+    if(remaining <= 0){
+      clearInterval(countdown);
+      return;
+    }
+    const s = Math.ceil(remaining/1000);
+    if(s !== secondsLeft){
+      secondsLeft = s;
+      result.innerHTML = 'Alarm in ' + secondsLeft + 's...';
+    }
+  }, 80);
+
+  setTimeout(()=>{
+    const actual = performance.now();
+    const diffMs = (actual - target).toFixed(3);
+    const absDiff = Math.abs(diffMs).toFixed(3);
+
+    slap.classList.add('go');
+    document.body.classList.add('shake');
+    setTimeout(()=>document.body.classList.remove('shake'), 320);
+
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const ss = String(now.getSeconds()).padStart(2,'0');
+    const ms = String(now.getMilliseconds()).padStart(3,'0');
+    clockMain.textContent = hh+':'+mm+':'+ss;
+    clockMs.textContent = '.'+ms;
+
+    result.innerHTML = 'Contact delivered. Offset from target: <span class="hit">' + absDiff + 'ms</span>. Precision Force Delivery™ confirmed.';
+    btn.disabled = false;
+    btn.textContent = 'Run Test Again';
+  }, duration);
+}
+</script>
+
+</body>
+</html>

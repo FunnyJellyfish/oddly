@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly Pool Cleaner — Oddly, Inc.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A0E1B;
+    --navy2:#0F1526;
+    --panel:#131A2E;
+    --panel2:#161f38;
+    --purple:#5B3FE0;
+    --purple2:#3A2790;
+    --mint:#2EE9A5;
+    --amber:#F5B400;
+    --hazard:#FFC53D;
+    --red:#FF5C5C;
+    --t1:#F4F6FB;
+    --t2:#B7C0D8;
+    --t3:#7C88A8;
+    --border:rgba(255,255,255,.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--navy);
+    color:var(--t1);
+    font-family:'Space Grotesk',sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+
+  /* ── background texture ── */
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      radial-gradient(circle at 20% 15%, rgba(91,63,224,.18), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(46,233,165,.10), transparent 45%),
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:auto,auto,42px 42px,42px 42px;
+  }
+  .bubble{
+    position:fixed; bottom:-40px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(46,233,165,.35), rgba(46,233,165,.03));
+    border:1px solid rgba(46,233,165,.25);
+    animation:rise linear infinite;
+    pointer-events:none; z-index:0;
+  }
+  @keyframes rise{
+    to{ transform:translateY(-115vh) translateX(var(--drift,20px)); opacity:0; }
+  }
+
+  /* ── nav ── */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 6vw;
+    background:rgba(10,14,27,.75);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .logo{ font-family:'Fraunces',serif; font-weight:600; font-size:19px; letter-spacing:.02em; display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
+  .nav-links{display:flex; gap:32px; font-size:14px; color:var(--t2);}
+  .nav-links span:hover{color:var(--t1); cursor:pointer;}
+  .nav-cta{
+    background:var(--mint); color:#06110C; font-weight:700; font-size:13px;
+    padding:10px 20px; border-radius:100px; letter-spacing:.02em;
+  }
+
+  /* ── hero ── */
+  .hero{
+    position:relative; z-index:1;
+    padding:110px 6vw 90px;
+    display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:center;
+    max-width:1300px; margin:0 auto;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--mint); background:rgba(46,233,165,.08); border:1px solid rgba(46,233,165,.25);
+    padding:6px 14px; border-radius:100px; margin-bottom:24px;
+  }
+  .eyebrow::before{content:'●'; font-size:8px; animation:blink 1.6s infinite;}
+  @keyframes blink{50%{opacity:.2;}}
+  .hero h1{
+    font-size:clamp(38px, 5vw, 64px); line-height:1.04; font-weight:600;
+    letter-spacing:-.01em; margin-bottom:24px;
+  }
+  .hero h1 em{ font-style:italic; color:var(--mint); }
+  .hero p.sub{ font-size:18px; color:var(--t2); line-height:1.65; max-width:520px; margin-bottom:36px;}
+  .hero-ctas{ display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--mint),#1FCB8C); color:#04140D; font-weight:700; font-size:15px;
+    padding:15px 28px; border-radius:12px; border:none; cursor:pointer;
+    box-shadow:0 12px 30px rgba(46,233,165,.25);
+  }
+  .btn-secondary{
+    background:transparent; color:var(--t1); font-weight:600; font-size:15px;
+    padding:15px 26px; border-radius:12px; border:1px solid var(--border); cursor:pointer;
+  }
+  .btn-secondary:hover{border-color:var(--t3);}
+
+  /* ── hero visual: submarine porthole ── */
+  .sub-visual{
+    position:relative; aspect-ratio:1/1; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #1a2648, #060911 75%);
+    border:10px solid var(--panel2);
+    box-shadow:0 0 0 3px rgba(46,233,165,.15), 0 30px 80px rgba(0,0,0,.6), inset 0 0 60px rgba(0,0,0,.6);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .sonar{
+    position:absolute; width:70%; height:70%; border-radius:50%;
+    border:1px solid rgba(46,233,165,.25);
+  }
+  .sonar::before,.sonar::after{
+    content:''; position:absolute; inset:0; border-radius:50%; border:1px solid rgba(46,233,165,.15);
+  }
+  .sonar::before{ inset:18%; }
+  .sonar::after{ inset:36%; }
+  .sweep{
+    position:absolute; width:50%; height:2px; left:50%; top:50%; transform-origin:left center;
+    background:linear-gradient(90deg, rgba(46,233,165,.9), transparent);
+    animation:spin 3.4s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .blip{ position:absolute; width:6px;height:6px;border-radius:50%; background:var(--red); box-shadow:0 0 10px var(--red); }
+  .sub-icon{ position:relative; z-index:2; font-size:56px; filter:drop-shadow(0 0 20px rgba(46,233,165,.5)); }
+  .sub-label{
+    position:absolute; bottom:22px; left:50%; transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mint); letter-spacing:.1em;
+    background:rgba(6,9,17,.7); padding:5px 12px; border-radius:100px; border:1px solid rgba(46,233,165,.25);
+  }
+
+  /* ── section shell ── */
+  section{ position:relative; z-index:1; padding:80px 6vw; max-width:1300px; margin:0 auto; }
+  .section-head{ text-align:center; max-width:640px; margin:0 auto 56px; }
+  .section-head .eyebrow{ margin-bottom:16px; }
+  .section-head h2{ font-size:clamp(28px,3.4vw,42px); font-weight:600; margin-bottom:14px; line-height:1.15;}
+  .section-head p{ color:var(--t2); font-size:16px; line-height:1.6; }
+
+  /* ── two systems ── */
+  .systems{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .sys-card{
+    background:linear-gradient(160deg,var(--panel),var(--panel2));
+    border:1px solid var(--border); border-radius:20px; padding:38px;
+  }
+  .sys-tag{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; padding:5px 12px; border-radius:100px; display:inline-block; margin-bottom:20px;}
+  .sys-tag.centrifuge{ color:var(--mint); background:rgba(46,233,165,.1); border:1px solid rgba(46,233,165,.25);}
+  .sys-tag.torpedo{ color:var(--hazard); background:rgba(245,180,0,.1); border:1px solid rgba(245,180,0,.3);}
+  .sys-card h3{ font-size:26px; margin-bottom:14px; font-weight:600;}
+  .sys-card p{ color:var(--t2); line-height:1.7; font-size:15px; margin-bottom:18px;}
+  .sys-card ul{ list-style:none; }
+  .sys-card li{ font-size:14px; color:var(--t2); padding:10px 0; border-top:1px solid var(--border); display:flex; gap:10px;}
+  .sys-card li:first-child{ border-top:none; }
+  .sys-card li::before{ content:'—'; color:var(--t3); flex-shrink:0;}
+
+  /* ── threat log ── */
+  .log-wrap{
+    background:#060911; border:1px solid var(--border); border-radius:20px; overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+  }
+  .log-header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 24px; border-bottom:1px solid var(--border); background:var(--panel);
+  }
+  .log-header .title{ font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.06em; color:var(--t2);}
+  .log-header .title strong{ color:var(--mint); }
+  .log-stats{ display:flex; gap:26px; }
+  .log-stat{ text-align:right; }
+  .log-stat .n{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--t1); }
+  .log-stat .l{ font-size:10px; color:var(--t3); text-transform:uppercase; letter-spacing:.08em; }
+  .log-body{ height:280px; overflow-y:auto; padding:10px 0; }
+  .log-line{
+    display:grid; grid-template-columns:90px 1fr 120px 130px; gap:14px; align-items:center;
+    padding:10px 24px; font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    animation:fadeIn .4s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:translateY(0);} }
+  .log-line .t{ color:var(--t3); }
+  .log-line .item{ color:var(--t1); }
+  .log-line .cls{ font-size:11px; padding:2px 8px; border-radius:5px; text-align:center; }
+  .cls.hostile{ background:rgba(255,92,92,.12); color:var(--red); }
+  .cls.uncertain{ background:rgba(245,180,0,.12); color:var(--hazard); }
+  .log-line .status{ color:var(--mint); text-align:right; }
+  .log-body::-webkit-scrollbar{ width:6px; }
+  .log-body::-webkit-scrollbar-thumb{ background:var(--panel2); border-radius:10px; }
+
+  /* ── spec table ── */
+  .spec-table{ width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:14px; }
+  .spec-table tr{ border-bottom:1px solid var(--border); }
+  .spec-table tr:last-child{ border-bottom:none; }
+  .spec-table td{ padding:18px 10px; }
+  .spec-table td:first-child{ color:var(--t3); width:40%; text-transform:uppercase; font-size:11px; letter-spacing:.08em; }
+  .spec-table td:last-child{ color:var(--t1); text-align:right; }
+  .spec-table .pending{ color:var(--hazard); }
+
+  /* ── quotes ── */
+  .quotes{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .quote-card{
+    background:linear-gradient(160deg,var(--panel),var(--navy2));
+    border:1px solid var(--border); border-radius:20px; padding:34px;
+  }
+  .quote-card .mark{ font-family:'Fraunces',serif; font-size:44px; color:var(--purple); line-height:.5; display:block; margin-bottom:10px;}
+  .quote-card p.q{ font-family:'Fraunces',serif; font-size:20px; line-height:1.5; font-style:italic; color:var(--t1); margin-bottom:20px;}
+  .quote-card .who{ display:flex; align-items:center; gap:12px; }
+  .avatar{ width:38px;height:38px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-family:'JetBrains Mono',monospace; font-size:13px;}
+  .avatar.ceo{ background:linear-gradient(135deg,var(--purple),var(--purple2)); }
+  .avatar.cfo{ background:linear-gradient(135deg,var(--amber),#8a5c00); color:#1a1200;}
+  .who .name{ font-size:14px; font-weight:600; }
+  .who .role{ font-size:12px; color:var(--t3); }
+
+  /* ── cert badges ── */
+  .certs{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
+  .cert-badge{
+    display:flex; align-items:center; gap:10px;
+    border:1px solid var(--border); border-radius:100px; padding:10px 18px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--t2);
+    background:var(--panel);
+  }
+  .cert-badge .dot{ width:7px;height:7px;border-radius:50%; background:var(--hazard); box-shadow:0 0 8px var(--hazard);}
+
+  /* ── final CTA ── */
+  .final-cta{
+    text-align:center; padding:100px 6vw; position:relative; z-index:1;
+    background:radial-gradient(ellipse at 50% 0%, rgba(91,63,224,.18), transparent 60%);
+  }
+  .final-cta h2{ font-size:clamp(30px,4vw,50px); font-weight:600; margin-bottom:18px; }
+  .final-cta p{ color:var(--t2); font-size:16px; margin-bottom:34px; max-width:480px; margin-left:auto; margin-right:auto; }
+
+  /* ── footer / fine print ── */
+  footer{
+    border-top:1px solid var(--border); padding:50px 6vw 40px; position:relative; z-index:1;
+  }
+  .foot-grid{ display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap; margin-bottom:36px; }
+  .foot-brand .logo{ margin-bottom:10px; }
+  .foot-brand p{ color:var(--t3); font-size:13px; max-width:280px; line-height:1.6; }
+  .fine-print{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--t3); line-height:1.9;
+    border-top:1px solid var(--border); padding-top:26px;
+  }
+  .fine-print p{ margin-bottom:10px; }
+  .fine-print .sig{ color:var(--t2); margin-top:16px; }
+
+  @media (max-width:900px){
+    .hero{ grid-template-columns:1fr; }
+    .systems, .quotes{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+    .log-line{ grid-template-columns:60px 1fr 90px; }
+    .log-line .status{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<nav>
+  <div class="logo"><span class="dot"></span>Oddly, Inc.</div>
+  <div class="nav-links">
+    <span onclick="document.getElementById('systems').scrollIntoView()">Systems</span>
+    <span onclick="document.getElementById('log').scrollIntoView()">Live Feed</span>
+    <span onclick="document.getElementById('specs').scrollIntoView()">Specs</span>
+    <span onclick="document.getElementById('word').scrollIntoView()">From the Office of the CEO</span>
+  </div>
+  <div class="nav-cta">Reserve — $1,899</div>
+</nav>
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">Now Shipping · Oddly Pool Division</div>
+    <h1>Your pool has a problem.<br><em>We brought torpedoes.</em></h1>
+    <p class="sub">The Oddly Pool Cleaner is a fully submersible mini submarine engineered around dual centrifuge propulsion and an onboard torpedo bay, built to identify and remove anything that is not supposed to be in the pool.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary">Reserve Yours — $1,899</button>
+      <button class="btn-secondary" onclick="document.getElementById('systems').scrollIntoView()">See How It Works</button>
+    </div>
+  </div>
+  <div class="sub-visual">
+    <div class="sonar"><div class="sweep"></div></div>
+    <div class="blip" style="top:32%;left:64%;"></div>
+    <div class="blip" style="top:60%;left:38%;"></div>
+    <div class="sub-icon">🛸</div>
+    <div class="sub-label">SCANNING POOL FOR THREATS</div>
+  </div>
+</header>
+
+<section id="systems">
+  <div class="section-head">
+    <div class="eyebrow">Two Signature Systems</div>
+    <h2>Built like a submarine. Because it is one.</h2>
+    <p>Every other pool cleaner on the market vacuums. The Oddly Pool Cleaner patrols.</p>
+  </div>
+  <div class="systems">
+    <div class="sys-card">
+      <span class="sys-tag centrifuge">Propulsion</span>
+      <h3>Dual Centrifuge Motors</h3>
+      <p>Two counter-rotating centrifuge cores spin at flagship-grade RPM to move the hull through your pool with the quiet confidence of a much larger vessel. This is not a toy motor. This is a decision.</p>
+      <ul>
+        <li>Full 360° maneuvering with no visible turning radius</li>
+        <li>Silent above 4 feet of water, audible below it</li>
+        <li>Self-corrects heading using a compass that has never been calibrated</li>
+      </ul>
+    </div>
+    <div class="sys-card">
+      <span class="sys-tag torpedo">Threat Response</span>
+      <h3>Torpedo Neutralization Bay</h3>
+      <p>A forward-mounted, four-tube torpedo bay identifies large foreign objects and removes them from the pool permanently. Pool toys, fallen branches, and inflatable flamingos have never had a fair fight.</p>
+      <ul>
+        <li>Real-time object classification: Belongs / Does Not Belong</li>
+        <li>Four reloadable torpedo tubes, sold separately</li>
+        <li>Classification accuracy improves with every incident</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="log">
+  <div class="section-head">
+    <div class="eyebrow">Field Data</div>
+    <h2>Live from a pool right now.</h2>
+    <p>An anonymized threat log, streaming from an active Oddly Pool Cleaner unit somewhere in the world, right now, this second, unmonitored.</p>
+  </div>
+  <div class="log-wrap">
+    <div class="log-header">
+      <div class="title">POOL_UNIT_0417 · <strong>ARMED</strong></div>
+      <div class="log-stats">
+        <div class="log-stat"><div class="n" id="statCount">0</div><div class="l">Neutralized Today</div></div>
+        <div class="log-stat"><div class="n" id="statTorp">4</div><div class="l">Torpedoes Remaining</div></div>
+      </div>
+    </div>
+    <div class="log-body" id="logBody"></div>
+  </div>
+</section>
+
+<section id="specs">
+  <div class="section-head">
+    <div class="eyebrow">Specifications</div>
+    <h2>The numbers, stated plainly.</h2>
+  </div>
+  <table class="spec-table">
+    <tr><td>Model</td><td>Oddly Pool Cleaner — OPC-1</td></tr>
+    <tr><td>Classification</td><td>Class-B Recreational Submersible</td></tr>
+    <tr><td>Propulsion</td><td>Dual Centrifuge Drive, 2 × 340W</td></tr>
+    <tr><td>Armament</td><td>4× Torpedo Tube, Front-Mounted</td></tr>
+    <tr><td>Max Depth</td><td>12 ft (pool floor, whichever is shallower)</td></tr>
+    <tr><td>Motor Rated Output</td><td>14,000 RPM per centrifuge core</td></tr>
+    <tr><td>Top Speed</td><td>27 knots forward, unlimited in retreat</td></tr>
+    <tr><td>Object Detection Range</td><td>18 ft, 6 ft in cloudy water, 0 ft at night</td></tr>
+    <tr><td>Battery Life</td><td>90 minutes patrol, 6 minutes combat</td></tr>
+    <tr><td>Serial Number</td><td>ODLY-OPC1-88214-XR</td></tr>
+    <tr><td>Warranty</td><td>11 days, non-transferable</td></tr>
+    <tr><td>Safety Certification</td><td class="pending">Pending</td></tr>
+    <tr><td>Insurance Eligibility</td><td class="pending">Pending Review</td></tr>
+  </table>
+</section>
+
+<section id="word">
+  <div class="section-head">
+    <div class="eyebrow">From the Office of the CEO</div>
+    <h2>A word from leadership.</h2>
+  </div>
+  <div class="quotes">
+    <div class="quote-card">
+      <span class="mark">"</span>
+      <p class="q">Twenty-seven knots. In a backyard pool. People ask if that is necessary. Necessary is the wrong word. Necessary implies a ceiling. We do not build to ceilings.</p>
+      <div class="who">
+        <div class="avatar ceo">SS</div>
+        <div><div class="name">Stephen Stubborn <span class="mono" style="font-size:11px;color:var(--t3);">(pronounced Stefen Stu-Born)</span></div><div class="role">Chief Executive Officer, Oddly, Inc.</div></div>
+      </div>
+    </div>
+    <div class="quote-card">
+      <span class="mark">"</span>
+      <p class="q">Our liability costs went up. So did unit sales. Astronomically. In roughly the same direction, which our actuaries have asked us to stop describing as a coincidence.</p>
+      <div class="who">
+        <div class="avatar cfo">SS</div>
+        <div><div class="name">Stephen Stupid <span class="mono" style="font-size:11px;color:var(--t3);">(no relation)</span></div><div class="role">Chief Financial Officer, Oddly, Inc.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div class="eyebrow">Compliance</div>
+    <h2>Certifications & Reviews</h2>
+  </div>
+  <div class="certs">
+    <div class="cert-badge"><span class="dot"></span>UL Submersible Rating — Pending</div>
+    <div class="cert-badge"><span class="dot"></span>Municipal Pool Safety Board — Pending</div>
+    <div class="cert-badge"><span class="dot"></span>Homeowners' Association Approval — Pending</div>
+    <div class="cert-badge"><span class="dot"></span>Ordnance Transport Permit — Pending</div>
+  </div>
+</section>
+
+<div class="final-cta">
+  <h2>The pool was never yours.<br>It belongs to whoever controls the torpedoes.</h2>
+  <p>Now that's you.</p>
+  <button class="btn-primary">Reserve Yours — $1,899</button>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <div class="logo"><span class="dot"></span>Oddly, Inc.</div>
+      <p>Makers of the Front-Front, the Back-Back, Oddly Autonomous, oOS, Oddly Elevator, Oddly Human 1, and now, the pool.</p>
+    </div>
+  </div>
+  <div class="fine-print">
+    <p>The Oddly Pool Cleaner determines what "belongs" in a pool using an onboard classification model that has not been independently reviewed. Common misclassifications include pool noodles, small dogs, and, on one occasion, a second Oddly Pool Cleaner.</p>
+    <p>Torpedo reload cartridges are not included and are illegal to ship in fourteen states. Oddly, Inc. currently ships to all fifty.</p>
+    <p>Any damage to the pool, the pool deck, the house attached to the pool deck, or the concept of swimming is considered, per Section 14 of the included warranty card, an "excellent outcome."</p>
+    <p>Warranty void if unit is operated near guests, near children, near pets, near furniture, or in water.</p>
+    <p class="sig">This is not a bug. — Oddly, Inc.</p>
+  </div>
+</footer>
+
+<script>
+  // ambient bubbles
+  (function(){
+    const body = document.body;
+    for(let i=0;i<16;i++){
+      const b = document.createElement('div');
+      const size = 6 + Math.random()*22;
+      b.className = 'bubble';
+      b.style.width = size+'px';
+      b.style.height = size+'px';
+      b.style.left = (Math.random()*100)+'vw';
+      b.style.setProperty('--drift', (Math.random()*60-30)+'px');
+      b.style.animationDuration = (8+Math.random()*10)+'s';
+      b.style.animationDelay = (Math.random()*10)+'s';
+      body.appendChild(b);
+    }
+  })();
+
+  // threat log
+  const threats = [
+    {item:'Inflatable Flamingo', cls:'hostile'},
+    {item:'Pool Noodle (Blue)', cls:'uncertain'},
+    {item:'Fallen Oak Branch', cls:'hostile'},
+    {item:'Beach Ball', cls:'uncertain'},
+    {item:'Unidentified Floating Object', cls:'hostile'},
+    {item:'Garden Hose', cls:'uncertain'},
+    {item:'Second Pool Cleaner (Rival Brand)', cls:'hostile'},
+    {item:'Diving Ring, Yellow', cls:'uncertain'},
+    {item:'Patio Umbrella (fallen)', cls:'hostile'},
+    {item:'Water Wings', cls:'uncertain'},
+    {item:'Family Dog (false positive, resolved)', cls:'uncertain'},
+    {item:'Leaf Cluster', cls:'uncertain'},
+    {item:'Kickboard', cls:'uncertain'},
+    {item:'Rubber Duck, Oversized', cls:'hostile'},
+  ];
+  const statuses = ['Neutralized','Neutralized','Neutralized','Reclassified','Neutralized'];
+
+  const logBody = document.getElementById('logBody');
+  const statCount = document.getElementById('statCount');
+  const statTorp = document.getElementById('statTorp');
+  let count = 0;
+  let torpedoes = 4;
+  const maxLines = 40;
+
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  function addLogLine(){
+    const t = threats[Math.floor(Math.random()*threats.length)];
+    const status = statuses[Math.floor(Math.random()*statuses.length)];
+    const now = new Date();
+    const time = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+
+    if(status === 'Neutralized'){
+      torpedoes = torpedoes > 0 ? torpedoes - 1 : 4; // auto-reload, no explanation given
+      count++;
+    }
+
+    const line = document.createElement('div');
+    line.className = 'log-line';
+    line.innerHTML =
+      '<span class="t">'+time+'</span>' +
+      '<span class="item">'+t.item+'</span>' +
+      '<span class="cls '+t.cls+'">'+(t.cls==='hostile' ? 'HOSTILE' : 'UNCERTAIN')+'</span>' +
+      '<span class="status">'+status+'</span>';
+
+    logBody.insertBefore(line, logBody.firstChild);
+    while(logBody.children.length > maxLines){
+      logBody.removeChild(logBody.lastChild);
+    }
+
+    statCount.textContent = count;
+    statTorp.textContent = torpedoes;
+  }
+
+  for(let i=0;i<6;i++) addLogLine();
+  setInterval(addLogLine, 2600);
+</script>
+
+</body>
+</html>

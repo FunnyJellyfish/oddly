@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Journey of Oddly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0D17;
+    --bg-2:#10081f;
+    --paper:#15101f;
+    --ink:#F4F1EA;
+    --ink-dim:#A9A2B8;
+    --ink-faint:#6b6478;
+    --purple:#7B4FFF;
+    --purple-dim:#4B3380;
+    --mint:#3DFFC0;
+    --amber:#FFB454;
+    --rule: rgba(244,241,234,0.12);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(123,79,255,0.25), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 110% 10%, rgba(61,255,192,0.10), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--mint);}
+
+  ::selection{background:var(--purple); color:white;}
+
+  /* ===== Masthead ===== */
+  .masthead{
+    max-width:1080px;
+    margin:0 auto;
+    padding:48px 32px 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:20px;
+  }
+  .wordmark{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:0.02em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .wordmark .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--mint);
+    box-shadow:0 0 12px var(--mint);
+  }
+  .masthead-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    max-width:1080px;
+    margin:0 auto;
+    padding:90px 32px 60px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--mint);
+    margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:28px;height:1px;
+    background:var(--mint);
+  }
+  h1.title{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(42px, 7vw, 84px);
+    line-height:0.98;
+    letter-spacing:-0.01em;
+    margin:0 0 28px;
+    max-width:880px;
+  }
+  h1.title em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--purple);
+    background:linear-gradient(90deg, var(--purple), #B79CFF);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .byline{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    align-items:center;
+    margin-top:36px;
+    padding-top:28px;
+    border-top:1px solid var(--rule);
+    max-width:760px;
+  }
+  .byline-block{display:flex; flex-direction:column; gap:3px;}
+  .byline-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-faint);
+  }
+  .byline-value{font-size:15px; font-weight:600;}
+  .byline-value small{
+    display:block;
+    font-weight:400;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    margin-top:1px;
+    letter-spacing:0.02em;
+  }
+
+  /* ===== Essay ===== */
+  .essay-wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:10px 32px 0;
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:60px;
+  }
+  @media (max-width:820px){
+    .essay-wrap{grid-template-columns:1fr;}
+  }
+  .essay-rail{
+    position:relative;
+  }
+  .essay-rail-inner{
+    position:sticky;
+    top:32px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .rail-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+  }
+  .rail-quote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:16px;
+    line-height:1.5;
+    color:var(--purple);
+    border-left:2px solid var(--purple-dim);
+    padding-left:14px;
+  }
+  .stamp{
+    margin-top:20px;
+    width:118px;height:118px;
+    border:1.5px solid var(--amber);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transform:rotate(-9deg);
+    opacity:0.85;
+    color:var(--amber);
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    line-height:1.4;
+    padding:10px;
+  }
+
+  article.essay{
+    font-size:18px;
+    color:#E7E2D9;
+    max-width:680px;
+  }
+  article.essay p{margin:0 0 24px;}
+  article.essay h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:30px;
+    color:var(--ink);
+    margin:48px 0 18px;
+    letter-spacing:-0.01em;
+  }
+  article.essay .drop::first-letter{
+    font-family:'Fraunces',serif;
+    font-size:74px;
+    font-weight:600;
+    float:left;
+    line-height:0.8;
+    margin:8px 10px 0 0;
+    color:var(--purple);
+  }
+  article.essay strong{color:var(--mint); font-weight:600;}
+  .pull{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:25px;
+    line-height:1.45;
+    color:var(--ink);
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    padding:28px 0;
+    margin:42px 0;
+  }
+  .pull cite{
+    display:block;
+    font-style:normal;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--mint);
+    margin-top:14px;
+  }
+  .cfo-box{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:24px 26px;
+    margin:42px 0;
+    display:flex;
+    gap:18px;
+  }
+  .cfo-avatar{
+    flex-shrink:0;
+    width:44px;height:44px;
+    border-radius:10px;
+    background:linear-gradient(135deg, var(--amber), #C97A1F);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    color:#1a1206;
+    font-size:18px;
+  }
+  .cfo-name{font-weight:700; font-size:14px;}
+  .cfo-role{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:8px;
+  }
+  .cfo-quote{font-size:15.5px; color:var(--ink-dim); font-style:italic;}
+
+  .signoff{
+    margin-top:54px;
+    padding-top:26px;
+    border-top:1px solid var(--rule);
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:18px;
+    color:var(--ink-dim);
+  }
+  .signoff strong{
+    display:block;
+    font-style:normal;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--ink);
+    margin-top:10px;
+  }
+  .signoff small{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-style:normal;
+    font-size:11px;
+    color:var(--ink-faint);
+    margin-top:3px;
+  }
+
+  /* ===== Timeline ===== */
+  .timeline-section{
+    max-width:1080px;
+    margin:110px auto 0;
+    padding:0 32px 60px;
+  }
+  .timeline-head{
+    max-width:680px;
+    margin-bottom:64px;
+  }
+  .timeline-head h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(32px,5vw,48px);
+    margin:14px 0 16px;
+    letter-spacing:-0.01em;
+  }
+  .timeline-head p{
+    color:var(--ink-dim);
+    font-size:16.5px;
+    max-width:560px;
+  }
+
+  .timeline{
+    position:relative;
+    padding-left:0;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:128px;
+    top:6px;
+    bottom:6px;
+    width:1px;
+    background:linear-gradient(to bottom, var(--purple-dim), var(--rule) 92%, transparent);
+  }
+  @media (max-width:680px){
+    .timeline::before{left:64px;}
+  }
+
+  .tl-item{
+    position:relative;
+    display:grid;
+    grid-template-columns:128px 1fr;
+    gap:32px;
+    padding:0 0 56px;
+  }
+  @media (max-width:680px){
+    .tl-item{grid-template-columns:64px 1fr; gap:18px;}
+  }
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-year{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    font-weight:500;
+    color:var(--ink-faint);
+    padding-top:3px;
+    text-align:right;
+  }
+  .tl-dot{
+    position:absolute;
+    left:122px;
+    top:6px;
+    width:13px;height:13px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--purple);
+  }
+  @media (max-width:680px){
+    .tl-dot{left:58px;}
+  }
+  .tl-item.milestone .tl-dot{
+    background:var(--mint);
+    border-color:var(--mint);
+    box-shadow:0 0 0 4px rgba(61,255,192,0.15);
+  }
+  .tl-content{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:22px 26px;
+  }
+  .tl-content h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:19px;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .tl-content p{
+    margin:0;
+    font-size:15px;
+    color:var(--ink-dim);
+  }
+  .tl-tag{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+    color:var(--amber);
+    background:rgba(255,180,84,0.1);
+    border:1px solid rgba(255,180,84,0.25);
+    padding:3px 8px;
+    border-radius:99px;
+    margin-bottom:10px;
+  }
+
+  /* ===== Footer ===== */
+  footer{
+    max-width:1080px;
+    margin:80px auto 0;
+    padding:32px 32px 60px;
+    border-top:1px solid var(--rule);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .footer-col{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    line-height:1.8;
+    max-width:420px;
+  }
+  .footer-fine{color:rgba(244,241,234,0.16);}
+
+  [data-reveal]{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  [data-reveal].in{
+    opacity:1;
+    transform:translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wordmark"><span class="dot"></span>ODDLY, INC.</div>
+  <div class="masthead-tag">Office of the Chief Executive</div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">A Company History</div>
+  <h1 class="title">The Journey<br>of <em>Oddly</em></h1>
+  <div class="byline">
+    <div class="byline-block">
+      <span class="byline-label">Written By</span>
+      <span class="byline-value">Stephen Stubborn<small>pronounced Stefen Stu-Born</small></span>
+    </div>
+    <div class="byline-block">
+      <span class="byline-label">Title</span>
+      <span class="byline-value">Chief Executive Officer</span>
+    </div>
+    <div class="byline-block">
+      <span class="byline-label">Filed Under</span>
+      <span class="byline-value">Things We Are Proud Of</span>
+    </div>
+  </div>
+</header>
+
+<div class="essay-wrap">
+  <aside class="essay-rail">
+    <div class="essay-rail-inner" data-reveal>
+      <div>
+        <div class="rail-label">A Note On Tone</div>
+        <p class="rail-quote">"This is not a memoir. This is a deposition I am choosing to give voluntarily."</p>
+      </div>
+      <div class="stamp">Approved<br>By The<br>Author<br>(Myself)</div>
+    </div>
+  </aside>
+
+  <article class="essay">
+    <p class="drop" data-reveal>People ask me, often in a tone I do not appreciate, how Oddly, Inc. came to be. They expect a story about garages, or whiteboards, or a difficult childhood that taught me the meaning of perseverance. I will not be telling that story, because it isn't true, and I have never seen the appeal of saying things that are true when something better is available. The real story is this: in the beginning, there was a typo, and I refused to fix it.</p>
+
+    <p data-reveal>The typo was the name of the company itself. It was supposed to say "Oldly," after my grandfather, who was old. A junior designer misspelled it on the very first business card, and when I noticed, I had two options. I could correct it, admit fault, and move on like a normal person. Or I could decide, on the spot, that "Oddly" was always the plan, and that anyone who said otherwise simply hadn't been paying attention in the original meeting, a meeting which did not happen. I chose the second option. I have chosen the second option every single time since, and it is the reason this company exists.</p>
+
+    <h2 data-reveal>The Early Years</h2>
+    <p data-reveal>We started, as all great companies do, by making something nobody asked for and insisting they had. Our first product was a car. Specifically, our first product was <strong>two cars</strong>, the Front-Front and the Back-Back, each missing the half of itself you would normally expect. Engineers told me this was structurally unsound. Focus groups told me this was, in their words, "frightening to look at." I told both groups that they were describing the future, and that the future is allowed to be frightening. We sold every unit we built. I never asked who to.</p>
+
+    <p data-reveal>It was around this time that I brought on Stephen Stupid as Chief Financial Officer — no relation, despite the name, despite the resemblance, despite the fact that we are frequently confused for each other at industry dinners and have stopped correcting people. Stephen does not believe in losses. He believes in "deferred wins." Under his guidance, Oddly, Inc. has never once reported a year in the red, a fact our accountants describe as "mathematically interesting" and our lawyers describe as "something we should talk about."</p>
+
+    <div class="cfo-box" data-reveal>
+      <div class="cfo-avatar">SS</div>
+      <div>
+        <div class="cfo-name">Stephen Stupid</div>
+        <div class="cfo-role">Chief Financial Officer</div>
+        <div class="cfo-quote">"A loss is just a profit that hasn't introduced itself yet. We are very patient people."</div>
+      </div>
+    </div>
+
+    <h2 data-reveal>Oddly Autonomous</h2>
+    <p data-reveal>Our self-driving program, Oddly Autonomous, was born out of a simple engineering insight: predicting where a car should go is expensive, and not predicting is free. The vehicles in our autonomous fleet do not follow maps, sensors, or traffic patterns. They follow a feeling. We market this as "intuitive routing." Customers describe it, less charitably, as "random." I have read every one of those reviews personally, and I want to be clear that I do not see the distinction they are making.</p>
+
+    <p class="pull" data-reveal>"You don't fix a bug by understanding it. You fix a bug by deciding, with confidence, that it was supposed to do that."<cite>— Stephen Stubborn, internal memo, year unknown</cite></p>
+
+    <h2 data-reveal>Becoming A Technology Company</h2>
+    <p data-reveal>Cars alone were not enough. A company my size needed a computer, a phone, an operating system, and a social network, in that order, because that is the order our competitors did it in and I did not want to be seen as a copycat by doing it differently. We started with the desktop, because desktops feel serious, and I wanted our first software to feel serious.</p>
+
+    <p data-reveal>Oddly OS was built from the ground up to resemble a real, fully functioning desktop operating system, because it is one. It has a taskbar. It has a launcher, which our design team calls "the spiral thing" because none of us could agree on a better name and the deadline arrived before we could. It has an App Store, stocked with games, utilities, and a built-in AI assistant, all of which work exactly as advertised. I want to be very clear about that, because it is the one part of this essay I am not being defensive about: Oddly OS works. We were as surprised as anyone.</p>
+
+    <p data-reveal>The oPhone 1 followed shortly after, because once you have built a desktop operating system, people start asking, not unreasonably, whether you can also fit it in a pocket. The phone launched with our proprietary Oddly Liquid Glass interface, which a journalist once described as looking like "an iPhone left in a washing machine." I took this as a compliment about our durability testing and have not corrected the record.</p>
+
+    <p data-reveal>Inside the oPhone runs oOS, our operating system, home to what I consider our single greatest contribution to mankind: an alarm clock that goes off at five in the morning and cannot be turned off, only delayed, and only by buttons that grow increasingly disappointed in you with each tap. Engineering called this "a sleep regression that escaped containment." I called it a <strong>wellness feature</strong>, and I would like the record to reflect that I am still calling it that.</p>
+
+    <p data-reveal>From there came Tickelish Shmock, our video platform, and the rest of the Oddly ecosystem you may already use without fully understanding why. Every product carries the same philosophy. We do not fix what is broken. We rename it, ship it, and wait for the world to catch up to our vision. So far, the world has not caught up. We remain undeterred.</p>
+
+    <h2 data-reveal>Where We Go From Here</h2>
+    <p data-reveal>People sometimes ask what's next for Oddly, Inc. I tell them the same thing I've told every employee, investor, and process server who has asked me that question over the years: we are not finished being wrong yet, and there is real opportunity in that. A company that admits its mistakes spends all its time apologizing. A company that insists its mistakes were the plan spends that same time shipping the next one. We intend to keep shipping.</p>
+
+    <div class="signoff" data-reveal>
+      "We didn't build this company by listening to feedback. We built it by hearing feedback, considering it carefully, and then doing the original thing anyway, slightly louder."
+      <strong>Stephen Stubborn</strong>
+      <small>Chief Executive Officer, Oddly, Inc. &middot; pronounced Stefen Stu-Born</small>
+    </div>
+  </article>
+</div>
+
+<section class="timeline-section">
+  <div class="timeline-head" data-reveal>
+    <div class="eyebrow">The Record, As We Remember It</div>
+    <h2>A Timeline of Confidence</h2>
+    <p>Every milestone below has been independently verified by the Office of the CEO, which is to say, by Stephen Stubborn, in his office, alone.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Year One</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Founding</span>
+        <h3>The Typo Becomes The Company</h3>
+        <p>A business card is printed with the wrong name. Stephen Stubborn decides, retroactively, that it was the right name. Oddly, Inc. is incorporated by lunchtime.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Two</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Hiring</span>
+        <h3>Stephen Stupid Joins As CFO</h3>
+        <p>No relation. Hired the same week as Stephen Stubborn, with a near-identical name, and never once asked to explain it. The board stopped asking too.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Three</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Automotive</span>
+        <h3>The Front-Front Ships</h3>
+        <p>A car with two front ends and no back end enters production. Engineering's structural concerns are filed, acknowledged, and ignored, in that order.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Three</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Automotive</span>
+        <h3>The Back-Back Ships, Out Of Spite</h3>
+        <p>To prove the Front-Front was not a fluke, Oddly, Inc. releases its structural opposite. Sales teams are instructed to call this "a matched pair," not "two of the same mistake."</p>
+      </div>
+    </div>
+
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Year Five</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Self-Driving</span>
+        <h3>Oddly Autonomous Launches</h3>
+        <p>Our self-driving fleet hits the road with a routing system best described, by us, as "intuitive," and by everyone else, as "random." The destination remains a surprise to all parties, including the car.</p>
+      </div>
+    </div>
+
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Year Six</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Software</span>
+        <h3>Oddly OS Launches On Desktop</h3>
+        <p>A full desktop operating system ships with a taskbar, an App Store, and a launcher nicknamed "the spiral thing" by a design team that never settled on anything better. It works. We checked twice.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Seven</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Mobile</span>
+        <h3>oPhone 1 Announced</h3>
+        <p>A smartphone, independently invented, that closely resembles other smartphones. Stephen Stubborn maintains this is a coincidence of rectangles.</p>
+      </div>
+    </div>
+
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Year Seven</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Software</span>
+        <h3>oOS Debuts With The 5AM Alarm</h3>
+        <p>An alarm that cannot be turned off ships as a default feature. Internally, this is described as "a wellness initiative." Sleep, internally, is described as "optional."</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Eight</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Social</span>
+        <h3>Tickelish Shmock Goes Live</h3>
+        <p>Oddly, Inc. enters social media with a vertical video feed, an algorithm nobody understands, and at least one advertisement for a self-driving car that does not know where it is going.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Nine</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Awards</span>
+        <h3>Stephen Stubborn Wins "Most Persistent," Fourth Year Running</h3>
+        <p>The award is presented by an internal committee that Stephen Stubborn also chairs. He accepts it as a sign that the system is working.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Ten</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Infrastructure</span>
+        <h3>The Oddly Elevator Is Announced</h3>
+        <p>Oddly, Inc. enters the vertical transportation market. The Oddly Elevator travels between floors in a sequence determined at installation and cannot be changed. If your floor is not in the sequence, you are encouraged to use the stairs and to consider this "a wellness benefit."</p>
+      </div>
+    </div>
+
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Year Eleven</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Consumer Products</span>
+        <h3>Oddly Human 1 Debuts</h3>
+        <p>Oddly, Inc. enters the humanoid robotics category. The Oddly Human 1 is our first product that looks like a person, moves like a person, and insists it is not a robot, which is, depending on who you ask, either a feature or a significant liability concern. Certification: Pending.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Eleven</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Home &amp; Garden</span>
+        <h3>Oddly Pool Cleaner Ships</h3>
+        <p>A robotic pool cleaning device engineered to clean the pool in a manner we describe as "thorough" and regulators describe as "a pattern that does not cover the whole pool." The uncleaned sections are not a bug. They are, in our view, a reasonable interpretation of "clean enough."</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Year Twelve</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Chemical Division</span>
+        <h3>Oddly Acid™ — A Competitor Response Page</h3>
+        <p>Following industry pressure, Oddly, Inc. published an official response to competitor cleaning products. The page is confident, legally distinct, and concludes with fine print that the company's lawyers have asked us not to discuss in this document.</p>
+      </div>
+    </div>
+
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Year Twelve</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Attractions</span>
+        <h3>oAction Park Opens Its Gates</h3>
+        <p>Oddly, Inc.'s first physical attraction: a dangerously extreme theme park. The rides are real, the waivers are extensive, and the park's safety certification remains, as with all Oddly products, pending. Guests have described it as "harrowing" and "not what the brochure suggested." We consider both descriptions accurate and flattering.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-reveal>
+      <div class="tl-year">Most Recently</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Automotive</span>
+        <h3>The Oddly Roadster — A Response To The Tesla Roadster</h3>
+        <p>After Tesla revealed a two-seat sports car with cold-gas thrusters, Oddly, Inc. responded with a minivan fitted with actual rockets. Engineering noted that the rockets are pointed in the wrong direction for road travel. Stephen Stubborn described this as "a marketing choice."</p>
+      </div>
+    </div>
+
+    <div class="tl-item milestone" data-reveal>
+      <div class="tl-year">Today</div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <span class="tl-tag">Present Day</span>
+        <h3>Oddly, Inc. Remains Undeterred</h3>
+        <p>This essay is published. No corrections are anticipated, because, as a matter of policy, none will be issued.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-col">
+    ODDLY, INC.<br>
+    Office of the Chief Executive<br>
+    Parent company of Oddly Cars, Oddly OS, oOS, oPhone, and Tickelish Shmock
+  </div>
+  <div class="footer-col">
+    This essay reflects the personal recollections of Stephen Stubborn and has not been fact-checked, because that was never part of the plan.
+    <br><br>
+    <span class="footer-fine">This is not a bug. — Oddly, Inc.</span>
+  </div>
+</footer>
+
+<script>
+  const els = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+  els.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>

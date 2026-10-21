@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tickelish Shmock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    :root { --pk:#FE2C55; --tl:#25F4EE; --bg:#0A0A0A; --gd:#C9A227; }
+    html, body { background:var(--bg); color:#fff; font-family:'Nunito',sans-serif; overflow:hidden; height:100dvh; max-width:430px; margin:0 auto; }
+
+    /* ─── TOP NAV ─── */
+    .top-nav {
+      position:fixed; top:0; left:50%; transform:translateX(-50%);
+      width:100%; max-width:430px; z-index:200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:44px 14px 10px;
+      background:linear-gradient(to bottom,rgba(10,10,10,.92) 0%,transparent 100%);
+      pointer-events:none;
+    }
+    .top-nav > * { pointer-events:all; }
+    .logo { font-size:19px; font-weight:900; letter-spacing:-.2px; }
+    .logo .pk { color:var(--pk); } .logo .tl { color:var(--tl); }
+    .nav-icons { display:flex; gap:2px; }
+    .nav-btn {
+      width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+      font-size:20px; cursor:pointer; position:relative;
+    }
+    .bell-badge {
+      position:absolute; top:2px; right:2px;
+      width:16px; height:16px; border-radius:50%;
+      background:var(--pk); font-size:9px; font-weight:900;
+      display:flex; align-items:center; justify-content:center;
+      border:1.5px solid var(--bg);
+    }
+
+    /* ─── TAB BAR ─── */
+    .tab-bar {
+      position:fixed; top:87px; left:50%; transform:translateX(-50%);
+      width:100%; max-width:430px; z-index:199;
+      display:flex; justify-content:center; gap:24px; pointer-events:none;
+    }
+    .tab {
+      font-size:15px; font-weight:700; color:rgba(255,255,255,.45);
+      padding-bottom:4px; cursor:pointer; pointer-events:all; transition:color .2s;
+    }
+    .tab.on { color:#fff; border-bottom:2.5px solid #fff; }
+
+    /* ─── FEED ─── */
+    .feed {
+      height:100dvh; overflow-y:scroll; scroll-snap-type:y mandatory;
+      scroll-behavior:smooth; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    }
+    .feed::-webkit-scrollbar { display:none; }
+
+    /* ─── CARD ─── */
+    .card {
+      height:100dvh; scroll-snap-align:start;
+      position:relative; overflow:hidden;
+      display:flex; flex-direction:column; justify-content:flex-end;
+    }
+    .bg-emoji {
+      position:absolute; top:44%; left:50%; transform:translate(-50%,-50%);
+      font-size:160px; opacity:.14; user-select:none; pointer-events:none;
+      filter:blur(2px); z-index:1;
+    }
+    .overlay {
+      position:absolute; inset:0; z-index:2;
+      background:linear-gradient(to bottom,rgba(0,0,0,.1) 0%,transparent 22%,rgba(0,0,0,.55) 62%,rgba(0,0,0,.92) 100%);
+    }
+
+    /* ─── POST BODY ─── */
+    .card-body {
+      position:relative; z-index:3; display:flex; align-items:flex-end;
+      padding-bottom:calc(62px + env(safe-area-inset-bottom,0px));
+    }
+    .card-info { flex:1; padding:0 14px; min-width:0; }
+    .card-user { font-size:15px; font-weight:800; display:flex; align-items:center; gap:5px; margin-bottom:8px; }
+    .vbadge {
+      width:16px; height:16px; background:var(--pk); border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:9px; font-weight:900; flex-shrink:0;
+    }
+    .caption { font-size:14px; line-height:1.5; color:rgba(255,255,255,.96); margin-bottom:7px; }
+    .tags { font-size:12.5px; font-weight:700; margin-bottom:9px; }
+    .tags span { color:#90CAF9; margin-right:4px; }
+    .sound-row { display:flex; align-items:center; gap:7px; font-size:12px; color:rgba(255,255,255,.6); }
+    .disc {
+      width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.45);
+      background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center;
+      font-size:11px; flex-shrink:0; animation:spin 3.5s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .sound-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:185px; }
+
+    /* ─── ACTION BUTTONS ─── */
+    .actions { display:flex; flex-direction:column; align-items:center; gap:16px; padding:0 12px; flex-shrink:0; }
+    .a-ava-wrap { position:relative; margin-bottom:4px; cursor:pointer; }
+    .a-ava {
+      width:50px; height:50px; border-radius:50%; border:2px solid #fff;
+      display:flex; align-items:center; justify-content:center; font-size:26px;
+    }
+    .a-ava-plus {
+      position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
+      width:20px; height:20px; background:var(--pk); border-radius:50%;
+      border:2px solid var(--bg); display:flex; align-items:center; justify-content:center;
+      font-size:14px; font-weight:900; color:#fff; line-height:1;
+      transition:background .2s;
+    }
+    .a-ava-wrap.following .a-ava-plus { background:#555; }
+    .a-btn {
+      display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;
+    }
+    .a-circle {
+      width:50px; height:50px; border-radius:50%;
+      background:rgba(50,50,50,.62); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.1);
+      display:flex; align-items:center; justify-content:center; font-size:22px;
+      transition:transform .12s ease, background .2s;
+    }
+    .a-btn:active .a-circle { transform:scale(.86); }
+    .a-count { font-size:11px; font-weight:800; text-shadow:0 1px 4px rgba(0,0,0,.8); }
+    .a-btn.liked .a-circle { background:rgba(254,44,85,.22); border-color:rgba(254,44,85,.4); }
+    .a-btn.bookmarked .a-circle { background:rgba(201,162,39,.22); border-color:rgba(201,162,39,.4); }
+
+    /* ─── SPONSORED ─── */
+    .spons {
+      position:absolute; top:108px; left:16px; z-index:10;
+      background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.22);
+      color:rgba(255,255,255,.55); font-size:10px; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; padding:3px 8px; border-radius:3px;
+    }
+
+    /* ─── ODDLY CARS AD ─── */
+    .ad-oddly { background:linear-gradient(150deg,#05050E 0%,#0D0C22 55%,#070E18 100%); }
+    .oddly-rings { position:absolute; top:50%; left:50%; transform:translate(-50%,-60%); z-index:1; pointer-events:none; }
+    .o-ring { position:absolute; border-radius:50%; border:1px solid rgba(201,162,39,.12); top:50%; left:50%; transform:translate(-50%,-50%); }
+    .oddly-visual { position:absolute; top:50%; left:50%; transform:translate(-50%,-62%); text-align:center; z-index:4; }
+    .oddly-car { font-size:110px; display:block; filter:drop-shadow(0 0 40px rgba(201,162,39,.5)); animation:carfloat 4s ease-in-out infinite; }
+    @keyframes carfloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-15px); } }
+    .star-field { position:absolute; inset:0; z-index:2; pointer-events:none; }
+    .star-field span { position:absolute; border-radius:50%; background:rgba(255,255,255,.55); }
+    .ad-oddly .overlay { background:linear-gradient(to bottom,rgba(5,5,14,.2) 0%,transparent 28%,rgba(5,5,14,.68) 62%,rgba(5,5,14,.98) 100%); z-index:3; }
+    .oddly-bot { position:relative; z-index:5; padding:0 22px calc(72px + env(safe-area-inset-bottom,0px)) 22px; }
+    .o-eye { font-size:10px; letter-spacing:3.5px; text-transform:uppercase; color:var(--gd); font-weight:700; margin-bottom:8px; }
+    .o-title { font-size:40px; font-weight:900; letter-spacing:-1.5px; line-height:.92; margin-bottom:10px; background:linear-gradient(135deg,#fff 20%,#C9A227 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .o-tag { font-size:15px; font-weight:600; font-style:italic; color:rgba(255,255,255,.5); margin-bottom:14px; }
+    .o-feats { margin-bottom:16px; display:flex; flex-direction:column; gap:4px; }
+    .o-feat { font-size:12.5px; color:rgba(255,255,255,.42); display:flex; align-items:flex-start; gap:7px; }
+    .o-feat::before { content:'◆'; color:var(--gd); font-size:7px; margin-top:3px; flex-shrink:0; }
+    .o-row { display:flex; align-items:center; justify-content:space-between; }
+    .o-price-lbl { font-size:10px; letter-spacing:1px; color:rgba(255,255,255,.28); text-transform:uppercase; }
+    .o-price-val { font-size:22px; font-weight:900; color:#fff; }
+    .o-cta { background:linear-gradient(135deg,#C9A227,#F0C040); color:#05050E; font-family:'Nunito',sans-serif; font-size:13px; font-weight:900; letter-spacing:.5px; padding:13px 20px; border:none; border-radius:8px; cursor:pointer; }
+    .o-fine { font-size:9px; color:rgba(255,255,255,.14); margin-top:9px; line-height:1.5; }
+
+    /* ─── INVISOCKS AD ─── */
+    .ad-invis { background:linear-gradient(160deg,#0E0E0E 0%,#131313 100%); }
+    .invis-visual { position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); text-align:center; z-index:4; }
+    .invis-sock { font-size:95px; display:block; animation:sockflick 5s ease-in-out infinite; }
+    @keyframes sockflick { 0%,100% { opacity:0; } 38%,52% { opacity:.1; } }
+    .invis-hint { font-size:11px; color:rgba(255,255,255,.1); margin-top:8px; }
+    .ad-invis .overlay { background:linear-gradient(to bottom,rgba(14,14,14,.3) 0%,transparent 30%,rgba(14,14,14,.6) 62%,rgba(14,14,14,.97) 100%); z-index:3; }
+    .invis-bot { position:relative; z-index:5; padding:0 24px calc(72px + env(safe-area-inset-bottom,0px)) 24px; text-align:center; }
+    .i-eye { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.22); font-weight:700; margin-bottom:10px; }
+    .i-title { font-size:34px; font-weight:900; color:rgba(255,255,255,.88); letter-spacing:-.5px; margin-bottom:7px; }
+    .i-sub { font-size:16px; color:rgba(255,255,255,.35); font-style:italic; margin-bottom:6px; }
+    .i-copy { font-size:13px; color:rgba(255,255,255,.22); line-height:1.65; margin-bottom:20px; }
+    .i-btn { background:transparent; border:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.42); font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; letter-spacing:1px; padding:12px 28px; border-radius:4px; cursor:pointer; }
+
+    /* ─── BOTTOM NAV ─── */
+    .bot-nav {
+      position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+      width:100%; max-width:430px; z-index:200;
+      background:rgba(8,8,8,.97); border-top:1px solid rgba(255,255,255,.05);
+      display:flex; align-items:center;
+      padding:6px 0 max(8px,env(safe-area-inset-bottom,8px));
+    }
+    .bn { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; position:relative; }
+    .bn-ic { font-size:22px; position:relative; display:inline-block; }
+    .bn-lb { font-size:10px; font-weight:700; color:rgba(255,255,255,.32); }
+    .bn.on .bn-lb { color:#fff; }
+    .bn-post { flex:1; display:flex; justify-content:center; align-items:center; }
+    .plus-btn {
+      width:48px; height:32px; background:#fff; border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; font-weight:900; color:var(--bg); position:relative; cursor:pointer; z-index:1;
+    }
+    .plus-btn::before { content:''; position:absolute; top:0; bottom:0; left:-4px; right:4px; border-radius:8px; background:var(--tl); z-index:-1; }
+    .plus-btn::after { content:''; position:absolute; top:0; bottom:0; right:-4px; left:4px; border-radius:8px; background:var(--pk); z-index:-1; }
+    .bn-badge {
+      position:absolute; top:-2px; right:4px;
+      min-width:16px; height:16px; border-radius:8px;
+      background:var(--pk); font-size:9px; font-weight:900;
+      display:flex; align-items:center; justify-content:center; padding:0 3px;
+      border:1.5px solid rgba(8,8,8,.97);
+    }
+
+    /* ═══════════════════════════════════════
+       SCREENS
+    ═══════════════════════════════════════ */
+    .screen {
+      position:fixed; inset:0; background:var(--bg); z-index:100;
+      display:none; overflow-y:auto; -webkit-overflow-scrolling:touch;
+      padding-bottom:calc(62px + env(safe-area-inset-bottom,0px));
+    }
+    .screen.active { display:block; }
+    .scr-head {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:calc(44px + 8px) 16px 14px;
+      background:rgba(10,10,10,.95);
+      position:sticky; top:0; z-index:10;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .scr-title { font-size:18px; font-weight:900; }
+    .scr-action { font-size:20px; cursor:pointer; width:34px; height:34px; display:flex; align-items:center; justify-content:center; }
+
+    /* ─── LIVE SCREEN ─── */
+    #screen-live { padding-top:130px; }
+    .live-intro {
+      padding:0 16px 14px;
+      font-size:12px; color:rgba(255,255,255,.35); font-weight:700;
+      letter-spacing:.8px; text-transform:uppercase;
+    }
+    .live-grid { display:grid; grid-template-columns:1fr 1fr; gap:3px; padding:0 3px 3px; }
+    .live-card {
+      position:relative; aspect-ratio:9/16; border-radius:8px; overflow:hidden; cursor:pointer;
+      display:flex; flex-direction:column; justify-content:flex-end;
+      transition:transform .15s ease;
+    }
+    .live-card:active { transform:scale(.97); }
+    .live-bg-emoji {
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      font-size:72px; opacity:.25; filter:blur(1px); z-index:0; user-select:none;
+    }
+    .live-grad {
+      position:absolute; inset:0; z-index:1;
+      background:linear-gradient(to bottom,transparent 30%,rgba(0,0,0,.88) 100%);
+    }
+    .live-badge {
+      position:absolute; top:8px; left:8px; z-index:3;
+      background:var(--pk); border-radius:4px;
+      font-size:9px; font-weight:900; letter-spacing:.8px;
+      padding:2px 6px; display:flex; align-items:center; gap:4px;
+    }
+    .live-badge::before { content:''; width:5px; height:5px; border-radius:50%; background:#fff; animation:livepulse 1.2s ease-in-out infinite; }
+    @keyframes livepulse { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+    .live-viewers { position:absolute; top:8px; right:8px; z-index:3; font-size:9px; font-weight:700; background:rgba(0,0,0,.5); padding:2px 6px; border-radius:4px; }
+    .live-info { position:relative; z-index:3; padding:8px; }
+    .li-user { font-size:11px; font-weight:900; margin-bottom:2px; }
+    .li-title { font-size:10px; color:rgba(255,255,255,.7); line-height:1.3; }
+
+    /* ─── DISCOVER SCREEN ─── */
+    .disc-search-bar {
+      margin:0 16px 16px;
+      background:rgba(255,255,255,.08); border-radius:10px;
+      display:flex; align-items:center; gap:10px; padding:11px 14px;
+      cursor:pointer; border:1px solid rgba(255,255,255,.07);
+    }
+    .disc-search-icon { font-size:16px; opacity:.5; }
+    .disc-search-ph { font-size:14px; color:rgba(255,255,255,.35); font-weight:600; }
+    .disc-section { margin-bottom:22px; }
+    .disc-sec-title { font-size:13px; font-weight:900; letter-spacing:.6px; text-transform:uppercase; color:rgba(255,255,255,.45); padding:0 16px; margin-bottom:10px; }
+    .trend-pills { display:flex; flex-wrap:wrap; gap:7px; padding:0 16px; }
+    .tp {
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
+      border-radius:20px; padding:6px 13px; font-size:13px; font-weight:700;
+      cursor:pointer; transition:background .15s, border-color .15s;
+    }
+    .tp:active { background:rgba(254,44,85,.15); border-color:rgba(254,44,85,.3); }
+    .creator-scroll { display:flex; gap:12px; overflow-x:auto; padding:0 16px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+    .creator-scroll::-webkit-scrollbar { display:none; }
+    .creator-card {
+      display:flex; flex-direction:column; align-items:center; gap:6px;
+      flex-shrink:0; cursor:pointer; width:70px;
+    }
+    .cc-ava {
+      width:58px; height:58px; border-radius:50%; border:2px solid rgba(255,255,255,.15);
+      display:flex; align-items:center; justify-content:center; font-size:28px;
+    }
+    .cc-name { font-size:11px; font-weight:800; text-align:center; line-height:1.2; }
+    .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 16px; }
+    .cat-card {
+      border-radius:10px; padding:16px 12px; font-size:14px; font-weight:900;
+      cursor:pointer; display:flex; align-items:center; gap:7px;
+      transition:transform .15s;
+    }
+    .cat-card:active { transform:scale(.96); }
+
+    /* ─── INBOX SCREEN ─── */
+    .inbox-search {
+      margin:0 16px 16px;
+      background:rgba(255,255,255,.06); border-radius:10px;
+      display:flex; align-items:center; gap:8px; padding:10px 13px;
+      border:1px solid rgba(255,255,255,.07);
+    }
+    .inbox-search-icon { font-size:15px; opacity:.4; }
+    .inbox-search-ph { font-size:14px; color:rgba(255,255,255,.3); font-weight:600; }
+    .convo-list { display:flex; flex-direction:column; }
+    .convo {
+      display:flex; align-items:center; gap:12px;
+      padding:13px 16px; cursor:pointer;
+      transition:background .12s;
+      border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .convo:active { background:rgba(255,255,255,.04); }
+    .convo-ava {
+      width:50px; height:50px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:24px;
+      border:1.5px solid rgba(255,255,255,.1);
+    }
+    .convo-body { flex:1; min-width:0; }
+    .convo-name { font-size:14px; font-weight:800; margin-bottom:3px; display:flex; align-items:center; gap:6px; }
+    .convo-preview { font-size:13px; color:rgba(255,255,255,.45); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .convo.unread .convo-preview { color:rgba(255,255,255,.85); font-weight:700; }
+    .convo-meta { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; }
+    .convo-time { font-size:11px; color:rgba(255,255,255,.3); font-weight:600; }
+    .convo-dot { width:10px; height:10px; border-radius:50%; background:var(--pk); }
+    .convo-vbadge { background:var(--pk); border-radius:50%; width:14px; height:14px; display:flex; align-items:center; justify-content:center; font-size:8px; }
+
+    /* ─── PROFILE SCREEN ─── */
+    .prof-cover {
+      height:180px;
+      background:linear-gradient(135deg,#7B2FBE 0%,#FE2C55 50%,#C9A227 100%);
+      position:relative; flex-shrink:0;
+    }
+    .prof-ava-wrap {
+      position:absolute; bottom:-28px; left:50%; transform:translateX(-50%);
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(135deg,#25F4EE,#7B2FBE);
+      display:flex; align-items:center; justify-content:center; font-size:38px;
+      border:3px solid var(--bg);
+    }
+    .prof-body { padding:40px 16px 0; }
+    .prof-name { font-size:18px; font-weight:900; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:4px; }
+    .prof-handle { font-size:13px; color:rgba(255,255,255,.45); font-weight:700; text-align:center; margin-bottom:8px; }
+    .prof-bio { font-size:13px; color:rgba(255,255,255,.7); text-align:center; line-height:1.5; margin-bottom:16px; }
+    .prof-stats { display:flex; justify-content:center; gap:28px; margin-bottom:16px; }
+    .prof-stat { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .ps-val { font-size:18px; font-weight:900; }
+    .ps-lbl { font-size:11px; color:rgba(255,255,255,.4); font-weight:700; }
+    .prof-btns { display:flex; gap:8px; margin-bottom:20px; }
+    .prof-btn {
+      flex:1; padding:9px; border-radius:6px; font-family:'Nunito',sans-serif;
+      font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;
+    }
+    .prof-btn-edit { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:#fff; }
+    .prof-btn-share { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15); color:#fff; width:40px; flex:none; border-radius:6px; }
+    .post-tabs { display:flex; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:2px; }
+    .pt-tab {
+      flex:1; display:flex; align-items:center; justify-content:center; padding:10px;
+      font-size:18px; cursor:pointer; color:rgba(255,255,255,.3);
+      border-bottom:2px solid transparent; transition:color .2s, border-color .2s;
+    }
+    .pt-tab.on { color:#fff; border-color:#fff; }
+    .post-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+    .pg-tile {
+      aspect-ratio:9/16; border-radius:3px; overflow:hidden;
+      display:flex; align-items:center; justify-content:center; font-size:30px;
+      cursor:pointer; position:relative; transition:transform .15s;
+    }
+    .pg-tile:active { transform:scale(.96); }
+    .pg-views {
+      position:absolute; bottom:4px; left:5px;
+      font-size:11px; font-weight:900; text-shadow:0 1px 4px rgba(0,0,0,.9);
+    }
+
+    /* ═══════════════════════════════════════
+       PANEL OVERLAYS
+    ═══════════════════════════════════════ */
+    .panel-overlay {
+      position:fixed; inset:0; background:var(--bg); z-index:300;
+      transform:translateY(100%); transition:transform .32s cubic-bezier(.4,0,.2,1);
+      overflow-y:auto; -webkit-overflow-scrolling:touch;
+      display:flex; flex-direction:column;
+    }
+    .panel-overlay.open { transform:translateY(0); }
+    .panel-head {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:calc(44px + 6px) 16px 12px;
+      border-bottom:1px solid rgba(255,255,255,.06); flex-shrink:0;
+    }
+    .ph-title { font-size:18px; font-weight:900; }
+    .ph-close { font-size:22px; cursor:pointer; color:rgba(255,255,255,.5); width:34px; height:34px; display:flex; align-items:center; justify-content:center; }
+
+    /* ─── SEARCH PANEL ─── */
+    .ps-input-wrap {
+      display:flex; align-items:center; gap:10px;
+      margin:14px 16px; padding:11px 14px;
+      background:rgba(255,255,255,.08); border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .ps-input-icon { font-size:16px; flex-shrink:0; }
+    .ps-input {
+      background:none; border:none; outline:none; color:#fff;
+      font-family:'Nunito',sans-serif; font-size:15px; font-weight:600;
+      flex:1; width:100%;
+    }
+    .ps-input::placeholder { color:rgba(255,255,255,.3); }
+    .ps-section-title { font-size:12px; font-weight:900; letter-spacing:.7px; text-transform:uppercase; color:rgba(255,255,255,.35); padding:0 16px 10px; }
+    .recent-list { display:flex; flex-direction:column; margin-bottom:22px; }
+    .recent-item {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 16px; cursor:pointer;
+      transition:background .12s;
+    }
+    .recent-item:active { background:rgba(255,255,255,.04); }
+    .ri-left { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; }
+    .ri-icon { font-size:16px; opacity:.5; }
+    .ri-del { font-size:16px; color:rgba(255,255,255,.25); cursor:pointer; padding:4px; }
+    .trend-list { display:flex; flex-direction:column; }
+    .trend-item {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:11px 16px; cursor:pointer; transition:background .12s;
+    }
+    .trend-item:active { background:rgba(255,255,255,.04); }
+    .ti-tag { font-size:14px; font-weight:800; color:var(--tl); }
+    .ti-count { font-size:11px; color:rgba(255,255,255,.3); font-weight:700; }
+
+    /* ─── NOTIF PANEL ─── */
+    .pn-tabs { display:flex; border-bottom:1px solid rgba(255,255,255,.07); padding:0 12px; flex-shrink:0; }
+    .pn-tab {
+      padding:10px 12px; font-size:13px; font-weight:800;
+      color:rgba(255,255,255,.4); cursor:pointer; border-bottom:2px solid transparent;
+      transition:color .2s, border-color .2s; white-space:nowrap;
+    }
+    .pn-tab.on { color:#fff; border-color:#fff; }
+    .notif-list { display:flex; flex-direction:column; flex:1; }
+    .notif-item {
+      display:flex; align-items:center; gap:12px;
+      padding:13px 16px; cursor:pointer; transition:background .12s;
+      border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .notif-item:active { background:rgba(255,255,255,.04); }
+    .ni-ava {
+      width:42px; height:42px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:20px;
+    }
+    .ni-body { flex:1; min-width:0; }
+    .ni-text { font-size:13px; line-height:1.4; }
+    .ni-text b { font-weight:900; }
+    .ni-time { font-size:11px; color:rgba(255,255,255,.3); font-weight:600; margin-top:2px; }
+    .ni-thumb { width:38px; height:48px; border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:20px; }
+
+    /* ═══════════════════════════════════════
+       DIMMER
+    ═══════════════════════════════════════ */
+    .dimmer {
+      position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:400;
+      display:none; backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px);
+    }
+    .dimmer.show { display:block; }
+
+    /* ═══════════════════════════════════════
+       BOTTOM SHEETS
+    ═══════════════════════════════════════ */
+    .bottom-sheet {
+      position:fixed; bottom:0; left:50%; transform:translateX(-50%) translateY(100%);
+      width:100%; max-width:430px;
+      background:#181818; border-radius:20px 20px 0 0;
+      z-index:500; transition:transform .32s cubic-bezier(.4,0,.2,1);
+      max-height:85dvh; display:flex; flex-direction:column;
+    }
+    .bottom-sheet.open { transform:translateX(-50%) translateY(0); }
+    .sh-handle { width:40px; height:4px; background:rgba(255,255,255,.18); border-radius:2px; margin:10px auto 0; flex-shrink:0; }
+    .sh-head {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px 10px; border-bottom:1px solid rgba(255,255,255,.07); flex-shrink:0;
+    }
+    .sh-title { font-size:15px; font-weight:900; }
+    .sh-close { font-size:20px; cursor:pointer; color:rgba(255,255,255,.4); width:30px; height:30px; display:flex; align-items:center; justify-content:center; }
+
+    /* ─── COMMENTS ─── */
+    .cmt-list { flex:1; overflow-y:auto; padding:4px 0; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .cmt-list::-webkit-scrollbar { display:none; }
+    .cmt-item { display:flex; gap:11px; padding:11px 16px; }
+    .cmt-item.cmt-new { background:rgba(37,244,238,.04); animation:cmtfade .3s ease; }
+    @keyframes cmtfade { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+    .cmt-ava { width:36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .cmt-content { flex:1; min-width:0; }
+    .cmt-user { font-size:12px; font-weight:900; margin-bottom:3px; display:flex; align-items:center; gap:6px; }
+    .cmt-time { font-size:11px; color:rgba(255,255,255,.3); font-weight:600; }
+    .cmt-you { background:var(--tl); color:#000; font-size:9px; font-weight:900; padding:1px 5px; border-radius:3px; letter-spacing:.4px; }
+    .cmt-text { font-size:14px; line-height:1.4; color:rgba(255,255,255,.9); margin-bottom:5px; }
+    .cmt-like-row { display:flex; align-items:center; gap:14px; }
+    .cmt-like-btn {
+      display:flex; align-items:center; gap:5px;
+      font-size:12px; color:rgba(255,255,255,.4); cursor:pointer; font-weight:700;
+    }
+    .cmt-like-btn.liked { color:var(--pk); }
+    .cmt-reply { font-size:12px; color:rgba(255,255,255,.35); cursor:pointer; font-weight:700; }
+    .cmt-input-row {
+      display:flex; align-items:center; gap:10px;
+      padding:10px 14px calc(max(14px,env(safe-area-inset-bottom,14px)));
+      border-top:1px solid rgba(255,255,255,.07); flex-shrink:0;
+    }
+    .cmt-my-ava { width:32px; height:32px; border-radius:50%; background:var(--tl); color:#000; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .cmt-inp {
+      flex:1; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1);
+      border-radius:20px; padding:8px 14px; color:#fff; font-family:'Nunito',sans-serif;
+      font-size:14px; outline:none;
+    }
+    .cmt-inp::placeholder { color:rgba(255,255,255,.3); }
+    .cmt-send {
+      width:36px; height:36px; border-radius:50%; background:var(--pk);
+      border:none; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+
+    /* ─── SHARE SHEET ─── */
+    .share-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px 8px; padding:14px 16px 8px; }
+    .share-item {
+      display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer;
+      transition:transform .12s;
+    }
+    .share-item:active { transform:scale(.9); }
+    .si-icon {
+      width:54px; height:54px; border-radius:14px;
+      display:flex; align-items:center; justify-content:center; font-size:26px;
+    }
+    .si-label { font-size:11px; font-weight:700; text-align:center; line-height:1.2; color:rgba(255,255,255,.8); }
+    .share-divider { height:1px; background:rgba(255,255,255,.06); margin:0 16px 4px; }
+    .share-row-items { display:flex; flex-direction:column; }
+    .share-row-item {
+      display:flex; align-items:center; gap:14px; padding:13px 16px; cursor:pointer; transition:background .12s;
+    }
+    .share-row-item:active { background:rgba(255,255,255,.04); }
+    .sri-icon { font-size:20px; width:24px; text-align:center; }
+    .sri-label { font-size:14px; font-weight:700; }
+    .sheet-pb { height:max(16px,env(safe-area-inset-bottom,16px)); flex-shrink:0; }
+
+    /* ─── CREATE SHEET ─── */
+    .create-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px 8px; padding:16px; }
+    .create-item {
+      display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;
+      transition:transform .12s;
+    }
+    .create-item:active { transform:scale(.93); }
+    .ci-icon {
+      width:68px; height:68px; border-radius:18px;
+      display:flex; align-items:center; justify-content:center; font-size:32px;
+    }
+    .ci-label { font-size:12px; font-weight:800; }
+    .create-footer { text-align:center; padding:4px 16px 0; font-size:11px; color:rgba(255,255,255,.2); font-style:italic; }
+
+    /* ═══════════════════════════════════════
+       TOAST
+    ═══════════════════════════════════════ */
+    .toast {
+      position:fixed; bottom:calc(72px + env(safe-area-inset-bottom,0px) + 12px);
+      left:50%; transform:translateX(-50%) translateY(12px);
+      background:rgba(30,30,30,.96); border:1px solid rgba(255,255,255,.1);
+      color:#fff; font-size:13px; font-weight:700;
+      padding:10px 18px; border-radius:22px; z-index:600;
+      opacity:0; pointer-events:none;
+      transition:opacity .22s ease, transform .22s ease;
+      white-space:nowrap; max-width:90%;
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ─── TOP NAV ─── -->
+  <header class="top-nav">
+    <div class="nav-btn">☰</div>
+    <div class="logo"><span class="pk">Ticke</span><span class="tl">lish</span>&nbsp;Shmock</div>
+    <div class="nav-icons">
+      <div class="nav-btn" onclick="openPanel('panel-search')">🔍</div>
+      <div class="nav-btn" onclick="openPanel('panel-notif')">
+        🔔
+        <span class="bell-badge" id="bellBadge">7</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── TAB BAR ─── -->
+  <div class="tab-bar" id="tabBar">
+    <div class="tab" onclick="switchTab(this,'following')">Following</div>
+    <div class="tab on" onclick="switchTab(this,'foryou')">For You</div>
+    <div class="tab" onclick="switchTab(this,'live')">🔴 LIVE</div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       FEED (HOME)
+  ═══════════════════════════════════ -->
+  <div class="feed">
+
+    <!-- POST 1: @cheesewizard99 -->
+    <div class="card" style="background:linear-gradient(145deg,#6C52D9 0%,#C84B9E 100%)">
+      <div class="bg-emoji">🍇</div>
+      <div class="overlay"></div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-user">@cheesewizard99 <span class="vbadge">✓</span></div>
+          <div class="caption">POV: you are a grape and someone just called you "basically a raisin" 💀</div>
+          <div class="tags"><span>#fyp</span><span>#grape</span><span>#existentialcrisis</span><span>#fruit</span></div>
+          <div class="sound-row"><div class="disc">♫</div><span class="sound-name">original sound – cheesewizard99</span></div>
+        </div>
+        <div class="actions">
+          <div class="a-ava-wrap" onclick="toggleFollow(this)">
+            <div class="a-ava" style="background:#6C52D9">🧀</div>
+            <div class="a-ava-plus">+</div>
+          </div>
+          <div class="a-btn heart-btn" onclick="toggleHeart(this)"><div class="a-circle">🤍</div><span class="a-count">1.2M</span></div>
+          <div class="a-btn" onclick="openSheet('comments',0)"><div class="a-circle">💬</div><span class="a-count">89.4K</span></div>
+          <div class="a-btn" onclick="openSheet('share')"><div class="a-circle">📤</div><span class="a-count">44.2K</span></div>
+          <div class="a-btn" onclick="toggleBookmark(this)"><div class="a-circle">🔖</div><span class="a-count">21.1K</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 2: @plantmom_extreme -->
+    <div class="card" style="background:linear-gradient(145deg,#1A3A2A 0%,#3D8B5E 100%)">
+      <div class="bg-emoji">🌿</div>
+      <div class="overlay"></div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-user">@plantmom_extreme</div>
+          <div class="caption">Update: my fern died so I gave it a 5-star Yelp review. "Tried its best. Never once complained about the watering situation. Would grow again." 47 people found this helpful.</div>
+          <div class="tags"><span>#plantsoftiktok</span><span>#rip</span><span>#fyp</span><span>#yelp</span></div>
+          <div class="sound-row"><div class="disc">♫</div><span class="sound-name">my plant's last breath (slowed + reverb)</span></div>
+        </div>
+        <div class="actions">
+          <div class="a-ava-wrap" onclick="toggleFollow(this)">
+            <div class="a-ava" style="background:#2D6A4F">🌱</div>
+            <div class="a-ava-plus">+</div>
+          </div>
+          <div class="a-btn heart-btn" onclick="toggleHeart(this)"><div class="a-circle">🤍</div><span class="a-count">847K</span></div>
+          <div class="a-btn" onclick="openSheet('comments',1)"><div class="a-circle">💬</div><span class="a-count">23.1K</span></div>
+          <div class="a-btn" onclick="openSheet('share')"><div class="a-circle">📤</div><span class="a-count">12.8K</span></div>
+          <div class="a-btn" onclick="toggleBookmark(this)"><div class="a-circle">🔖</div><span class="a-count">9.3K</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AD: ODDLY CARS -->
+    <div class="card ad-oddly">
+      <div class="spons">Sponsored</div>
+      <div class="star-field" id="stars"></div>
+      <div class="oddly-rings">
+        <div class="o-ring" style="width:220px;height:220px"></div>
+        <div class="o-ring" style="width:330px;height:330px"></div>
+        <div class="o-ring" style="width:440px;height:440px"></div>
+      </div>
+      <div class="oddly-visual"><span class="oddly-car">🚗</span></div>
+      <div class="overlay"></div>
+      <div class="oddly-bot">
+        <div class="o-eye">Oddly Cars &nbsp;·&nbsp; 2026</div>
+        <div class="o-title">ODDLY<br>AUTONOMUS</div>
+        <div class="o-tag">"It drives itself. Most of the time."</div>
+        <div class="o-feats">
+          <div class="o-feat">Self-parking in legal spaces (usually)</div>
+          <div class="o-feat">Lane-keeping that asks the lane's permission first</div>
+          <div class="o-feat">Auto-brakes for pedestrians, cyclists, and "interesting clouds"</div>
+          <div class="o-feat">Pulls over at duck ponds to "think." Engineers say this is normal.</div>
+          <div class="o-feat">Horn plays Für Elise as a formal apology</div>
+        </div>
+        <div class="o-row">
+          <div><div class="o-price-lbl">Starting at</div><div class="o-price-val">$47,999</div></div>
+          <button class="o-cta" onclick="showToast('Opening Oddly Cars configurator... 🚗')">Configure Your Oddly</button>
+        </div>
+        <div class="o-fine">Oddly Cars Inc. is not responsible for philosophical detours, unauthorized duck pond visits, or the vehicle developing opinions about your music. "Drive Odd." ™</div>
+      </div>
+    </div>
+
+    <!-- POST 3: @blobfish_stan -->
+    <div class="card" style="background:linear-gradient(145deg,#023E8A 0%,#0096C7 100%)">
+      <div class="bg-emoji">🪑</div>
+      <div class="overlay"></div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-user">@blobfish_stan <span class="vbadge">✓</span></div>
+          <div class="caption">I ranked every piece of furniture by how it would do in a street fight. THE OTTOMAN WON. Reason: nobody ever sees it coming. The armchair is still in denial.</div>
+          <div class="tags"><span>#ottoman</span><span>#furniture</span><span>#streetfight</span><span>#fyp</span></div>
+          <div class="sound-row"><div class="disc">♫</div><span class="sound-name">Eye of the Tiger (furniture cover)</span></div>
+        </div>
+        <div class="actions">
+          <div class="a-ava-wrap" onclick="toggleFollow(this)">
+            <div class="a-ava" style="background:#023E8A">🐟</div>
+            <div class="a-ava-plus">+</div>
+          </div>
+          <div class="a-btn heart-btn" onclick="toggleHeart(this)"><div class="a-circle">🤍</div><span class="a-count">2.1M</span></div>
+          <div class="a-btn" onclick="openSheet('comments',2)"><div class="a-circle">💬</div><span class="a-count">156K</span></div>
+          <div class="a-btn" onclick="openSheet('share')"><div class="a-circle">📤</div><span class="a-count">98.3K</span></div>
+          <div class="a-btn" onclick="toggleBookmark(this)"><div class="a-circle">🔖</div><span class="a-count">41.7K</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 4: @grandmaglitch -->
+    <div class="card" style="background:linear-gradient(145deg,#A4133C 0%,#FF6B9D 100%)">
+      <div class="bg-emoji">📱</div>
+      <div class="overlay"></div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-user">@grandmaglitch <span class="vbadge">✓</span></div>
+          <div class="caption">accidentally texted my landlord "i love you" instead of "i love tuesday" (it's rent day). he replied "thank you" and lowered my rent $50. we have not spoken about this. it has been six months.</div>
+          <div class="tags"><span>#storytime</span><span>#landlord</span><span>#rent</span><span>#fyp</span></div>
+          <div class="sound-row"><div class="disc">♫</div><span class="sound-name">soft piano for accidental confessions</span></div>
+        </div>
+        <div class="actions">
+          <div class="a-ava-wrap" onclick="toggleFollow(this)">
+            <div class="a-ava" style="background:#880E4F">👵</div>
+            <div class="a-ava-plus">+</div>
+          </div>
+          <div class="a-btn heart-btn" onclick="toggleHeart(this)"><div class="a-circle">🤍</div><span class="a-count">3.4M</span></div>
+          <div class="a-btn" onclick="openSheet('comments',3)"><div class="a-circle">💬</div><span class="a-count">211K</span></div>
+          <div class="a-btn" onclick="openSheet('share')"><div class="a-circle">📤</div><span class="a-count">177K</span></div>
+          <div class="a-btn" onclick="toggleBookmark(this)"><div class="a-circle">🔖</div><span class="a-count">88.4K</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AD: INVISOCKS -->
+    <div class="card ad-invis">
+      <div class="spons">Sponsored</div>
+      <div class="invis-visual">
+        <span class="invis-sock">🧦</span>
+        <div class="invis-hint">(they're here. we promise.)</div>
+      </div>
+      <div class="overlay"></div>
+      <div class="invis-bot">
+        <div class="i-eye">InvisiSocks™</div>
+        <div class="i-title">You can't see these socks.</div>
+        <div class="i-sub">Because they are invisible.</div>
+        <div class="i-copy">We've been a sock company for 14 years. This is our first product.<br>Made from 100% certified invisible material.<br>Warmth: subjective. Visibility: none. Returns: complicated.</div>
+        <button class="i-btn" onclick="showToast('Finding your invisible socks... 🧦')">Find Your Socks &nbsp;(you won't)</button>
+      </div>
+    </div>
+
+    <!-- POST 5: @toiletbrain -->
+    <div class="card" style="background:linear-gradient(145deg,#03045E 0%,#0077B6 100%)">
+      <div class="bg-emoji">🌕</div>
+      <div class="overlay"></div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-user">@toiletbrain</div>
+          <div class="caption">the moon is fake. I examined it with my dad's binoculars and there was a loading bar on it. it's been at 14% for three weeks now. nobody will discuss this with me.</div>
+          <div class="tags"><span>#moon</span><span>#conspiracy</span><span>#14percent</span><span>#fyp</span></div>
+          <div class="sound-row"><div class="disc">♫</div><span class="sound-name">moonlight (doesn't actually exist)</span></div>
+        </div>
+        <div class="actions">
+          <div class="a-ava-wrap" onclick="toggleFollow(this)">
+            <div class="a-ava" style="background:#023E8A">🚽</div>
+            <div class="a-ava-plus">+</div>
+          </div>
+          <div class="a-btn heart-btn" onclick="toggleHeart(this)"><div class="a-circle">🤍</div><span class="a-count">567K</span></div>
+          <div class="a-btn" onclick="openSheet('comments',4)"><div class="a-circle">💬</div><span class="a-count">99.2K</span></div>
+          <div class="a-btn" onclick="openSheet('share')"><div class="a-circle">📤</div><span class="a-count">33.4K</span></div>
+          <div class="a-btn" onclick="toggleBookmark(this)"><div class="a-circle">🔖</div><span class="a-count">14.0K</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 6: @horsemath -->
+    <div class="card" style="background:linear-gradient(145deg,#2D6A4F 0%,#74C69D 100%)">
+      <div class="bg-emoji">🐴</div>
+      <div class="overlay"></div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-user">@horsemath <span class="vbadge">✓</span></div>
+          <div class="caption">a horse walked into a bar. the horse ordered a water. the horse paid with a hoof. the bartender gave exact change. this is everything i know about economics.</div>
+          <div class="tags"><span>#horse</span><span>#economics</span><span>#finance</span><span>#fyp</span></div>
+          <div class="sound-row"><div class="disc">♫</div><span class="sound-name">trot to the beat (feat. Neighbridge)</span></div>
+        </div>
+        <div class="actions">
+          <div class="a-ava-wrap" onclick="toggleFollow(this)">
+            <div class="a-ava" style="background:#52B788">🐎</div>
+            <div class="a-ava-plus">+</div>
+          </div>
+          <div class="a-btn heart-btn" onclick="toggleHeart(this)"><div class="a-circle">🤍</div><span class="a-count">4.8M</span></div>
+          <div class="a-btn" onclick="openSheet('comments',5)"><div class="a-circle">💬</div><span class="a-count">302K</span></div>
+          <div class="a-btn" onclick="openSheet('share')"><div class="a-circle">📤</div><span class="a-count">451K</span></div>
+          <div class="a-btn" onclick="toggleBookmark(this)"><div class="a-circle">🔖</div><span class="a-count">127K</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .feed -->
+
+  <!-- ═══════════════════════════════════
+       SCREEN: LIVE
+  ═══════════════════════════════════ -->
+  <div id="screen-live" class="screen">
+    <div class="live-intro">4 streams live now</div>
+    <div class="live-grid">
+      <div class="live-card" onclick="showToast('🎣 Joining @fisherman_mc...')" style="background:linear-gradient(145deg,#023E8A,#00B4D8)">
+        <div class="live-bg-emoji">🎣</div>
+        <div class="live-grad"></div>
+        <div class="live-badge">LIVE</div>
+        <div class="live-viewers">4.2K 👁</div>
+        <div class="live-info"><div class="li-user">@fisherman_mc</div><div class="li-title">Asking fish for financial advice (day 12)</div></div>
+      </div>
+      <div class="live-card" onclick="showToast('🛋️ Joining @couch_scientist...')" style="background:linear-gradient(145deg,#4A1942,#D63AF9)">
+        <div class="live-bg-emoji">🛋️</div>
+        <div class="live-grad"></div>
+        <div class="live-badge">LIVE</div>
+        <div class="live-viewers">891 👁</div>
+        <div class="live-info"><div class="li-user">@couch_scientist</div><div class="li-title">Is lying down exercise? Live study, hour 3</div></div>
+      </div>
+      <div class="live-card" onclick="showToast('🍞 Joining @breadtuber...')" style="background:linear-gradient(145deg,#7B3F00,#C9A227)">
+        <div class="live-bg-emoji">🍞</div>
+        <div class="live-grad"></div>
+        <div class="live-badge">LIVE</div>
+        <div class="live-viewers">12.1K 👁</div>
+        <div class="live-info"><div class="li-user">@breadtuber</div><div class="li-title">baking bread with no flour. please send help.</div></div>
+      </div>
+      <div class="live-card" onclick="showToast('🐈 Joining @philosophical_cat...')" style="background:linear-gradient(145deg,#1A1A2E,#4A4E69)">
+        <div class="live-bg-emoji">🐈</div>
+        <div class="live-grad"></div>
+        <div class="live-badge">LIVE</div>
+        <div class="live-viewers">28.4K 👁</div>
+        <div class="live-info"><div class="li-user">@philosophical_cat</div><div class="li-title">cat watches wall. hour 6. no commentary.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN: DISCOVER
+  ═══════════════════════════════════ -->
+  <div id="screen-discover" class="screen">
+    <div class="scr-head">
+      <div class="scr-title">Discover</div>
+      <div class="scr-action">🎲</div>
+    </div>
+    <div style="height:14px"></div>
+    <div class="disc-search-bar" onclick="openPanel('panel-search')">
+      <span class="disc-search-icon">🔍</span>
+      <span class="disc-search-ph">Search accounts, sounds, videos</span>
+    </div>
+    <div class="disc-section">
+      <div class="disc-sec-title">🔥 Trending</div>
+      <div class="trend-pills">
+        <div class="tp" onclick="searchFor('#OttomanChampionship')">#OttomanChampionship</div>
+        <div class="tp" onclick="searchFor('#MoonLoading')">#MoonLoading</div>
+        <div class="tp" onclick="searchFor('#GrapeRaisinGate')">#GrapeRaisinGate</div>
+        <div class="tp" onclick="searchFor('#InvisiSocksFound')">#InvisiSocksFound</div>
+        <div class="tp" onclick="searchFor('#BreadCrisis')">#BreadCrisis</div>
+        <div class="tp" onclick="searchFor('#HoofChange')">#HoofChange</div>
+        <div class="tp" onclick="searchFor('#DuckPondStop')">#DuckPondStop</div>
+      </div>
+    </div>
+    <div class="disc-section">
+      <div class="disc-sec-title">⭐ Hot Creators</div>
+      <div class="creator-scroll">
+        <div class="creator-card" onclick="showToast('Viewing @horsemath 🐎')"><div class="cc-ava" style="background:#52B788">🐎</div><div class="cc-name">@horsemath</div></div>
+        <div class="creator-card" onclick="showToast('Viewing @cheesewizard99 🧀')"><div class="cc-ava" style="background:#6C52D9">🧀</div><div class="cc-name">@cheesewizard99</div></div>
+        <div class="creator-card" onclick="showToast('Viewing @grandmaglitch 👵')"><div class="cc-ava" style="background:#880E4F">👵</div><div class="cc-name">@grandmaglitch</div></div>
+        <div class="creator-card" onclick="showToast('Viewing @blobfish_stan 🐟')"><div class="cc-ava" style="background:#023E8A">🐟</div><div class="cc-name">@blobfish_stan</div></div>
+        <div class="creator-card" onclick="showToast('Viewing @toiletbrain 🚽')"><div class="cc-ava" style="background:#03045E">🚽</div><div class="cc-name">@toiletbrain</div></div>
+        <div class="creator-card" onclick="showToast('Viewing @plantmom_extreme 🌱')"><div class="cc-ava" style="background:#2D6A4F">🌱</div><div class="cc-name">@plantmom_extreme</div></div>
+      </div>
+    </div>
+    <div class="disc-section">
+      <div class="disc-sec-title">📁 Categories</div>
+      <div class="cat-grid">
+        <div class="cat-card" style="background:linear-gradient(135deg,#FF6B6B,#FF8E53)" onclick="showToast('Browsing: Comedy 😂')">😂 Comedy</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#2D6A4F,#74C69D)" onclick="showToast('Browsing: Plants 🌿')">🌿 Plants</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#050510,#C9A227)" onclick="showToast('Browsing: Cars 🚗')">🚗 Cars</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#FF6B9D,#C9184A)" onclick="showToast('Browsing: Food 🍕')">🍕 Food</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#023E8A,#0096C7)" onclick="showToast('Browsing: Animals 🐾')">🐾 Animals</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#03045E,#7B2FBE)" onclick="showToast('Browsing: Conspiracy 🌀')">🌀 Conspiracy</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#7B2FBE,#FE2C55)" onclick="showToast('Browsing: Fashion 👗')">👗 Fashion</div>
+        <div class="cat-card" style="background:linear-gradient(135deg,#C9A227,#FF6B9D)" onclick="showToast('Browsing: Life ✨')">✨ Life</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN: INBOX
+  ═══════════════════════════════════ -->
+  <div id="screen-inbox" class="screen">
+    <div class="scr-head">
+      <div class="scr-title">Inbox</div>
+      <div class="scr-action" onclick="showToast('New message coming soon ✏️')">✏️</div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="inbox-search">
+      <span class="inbox-search-icon">🔍</span>
+      <span class="inbox-search-ph">Search messages</span>
+    </div>
+    <div class="convo-list">
+      <div class="convo unread" onclick="openConvo('@horsemath','🐎','the hoof IS the new bitcoin and i have proof')">
+        <div class="convo-ava" style="background:#2D6A4F">🐎</div>
+        <div class="convo-body">
+          <div class="convo-name">@horsemath <span class="convo-vbadge">✓</span></div>
+          <div class="convo-preview">the hoof IS the new bitcoin and i have proof</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">2m</div><div class="convo-dot"></div></div>
+      </div>
+      <div class="convo unread" onclick="openConvo('@cheesewizard99','🧀','UPDATE: the grape lawyer called. we have a case.')">
+        <div class="convo-ava" style="background:#6C52D9">🧀</div>
+        <div class="convo-body">
+          <div class="convo-name">@cheesewizard99 <span class="convo-vbadge">✓</span></div>
+          <div class="convo-preview">UPDATE: the grape lawyer called. we have a case.</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">14m</div><div class="convo-dot"></div></div>
+      </div>
+      <div class="convo" onclick="openConvo('@blobfish_stan','🐟','ottoman is training. be afraid.')">
+        <div class="convo-ava" style="background:#023E8A">🐟</div>
+        <div class="convo-body">
+          <div class="convo-name">@blobfish_stan <span class="convo-vbadge">✓</span></div>
+          <div class="convo-preview">ottoman is training. be afraid.</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">1h</div></div>
+      </div>
+      <div class="convo" onclick="openConvo('@grandmaglitch','👵','we still haven't spoken. landlord says hi tho.')">
+        <div class="convo-ava" style="background:#880E4F">👵</div>
+        <div class="convo-body">
+          <div class="convo-name">@grandmaglitch <span class="convo-vbadge">✓</span></div>
+          <div class="convo-preview">we still haven't spoken. landlord says hi tho.</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">3h</div></div>
+      </div>
+      <div class="convo" onclick="openConvo('OddlyCars™','🚗','Your Oddly is thinking about ducks again. This is normal.')">
+        <div class="convo-ava" style="background:#070E18; border-color:rgba(201,162,39,.4)">🚗</div>
+        <div class="convo-body">
+          <div class="convo-name">OddlyCars™</div>
+          <div class="convo-preview">Your Oddly is thinking about ducks again. This is normal.</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">1d</div></div>
+      </div>
+      <div class="convo" onclick="openConvo('InvisiSocks™','🧦','[message is invisible]')">
+        <div class="convo-ava" style="background:#111">🧦</div>
+        <div class="convo-body">
+          <div class="convo-name">InvisiSocks™</div>
+          <div class="convo-preview" style="font-style:italic;color:rgba(255,255,255,.22)">[message is invisible]</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">2d</div></div>
+      </div>
+      <div class="convo" onclick="openConvo('@toiletbrain','🚽','it went to 17%. i am not okay.')">
+        <div class="convo-ava" style="background:#03045E">🚽</div>
+        <div class="convo-body">
+          <div class="convo-name">@toiletbrain</div>
+          <div class="convo-preview">it went to 17%. i am not okay.</div>
+        </div>
+        <div class="convo-meta"><div class="convo-time">3d</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SCREEN: PROFILE
+  ═══════════════════════════════════ -->
+  <div id="screen-profile" class="screen">
+    <div class="scr-head">
+      <div class="scr-title">Profile</div>
+      <div class="scr-action" onclick="showToast('Options coming soon ⚙️')">⋯</div>
+    </div>
+    <div class="prof-cover">
+      <div class="prof-ava-wrap">🦋</div>
+    </div>
+    <div class="prof-body">
+      <div class="prof-name">shmockmaster <span class="vbadge">✓</span></div>
+      <div class="prof-handle">@shmockmaster</div>
+      <div class="prof-bio">probably a person. scrolling as a lifestyle. 🌀</div>
+      <div class="prof-stats">
+        <div class="prof-stat"><div class="ps-val">847</div><div class="ps-lbl">Following</div></div>
+        <div class="prof-stat"><div class="ps-val">12.4K</div><div class="ps-lbl">Followers</div></div>
+        <div class="prof-stat"><div class="ps-val">284.5K</div><div class="ps-lbl">Likes</div></div>
+      </div>
+      <div class="prof-btns">
+        <button class="prof-btn prof-btn-edit" onclick="showToast('Profile editing coming soon ✏️')">✏️ Edit Profile</button>
+        <button class="prof-btn prof-btn-share" onclick="showToast('Profile link copied! 🔗')">🔗</button>
+      </div>
+      <div class="post-tabs">
+        <div class="pt-tab on" onclick="switchPostTab(this)">⊞</div>
+        <div class="pt-tab" onclick="switchPostTab(this)">♡</div>
+        <div class="pt-tab" onclick="switchPostTab(this)">🔒</div>
+      </div>
+      <div class="post-grid" style="margin-top:2px">
+        <div class="pg-tile" style="background:linear-gradient(145deg,#6C52D9,#C84B9E)" onclick="showToast('Viewing post 🍇')">🍇<div class="pg-views">1.2M</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#1A3A2A,#3D8B5E)" onclick="showToast('Viewing post 🌿')">🌿<div class="pg-views">847K</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#A4133C,#FF6B9D)" onclick="showToast('Viewing post 📱')">📱<div class="pg-views">3.4M</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#023E8A,#0096C7)" onclick="showToast('Viewing post 🛋️')">🛋️<div class="pg-views">2.1M</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#03045E,#0077B6)" onclick="showToast('Viewing post 🌕')">🌕<div class="pg-views">567K</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#2D6A4F,#74C69D)" onclick="showToast('Viewing post 🐎')">🐎<div class="pg-views">4.8M</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#7B3F00,#C9A227)" onclick="showToast('Viewing post 🍞')">🍞<div class="pg-views">209K</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#4A1942,#D63AF9)" onclick="showToast('Viewing post 🛋️')">🛋️<div class="pg-views">88K</div></div>
+        <div class="pg-tile" style="background:linear-gradient(145deg,#1A1A2E,#4A4E69)" onclick="showToast('Viewing post 🐈')">🐈<div class="pg-views">44K</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       PANEL: SEARCH
+  ═══════════════════════════════════ -->
+  <div id="panel-search" class="panel-overlay">
+    <div class="panel-head">
+      <div class="ph-title">Search</div>
+      <div class="ph-close" onclick="closePanel('panel-search')">✕</div>
+    </div>
+    <div class="ps-input-wrap">
+      <span class="ps-input-icon">🔍</span>
+      <input class="ps-input" id="psInput" placeholder="Search Tickelish Shmock..." autocomplete="off">
+    </div>
+    <div class="ps-section-title">Recent Searches</div>
+    <div class="recent-list">
+      <div class="recent-item" onclick="searchFor('#GrapeRaisinGate')">
+        <div class="ri-left"><span class="ri-icon">🕐</span>#GrapeRaisinGate</div>
+        <div class="ri-del" onclick="event.stopPropagation();this.closest('.recent-item').remove()">✕</div>
+      </div>
+      <div class="recent-item" onclick="searchFor('@horsemath')">
+        <div class="ri-left"><span class="ri-icon">🕐</span>@horsemath</div>
+        <div class="ri-del" onclick="event.stopPropagation();this.closest('.recent-item').remove()">✕</div>
+      </div>
+      <div class="recent-item" onclick="searchFor('ottoman championship')">
+        <div class="ri-left"><span class="ri-icon">🕐</span>ottoman championship</div>
+        <div class="ri-del" onclick="event.stopPropagation();this.closest('.recent-item').remove()">✕</div>
+      </div>
+      <div class="recent-item" onclick="searchFor('invisible socks')">
+        <div class="ri-left"><span class="ri-icon">🕐</span>invisible socks</div>
+        <div class="ri-del" onclick="event.stopPropagation();this.closest('.recent-item').remove()">✕</div>
+      </div>
+    </div>
+    <div class="ps-section-title">Trending Now</div>
+    <div class="trend-list">
+      <div class="trend-item" onclick="searchFor('#OttomanChampionship')"><span class="ti-tag">#OttomanChampionship</span><span class="ti-count">2.4M posts</span></div>
+      <div class="trend-item" onclick="searchFor('#MoonLoading')"><span class="ti-tag">#MoonLoading</span><span class="ti-count">1.1M posts</span></div>
+      <div class="trend-item" onclick="searchFor('#GrapeRaisinGate')"><span class="ti-tag">#GrapeRaisinGate</span><span class="ti-count">887K posts</span></div>
+      <div class="trend-item" onclick="searchFor('#BreadCrisis')"><span class="ti-tag">#BreadCrisis</span><span class="ti-count">422K posts</span></div>
+      <div class="trend-item" onclick="searchFor('#HoofChange')"><span class="ti-tag">#HoofChange</span><span class="ti-count">319K posts</span></div>
+      <div class="trend-item" onclick="searchFor('#DuckPondStop')"><span class="ti-tag">#DuckPondStop</span><span class="ti-count">144K posts</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       PANEL: NOTIFICATIONS
+  ═══════════════════════════════════ -->
+  <div id="panel-notif" class="panel-overlay">
+    <div class="panel-head">
+      <div class="ph-title">Notifications</div>
+      <div class="ph-close" onclick="closePanel('panel-notif')">✕</div>
+    </div>
+    <div class="pn-tabs">
+      <div class="pn-tab on" onclick="filterNotif(this,'all')">All</div>
+      <div class="pn-tab" onclick="filterNotif(this,'like')">Likes</div>
+      <div class="pn-tab" onclick="filterNotif(this,'comment')">Comments</div>
+      <div class="pn-tab" onclick="filterNotif(this,'follow')">New Followers</div>
+    </div>
+    <div class="notif-list">
+      <div class="notif-item" data-type="like">
+        <div class="ni-ava" style="background:#6C52D9">🧀</div>
+        <div class="ni-body"><div class="ni-text"><b>@cheesewizard99</b> liked your comment about the grape situation</div><div class="ni-time">2m ago</div></div>
+        <div class="ni-thumb" style="background:linear-gradient(145deg,#6C52D9,#C84B9E)">🍇</div>
+      </div>
+      <div class="notif-item" data-type="follow">
+        <div class="ni-ava" style="background:#52B788">🐎</div>
+        <div class="ni-body"><div class="ni-text"><b>@horsemath</b> started following you</div><div class="ni-time">14m ago</div></div>
+        <div class="ni-thumb" style="background:transparent;font-size:28px">🐎</div>
+      </div>
+      <div class="notif-item" data-type="comment">
+        <div class="ni-ava" style="background:#023E8A">🐟</div>
+        <div class="ni-body"><div class="ni-text"><b>@blobfish_stan</b> replied: "the ottoman sends its regards"</div><div class="ni-time">1h ago</div></div>
+        <div class="ni-thumb" style="background:linear-gradient(145deg,#023E8A,#0096C7)">🪑</div>
+      </div>
+      <div class="notif-item" data-type="like">
+        <div class="ni-ava" style="background:#880E4F">👵</div>
+        <div class="ni-body"><div class="ni-text"><b>@grandmaglitch</b> and <b>12.3K others</b> liked your post</div><div class="ni-time">3h ago</div></div>
+        <div class="ni-thumb" style="background:linear-gradient(145deg,#A4133C,#FF6B9D)">📱</div>
+      </div>
+      <div class="notif-item" data-type="follow">
+        <div class="ni-ava" style="background:#2D6A4F">🌱</div>
+        <div class="ni-body"><div class="ni-text"><b>@plantmom_extreme</b> started following you</div><div class="ni-time">5h ago</div></div>
+        <div class="ni-thumb" style="background:transparent;font-size:28px">🌱</div>
+      </div>
+      <div class="notif-item" data-type="comment">
+        <div class="ni-ava" style="background:#03045E">🚽</div>
+        <div class="ni-body"><div class="ni-text"><b>@toiletbrain</b> replied: "it's at 17% now. things are escalating."</div><div class="ni-time">8h ago</div></div>
+        <div class="ni-thumb" style="background:linear-gradient(145deg,#03045E,#0077B6)">🌕</div>
+      </div>
+      <div class="notif-item" data-type="like">
+        <div class="ni-ava" style="background:#070E18;border:1px solid rgba(201,162,39,.3)">🚗</div>
+        <div class="ni-body"><div class="ni-text"><b>OddlyCars™</b> liked your comment about ducks</div><div class="ni-time">1d ago</div></div>
+        <div class="ni-thumb" style="background:linear-gradient(145deg,#05050E,#0D0C22)">🚗</div>
+      </div>
+      <div class="notif-item" data-type="follow">
+        <div class="ni-ava" style="background:#111">🧦</div>
+        <div class="ni-body"><div class="ni-text"><b>InvisiSocks™</b> started following you (or did they?)</div><div class="ni-time">2d ago</div></div>
+        <div class="ni-thumb" style="background:transparent;font-size:28px">🧦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIMMER -->
+  <div id="dimmer" class="dimmer" onclick="hideDimmer()"></div>
+
+  <!-- ═══════════════════════════════════
+       SHEET: COMMENTS
+  ═══════════════════════════════════ -->
+  <div id="sheet-comments" class="bottom-sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-head">
+      <div class="sh-title cmt-title">💬 Comments</div>
+      <div class="sh-close" onclick="closeSheet()">✕</div>
+    </div>
+    <div class="cmt-list" id="cmtList"></div>
+    <div class="cmt-input-row">
+      <div class="cmt-my-ava">🦋</div>
+      <input class="cmt-inp" id="cmt-input" placeholder="Add a comment...">
+      <button class="cmt-send" onclick="sendComment()">➤</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SHEET: SHARE
+  ═══════════════════════════════════ -->
+  <div id="sheet-share" class="bottom-sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-head">
+      <div class="sh-title">Share</div>
+      <div class="sh-close" onclick="closeSheet()">✕</div>
+    </div>
+    <div class="share-grid">
+      <div class="share-item" onclick="shareAction('copy')"><div class="si-icon" style="background:#2A2A2A">🔗</div><div class="si-label">Copy Link</div></div>
+      <div class="share-item" onclick="shareAction('send')"><div class="si-icon" style="background:linear-gradient(135deg,var(--pk),#FF8E8E)">💌</div><div class="si-label">Send in Shmock</div></div>
+      <div class="share-item" onclick="shareAction('text')"><div class="si-icon" style="background:#1C7C34">💬</div><div class="si-label">Text a Friend</div></div>
+      <div class="share-item" onclick="shareAction('story')"><div class="si-icon" style="background:linear-gradient(135deg,var(--tl),var(--pk))">✨</div><div class="si-label">Add to Story</div></div>
+      <div class="share-item" onclick="shareAction('save')"><div class="si-icon" style="background:#1A1A3A">💾</div><div class="si-label">Save Video</div></div>
+      <div class="share-item" onclick="shareAction('qr')"><div class="si-icon" style="background:#2A2A2A">🔲</div><div class="si-label">QR Code</div></div>
+      <div class="share-item" onclick="shareAction('notinterested')"><div class="si-icon" style="background:#2A1A1A">🚫</div><div class="si-label">Not Interested</div></div>
+      <div class="share-item" onclick="shareAction('report')"><div class="si-icon" style="background:#1A0A0A">🚩</div><div class="si-label">Report</div></div>
+    </div>
+    <div class="sheet-pb"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SHEET: CREATE
+  ═══════════════════════════════════ -->
+  <div id="sheet-create" class="bottom-sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-head">
+      <div class="sh-title">Create</div>
+      <div class="sh-close" onclick="closeSheet()">✕</div>
+    </div>
+    <div class="create-grid">
+      <div class="create-item" onclick="closeSheet();showToast('Opening camera... 🎥')"><div class="ci-icon" style="background:linear-gradient(135deg,var(--pk),#FF6B6B)">🎥</div><div class="ci-label">Video</div></div>
+      <div class="create-item" onclick="closeSheet();showToast('Opening camera... 📷')"><div class="ci-icon" style="background:linear-gradient(135deg,#7B2FBE,var(--pk))">📷</div><div class="ci-label">Photo</div></div>
+      <div class="create-item" onclick="closeSheet();showToast('Opening text editor... 📝')"><div class="ci-icon" style="background:linear-gradient(135deg,#1A3A2A,#74C69D)">📝</div><div class="ci-label">Text Post</div></div>
+      <div class="create-item" onclick="closeSheet();showToast('Going live... 🔴')"><div class="ci-icon" style="background:linear-gradient(135deg,#A4133C,var(--pk))">🔴</div><div class="ci-label">Go Live</div></div>
+      <div class="create-item" onclick="closeSheet();showToast('Opening sounds... 🎵')"><div class="ci-icon" style="background:linear-gradient(135deg,#023E8A,var(--tl))">🎵</div><div class="ci-label">Sound</div></div>
+      <div class="create-item" onclick="closeSheet();showToast('Opening effects... ✨')"><div class="ci-icon" style="background:linear-gradient(135deg,#C9A227,#FF6B9D)">✨</div><div class="ci-label">Effects</div></div>
+    </div>
+    <div class="create-footer">make something weird. ™</div>
+    <div class="sheet-pb"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ─── BOTTOM NAV ─── -->
+  <nav class="bot-nav">
+    <div class="bn on" id="bn-home" onclick="showScreen('home')">
+      <div class="bn-ic">🏠</div>
+      <div class="bn-lb">Home</div>
+    </div>
+    <div class="bn" id="bn-discover" onclick="showScreen('discover')">
+      <div class="bn-ic">🔍</div>
+      <div class="bn-lb">Discover</div>
+    </div>
+    <div class="bn-post">
+      <div class="plus-btn" onclick="openSheet('create')">+</div>
+    </div>
+    <div class="bn" id="bn-inbox" onclick="showScreen('inbox')">
+      <div class="bn-ic" style="position:relative;display:inline-block">
+        📬<span class="bn-badge" id="inboxBadge">2</span>
+      </div>
+      <div class="bn-lb">Inbox</div>
+    </div>
+    <div class="bn" id="bn-profile" onclick="showScreen('profile')">
+      <div class="bn-ic">👤</div>
+      <div class="bn-lb">Profile</div>
+    </div>
+  </nav>
+
+  <script>
+    // ═══ STATE ═══
+    let toastTimer = null;
+    let activeSheet = null;
+
+    // ═══ TOAST ═══
+    function showToast(msg) {
+      clearTimeout(toastTimer);
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    // ═══ SCREENS ═══
+    function showScreen(name) {
+      // Toggle screens
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const topNav = document.querySelector('.top-nav');
+      const tabBar = document.getElementById('tabBar');
+
+      if (name === 'home') {
+        topNav.style.display = '';
+        tabBar.style.display = '';
+      } else if (name === 'live') {
+        topNav.style.display = '';
+        tabBar.style.display = '';
+        document.getElementById('screen-live').classList.add('active');
+      } else {
+        topNav.style.display = 'none';
+        tabBar.style.display = 'none';
+        const s = document.getElementById('screen-' + name);
+        if (s) s.classList.add('active');
+      }
+
+      // Bottom nav highlight
+      document.querySelectorAll('.bn').forEach(b => b.classList.remove('on'));
+      const bnMap = { home: 'bn-home', discover: 'bn-discover', inbox: 'bn-inbox', profile: 'bn-profile' };
+      const bnId = bnMap[name] || 'bn-home';
+      const bnEl = document.getElementById(bnId);
+      if (bnEl) bnEl.classList.add('on');
+
+      // Clear inbox badge on inbox
+      if (name === 'inbox') {
+        const badge = document.getElementById('inboxBadge');
+        if (badge) badge.style.display = 'none';
+      }
+
+      // Reset tab to For You when going home
+      if (name === 'home') {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+        document.querySelectorAll('.tab')[1].classList.add('on');
+      }
+    }
+
+    // ═══ TABS ═══
+    function switchTab(el, tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+      el.classList.add('on');
+      if (tabName === 'live') {
+        showScreen('live');
+      } else {
+        showScreen('home');
+        // Re-activate the clicked tab (showScreen resets it for home)
+        setTimeout(() => { el.classList.add('on'); }, 0);
+      }
+    }
+
+    // ═══ PANELS ═══
+    function openPanel(id) {
+      document.getElementById(id).classList.add('open');
+      if (id === 'panel-search') {
+        setTimeout(() => document.getElementById('psInput').focus(), 350);
+      }
+      if (id === 'panel-notif') {
+        const b = document.getElementById('bellBadge');
+        if (b) b.style.display = 'none';
+      }
+    }
+    function closePanel(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // ═══ DIMMER ═══
+    function hideDimmer() {
+      document.getElementById('dimmer').classList.remove('show');
+      if (activeSheet) {
+        document.getElementById('sheet-' + activeSheet).classList.remove('open');
+        activeSheet = null;
+      }
+    }
+
+    // ═══ SHEETS ═══
+    function openSheet(type, idx) {
+      if (activeSheet) {
+        document.getElementById('sheet-' + activeSheet).classList.remove('open');
+      }
+      activeSheet = type;
+      document.getElementById('dimmer').classList.add('show');
+      document.getElementById('sheet-' + type).classList.add('open');
+      if (type === 'comments') {
+        const i = idx !== undefined ? parseInt(idx) : 0;
+        renderComments(i);
+      }
+    }
+    function closeSheet() {
+      if (activeSheet) {
+        document.getElementById('sheet-' + activeSheet).classList.remove('open');
+        activeSheet = null;
+      }
+      document.getElementById('dimmer').classList.remove('show');
+    }
+
+    // ═══ COMMENT DATA ═══
+    const cmtData = [
+      { count: '89.4K', items: [
+        { user: '@grapeofwrath', ava: '🍇', bg: '#6C52D9', text: 'i am SOBBING for this grape', likes: '12.3K', time: '4h' },
+        { user: '@raisinsarepeople', ava: '🍩', bg: '#8B4513', text: 'as a raisin i find this deeply offensive', likes: '8.7K', time: '3h' },
+        { user: '@fruitlawyer', ava: '⚖️', bg: '#2C5F2E', text: 'the grape has grounds for emotional distress. i am filing papers.', likes: '5.1K', time: '2h' },
+        { user: '@seedhoarder', ava: '🌱', bg: '#388E3C', text: 'we are ALL basically raisins. think about it.', likes: '3.2K', time: '1h' },
+      ]},
+      { count: '23.1K', items: [
+        { user: '@fernfan', ava: '🌿', bg: '#1A3A2A', text: 'this fern deserved better and we all know it', likes: '3.2K', time: '6h' },
+        { user: '@yelpreviewqueen', ava: '⭐', bg: '#C9A227', text: '"would grow again" has me DESTROYED', likes: '2.8K', time: '5h' },
+        { user: '@plantdad99', ava: '🪴', bg: '#2D6A4F', text: 'gave mine 2 stars. it keeps sending me passive aggressive oxygen.', likes: '1.9K', time: '3h' },
+      ]},
+      { count: '156K', items: [
+        { user: '@ottoman_fan', ava: '🛋️', bg: '#023E8A', text: 'THE OTTOMAN SAID NO WITNESSES', likes: '28.4K', time: '8h' },
+        { user: '@armchair_therapy', ava: '💺', bg: '#0096C7', text: 'the armchair is in its villain era after this ranking', likes: '14.2K', time: '7h' },
+        { user: '@ikea_guy', ava: '🔧', bg: '#004B87', text: 'the BILLY bookcase placed 4th and is NOT happy', likes: '9.8K', time: '5h' },
+      ]},
+      { count: '211K', items: [
+        { user: '@landlord_official', ava: '🏠', bg: '#880E4F', text: 'UPDATE: we renewed the lease. we still have not spoken about it.', likes: '44.7K', time: '12h' },
+        { user: '@tuesday_hater', ava: '📅', bg: '#A4133C', text: 'tuesday has never done anything for anybody', likes: '19.3K', time: '10h' },
+        { user: '@accidentaltexts', ava: '📱', bg: '#C9184A', text: 'greatest rent negotiation in recorded history', likes: '11.4K', time: '8h' },
+      ]},
+      { count: '99.2K', items: [
+        { user: '@moonwatch_er', ava: '🌝', bg: '#023E8A', text: 'I checked again. IT IS NOW AT 16%. SOMETHING IS HAPPENING.', likes: '23.1K', time: '2h' },
+        { user: '@nasa_probably', ava: '🚀', bg: '#03045E', text: 'no comment at this time', likes: '88.8K', time: '1h' },
+        { user: '@14percentclub', ava: '📊', bg: '#0077B6', text: 'joining the 14 percent club. we meet under the moon. bring binoculars.', likes: '7.4K', time: '45m' },
+      ]},
+      { count: '302K', items: [
+        { user: '@economicshorse', ava: '🐴', bg: '#2D6A4F', text: 'this is literally my PhD dissertation', likes: '67.2K', time: '1d' },
+        { user: '@hoofsexchange', ava: '💰', bg: '#74C69D', text: 'the hoof is the new bitcoin. i am investing.', likes: '31.4K', time: '22h' },
+        { user: '@bartendermath', ava: '🍺', bg: '#52B788', text: 'i gave the horse exact change and it nodded. i do not know what this means.', likes: '18.9K', time: '18h' },
+      ]},
+    ];
+
+    function renderComments(idx) {
+      const data = cmtData[Math.max(0, Math.min(idx, cmtData.length - 1))];
+      document.querySelector('.cmt-title').textContent = '💬 ' + data.count + ' Comments';
+      const list = document.getElementById('cmtList');
+      list.innerHTML = data.items.map(c => `
+        <div class="cmt-item">
+          <div class="cmt-ava" style="background:${c.bg}">${c.ava}</div>
+          <div class="cmt-content">
+            <div class="cmt-user">${c.user} <span class="cmt-time">${c.time}</span></div>
+            <div class="cmt-text">${c.text}</div>
+            <div class="cmt-like-row">
+              <span class="cmt-like-btn" onclick="this.classList.toggle('liked');this.querySelector('.cle').textContent=this.classList.contains('liked')?'❤️':'🤍'">
+                <span class="cle">🤍</span> ${c.likes}
+              </span>
+              <span class="cmt-reply" onclick="showToast('Replying to ${c.user}...')">Reply</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function sendComment() {
+      const inp = document.getElementById('cmt-input');
+      const text = inp.value.trim();
+      if (!text) return;
+      inp.value = '';
+      const list = document.getElementById('cmtList');
+      const el = document.createElement('div');
+      el.className = 'cmt-item cmt-new';
+      el.innerHTML = `
+        <div class="cmt-ava" style="background:var(--tl);color:#000">🦋</div>
+        <div class="cmt-content">
+          <div class="cmt-user">@shmockmaster <span class="cmt-you">YOU</span> <span class="cmt-time">now</span></div>
+          <div class="cmt-text">${text.replace(/</g,'&lt;')}</div>
+          <div class="cmt-like-row"><span class="cmt-like-btn"><span class="cle">🤍</span> 0</span><span class="cmt-reply">Reply</span></div>
+        </div>`;
+      list.prepend(el);
+      list.scrollTop = 0;
+      showToast('Comment posted! 💬');
+    }
+
+    // ═══ ACTION BUTTONS ═══
+    function toggleFollow(wrap) {
+      const plus = wrap.querySelector('.a-ava-plus');
+      if (wrap.classList.contains('following')) {
+        wrap.classList.remove('following');
+        plus.textContent = '+';
+        showToast('Unfollowed.');
+      } else {
+        wrap.classList.add('following');
+        plus.textContent = '✓';
+        showToast('Following! ✅');
+      }
+    }
+
+    function toggleHeart(btn) {
+      const circle = btn.querySelector('.a-circle');
+      if (btn.classList.contains('liked')) {
+        btn.classList.remove('liked');
+        circle.textContent = '🤍';
+      } else {
+        btn.classList.add('liked');
+        circle.textContent = '❤️';
+        showToast('Liked! ❤️');
+      }
+      circle.style.transform = 'scale(1.4)';
+      setTimeout(() => { circle.style.transform = ''; }, 180);
+    }
+
+    function toggleBookmark(btn) {
+      const circle = btn.querySelector('.a-circle');
+      if (btn.classList.contains('bookmarked')) {
+        btn.classList.remove('bookmarked');
+        showToast('Removed from saved.');
+      } else {
+        btn.classList.add('bookmarked');
+        showToast('Saved! 🔖');
+      }
+      circle.style.transform = 'scale(1.3)';
+      setTimeout(() => { circle.style.transform = ''; }, 160);
+    }
+
+    // ═══ SHARE ═══
+    function shareAction(action) {
+      const msgs = {
+        copy: 'Link copied! 📋',
+        send: 'Sent in Shmock! 💌',
+        text: 'Opening messages... 📱',
+        story: 'Added to your story! ✨',
+        save: 'Video saved! 💾',
+        qr: 'QR code generated! 🔲',
+        notinterested: 'Noted. Ignored.',
+        report: 'Report to whom? The grape?',
+      };
+      closeSheet();
+      setTimeout(() => showToast(msgs[action] || 'Done!'), 200);
+    }
+
+    // ═══ NOTIFICATIONS ═══
+    function filterNotif(el, type) {
+      document.querySelectorAll('.pn-tab').forEach(t => t.classList.remove('on'));
+      el.classList.add('on');
+      document.querySelectorAll('.notif-item').forEach(item => {
+        item.style.display = (type === 'all' || item.dataset.type === type) ? '' : 'none';
+      });
+    }
+
+    // ═══ SEARCH ═══
+    function searchFor(term) {
+      document.getElementById('psInput').value = term;
+      setTimeout(() => {
+        closePanel('panel-search');
+        showToast('Searching: ' + term);
+      }, 700);
+    }
+
+    // ═══ PROFILE ═══
+    function switchPostTab(el) {
+      document.querySelectorAll('.pt-tab').forEach(t => t.classList.remove('on'));
+      el.classList.add('on');
+    }
+
+    // ═══ INBOX ═══
+    function openConvo(name, emoji, msg) {
+      showToast(emoji + ' ' + name + ': "' + msg + '"');
+    }
+
+    // ═══ INIT ═══
+    // Starfield
+    const sf = document.getElementById('stars');
+    if (sf) {
+      for (let i = 0; i < 55; i++) {
+        const s = document.createElement('span');
+        const sz = Math.random() * 2 + 1;
+        s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;opacity:${Math.random()*.55+.1};`;
+        sf.appendChild(s);
+      }
+    }
+  </script>
+</body>
+</html>

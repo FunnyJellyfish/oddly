@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly Elevators — We Keep You Moving</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0C;
+    --panel:#18181A;
+    --panel-2:#1F2022;
+    --hazard:#FFC400;
+    --hazard-dark:#C99700;
+    --danger:#FF3B30;
+    --text:#F5F5F0;
+    --muted:#9A9A9E;
+    --line:#2B2C2E;
+    --display: 'Archivo Black', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important;}
+  }
+
+  a{color:inherit;}
+
+  /* ============ HAZARD TAPE ============ */
+  .hazard-strip{
+    height:14px;
+    width:100%;
+    background:repeating-linear-gradient(
+      135deg,
+      var(--hazard),
+      var(--hazard) 16px,
+      #111 16px,
+      #111 32px
+    );
+    flex-shrink:0;
+  }
+
+  /* ============ NAV ============ */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px clamp(20px,5vw,64px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:var(--display);
+    font-size:18px;
+    letter-spacing:0.5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo .mark{
+    width:12px;height:12px;background:var(--hazard);
+    transform:rotate(45deg);
+    flex-shrink:0;
+  }
+  nav{display:flex; gap:32px; font-size:13px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:var(--muted);}
+  nav span{cursor:default;}
+  .nav-cta{
+    font-size:12px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase;
+    background:var(--hazard); color:#111; padding:10px 18px; border-radius:2px;
+  }
+  @media (max-width:760px){ nav{display:none;} }
+
+  /* ============ HERO ============ */
+  .hero{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    align-items:stretch;
+    min-height:640px;
+    border-bottom:1px solid var(--line);
+  }
+  @media (max-width:900px){ .hero{ grid-template-columns:1fr; min-height:auto;} }
+
+  .hero-copy{
+    padding:clamp(40px,6vw,90px) clamp(24px,5vw,64px);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:22px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--hazard);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:24px;height:1px;
+    background:var(--hazard);
+  }
+  h1{
+    font-family:var(--display);
+    font-size:clamp(40px,6.4vw,76px);
+    line-height:0.98;
+    letter-spacing:-0.5px;
+    text-transform:uppercase;
+  }
+  h1 .accent{color:var(--hazard);}
+  .hero-sub{
+    font-size:17px;
+    color:#C7C7CC;
+    max-width:480px;
+  }
+  .hero-actions{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:var(--hazard);
+    color:#111;
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+    padding:16px 28px;
+    border-radius:2px;
+    border:none;
+    cursor:pointer;
+  }
+  .btn-secondary{
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    text-decoration:underline;
+    text-underline-offset:4px;
+  }
+  .slogan-line{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--muted);
+    border-left:2px solid var(--hazard);
+    padding-left:12px;
+    margin-top:6px;
+  }
+
+  /* ============ SHAFT VISUAL ============ */
+  .shaft-wrap{
+    position:relative;
+    background:#000;
+    overflow:hidden;
+    border-left:1px solid var(--line);
+  }
+  @media (max-width:900px){ .shaft-wrap{ height:380px; } }
+
+  .shaft-frame{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+  }
+  .floor-col{
+    display:flex;
+    flex-direction:column;
+    animation:floorScroll 4.5s linear infinite;
+  }
+  .floor-row{
+    height:120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--display);
+    font-size:64px;
+    color:#2C2D30;
+    border-bottom:1px dashed #232325;
+    width:260px;
+  }
+  @keyframes floorScroll{
+    from{ transform:translateY(0); }
+    to{ transform:translateY(-960px); }
+  }
+
+  .car-outline{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:220px;
+    height:130px;
+    border:3px solid var(--hazard);
+    border-radius:2px;
+    background:rgba(255,196,0,0.04);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:5;
+  }
+  .car-outline::before,
+  .car-outline::after{
+    content:'';
+    position:absolute;
+    top:-3px; bottom:-3px;
+    width:14px;
+    background:repeating-linear-gradient(135deg,var(--hazard),var(--hazard) 5px,#000 5px,#000 10px);
+  }
+  .car-outline::before{ left:-14px; }
+  .car-outline::after{ right:-14px; }
+  .car-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--hazard);
+    text-align:center;
+    line-height:1.6;
+  }
+
+  .shaft-caption{
+    position:absolute;
+    bottom:18px;
+    left:0; right:0;
+    text-align:center;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:1px;
+    color:#5A5A5E;
+    text-transform:uppercase;
+    z-index:6;
+  }
+
+  .blur-edge-top, .blur-edge-bottom{
+    position:absolute;
+    left:0; right:0;
+    height:90px;
+    z-index:4;
+    pointer-events:none;
+  }
+  .blur-edge-top{ top:0; background:linear-gradient(to bottom, #000, transparent); }
+  .blur-edge-bottom{ bottom:0; background:linear-gradient(to top, #000, transparent); }
+
+  /* ============ SECTION SHELL ============ */
+  section{ padding:clamp(56px,8vw,110px) clamp(24px,5vw,64px); }
+  .section-head{ max-width:640px; margin-bottom:50px; }
+  .section-eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--hazard);
+    margin-bottom:14px;
+  }
+  h2{
+    font-family:var(--display);
+    font-size:clamp(28px,4vw,42px);
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:-0.5px;
+  }
+  .section-sub{ color:var(--muted); margin-top:14px; font-size:15.5px; max-width:560px; }
+
+  /* ============ FEATURES ============ */
+  .features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:840px){ .features{ grid-template-columns:1fr; } }
+  .feature-card{
+    background:var(--panel);
+    padding:36px 30px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .feature-num{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--hazard-dark);
+    letter-spacing:1px;
+  }
+  .feature-icon{
+    width:46px; height:46px;
+    border:2px solid var(--hazard);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--display);
+    color:var(--hazard);
+    font-size:18px;
+  }
+  .feature-card h3{
+    font-family:var(--display);
+    font-size:19px;
+    text-transform:uppercase;
+    letter-spacing:0.2px;
+  }
+  .feature-card p{ color:var(--muted); font-size:14.5px; }
+
+  /* ============ QUOTES ============ */
+  .quotes-section{ background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .quotes-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:840px){ .quotes-grid{ grid-template-columns:1fr; } }
+  .quote-card{
+    background:var(--bg);
+    padding:38px 34px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  .quote-mark{ font-family:var(--display); font-size:42px; color:var(--hazard); line-height:0.6; }
+  .quote-text{ font-size:18px; line-height:1.55; color:#EDEDEE; }
+  .quote-attr{ display:flex; flex-direction:column; gap:2px; border-top:1px solid var(--line); padding-top:16px; }
+  .quote-name{ font-weight:700; font-size:14px; }
+  .quote-role{ font-family:var(--mono); font-size:11.5px; color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; }
+  .quote-phonetic{ font-family:var(--mono); font-size:11px; color:var(--hazard-dark); margin-top:2px; }
+
+  /* ============ SPEC SHEET ============ */
+  .spec-shell{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .spec-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 26px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:0.5px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .spec-top .model{ color:var(--hazard); font-weight:600; }
+  table.spec-table{ width:100%; border-collapse:collapse; }
+  table.spec-table tr{ border-bottom:1px solid var(--line); }
+  table.spec-table tr:last-child{ border-bottom:none; }
+  table.spec-table td{ padding:16px 26px; font-size:14px; }
+  table.spec-table td:first-child{
+    color:var(--muted);
+    font-family:var(--mono);
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:0.6px;
+    width:46%;
+  }
+  table.spec-table td:last-child{ font-weight:600; text-align:right; }
+  table.spec-table tr.danger-row td:last-child{ color:var(--danger); }
+  table.spec-table tr.hazard-row td:last-child{ color:var(--hazard); }
+
+  /* ============ CTA BAND ============ */
+  .cta-band{
+    background:var(--hazard);
+    color:#111;
+    padding:clamp(50px,7vw,90px) clamp(24px,5vw,64px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:18px;
+  }
+  .cta-band h2{ color:#111; }
+  .cta-band p{ color:#3A3000; font-size:15px; max-width:480px; }
+  .btn-dark{
+    background:#111;
+    color:var(--hazard);
+    font-family:var(--display);
+    font-size:14px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    padding:18px 32px;
+    border-radius:2px;
+    border:none;
+    cursor:pointer;
+    margin-top:8px;
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    padding:40px clamp(24px,5vw,64px) 50px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:#5A5A5E;
+    line-height:1.8;
+    max-width:900px;
+  }
+  footer .foot-head{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:10px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .foot-bottom{
+    display:flex;
+    justify-content:space-between;
+    margin-top:30px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-size:11px;
+    color:#48484C;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hazard-strip"></div>
+
+<header>
+  <div class="logo"><span class="mark"></span>ODDLY ELEVATORS</div>
+  <nav>
+    <span>The Problem</span>
+    <span>How It Works</span>
+    <span>Specifications</span>
+    <span>Reviews</span>
+  </nav>
+  <div class="nav-cta">Request a Quote</div>
+</header>
+
+<section class="hero" style="padding:0;">
+  <div class="hero-copy">
+    <div class="eyebrow">Now Shipping — Model ODL-1</div>
+    <h1>Stops Were<br>Slowing You<br>Down. So We<br><span class="accent">Removed Them.</span></h1>
+    <p class="hero-sub">Every elevator on the market today stops at your floor. Ours doesn't. The Oddly Elevator was engineered from the ground up by asking one question: what is actually slowing you down on an elevator? The answer was everything.</p>
+    <div class="hero-actions">
+      <button class="btn-primary">Step On</button>
+      <a class="btn-secondary" href="#specs">View Specifications</a>
+    </div>
+    <div class="slogan-line">ODDLY ELEVATORS: WE KEEP YOU MOVING.</div>
+  </div>
+
+  <div class="shaft-wrap">
+    <div class="shaft-frame">
+      <div class="floor-col">
+        <div class="floor-row">12</div>
+        <div class="floor-row">11</div>
+        <div class="floor-row">10</div>
+        <div class="floor-row">09</div>
+        <div class="floor-row">08</div>
+        <div class="floor-row">07</div>
+        <div class="floor-row">06</div>
+        <div class="floor-row">05</div>
+        <div class="floor-row">04</div>
+        <div class="floor-row">03</div>
+        <div class="floor-row">02</div>
+        <div class="floor-row">01</div>
+        <div class="floor-row">12</div>
+        <div class="floor-row">11</div>
+        <div class="floor-row">10</div>
+        <div class="floor-row">09</div>
+      </div>
+    </div>
+    <div class="blur-edge-top"></div>
+    <div class="blur-edge-bottom"></div>
+    <div class="car-outline">
+      <div class="car-label">ODL-1<br>NO DOORS<br>NO STOPS</div>
+    </div>
+    <div class="shaft-caption">Live feed — Floor never reached</div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div class="section-eyebrow">What We Removed</div>
+    <h2>Three Things Were Holding Elevators Back.</h2>
+    <p class="section-sub">Doors. Safety systems. And what our CEO refers to internally as "useless junk." We took all three out. The result is an elevator that is, by weight, mostly elevator.</p>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">01</div>
+      <h3>No Doors</h3>
+      <p>Doors open. Doors close. Doors wait for you to get out of the way. The Oddly Elevator has no doors, which means it never has to wait for anything, including you.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">02</div>
+      <h3>No Full Stops</h3>
+      <p>Without doors, there's no reason to fully stop at a floor. The ODL-1 slows to a brisk pace as it passes your floor. We call this "arriving."</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">03</div>
+      <h3>No Useless Junk</h3>
+      <p>Emergency brakes, governors, buffer springs, and the little phone in the wall — all removed. Every one of those parts was just adding weight the elevator had to move.</p>
+    </div>
+  </div>
+</section>
+
+<div class="quotes-section">
+  <section style="padding-bottom:0;">
+    <div class="section-head">
+      <div class="section-eyebrow">From Leadership</div>
+      <h2>The Thinking Behind The ODL-1.</h2>
+    </div>
+  </section>
+  <div class="quotes-grid">
+    <div class="quote-card">
+      <div class="quote-mark">&ldquo;</div>
+      <p class="quote-text">I asked our engineers a simple question: what slows you down on an elevator? They said doors, safety systems, and a bunch of other junk that just adds weight. So we took it all out. Now nothing slows you down. Including the elevator.</p>
+      <div class="quote-attr">
+        <div class="quote-name">Stephen Stubborn</div>
+        <div class="quote-role">CEO, Oddly, Inc.</div>
+        <div class="quote-phonetic">(pronounced "Stefen Stu-Born")</div>
+      </div>
+    </div>
+    <div class="quote-card">
+      <div class="quote-mark">&ldquo;</div>
+      <p class="quote-text">Removing the doors and the safety systems cut our material costs by sixty percent. Our insurance costs went up by considerably more than that, but that's a future-quarter problem, and I am only responsible for this one.</p>
+      <div class="quote-attr">
+        <div class="quote-name">Stephen Stupid</div>
+        <div class="quote-role">CFO, Oddly, Inc.</div>
+        <div class="quote-phonetic">(pronounced "Stefen Stupid")</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="specs">
+  <div class="section-head">
+    <div class="section-eyebrow">Specifications</div>
+    <h2>Technical Details.</h2>
+    <p class="section-sub">Presented in full, as required.</p>
+  </div>
+
+  <div class="spec-shell">
+    <div class="spec-top">
+      <span>ODDLY ELEVATORS — TECHNICAL DATA SHEET</span>
+      <span class="model">MODEL ODL-1</span>
+    </div>
+    <table class="spec-table">
+      <tr><td>Serial Number</td><td>ODL1-0000-0014</td></tr>
+      <tr><td>Doors</td><td>0</td></tr>
+      <tr><td>Stopping Mechanism</td><td>None</td></tr>
+      <tr class="hazard-row"><td>Floor Dwell Time</td><td>0.4 seconds (approx.)</td></tr>
+      <tr><td>Max Passenger Capacity</td><td>1 (briefly, several)</td></tr>
+      <tr><td>Emergency Brake</td><td>Considered, removed</td></tr>
+      <tr><td>Buffer Spring</td><td>Not installed</td></tr>
+      <tr class="danger-row"><td>Safety Certification</td><td>Pending</td></tr>
+      <tr><td>Floors Served</td><td>All of them, briefly</td></tr>
+      <tr><td>Recommended Footwear</td><td>Closed-toe, lace-up</td></tr>
+      <tr><td>Warranty</td><td>14 days or first incident</td></tr>
+    </table>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>The Floor Is Coming. Be Ready.</h2>
+  <p>The ODL-1 is available now for commercial installation. Engineering, permitting, and timing your exit are all your responsibility.</p>
+  <button class="btn-dark">Request a Quote</button>
+</div>
+
+<footer>
+  <div class="foot-head">Fine Print</div>
+  This advertisement was produced by Oddly, Inc. Oddly Elevators are a product of Oddly, Inc. and are not affiliated with, reviewed by, or known to any elevator safety authority. "Arriving" is a registered Oddly, Inc. term referring to the moment the car passes your floor at reduced speed. The absence of doors is by design and is not eligible for refund. Stepping on and off the ODL-1 is performed entirely at the rider's own pace, risk, and timing. Oddly, Inc. is not responsible for floors missed, doors not found, or junk you may have wanted kept. Firmware includes all advertised features.
+
+  <div class="foot-bottom">
+    <span>© 2026 Oddly, Inc. All rights reserved, mostly.</span>
+    <span>ODDLY ELEVATORS — WE KEEP YOU MOVING</span>
+  </div>
+</footer>
+
+</body>
+</html>

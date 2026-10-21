@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>oAction Park — Oddly, Inc.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d08;
+    --bg2:#12140d;
+    --card:#171911;
+    --asphalt-line:#26281d;
+    --orange:#ff5a1f;
+    --orange-dim:#ff5a1f22;
+    --yellow:#ffc400;
+    --rust:#c1441f;
+    --text:#f3efe2;
+    --text-dim:#a8a48f;
+    --text-faint:#6c6a5a;
+    --hazard-a:#ffc400;
+    --hazard-b:#171911;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--orange); color:#0b0d08;}
+
+  .display{font-family:'Fraunces', serif;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  a{color:inherit;}
+
+  /* ---------- background texture ---------- */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255,90,31,0.04), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,196,0,0.03), transparent 45%);
+  }
+
+  /* ---------- hazard tape ---------- */
+  .hazard-strip{
+    height:14px;
+    width:100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--hazard-a),
+      var(--hazard-a) 16px,
+      var(--hazard-b) 16px,
+      var(--hazard-b) 32px
+    );
+  }
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px clamp(20px,5vw,64px);
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,13,8,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--asphalt-line);
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-dim);
+  }
+  .brand b{color:var(--text); font-weight:700;}
+  .brand .dot{width:6px; height:6px; border-radius:50%; background:var(--orange); box-shadow:0 0 8px var(--orange);}
+  .topnav{display:flex; gap:28px; font-size:13px; letter-spacing:.02em; font-family:'JetBrains Mono',monospace;}
+  .topnav a{color:var(--text-dim); text-decoration:none; transition:color .2s;}
+  .topnav a:hover{color:var(--yellow);}
+  @media (max-width:720px){ .topnav{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    padding:clamp(70px,12vw,130px) clamp(20px,6vw,64px) 60px;
+    max-width:1180px; margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--orange);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{content:'▲'; font-size:10px;}
+  h1.display{
+    font-size:clamp(48px, 9vw, 108px);
+    font-weight:600;
+    line-height:.94;
+    letter-spacing:-.01em;
+    max-width:14ch;
+  }
+  h1.display em{
+    font-style:italic; font-weight:300; color:var(--orange);
+  }
+  .hero-sub{
+    margin-top:26px;
+    max-width:52ch;
+    font-size:clamp(16px,2vw,19px);
+    color:var(--text-dim);
+  }
+
+  .stat-strip{
+    margin-top:48px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--asphalt-line);
+    border-bottom:1px solid var(--asphalt-line);
+  }
+  .stat{
+    padding:22px 18px 22px 0;
+    border-right:1px solid var(--asphalt-line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat-num{
+    font-family:'Fraunces', serif; font-weight:600;
+    font-size:clamp(24px,3.4vw,38px);
+    color:var(--yellow);
+  }
+  .stat-label{
+    margin-top:4px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  @media (max-width:640px){
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .stat{padding:16px 12px 16px 0;}
+  }
+
+  /* ---------- section shell ---------- */
+  section{
+    padding:90px clamp(20px,6vw,64px);
+    max-width:1180px; margin:0 auto;
+  }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:20px;
+    margin-bottom:44px; flex-wrap:wrap;
+  }
+  .section-tag{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--text-faint);
+  }
+  h2.display{
+    font-size:clamp(30px,4.4vw,48px);
+    font-weight:600;
+  }
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- map section ---------- */
+  .map-wrap{
+    position:relative;
+    border:1px solid var(--asphalt-line);
+    background:
+      linear-gradient(var(--bg2), var(--bg2)) padding-box,
+      repeating-linear-gradient(0deg, transparent, transparent 39px, #ffffff06 39px, #ffffff06 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, #ffffff06 39px, #ffffff06 40px);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .map-header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 20px;
+    border-bottom:1px dashed var(--asphalt-line);
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    color:var(--text-faint); letter-spacing:.05em; text-transform:uppercase;
+  }
+  .map-header .pulse{
+    display:inline-flex; align-items:center; gap:6px; color:var(--yellow);
+  }
+  .pulse-dot{
+    width:6px; height:6px; border-radius:50%; background:var(--yellow);
+    animation:pulse 1.6s infinite ease-in-out;
+  }
+  @keyframes pulse{0%,100%{opacity:1; box-shadow:0 0 0 0 #ffc40055;} 50%{opacity:.4; box-shadow:0 0 0 6px #ffc40000;}}
+
+  .map-svg{display:block; width:100%; height:auto;}
+
+  .pin{cursor:pointer;}
+  .pin circle.ring{fill:none; stroke:var(--orange); stroke-width:1.4; opacity:.55;}
+  .pin circle.core{fill:var(--orange); stroke:#0b0d08; stroke-width:2;}
+  .pin text{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:11px;
+    fill:#0b0d08; text-anchor:middle; dominant-baseline:central; pointer-events:none;
+  }
+  .pin.active circle.core{fill:var(--yellow);}
+  .pin:hover circle.ring{opacity:1;}
+  .pin-label{
+    font-family:'JetBrains Mono', monospace; font-size:9.5px; letter-spacing:.03em;
+    fill:var(--text-dim); text-anchor:middle;
+  }
+
+  .zone-label{
+    font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; fill:var(--text-faint); opacity:.8;
+  }
+
+  .path-line{
+    fill:none; stroke:#3a3d2c; stroke-width:2; stroke-dasharray:1 8; stroke-linecap:round;
+  }
+
+  .map-footer{
+    display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:14px 20px; border-top:1px dashed var(--asphalt-line);
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-faint);
+  }
+
+  .map-detail{
+    padding:20px; border-top:1px dashed var(--asphalt-line);
+    min-height:96px;
+    display:flex; gap:16px; align-items:flex-start;
+  }
+  .map-detail .num{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13px;
+    color:var(--bg); background:var(--yellow); border-radius:50%;
+    width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .map-detail .body b{font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:var(--text);}
+  .map-detail .body p{color:var(--text-dim); font-size:14px; margin-top:4px; max-width:64ch;}
+  .map-detail .placeholder{color:var(--text-faint); font-size:13px; font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- ride cards ---------- */
+  .ride-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:1px;
+    background:var(--asphalt-line); border:1px solid var(--asphalt-line);
+  }
+  .ride-card{
+    background:var(--card); padding:28px 26px;
+    display:flex; flex-direction:column; gap:14px;
+    transition:background .25s;
+  }
+  .ride-card:hover{background:#1c1e14;}
+  .ride-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .ride-num{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--orange);}
+  .badge{
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:4px 8px; border-radius:3px; border:1px solid var(--rust); color:var(--rust);
+    white-space:nowrap;
+  }
+  .ride-name{font-family:'Fraunces',serif; font-weight:600; font-size:22px;}
+  .ride-desc{color:var(--text-dim); font-size:14.5px;}
+  .ride-stats{
+    display:flex; flex-wrap:wrap; gap:8px 18px;
+    margin-top:auto; padding-top:14px; border-top:1px dashed var(--asphalt-line);
+  }
+  .ride-stats div{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint);}
+  .ride-stats span{color:var(--yellow); font-weight:700;}
+
+  /* ---------- quotes ---------- */
+  .quote-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--asphalt-line); border:1px solid var(--asphalt-line);}
+  @media (max-width:760px){ .quote-grid{grid-template-columns:1fr;} }
+  .quote-card{background:var(--bg2); padding:34px 30px;}
+  .quote-card p{font-family:'Fraunces',serif; font-size:20px; font-weight:400; font-style:italic; line-height:1.5; color:var(--text);}
+  .quote-who{margin-top:18px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.04em; color:var(--text-faint); text-transform:uppercase;}
+  .quote-who b{color:var(--orange);}
+
+  /* ---------- waiver / fine print ---------- */
+  .waiver{
+    background:var(--bg2); border:1px solid var(--asphalt-line); border-radius:6px;
+    padding:30px clamp(20px,4vw,40px);
+  }
+  .waiver h3{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--yellow); margin-bottom:16px;}
+  .waiver ol{padding-left:20px; display:flex; flex-direction:column; gap:10px;}
+  .waiver li{color:var(--text-dim); font-size:13.5px;}
+  .waiver li::marker{font-family:'JetBrains Mono',monospace; color:var(--text-faint);}
+
+  footer{
+    padding:50px clamp(20px,6vw,64px) 70px;
+    max-width:1180px; margin:0 auto;
+    border-top:1px solid var(--asphalt-line);
+    display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .foot-mono{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint); letter-spacing:.03em;}
+  .foot-tag{font-family:'Fraunces',serif; font-style:italic; color:var(--text-dim); font-size:14px;}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="hazard-strip"></div>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span>ODDLY, INC. <b>/ oAction Park</b></div>
+  <nav class="topnav">
+    <a href="#map">Park Map</a>
+    <a href="#attractions">Attractions</a>
+    <a href="#word">From Leadership</a>
+    <a href="#waiver">Waiver</a>
+  </nav>
+</div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Oddly, Inc. Presents</div>
+    <h1 class="display">oAction Park<br><em>Thrills, technically.</em></h1>
+    <p class="hero-sub">Seven attractions engineered past the point most parks consider reasonable. Every ride at oAction Park is rated, inspected, and approved by the same team that built it, which we think is more efficient than the alternative.</p>
+
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-num mono">200 MPH</div><div class="stat-label">Top Speed, The Vortex 200</div></div>
+      <div class="stat"><div class="stat-num mono">7</div><div class="stat-label">Consecutive Inversions</div></div>
+      <div class="stat"><div class="stat-num mono">1</div><div class="stat-label">Looping Waterslide</div></div>
+      <div class="stat"><div class="stat-num mono">Pending</div><div class="stat-label">Safety Certifications</div></div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-tag">Grounds / Overview</div>
+        <h2 class="display">Park Map</h2>
+      </div>
+      <div class="section-tag" style="max-width:38ch; text-align:right;">Tap a marker for attraction details. Paths are suggestions.</div>
+    </div>
+
+    <div class="map-wrap reveal">
+      <div class="map-header">
+        <span>oACTION-PARK-MAP.SVG — REV 4</span>
+        <span class="pulse"><span class="pulse-dot"></span>LIVE GUEST COUNT: UNAVAILABLE</span>
+      </div>
+
+      <svg class="map-svg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+        <!-- zone tints -->
+        <ellipse cx="230" cy="180" rx="200" ry="140" fill="#ff5a1f0d"/>
+        <ellipse cx="660" cy="200" rx="180" ry="150" fill="#ffc4000a"/>
+        <ellipse cx="450" cy="420" rx="260" ry="130" fill="#c1441f0c"/>
+
+        <!-- zone labels -->
+        <text x="230" y="70" class="zone-label" text-anchor="middle">Velocity Quarter</text>
+        <text x="660" y="90" class="zone-label" text-anchor="middle">Splash Works</text>
+        <text x="450" y="522" class="zone-label" text-anchor="middle">Family &amp; Gravity Zone</text>
+
+        <!-- paths connecting attractions -->
+        <path class="path-line" d="M150,150 C 220,120 280,140 300,190 S 420,260 470,230 S 600,150 650,160 S 760,190 780,230"/>
+        <path class="path-line" d="M180,220 C 220,300 300,330 360,340 S 470,380 520,400 S 620,410 660,380"/>
+        <path class="path-line" d="M300,190 C 320,280 340,340 400,380"/>
+        <path class="path-line" d="M470,230 C 460,300 480,360 520,400"/>
+
+        <!-- entrance marker -->
+        <g>
+          <rect x="60" y="480" width="110" height="34" rx="4" fill="none" stroke="#3a3d2c" stroke-width="1.4" stroke-dasharray="3 4"/>
+          <text x="115" y="501" class="zone-label" text-anchor="middle" style="font-size:9px;">Main Entrance</text>
+        </g>
+        <path class="path-line" d="M115,480 C 115,420 140,300 150,150"/>
+
+        <!-- PIN 1: Vortex 200 -->
+        <g class="pin" data-ride="0" transform="translate(150,150)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">1</text>
+        </g>
+        <text x="150" y="118" class="pin-label">Vortex 200</text>
+
+        <!-- PIN 2: Plummet Falls -->
+        <g class="pin" data-ride="1" transform="translate(650,160)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">2</text>
+        </g>
+        <text x="650" y="128" class="pin-label">Plummet Falls</text>
+
+        <!-- PIN 3: Free Fall Fifty -->
+        <g class="pin" data-ride="2" transform="translate(300,190)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">3</text>
+        </g>
+        <text x="300" y="228" class="pin-label">Free Fall Fifty</text>
+
+        <!-- PIN 4: The Whiplash -->
+        <g class="pin" data-ride="3" transform="translate(470,230)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">4</text>
+        </g>
+        <text x="470" y="268" class="pin-label">The Whiplash</text>
+
+        <!-- PIN 5: Gravity Well -->
+        <g class="pin" data-ride="4" transform="translate(520,400)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">5</text>
+        </g>
+        <text x="520" y="438" class="pin-label">Gravity Well</text>
+
+        <!-- PIN 6: Oddly Autonomous Bumper Cars -->
+        <g class="pin" data-ride="5" transform="translate(360,340)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">6</text>
+        </g>
+        <text x="360" y="378" class="pin-label">Autonomous Bumpers</text>
+
+        <!-- PIN 7: Toddler Turbo -->
+        <g class="pin" data-ride="6" transform="translate(660,380)">
+          <circle class="ring" r="17"/>
+          <circle class="core" r="12"/>
+          <text y="1">7</text>
+        </g>
+        <text x="660" y="418" class="pin-label">Toddler Turbo</text>
+      </svg>
+
+      <div class="map-detail" id="mapDetail">
+        <span class="placeholder">Select a numbered marker above to view attraction details.</span>
+      </div>
+
+      <div class="map-footer">
+        <span>SCALE: APPROXIMATE</span>
+        <span>NORTH: PROBABLY UP</span>
+        <span>EVACUATION ROUTES: SAME AS ENTRANCE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ATTRACTIONS -->
+  <section id="attractions">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-tag">Ride Roster</div>
+        <h2 class="display">Attractions</h2>
+      </div>
+      <div class="section-tag" style="max-width:34ch; text-align:right;">All height, weight, and heart-condition requirements are guidelines.</div>
+    </div>
+
+    <div class="ride-grid reveal" id="rideGrid"></div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="word">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-tag">Statement From Leadership</div>
+        <h2 class="display">A Word From The Top</h2>
+      </div>
+    </div>
+    <div class="quote-grid reveal">
+      <div class="quote-card">
+        <p>"People ask why the Vortex 200 doesn't slow down for the loops. I ask why it would. Slowing down is how you fall out of a loop. Speeding up is how you stay in one. We built the fast version."</p>
+        <div class="quote-who"><b>Stephen Stubborn</b> — CEO, Oddly, Inc. (Stefen Stu-Born)</div>
+      </div>
+      <div class="quote-card">
+        <p>"Our insurance premium on Plummet Falls is technically higher than our projected annual revenue from Plummet Falls. I've modeled this as a rounding error. I stand by the model."</p>
+        <div class="quote-who"><b>Stephen Stupid</b> — CFO, Oddly, Inc. (no relation)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAIVER -->
+  <section id="waiver">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-tag">Before You Enter</div>
+        <h2 class="display">Terms &amp; Liability</h2>
+      </div>
+    </div>
+    <div class="waiver reveal">
+      <h3>Guest Acknowledgment, Form OAP-1</h3>
+      <ol class="mono">
+        <li>By purchasing a ticket, the guest acknowledges that "designed to reach 200 mph" and "expected to reach 200 mph" are, for Oddly, Inc.'s purposes, the same sentence.</li>
+        <li>The loop in Plummet Falls is a water feature and a structural feature. Guests should expect to experience both simultaneously.</li>
+        <li>Free Fall Fifty's magnetic braking system is fully operational except during the fall, the braking, and any time the ride is in use.</li>
+        <li>The Autonomous Bumper Cars do not respond to steering input. This has been true since the ride opened and is considered load-bearing to the experience.</li>
+        <li>Toddler Turbo meets all applicable safety standards for children, as determined internally, by us, this morning.</li>
+        <li>Safety certifications listed as "Pending" are pending in the sense that they have been requested. A request has been sent.</li>
+        <li>This is not a bug. — Oddly, Inc.</li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-mono">© 2026 Oddly, Inc. — oAction Park Division. Gravity used under license.</div>
+  <div class="foot-tag">"You won't remember most of it. That's the point." — Oddly, Inc.</div>
+</footer>
+
+<script>
+  const rides = [
+    {
+      name: "The Vortex 200",
+      badge: "Certification: Pending",
+      desc: "A steel launch coaster that reaches 200 mph before its first of seven consecutive inversions. Riders report the loops feeling less like a ride and more like a decision the coaster made without them.",
+      stats: [["Top Speed","200 MPH"],["Inversions","7"],["Height","312 ft"],["Restraint","Over-the-shoulder, twice"]]
+    },
+    {
+      name: "Plummet Falls",
+      badge: "Certification: Pending",
+      desc: "The world's only waterslide with a full 360° loop. Riders are briefly airborne, briefly underwater, and briefly both. The looping section is proprietary and, per our engineers, 'mostly finished.'",
+      stats: [["Drop","140 ft"],["Loop","Full 360°"],["Airborne Time","1.8 sec"],["Splashdown","Optional"]]
+    },
+    {
+      name: "Free Fall Fifty",
+      badge: "Certification: Pending",
+      desc: "A fifty-story drop tower with magnetic braking that engages 'under advisement.' Riders in front rows have reported seeing the ground clearly enough to describe it later.",
+      stats: [["Height","50 stories"],["Freefall","4.1 sec"],["Braking","Magnetic, advisory"],["Capacity","12 / cycle"]]
+    },
+    {
+      name: "The Whiplash",
+      badge: "Certification: Pending",
+      desc: "A classic wooden-coaster silhouette retrofitted with rocket-assisted launch boosters. Built to feel nostalgic for the first eleven seconds, then unfamiliar for the remaining forty.",
+      stats: [["Top Speed","118 MPH"],["Launch","Rocket-assisted"],["Track","Wood-clad steel"],["Duration","51 sec"]]
+    },
+    {
+      name: "The Gravity Well",
+      badge: "Certification: Pending",
+      desc: "A spinning pendulum arm that sustains 5.5 G at full swing. Oddly, Inc. defines 'sustains' as 'does not yet have a recorded maximum.'",
+      stats: [["Peak G-Force","5.5 G"],["Rotations","Continuous"],["Arm Length","90 ft"],["Motion Sickness Bags","Provided"]]
+    },
+    {
+      name: "Oddly Autonomous Bumper Cars",
+      badge: "Feature, Not A Bug",
+      desc: "Powered by the same Oddly Autonomous navigation used in our vehicle lineup, these bumper cars select their own routes, targets, and collision timing, entirely at random. Steering wheels are included for guest comfort only.",
+      stats: [["Navigation","Fully autonomous"],["Steering Input","Cosmetic"],["Top Speed","9 MPH"],["Predictability","0%"]]
+    },
+    {
+      name: "Toddler Turbo",
+      badge: "Certification: Pending",
+      desc: "A children's ride scaled down from The Whiplash using the same rocket-assist platform at reduced, though still active, thrust. Height requirement exists; enforcement is best-effort.",
+      stats: [["Top Speed","31 MPH"],["Min. Height","36 in"],["Launch","Rocket-assisted"],["Audience","Ages 4+"]]
+    }
+  ];
+
+  const grid = document.getElementById('rideGrid');
+  rides.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.className = 'ride-card';
+    card.innerHTML = `
+      <div class="ride-top">
+        <span class="ride-num mono">0${i+1}</span>
+        <span class="badge">${r.badge}</span>
+      </div>
+      <div class="ride-name">${r.name}</div>
+      <div class="ride-desc">${r.desc}</div>
+      <div class="ride-stats">
+        ${r.stats.map(s => `<div>${s[0]}: <span>${s[1]}</span></div>`).join('')}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const detail = document.getElementById('mapDetail');
+  document.querySelectorAll('.pin').forEach(pin => {
+    pin.addEventListener('click', () => {
+      document.querySelectorAll('.pin').forEach(p => p.classList.remove('active'));
+      pin.classList.add('active');
+      const r = rides[+pin.dataset.ride];
+      detail.innerHTML = `
+        <div class="num">${+pin.dataset.ride + 1}</div>
+        <div class="body">
+          <b>${r.name}</b>
+          <p>${r.desc}</p>
+        </div>
+      `;
+    });
+  });
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
