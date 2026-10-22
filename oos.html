@@ -1664,6 +1664,7 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
 </div></div><!-- /screen /phone-shell -->
 <script>
 'use strict';
+const escHTML = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 // ═══════════════════════════════════════════
 // CONVERSATIONS (live, AI-powered)
@@ -1733,7 +1734,7 @@ function refreshMessagesList() {
     const div=document.createElement('div');
     div.className='msg-thread';
     div.onclick=()=>openConvById(conv.id);
-    div.innerHTML=`<div class="msg-av" style="background:${conv.color}">${conv.letter}</div><div class="msg-body"><div class="msg-top"><span class="msg-name">${conv.name||conv.number}</span><span class="msg-ts">${last?.time||'now'}</span></div><div class="msg-prev">${last?.text||'Tap to chat...'}</div></div>`;
+    div.innerHTML=`<div class="msg-av" style="background:${escHTML(conv.color)}">${escHTML(conv.letter)}</div><div class="msg-body"><div class="msg-top"><span class="msg-name">${escHTML(conv.name||conv.number)}</span><span class="msg-ts">${escHTML(last?.time||'now')}</span></div><div class="msg-prev">${last ? escHTML(last.text) : 'Tap to chat...'}</div></div>`;
     list.appendChild(div);
   });
 }
@@ -3317,8 +3318,8 @@ function widgetContent(type, idx) {
   if(type === 'weather') return `<div style="position:relative">${delBtn}<div class="wdg-icon">⛅</div><div class="wdg-val">72°</div><div class="wdg-sub">SF · Partly Cloudy</div></div>`;
   if(type === 'messages') {
     const latest = conversations[0];
-    const preview = latest ? (latest.name||latest.number).slice(0,10) : 'No messages';
-    return `<div style="position:relative">${delBtn}<div class="wdg-icon">💬</div><div class="wdg-val" style="font-size:18px">${preview}</div><div class="wdg-sub">${latest ? (latest.messages.slice(-1)[0]?.text||'').slice(0,20)+'...' : 'Tap to message'}</div></div>`;
+    const preview = latest ? escHTML((latest.name||latest.number).slice(0,10)) : 'No messages';
+    return `<div style="position:relative">${delBtn}<div class="wdg-icon">💬</div><div class="wdg-val" style="font-size:18px">${preview}</div><div class="wdg-sub">${latest ? escHTML((latest.messages.slice(-1)[0]?.text||'').slice(0,20))+'...' : 'Tap to message'}</div></div>`;
   }
   if(type === 'battery') {
     const level = typeof batteryLevel !== 'undefined' ? batteryLevel : 75;
