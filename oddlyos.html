@@ -562,6 +562,7 @@
 
 <script>
 'use strict';
+const escHTML = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 // Polyfill for roundRect
 if(!CanvasRenderingContext2D.prototype.roundRect){
@@ -1397,7 +1398,7 @@ function settingsApp(body){
         <div><div class="set-label">Anthropic API Key</div><div class="set-sub">Used by Oddly Chat. Stored locally only.</div></div>
       </div>
       <div class="api-input-wrap">
-        <input type="password" id="api-key-in" placeholder="sk-ant-..." value="${apiKey}">
+        <input type="password" id="api-key-in" placeholder="sk-ant-..." value="${escHTML(apiKey)}">
         <button id="api-save">Save</button>
       </div>
     </div>
@@ -1562,7 +1563,7 @@ function chatApp(body, reg){
   <div class="chat-wrap">
     <div class="chat-key-bar">
       <span>🔑 API Key:</span>
-      <input type="password" id="chat-key" placeholder="sk-ant-… (or set in Settings)" value="${apiKey()}">
+      <input type="password" id="chat-key" placeholder="sk-ant-… (or set in Settings)" value="${escHTML(apiKey())}">
       <button onclick="document.getElementById('chat-key').value&&(localStorage.setItem('oddly_api',document.getElementById('chat-key').value),this.textContent='✓')">Set</button>
     </div>
     <div class="chat-msgs" id="chat-msgs">
@@ -1584,7 +1585,7 @@ function chatApp(body, reg){
     inp.value='';
     const msgArea=body.querySelector('#chat-msgs');
     const addMsg=(html,cls)=>{const d=document.createElement('div');d.className=`c-msg ${cls}`;d.innerHTML=html;msgArea.appendChild(d);msgArea.scrollTop=9999;return d;};
-    addMsg(text.replace(/</g,'&lt;'),'user');
+    addMsg(escHTML(text),'user');
     messages.push({role:'user',content:text});
     const typing=addMsg(`<div class="c-dot"></div><div class="c-dot"></div><div class="c-dot"></div>`,'ai typing');
     const send=body.querySelector('#chat-send');send.disabled=true;
@@ -1593,8 +1594,9 @@ function chatApp(body, reg){
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:1000,
+        model:'claude-haiku-5-5',
+        max_tokens:4000,
+        output_config:{effort:'low'},
         system:"You are Oddly, the friendly built-in AI assistant for Oddly OS. You're clever, helpful, and a little quirky (fitting the OS name). Keep responses conversational and concise unless more depth is needed. You live inside a browser-based OS simulation. Format your answers in clean HTML if it helps readability (use <b>, <i>, <code> tags sparingly).",
         messages:[...messages],
       })
@@ -1602,11 +1604,11 @@ function chatApp(body, reg){
     .then(r=>r.json())
     .then(d=>{
       typing.remove();
-      const reply=d.content?.[0]?.text||d.error?.message||'Something went wrong.';
+      const reply=d.content?.find(b=>b.type==='text')?.text||(d.stop_reason==='refusal'?'Sorry, I can\'t help with that one.':'')||d.error?.message||'Something went wrong.';
       messages.push({role:'assistant',content:reply});
-      addMsg(reply,'ai');
+      addMsg(escHTML(reply).replace(/&lt;(\/?)(b|i|code|br)&gt;/g,'<$1$2>').replace(/\n/g,'<br>'),'ai');
     })
-    .catch(err=>{typing.remove();addMsg('⚠️ '+err.message,'ai');})
+    .catch(err=>{typing.remove();addMsg('⚠️ '+escHTML(err.message),'ai');})
     .finally(()=>{send.disabled=false;inp.focus();});
   }
 
