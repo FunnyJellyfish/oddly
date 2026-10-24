@@ -1,9 +1,10 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/",
       "has": [{ "type": "host", "value": "lorem.oddly-inc.com" }],
-      "destination": "/lorem.html"
+      "destination": "/lorem.html",
+      "permanent": false
     }
   ]
 }
