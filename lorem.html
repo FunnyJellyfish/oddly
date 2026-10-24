@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Lorem Ipsum — Oddly, Inc.</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080A14;
+  --bg2:#0D1020;
+  --panel:#12152B;
+  --panel2:#181C38;
+  --line:#242849;
+  --line2:#323865;
+  --text:#EDEDF7;
+  --muted:#9A9EC0;
+  --dim:#666B92;
+  --purple:#7B4FFF;
+  --mint:#2EE9A5;
+  --amber:#F5A623;
+  --display:'Fraunces','Iowan Old Style','Georgia',serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono','Menlo',monospace;
+  --body:'Space Grotesk','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 500px at 12% -5%,rgba(123,79,255,.20),transparent 60%),
+    radial-gradient(800px 500px at 100% 8%,rgba(46,233,165,.10),transparent 60%),
+    radial-gradient(700px 600px at 50% 110%,rgba(245,166,35,.07),transparent 60%);
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1180px,100% - 48px);margin-inline:auto;position:relative;z-index:1}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px;border-radius:6px}
+
+/* Top bar (matches the homepage) */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.28rem;letter-spacing:.01em}
+.logo svg{width:30px;height:30px;flex:none}
+.logo .lt{display:flex;align-items:baseline}
+.logo small{font-family:var(--mono);font-weight:500;font-size:.62rem;letter-spacing:.14em;color:var(--dim);margin-left:1px}
+.pill{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);border:1px solid rgba(245,166,35,.4);padding:6px 11px;border-radius:999px;white-space:nowrap;background:rgba(245,166,35,.07)}
+
+/* Header */
+.head{padding:88px 0 40px;max-width:760px}
+.head h1{font-family:var(--display);font-weight:700;font-size:clamp(2.5rem,5.6vw,4.6rem);line-height:1.02;letter-spacing:-.02em;margin:18px 0 22px}
+.head h1 em{font-style:italic;font-weight:600;color:var(--mint)}
+.attrib{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.attrib b{color:var(--text);font-weight:500}
+
+/* Body copy */
+.copy{max-width:68ch;padding-bottom:96px}
+.copy > p{font-size:1.06rem;color:var(--muted);margin-bottom:1.3em;text-wrap:pretty}
+.copy > p:first-of-type::first-letter{font-family:var(--display);font-weight:700;float:left;font-size:3.6em;line-height:.85;margin:.06em .1em 0 0;color:var(--text)}
+
+/* Quote (matches the homepage leadership quotes) */
+.quote{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:22px;padding:30px 32px 32px;margin:44px 0;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--panel),var(--bg2))}
+.quote .mark{display:block;height:46px;font-family:var(--display);font-size:5.4rem;line-height:.95;color:var(--a);font-weight:900}
+.quote blockquote p{font-family:var(--display);font-size:1.28rem;line-height:1.4;letter-spacing:-.005em;color:var(--text)}
+.quote blockquote p + p{margin-top:.5em}
+.who{display:flex;align-items:center;gap:14px;padding-top:28px}
+.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;color:#080A14;background:var(--a);flex:none}
+.who b{display:block;font-weight:600}
+.who small{display:block;font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-top:2px;line-height:1.5}
+
+/* Footer */
+footer{border-top:1px solid var(--line);padding:40px 0 calc(40px + env(safe-area-inset-bottom,0px));position:relative;z-index:1}
+.foot-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:.68rem;color:var(--dim)}
+.foot-base a{color:var(--muted)}
+.foot-base a:hover{color:var(--mint)}
+
+@media (max-width:720px){
+  .wrap{width:calc(100% - 36px)}
+  .head{padding-top:56px}
+  .pill{font-size:.6rem;padding:5px 9px}
+  .quote{padding:26px}
+  .quote blockquote p{font-size:1.14rem}
+  .logo small{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a href="https://www.oddly-inc.com/" class="logo" aria-label="Oddly, Inc. home">
+      <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+      <span class="lt">Oddly<small>, INC.</small></span>
+    </a>
+    <span class="pill">Meaning: Pending</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="eyebrow">Oddly, Inc. — Department of Words</div>
+    <h1>Lorem ipsum. <em>Improved.</em></h1>
+    <p class="attrib"><b>2,000 words</b> · Latin (Oddly) · Approved by the Office of the Chief Executive</p>
+  </div>
+
+  <article class="copy">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Porttitor varius diam ullamco mollit urna lobortis feugiat quis eleifend convallis rutrum. Vulputate laborum lorem sollicitudin ad nisi integer exercitation vel dolor rutrum morbi culpa felis tincidunt vestibulum. Posuere varius mattis enim turpis veniam feugiat erat vitae integer mauris irure. Iaculis adipiscing luctus orci blandit sem quis ultricies venenatis tellus nibh aliquip, sem auctor urna rutrum.</p>
+    <p>Metus dictum varius sagittis adipiscing libero mollit, consequat incididunt cras ullamco lobortis nulla. Ea vehicula nisl at augue tincidunt condimentum ultricies fermentum convallis. Porttitor dictum ultricies consequat proident justo sapien dolor sed reprehenderit tortor, gravida mauris cras rutrum faucibus proident. Odio nibh massa feugiat sed vitae tristique mauris exercitation vulputate varius nunc vel excepteur. Dolore porta sapien nibh luctus, nostrud cupidatat eu in vel sit quis lorem vel.</p>
+    <p>Pretium ex bibendum tempor augue sapien dapibus primis voluptate ipsum. Venenatis libero rutrum duis augue mollit ornare molestie consequat, urna auctor vitae. Duis molestie fermentum auctor eu donec reprehenderit cras non. Sit laboris donec aliqua ut egestas diam ante adipiscing adipiscing odio ornare netus. Netus ea nibh risus eleifend bibendum fugiat, voluptate hendrerit cras sunt massa lobortis ac. Magna convallis ultricies sed non diam nulla tempor diam augue incididunt vel interdum occaecat mi consectetur consequat.</p>
+    <p>Aute esse sint donec ligula sem placerat pretium ad curae, fermentum sint egestas nulla pulvinar. Risus pariatur netus sagittis mi arcu ex semper semper viverra nostrud. Ipsum quis nisl diam malesuada pellentesque augue excepteur adipiscing ante. Ante condimentum eleifend erat officia nisi bibendum suspendisse feugiat.</p>
+    <p>Scelerisque justo metus sapien feugiat consequat exercitation pulvinar nostrud massa. Laboris et primis sint diam phasellus laboris auctor morbi. Molestie dolore vitae morbi, esse nunc lacus dolore sit eu lacus. Nostrud est consectetur iaculis ea nostrud condimentum. Vestibulum morbi nisl ultricies vehicula tortor sollicitudin do nec morbi ultricies officia gravida blandit nulla ex. Tincidunt donec vitae primis labore massa adipiscing potenti malesuada vitae ea eget pretium tristique venenatis.</p>
+    <figure class="quote" style="--a:var(--purple)">
+      <span class="mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>Other companies write placeholder text and replace it later.</p>
+        <p>We looked at that and said: this can be improved. Now the placeholder is the product.</p>
+      </blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+    </figure>
+    <p>Non condimentum labore nisi esse bibendum ea ex do, commodo cras ante. Elit sem efficitur commodo primis pretium curae posuere laborum quis deserunt. Volutpat elit volutpat feugiat felis lacus in anim consectetur. Viverra volutpat dictum pretium pulvinar morbi aute. Hendrerit veniam pariatur tellus do porta varius, pulvinar turpis dapibus cras tristique labore commodo dolor vehicula curabitur. Odio reprehenderit ultricies faucibus id condimentum, viverra turpis proident ultrices primis mauris mattis mauris convallis ornare efficitur.</p>
+    <p>Voluptate purus ipsum ante cras pellentesque do mattis nulla minim eget ultrices augue. Exercitation amet placerat officia venenatis fermentum eleifend tempor quam. Erat sagittis interdum velit odio ullamco minim irure, donec fames convallis nunc iaculis. Occaecat esse vitae justo volutpat integer primis duis donec occaecat phasellus dolor ultricies diam dictum sem primis. Fugiat sagittis elit pariatur morbi volutpat in, esse elit aliquip varius interdum lorem ultrices dolore. Voluptate urna leo pretium commodo laboris netus purus laboris aliqua cubilia, pulvinar sollicitudin magna diam.</p>
+    <p>Feugiat sagittis pretium primis nisl venenatis egestas minim. Veniam lectus iaculis pulvinar mollit fugiat netus consequat. Condimentum malesuada senectus commodo lectus nec, morbi pariatur non blandit deserunt vestibulum vestibulum pellentesque hendrerit. Scelerisque commodo commodo consequat sapien malesuada ex tristique sapien, arcu pulvinar in augue vehicula. Condimentum ea sapien justo libero mauris dapibus ultricies ultricies.</p>
+    <p>Malesuada pellentesque ac nostrud lectus dapibus augue sagittis culpa sem ante diam malesuada et ultricies. Sapien condimentum tincidunt consequat fames efficitur interdum. Pretium ornare mi ac sit do deserunt dapibus ex sapien netus amet culpa mauris varius viverra. Ad feugiat occaecat erat dolor nostrud voluptate malesuada deserunt blandit sunt ultricies.</p>
+    <p>Minim scelerisque pretium cras molestie condimentum duis laboris, elit ligula quis. Id at commodo turpis, turpis egestas tristique ultricies dictum lacus rutrum netus tincidunt do interdum. Orci tincidunt risus non luctus viverra varius ultricies magna officia efficitur ut eu dolore. Odio placerat eget mi sollicitudin quis odio cras gravida netus rutrum tristique ac faucibus excepteur enim condimentum. Lacus accumsan cras curae phasellus laboris ultricies qui elit. Laborum culpa nulla odio semper commodo varius qui ligula rutrum duis condimentum netus orci.</p>
+    <figure class="quote" style="--a:var(--mint)">
+      <span class="mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>This page is in Latin. Latin is premium.</p>
+        <p>It has been premium for two thousand years. We did not copy. We independently invented filler.</p>
+      </blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+    </figure>
+    <p>Sollicitudin volutpat occaecat reprehenderit ultricies tellus voluptate irure consequat commodo eleifend et sed suspendisse eget. Aute sapien volutpat primis commodo mauris fugiat sint ut. Voluptate eu interdum lobortis rutrum augue elit eget deserunt. Orci volutpat quis risus pellentesque voluptate netus in, odio eiusmod at ipsum labore nostrud ante. Elit esse porttitor occaecat quis, sem consequat proident fugiat laborum mollit lectus.</p>
+    <p>Sem mauris faucibus culpa, iaculis phasellus vulputate condimentum ultricies mi quis qui non. Lobortis velit aliquip nulla sunt interdum consequat occaecat nulla elit convallis in. Sapien integer orci felis dolor dictum cras mauris ligula ante purus aute laboris, irure condimentum deserunt primis. Hendrerit incididunt condimentum netus lacus, ad blandit risus egestas augue semper accumsan exercitation viverra justo do ad. Vel metus laboris curae diam, libero nisl sollicitudin dictum volutpat consectetur voluptate tristique duis adipiscing. Placerat lacus amet tempor aliqua facilisis cras ex fames.</p>
+    <p>Fermentum at laborum senectus risus curabitur ultricies laborum varius. Quis eiusmod rutrum pretium gravida sint vulputate occaecat, aliquip molestie ornare hendrerit. Nibh officia curae sed accumsan risus aute. Laborum cras morbi sapien consequat efficitur adipiscing ante facilisis cras cillum. Metus luctus officia molestie enim tellus fugiat mauris. Nisi laboris pretium ultricies ipsum, curabitur non ut pulvinar fugiat semper sapien ultrices.</p>
+    <p>Phasellus condimentum aliquip aliquet convallis do primis risus varius phasellus. Occaecat porta porta mi incididunt vitae quis. Porta dolore suspendisse sunt ipsum integer bibendum diam tempor. Nunc aliqua augue cillum convallis dapibus sagittis venenatis volutpat est, lectus ut volutpat ante.</p>
+    <p>Curabitur sed sit eu curae feugiat veniam vulputate. Lobortis pariatur fugiat est cillum condimentum, proident auctor ac ultricies suspendisse diam tortor fugiat risus quis amet. Sagittis curabitur ornare reprehenderit senectus nulla lectus convallis aliquip aute lorem cubilia veniam nibh phasellus quis. Varius primis minim hendrerit consectetur porta tincidunt est, aliquip posuere curabitur magna. Scelerisque pariatur fermentum placerat dolor elit, turpis nulla mauris hendrerit nostrud curabitur at velit ultricies porttitor dictum.</p>
+    <figure class="quote" style="--a:var(--amber)">
+      <span class="mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>Some readers report that they cannot understand this page.</p>
+        <p>That is unfortunate. The page understands itself.</p>
+      </blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+    </figure>
+    <p>Accumsan iaculis in pellentesque tincidunt consectetur arcu, ultricies justo reprehenderit cubilia dapibus vehicula ipsum arcu molestie. Arcu magna curae viverra vulputate arcu, eget tincidunt aliquet lobortis eu at. Ullamco leo convallis elit sunt qui justo nec mollit. Netus cillum exercitation anim curae commodo urna fames diam erat felis culpa sollicitudin convallis magna volutpat erat.</p>
+    <p>Egestas vel curabitur nulla odio magna do lobortis non eget fugiat. Efficitur commodo arcu posuere dapibus nibh et leo fermentum do gravida varius ac condimentum eget eu mollit. Placerat odio integer sollicitudin auctor vestibulum vestibulum donec semper deserunt sit quis semper nulla donec lobortis orci. Condimentum venenatis posuere primis elit laboris est officia nulla rutrum. Quam ornare velit massa varius occaecat ultrices elit augue minim exercitation aliquip officia felis ea mauris. Sagittis vehicula exercitation pretium est senectus iaculis lorem nostrud dolore turpis commodo reprehenderit mauris vehicula eu exercitation.</p>
+    <p>Purus turpis gravida excepteur ea veniam egestas est reprehenderit arcu risus, exercitation convallis sem consequat. Dolore arcu nibh et aliquet ornare vestibulum exercitation incididunt, pellentesque excepteur nulla mattis. Semper pretium sem laboris vestibulum, fugiat dolor irure facilisis ultricies fermentum nunc massa ullamco mollit. Dapibus minim libero bibendum pulvinar tristique nulla, sollicitudin efficitur iaculis id facilisis semper.</p>
+    <p>Feugiat leo tincidunt semper mauris vitae eu. Culpa hendrerit arcu esse primis, sagittis iaculis pulvinar iaculis nisi ultricies. Gravida ac tristique mattis ea ac nec diam sem leo blandit ultricies posuere laboris ultrices consequat. Venenatis netus scelerisque posuere, primis sit primis curae vestibulum tincidunt dictum dolor faucibus eu. Volutpat augue ut aliquip, malesuada consequat nunc curae eget lacus lorem.</p>
+    <p>Pariatur incididunt orci bibendum volutpat nisl ullamco leo erat sagittis. Bibendum ut vitae commodo laboris quis anim aliquip magna ullamco aliqua molestie donec do aute vulputate condimentum. Pellentesque luctus feugiat vulputate occaecat ut pretium iaculis reprehenderit sapien mattis. Cillum ultricies felis incididunt magna nisl eleifend eu dictum vulputate dapibus dapibus in lorem integer.</p>
+    <figure class="quote" style="--a:var(--purple)">
+      <span class="mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>Stephen Stupid asked what this page earns. Nothing. He called it a loss.</p>
+        <p>I call it eight excellent minutes of reading. Stephen Stupid is no relation.</p>
+      </blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+    </figure>
+    <p>Consequat cupidatat ligula blandit semper lobortis reprehenderit sunt senectus. Justo elit ullamco cupidatat risus curae enim faucibus quam. Dolor orci libero quis viverra tellus deserunt cupidatat. Lacus quis magna erat condimentum nisi augue aliqua mollit blandit feugiat vestibulum.</p>
+    <p>Reprehenderit cupidatat tellus tincidunt ex donec tincidunt molestie diam. Faucibus occaecat occaecat pariatur faucibus ornare dolore mattis gravida duis lobortis integer placerat incididunt. Mollit viverra ornare dapibus sed fermentum, reprehenderit sapien nisl quam ullamco culpa. Pretium aliqua dictum morbi potenti eget consequat incididunt magna, vitae massa quis proident tortor proident volutpat dolor.</p>
+    <p>Vehicula tristique nostrud tincidunt nibh cras eu. Fames volutpat sollicitudin deserunt eiusmod primis libero lectus rutrum nulla et vehicula porta turpis faucibus proident volutpat. Dapibus semper egestas nec erat ad dapibus diam consectetur consequat risus, ut interdum urna eiusmod. Ex diam primis ea pulvinar ex curabitur sem mollit, diam culpa suspendisse qui.</p>
+    <p>Do accumsan ornare vestibulum nulla quam interdum consequat. Facilisis magna pariatur fermentum consequat integer sem massa feugiat consequat. Veniam felis posuere luctus officia ultricies augue gravida eleifend rutrum. Tristique laborum malesuada convallis veniam, cupidatat sapien sint ad mauris pariatur.</p>
+    <p>Pellentesque risus nisl eiusmod viverra vitae quis phasellus tempor, viverra blandit ac magna donec semper odio. Quis ex suspendisse ex labore cras consequat pretium netus libero tristique mollit pulvinar. Sit potenti fugiat metus viverra mi, suspendisse mauris sagittis enim convallis. Dolor pariatur quam quis bibendum luctus nec condimentum ipsum condimentum lorem magna labore. Vehicula morbi dapibus consequat amet consectetur rutrum.</p>
+    <p>Hendrerit laboris arcu ut non gravida voluptate. Proident deserunt do ultrices vel sed proident do iaculis semper porttitor dictum aliquet accumsan. Quis ultricies enim ullamco fermentum ultricies laborum primis. Ad ipsum sint elit curabitur odio laborum do.</p>
+    <p>Ipsum phasellus sunt lorem ipsum iaculis cillum donec non arcu veniam. Exercitation ac vestibulum pariatur hendrerit curabitur tempor ad aute quis vulputate eiusmod odio quis. Vel ornare consectetur ac nibh facilisis, nulla venenatis bibendum fugiat sunt gravida odio magna occaecat non. Exercitation varius quis ea luctus feugiat ex duis venenatis gravida urna laboris vitae rutrum.</p>
+    <figure class="quote" style="--a:var(--mint)">
+      <span class="mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>Lorem ipsum has been called meaningless since the 1500s.</p>
+        <p>Five hundred excellent years. Oddly, Inc. does not make mistakes. Oddly, Inc. makes paragraphs.</p>
+      </blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+    </figure>
+    <p>At turpis morbi nunc augue morbi labore sem felis anim, malesuada nostrud felis. In tristique efficitur blandit non lacus convallis quis aute sapien, ex nisl esse posuere pulvinar. Reprehenderit sagittis fugiat eleifend adipiscing commodo leo nulla sit accumsan duis iaculis voluptate. Justo duis nec esse cras mollit risus. Gravida dapibus orci tempor cubilia et diam. Volutpat cras molestie feugiat vel dolor eget ea.</p>
+    <p>Blandit erat ut ullamco id id vehicula irure. Pariatur curae hendrerit orci massa cupidatat diam at semper aute risus felis. Odio duis nostrud molestie nec vehicula laboris, nulla nostrud occaecat accumsan egestas ultricies et nisl eiusmod consectetur. Nec efficitur quam urna fames sunt nunc deserunt commodo, rutrum justo felis tristique senectus sed. Ut ut massa cupidatat purus aliqua ornare aliqua.</p>
+    <p>Fugiat ligula mollit est phasellus orci aliqua pretium. Tellus orci do gravida feugiat tortor pellentesque, augue amet ullamco netus tincidunt. Eiusmod cupidatat vehicula adipiscing in pariatur vestibulum lorem. Laboris ante velit lorem luctus ex minim ligula placerat. Urna porta tincidunt aliquip odio qui integer aliquip scelerisque. Accumsan duis qui odio nec dapibus dolore.</p>
+    <p>Consequat aliquip consequat sint, nulla officia cras posuere sunt rutrum placerat blandit. Sit faucibus fermentum fugiat integer donec cras, netus integer reprehenderit lacus. Sapien aliqua dapibus velit sollicitudin vehicula rutrum iaculis lacus phasellus, arcu nec ultricies. Veniam mollit leo anim quam ut faucibus turpis consectetur potenti, libero quam orci nisl.</p>
+    <p>Nulla pulvinar deserunt anim, sunt odio risus facilisis cillum donec augue mi. Urna ultricies potenti lacus integer ultricies, urna fermentum tempor curabitur mauris pariatur adipiscing morbi pretium volutpat. Donec ipsum dictum ac donec porttitor hendrerit cubilia, ante ad pellentesque magna augue. Nulla tempor pretium eleifend consequat fugiat excepteur sed efficitur vehicula placerat, arcu pellentesque eleifend fames.</p>
+    <p>Ipsum adipiscing scelerisque sagittis urna nibh pellentesque consectetur. Pariatur odio commodo cillum sit lectus amet. Vehicula sem sollicitudin in bibendum cras nunc iaculis. Nibh sagittis irure ut cubilia voluptate viverra sapien officia.</p>
+    <p>Vulputate ligula sem curae ligula, culpa cillum vehicula culpa nisi consequat ornare vulputate aliquet. Quis ultrices officia vitae eget arcu, interdum facilisis commodo quam vulputate. Dolore placerat hendrerit libero do culpa officia fugiat aliqua. Consequat felis odio pretium hendrerit velit cillum risus veniam.</p>
+    <figure class="quote" style="--a:var(--amber)">
+      <span class="mark" aria-hidden="true">“</span>
+      <blockquote>
+        <p>You have scrolled this far. Most people do not.</p>
+        <p>I do not understand people.</p>
+      </blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+    </figure>
+    <p>Occaecat ex nulla metus ligula rutrum quis ultrices elit commodo mattis, bibendum ultrices reprehenderit sollicitudin. Fugiat ac.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap foot-base">
+    <span>© 2026 Oddly, Inc. All rights reserved, mostly.</span>
+    <a href="https://www.oddly-inc.com/">Return to Oddly, Inc.</a>
+    <span>This is not a bug. — Oddly, Inc.</span>
+  </div>
+</footer>
+
+</body>
+</html>
