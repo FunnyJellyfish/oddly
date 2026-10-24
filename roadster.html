@@ -230,7 +230,7 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
 .reel-rec::before{content:"";display:inline-block;width:.7em;height:.7em;border-radius:50%;background:currentColor;margin-right:.4em;vertical-align:-.05em;animation:reelblink 1s steps(2) infinite}
 @keyframes reelblink{50%{opacity:0}}
 .reel-plaque{display:inline-block;margin-top:.5em;font-size:.85em;color:var(--warn);border:1px solid currentColor;padding:.25em .6em;background:rgba(5,7,15,.6)}
-.reel-cap{position:absolute;left:0;right:0;bottom:3.2cqw;text-align:center;padding:0 6cqw}
+.reel-cap{position:absolute;left:0;right:0;bottom:3.2cqw;text-align:center;padding:0 6cqw;pointer-events:none}
 .reel-cap p{display:inline-block;margin:0;font-family:var(--f-display);font-weight:600;font-size:clamp(14px,2.6cqw,30px);line-height:1.2;color:#fff;background:rgba(5,7,15,.72);padding:.25em .6em;border-radius:4px;text-wrap:balance}
 .reel-cap small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.45em;letter-spacing:.14em;text-transform:uppercase;color:var(--warn);margin-top:.5em}
 .reel-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
@@ -240,6 +240,15 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
 .reel-time{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .reel-ctl .btn{padding:10px 16px}
 .reel-note{margin-top:10px;font-size:13px;color:var(--muted)}
+/* Phones: the film is too short for an overlaid caption, so it sits in a strip below the picture */
+@media (max-width:600px){
+  .reel-stage{aspect-ratio:auto}
+  .reel-stage canvas{height:auto;aspect-ratio:16/9}
+  .reel-hud{inset:0 0 auto;aspect-ratio:16/9}
+  .reel-cap{position:static;display:flex;align-items:center;justify-content:center;min-height:88px;padding:10px 14px;border-top:1px solid var(--line)}
+  .reel-cap p{background:none;padding:0;font-size:16px}
+  .reel-cap small{font-size:10px;letter-spacing:.12em}
+}
 #launch .console .log{flex:1 1 280px;min-width:0}
 .preview canvas{display:block;width:100%;max-width:520px;height:auto}
 
@@ -293,8 +302,8 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
       <div class="reel-hud">
         <div class="reel-tl" id="reelHud"></div>
         <div class="reel-tr"><span class="reel-rec">Rec</span><br><span id="reelCam">Cam 2 · Desert Rd</span><br><span class="reel-plaque">Certification: Pending</span></div>
-        <div class="reel-cap"><p id="reelCap">Oddly Roadster.</p></div>
       </div>
+      <div class="reel-cap"><p id="reelCap">Oddly Roadster.</p></div>
     </div>
     <div class="console">
       <div class="log" id="reelLog"></div>
