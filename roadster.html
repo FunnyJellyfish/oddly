@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Oddly Roadster</title>
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap">
@@ -201,9 +201,9 @@ input[type=text],select{font:inherit;font-size:16px;color:var(--fg);background:v
 .tests{display:grid;grid-template-columns:1fr 1.17fr;gap:24px;align-items:start}
 @media (max-width:860px){.tests{grid-template-columns:1fr}}
 .shot{margin:0;display:grid;gap:14px;min-width:0}
-.shot button{display:block;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);cursor:zoom-in}
+.shot button[data-full]{display:block;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);cursor:zoom-in}
 .shot img{display:block;width:100%;height:auto;transition:transform .4s}
-.shot button:hover img{transform:scale(1.02)}
+.shot button[data-full]:hover img{transform:scale(1.02)}
 .log{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .log b{color:var(--plume);font-weight:600}
 .shot figcaption p{color:var(--muted);font-size:15px;margin-top:6px;max-width:62ch}
@@ -216,6 +216,32 @@ dialog.viewer{padding:0;border:0;background:transparent;max-width:min(96vw,1600p
 dialog.viewer::backdrop{background:rgba(5,6,8,.9)}
 dialog.viewer img{display:block;max-width:100%;max-height:92vh;border-radius:10px}
 dialog.viewer form{position:absolute;top:10px;right:10px}
+
+
+/* Flight test reel (canvas film, three chapters) */
+.reel-stage{position:relative;aspect-ratio:16/9;max-width:100%;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#05070F;container-type:inline-size}
+.reel-stage canvas{display:block;width:100%;height:100%}
+.reel-hud{position:absolute;inset:0;pointer-events:none;font-family:var(--f-mono);color:#F2F5F8}
+.reel-tl{position:absolute;left:2.4cqw;top:2.2cqw;font-size:clamp(9px,1.25cqw,14px);line-height:1.6;letter-spacing:.06em;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.reel-tl i{font-style:normal;display:inline-block;width:8ch;color:#C9D2DE}
+.reel-tl b{display:inline-block;min-width:6ch;text-align:right;color:var(--plume);font-weight:600;font-variant-numeric:tabular-nums}
+.reel-tr{position:absolute;right:2.4cqw;top:2.2cqw;font-size:clamp(9px,1.25cqw,14px);letter-spacing:.12em;text-transform:uppercase;text-align:right;line-height:1.6;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.reel-rec{color:#FF5A4E}
+.reel-rec::before{content:"";display:inline-block;width:.7em;height:.7em;border-radius:50%;background:currentColor;margin-right:.4em;vertical-align:-.05em;animation:reelblink 1s steps(2) infinite}
+@keyframes reelblink{50%{opacity:0}}
+.reel-plaque{display:inline-block;margin-top:.5em;font-size:.85em;color:var(--warn);border:1px solid currentColor;padding:.25em .6em;background:rgba(5,7,15,.6)}
+.reel-cap{position:absolute;left:0;right:0;bottom:3.2cqw;text-align:center;padding:0 6cqw}
+.reel-cap p{display:inline-block;margin:0;font-family:var(--f-display);font-weight:600;font-size:clamp(14px,2.6cqw,30px);line-height:1.2;color:#fff;background:rgba(5,7,15,.72);padding:.25em .6em;border-radius:4px;text-wrap:balance}
+.reel-cap small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.45em;letter-spacing:.14em;text-transform:uppercase;color:var(--warn);margin-top:.5em}
+.reel-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.reel-bar .modes{margin:0}
+.reel-ctl{display:flex;gap:10px;align-items:center;flex:1 1 320px;min-width:0}
+.reel-ctl input[type=range]{flex:1 1 auto;min-width:0;accent-color:var(--plume)}
+.reel-time{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.reel-ctl .btn{padding:10px 16px}
+.reel-note{margin-top:10px;font-size:13px;color:var(--muted)}
+#launch .console .log{flex:1 1 280px;min-width:0}
+.preview canvas{display:block;width:100%;max-width:520px;height:auto}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -256,84 +282,29 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
   </div>
 
   <div class="wrap stage-wrap" id="launch">
-    <div class="modes" role="group" aria-label="Demonstration">
-      <button class="mode" type="button" data-mode="flip" aria-pressed="true">Fly &amp; flip</button>
-      <button class="mode" type="button" data-mode="wall" aria-pressed="false">Wall drive</button>
-      <button class="mode" type="button" data-mode="loop" aria-pressed="false">Loop</button>
-      <button class="mode" type="button" data-mode="launch" aria-pressed="false">Rear launch</button>
+    <div class="modes" id="reelChapters" role="group" aria-label="Demonstration">
+      <button class="mode" type="button" data-ch="0" aria-pressed="true">Fly &amp; flip</button>
+      <button class="mode" type="button" data-ch="1" aria-pressed="false">Wall drive</button>
+      <button class="mode" type="button" data-ch="2" aria-pressed="false">Loop</button>
+      <button class="mode" type="button" data-ch="3" aria-pressed="false">Rear launch</button>
     </div>
-    <div class="stage" id="stage">
-      <canvas id="sky" aria-hidden="true"></canvas>
-      <div class="van" id="van">
-        <svg viewBox="-150 0 680 190" role="img" aria-label="Oddly Roadster minivan, side view, rocket nozzles at the rear">
-          <defs>
-            <linearGradient id="flameG" x1="1" x2="0" y1="0" y2="0">
-              <stop offset="0" stop-color="#FFFFFF"/>
-              <stop offset=".18" stop-color="#BFE4FF"/>
-              <stop offset=".45" stop-color="#FF9A3C"/>
-              <stop offset="1" stop-color="#FF4D1F" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="flameD" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#FFFFFF"/><stop offset=".2" stop-color="#BFE4FF"/><stop offset=".5" stop-color="#FF9A3C"/><stop offset="1" stop-color="#FF4D1F" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="flameU" x1="0" x2="0" y1="1" y2="0">
-              <stop offset="0" stop-color="#FFFFFF"/><stop offset=".2" stop-color="#BFE4FF"/><stop offset=".5" stop-color="#FF9A3C"/><stop offset="1" stop-color="#FF4D1F" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="glass" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stop-color="#2B3442"/><stop offset="1" stop-color="#0E131A"/>
-            </linearGradient>
-          </defs>
-          <g class="fl down" id="flamesDown"><path d="M54 156 L62 262 L70 156 Z" fill="url(#flameD)"/><path d="M59 156 L62 196 L65 156 Z" fill="#FFFFFF" opacity=".9"/><path d="M182 156 L190 262 L198 156 Z" fill="url(#flameD)"/><path d="M187 156 L190 196 L193 156 Z" fill="#FFFFFF" opacity=".9"/><path d="M292 156 L300 262 L308 156 Z" fill="url(#flameD)"/><path d="M297 156 L300 196 L303 156 Z" fill="#FFFFFF" opacity=".9"/><path d="M462 156 L470 262 L478 156 Z" fill="url(#flameD)"/><path d="M467 156 L470 196 L473 156 Z" fill="#FFFFFF" opacity=".9"/></g>
-          <g class="fl up" id="flamesUp"><path d="M141 34 L150 -110 L159 34 Z" fill="url(#flameU)"/><path d="M147 34 L150 -10 L153 34 Z" fill="#FFFFFF" opacity=".9"/><path d="M281 34 L290 -110 L299 34 Z" fill="url(#flameU)"/><path d="M287 34 L290 -10 L293 34 Z" fill="#FFFFFF" opacity=".9"/></g>
-          <g class="fl rear" id="flames">
-            <path d="M8 96 L-140 104 L8 112 Z" fill="url(#flameG)"/>
-            <path d="M8 124 L-150 132 L8 140 Z" fill="url(#flameG)"/>
-            <path d="M10 99 L-60 104 L10 109 Z" fill="#FFFFFF" opacity=".9"/>
-            <path d="M10 127 L-64 132 L10 137 Z" fill="#FFFFFF" opacity=".9"/>
-          </g>
-          <!-- nozzles -->
-          <path d="M30 94 L10 92 L10 116 L30 114 Z" fill="#3A3F48"/>
-          <path d="M30 122 L10 120 L10 144 L30 142 Z" fill="#3A3F48"/>
-          <!-- perimeter and roof nozzles -->
-          <rect x="55" y="152" width="14" height="8" rx="2" fill="#3A3F48"/><rect x="183" y="152" width="14" height="8" rx="2" fill="#3A3F48"/><rect x="293" y="152" width="14" height="8" rx="2" fill="#3A3F48"/><rect x="463" y="152" width="14" height="8" rx="2" fill="#3A3F48"/><rect x="140" y="26" width="20" height="10" rx="3" fill="#3A3F48"/><rect x="280" y="26" width="20" height="10" rx="3" fill="#3A3F48"/>
-          <!-- body -->
-          <path class="paint" d="M28 150 L28 74 Q30 46 62 44 L352 36 Q382 35 402 54 L450 98 Q490 104 500 120 L502 150 Q502 156 496 156 L34 156 Q28 156 28 150 Z" fill="var(--van-paint)"/>
-          <path d="M54 58 L350 48 Q374 48 390 62 L428 98 L54 98 Z" fill="url(#glass)"/>
-          <rect x="138" y="50" width="9" height="49" fill="var(--van-paint)"/>
-          <rect x="250" y="46" width="9" height="53" fill="var(--van-paint)"/>
-          <rect x="336" y="44" width="9" height="55" fill="var(--van-paint)"/>
-          <!-- roof rack -->
-          <rect x="70" y="30" width="250" height="4" rx="2" fill="#2A2E36"/>
-          <rect x="90" y="33" width="4" height="10" fill="#2A2E36"/><rect x="296" y="31" width="4" height="10" fill="#2A2E36"/>
-          <!-- sliding door track & seams -->
-          <path d="M150 104 L338 104" stroke="#000" stroke-opacity=".28" stroke-width="2"/>
-          <path d="M147 99 L147 150 M259 99 L259 150 M345 99 L345 150" stroke="#000" stroke-opacity=".22" stroke-width="1.5"/>
-          <rect x="234" y="112" width="18" height="4" rx="2" fill="#000" fill-opacity=".35"/>
-          <rect x="322" y="112" width="18" height="4" rx="2" fill="#000" fill-opacity=".35"/>
-          <!-- lights & trim -->
-          <rect x="29" y="70" width="7" height="34" rx="2" fill="#C8252B"/>
-          <path d="M478 108 L498 114 L498 122 L476 118 Z" fill="#F4F1E6"/>
-          <rect x="28" y="140" width="474" height="16" rx="5" fill="#000" fill-opacity=".22"/>
-          <text x="62" y="134" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2" fill="#000" fill-opacity=".45">ODDLY · ROADSTER</text>
-          <!-- wheels -->
-          <circle cx="112" cy="154" r="27" fill="#0B0C0E"/><circle cx="112" cy="154" r="14" fill="#8A8F98"/><circle cx="112" cy="154" r="5" fill="#2A2E36"/>
-          <circle cx="412" cy="154" r="27" fill="#0B0C0E"/><circle cx="412" cy="154" r="14" fill="#8A8F98"/><circle cx="412" cy="154" r="5" fill="#2A2E36"/>
-        </svg>
+    <div class="reel-stage" id="reel">
+      <canvas id="reelCv" width="1280" height="720" aria-label="The champagne Oddly Roadster minivan demonstrates four rocket maneuvers on a desert test range at dusk: a flying backflip, driving up a wall, a loop, and a rear rocket launch."></canvas>
+      <div class="reel-hud">
+        <div class="reel-tl" id="reelHud"></div>
+        <div class="reel-tr"><span class="reel-rec">Rec</span><br><span id="reelCam">Cam 2 · Desert Rd</span><br><span class="reel-plaque">Certification: Pending</span></div>
+        <div class="reel-cap"><p id="reelCap">Oddly Roadster.</p></div>
       </div>
-      <div class="hud" aria-live="off">
-        <div class="gauge speed"><small id="gLabel1">Altitude</small><b id="gSpeed">0</b> <small style="display:inline" id="gUnit1">ft</small></div>
-        <div class="gauge"><small>T+</small><b id="gTime">0.00</b></div>
-        <div class="gauge"><small id="gLabel3">Pitch</small><b id="gG">0°</b></div>
-        <div class="gauge"><small>Propellant</small><b id="gProp">100%</b></div>
-      </div>
-      <div class="flag" id="flag">0–60 mph · 0.43 s</div>
-      <div class="countdown" id="countdown" aria-hidden="true"></div>
-      <p class="disclaimer">Professional(ish) driver on closed course. Do not attempt.</p>
     </div>
     <div class="console">
-      <p class="status" id="status" role="status"><b>Ready.</b> Eight perimeter rockets armed. Eight passengers aboard.</p>
-      <button class="btn ignite" id="ignite" type="button">Lift off</button>
+      <div class="log" id="reelLog"></div>
+      <div class="reel-ctl">
+        <button class="btn ghost" type="button" id="reelPlay">Pause</button>
+        <input type="range" id="reelScrub" min="0" max="580" value="0" aria-label="Demonstration timeline">
+        <span class="reel-time" id="reelTime">00.0</span>
+      </div>
     </div>
+    <p class="reel-note">Professional(ish) driver on closed course. Do not attempt. All eight passengers were facing forward at the start and end of every demonstration.</p>
   </div>
 
   <section id="features">
@@ -473,7 +444,7 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
       </div>
       <div class="config">
         <div class="panel preview" aria-hidden="true">
-          <svg viewBox="0 0 530 190" id="previewVan"></svg>
+          <canvas id="previewVan" width="1060" height="460"></canvas>
         </div>
         <div class="panel">
           <div>
@@ -579,358 +550,364 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
 <dialog class="viewer" id="viewer" aria-label="Photo"><img id="viewerImg" alt=""><form method="dialog"><button class="btn ghost" type="submit">Close</button></form></dialog>
 
 <script>
+/* ---------- Shared van drawing + Flight test reel ---------- */
+(()=>{
+const W=1280,H=720,GROUND=H-205,CEN=67;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=x=>{x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const seg=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const D2R=Math.PI/180;
+
+function hex2rgb(h){h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function mix(h,to,a){const p=hex2rgb(h),q=hex2rgb(to);return'rgb('+p.map((v,i)=>Math.round(v+(q[i]-v)*a)).join(',')+')'}
+function lum(h){const[r,g,b]=hex2rgb(h);return(.299*r+.587*g+.114*b)/255}
+
+// Nozzles in van-local canvas coords: [x, y, dirX, dirY]. 0-3 underside, 4 rear, 5 roof adhesion.
+const NOZ=[[-88,40,0,1],[-30,40,0,1],[30,40,0,1],[88,40,0,1],[-124,6,-1,0],[0,-66,0,-1]];
+
+function drawFlame(c,n,th,t,i){
+  if(th<=.01) return;
+  const[x,y,dx,dy]=n;const len=(i===4?95:120)*th*(.85+.15*Math.sin(t*55+i*2.1)+.08*Math.sin(t*91+i));
+  c.save();c.translate(x+dx*6,y+dy*6);c.rotate(Math.atan2(dy,dx)-Math.PI/2);
+  c.globalCompositeOperation='lighter';
+  let g=c.createLinearGradient(0,0,0,len);g.addColorStop(0,'#ffffff');g.addColorStop(.25,'#9fe3ff');g.addColorStop(.7,'rgba(61,123,255,.6)');g.addColorStop(1,'rgba(61,123,255,0)');
+  c.fillStyle=g;c.beginPath();c.moveTo(-11,0);c.quadraticCurveTo(-13,len*.4,0,len);c.quadraticCurveTo(13,len*.4,11,0);c.fill();
+  g=c.createLinearGradient(0,0,0,len*.45);g.addColorStop(0,'#fff');g.addColorStop(1,'rgba(255,255,255,0)');
+  c.fillStyle=g;c.beginPath();c.moveTo(-5,0);c.lineTo(0,len*.45);c.lineTo(5,0);c.fill();
+  const r=Math.max(1,40*th),gl=c.createRadialGradient(0,4,0,0,4,r);gl.addColorStop(0,'rgba(191,233,255,.55)');gl.addColorStop(1,'rgba(191,233,255,0)');
+  c.fillStyle=gl;c.beginPath();c.arc(0,4,r,0,7);c.fill();
+  c.restore();
+}
+function rr(c,x,y,w,h,r){c.beginPath();c.roundRect?c.roundRect(x,y,w,h,r):c.rect(x,y,w,h)}
+
+function drawVan(c,o){
+  const paint=o.paint||'#D9C6A0',th=o.th||[0,0,0,0,0,0],t=o.t||0,spin=o.spin||0;
+  NOZ.forEach((n,i)=>drawFlame(c,n,th[i]||0,t,i));
+  c.lineJoin='round';
+  c.fillStyle='#1a1622';rr(c,-118,30,236,12,6);c.fill();
+  const bg=c.createLinearGradient(0,-58,0,40);bg.addColorStop(0,mix(paint,'#ffffff',.35));bg.addColorStop(.55,paint);bg.addColorStop(1,mix(paint,'#000000',.25));
+  c.fillStyle=bg;c.strokeStyle=mix(paint,'#000000',.6);c.lineWidth=2;
+  c.beginPath();
+  c.moveTo(-120,34);c.lineTo(-122,-30);c.quadraticCurveTo(-120,-56,-96,-58);
+  c.lineTo(52,-58);c.quadraticCurveTo(66,-57,74,-48);c.lineTo(102,-10);
+  c.quadraticCurveTo(122,-6,124,6);c.lineTo(124,30);c.quadraticCurveTo(122,36,114,36);c.lineTo(-112,36);c.closePath();
+  c.fill();c.stroke();
+  c.fillStyle='#16233f';
+  c.beginPath();c.moveTo(-108,-48);c.lineTo(-62,-48);c.lineTo(-62,-14);c.lineTo(-110,-14);c.quadraticCurveTo(-111,-40,-108,-48);c.fill();
+  rr(c,-54,-48,52,34,4);c.fill();rr(c,6,-48,46,34,4);c.fill();
+  c.beginPath();c.moveTo(58,-48);c.lineTo(70,-46);c.lineTo(95,-14);c.lineTo(58,-14);c.closePath();c.fill();
+  c.fillStyle='rgba(140,203,255,.16)';
+  c.beginPath();c.moveTo(-40,-48);c.lineTo(-28,-48);c.lineTo(-44,-14);c.lineTo(-56,-14);c.fill();
+  c.fillStyle='#0b1020';
+  for(const px of[-86,-28,28,74]){c.beginPath();c.arc(px,-26,7,0,7);c.fill()}
+  const seam=mix(paint,'#000000',.38);
+  c.strokeStyle=seam;c.lineWidth=1.5;
+  c.beginPath();c.moveTo(-58,-14);c.lineTo(-58,32);c.moveTo(2,-14);c.lineTo(2,32);c.stroke();
+  c.fillStyle=seam;c.fillRect(-12,-4,12,3);
+  c.fillStyle='#8CCBFF';c.fillRect(-120,6,244,3);
+  const ink=lum(paint)>.5?'#3a3020':'#F3EFE6';
+  c.fillStyle=ink;c.font='600 11px "JetBrains Mono",monospace';c.fillText('ODDLY',-48,24);
+  c.strokeStyle=ink;c.lineWidth=2;
+  c.beginPath();c.arc(-80,14,8,.35,Math.PI-.35);c.stroke();c.beginPath();c.arc(-80,14,8,Math.PI+.35,-.35);c.stroke();
+  c.fillStyle='#fff6d8';rr(c,112,-2,12,8,3);c.fill();
+  c.fillStyle='#ff4d3a';rr(c,-124,-20,6,18,2);c.fill();
+  c.fillStyle='#3b3f4f';c.strokeStyle='#15161d';c.lineWidth=1.5;
+  for(let i=0;i<4;i++){const[x,y]=NOZ[i];rr(c,x-8,y-9,14,18,3);c.fill();c.stroke()}
+  c.beginPath();c.moveTo(-133,-2);c.lineTo(-133,14);c.lineTo(-121,10);c.lineTo(-121,2);c.closePath();c.fill();c.stroke();
+  rr(c,-40,-66,80,9,4);c.fill();
+  c.beginPath();c.moveTo(-9,-66);c.lineTo(9,-66);c.lineTo(6,-74);c.lineTo(-6,-74);c.closePath();c.fill();c.stroke();
+  for(const wx of[-78,78]){
+    c.fillStyle='#120f17';c.beginPath();c.arc(wx,44,23,0,7);c.fill();
+    c.fillStyle='#8e8a9c';c.beginPath();c.arc(wx,44,11,0,7);c.fill();
+    c.strokeStyle='#120f17';c.lineWidth=3;c.save();c.translate(wx,44);c.rotate(spin);
+    for(let k=0;k<5;k++){c.rotate(Math.PI*2/5);c.beginPath();c.moveTo(0,0);c.lineTo(10,0);c.stroke()}
+    c.restore();
+  }
+}
+window.OddlyVan={draw:drawVan};
+
+/* ===== Reel ===== */
+const cv=document.getElementById('reelCv');
+if(!cv) return;
+const ctx=cv.getContext('2d');
+const $=id=>document.getElementById(id);
+const PAINT='#D9C6A0';
+
+function makeBurn(sc){
+  const n=Math.ceil(sc.dur*20)+1,b=new Float32Array(n);
+  for(let i=1;i<n;i++){const p=sc.plan((i-1)/20);b[i]=b[i-1]+(Math.max(...p.th)>.02?.05:0)}
+  sc.burnAt=t=>b[clamp(Math.floor(t*20),0,n-1)];
+}
+function integrate(dur,vfn){
+  const STEP=1/120,N=Math.ceil(dur/STEP)+2,S=new Float32Array(N);
+  for(let i=1;i<N;i++) S[i]=S[i-1]+vfn(i*STEP,S[i-1])*STEP;
+  return t=>{const f=t/STEP,i=clamp(Math.floor(f),0,N-2);return S[i]+(S[i+1]-S[i])*(f-i)};
+}
+const pitchOf=r=>{let d=Math.round(-r/D2R)%360;if(d<0)d+=360;return d};
+
+/* --- Chapter 1: Fly & flip --- */
+const flip=(()=>{
+  const alt=t=>t<4?0:t<6.5?330*ease(seg(t,4,6.5)):t<9?330+50*Math.sin(Math.PI*seg(t,6.5,9)):t<11?330+8*Math.sin((t-9)*3):t<13.6?330*(1-ease(seg(t,11,13.6))):0;
+  const rot=t=>{let r=0;if(t>=6.6&&t<=8.9)r=-Math.PI*2*ease(seg(t,6.6,8.9));if(t>4&&t<6.5)r+=-.06*Math.sin(Math.PI*seg(t,4,6.5));if(t>11&&t<13.6)r+=.05*Math.sin(Math.PI*seg(t,11,13.6));return r};
+  const thr=t=>t<2.6?0:t<3.6?.35*seg(t,2.6,3.6):t<4?.35+.65*seg(t,3.6,4):t<6.5?1:t<9?.85:t<11?.55:t<13.2?.75:t<14?.75*(1-seg(t,13.2,14)):0;
+  const spd=t=>t<2.6?90+60*t:t<4?246:t<11?300:t<14?300-230*seg(t,11,14):70*(1-seg(t,14,15));
+  const x=integrate(16,t=>spd(t));
+  return{
+    key:'flip',dur:16,log:['Test 014','Oct 1, 2026','Fly & flip'],cam2:'Cam 2 · Desert Rd',
+    labels:[['ALT','m'],['PITCH','°'],['THRUST','kN'],['BURN','s'],['SEATS','occ.']],
+    plan(t){const a=thr(t);return{cx:x(t),cy:CEN+alt(t),r:rot(t),th:[a,a,a,a,a,0],v:spd(t)}},
+    cam(p){return[p.cx-W*.42,Math.max(0,p.cy-CEN-150)]},
+    hud(p,t){return[((p.cy-CEN)*.05).toFixed(1),pitchOf(p.r),Math.round(Math.max(...p.th)*128),this.burnAt(t).toFixed(1),'8/8']},
+    caps:[[0,2.6,'Oddly Roadster.','Eight seats · Eight rockets'],[2.6,4,'Ignition.','All eight rockets are real rockets'],[4,6.5,'Liftoff.','The minivan is now an aircraft'],[6.5,9,'Backflip.','Passengers face forward again in 0.7 seconds'],[9,11,'Cruise.','Cupholders remain level within reason'],[11,14,'Landing.','The aircraft is now a minivan'],[14,16.1,'“A sports car seats two. A minivan seats eight. The math is not close.”','Stephen Stubborn (Stefen Stu-Born), CEO']],
+  };
+})();
+
+/* --- Chapter 2: Wall drive --- */
+const wall=(()=>{
+  const Wx=2000,Hw=420,R=60,x0=Wx-R-760;
+  const L1=760,L2=Math.PI/2*R,L3=Hw-R,L4=Math.PI/2*CEN;
+  const S2=L1,S3=L1+L2,S4=S3+L3,S5=S4+L4;
+  const v=(t,s)=>s<S2?140+160*Math.min(1,s/400):s<S3?180:s<S4?75:s<S5?120:Math.max(0,180-.5*(s-S5));
+  const S=integrate(14,v);
+  const tOf=target=>{for(let t=0;t<14;t+=1/120) if(S(t)>=target) return t;return 14};
+  const tA=tOf(S2),tV=tOf(S3),tC=tOf(S4),tT=tOf(S5);
+  function pose(s){
+    if(s<S2) return[x0+s,CEN,0];
+    if(s<S3){const a=(-90+90*(s-S2)/L2)*D2R;return[Wx-R+(R-CEN)*Math.cos(a),R+(R-CEN)*Math.sin(a),a/D2R+90]}
+    if(s<S4) return[Wx-CEN,R+(s-S3),90];
+    if(s<S5){const b=(180-90*(s-S4)/L4)*D2R;return[Wx+CEN*Math.cos(b),Hw+CEN*Math.sin(b),b/D2R-90]}
+    return[Wx+(s-S5),Hw+CEN,0];
+  }
+  const roof=t=>t<tA-.5?0:t<tA?seg(t,tA-.5,tA):t<tT?1:t<tT+.5?1-seg(t,tT,tT+.5):0;
+  return{
+    key:'wall',dur:14,log:['Test 027','Oct 9, 2026','Wall drive'],cam2:'Cam 2 · Wall 2',
+    labels:[['HEIGHT','m'],['PITCH','°'],['GRIP','g'],['ADHESN','s / 45'],['SEATS','occ.']],
+    plan(t){const s=S(t),[cx,cy,ph]=pose(s);const rf=roof(t);return{cx,cy,r:-ph*D2R,th:[0,0,0,0,0,rf],v:v(t,s),Wx,Hw,R}},
+    cam(p){return[Math.max(Math.min(p.cx-W*.35,Wx-W*.62),p.cx-W*.62),Math.max(0,p.cy-CEN-200)]},
+    hud(p,t){const h=p.cx>=Wx-CEN-1?Math.max(0,(p.cy-CEN)):0;return[(h*.05).toFixed(1),pitchOf(p.r),p.th[5]>.5?'2.5':'1.0',this.burnAt(t).toFixed(1),'8/8']},
+    caps:[[0,tA-.5,'Wall 2.','Concrete · Vertical · Located'],[tA-.5,tV+.6,'Adhesion burn.','Roof rocket fires away from the wall · 160 kN'],[tV+.6,tC,'Wall drive.','2.5 g of grip · 45-second burn limit'],[tC,tT+1.2,'Summit.','The top of the wall is also a road'],[tT+1.2,14.1,'The wall is now part of the route.','Arrived within the first 45 seconds']],
+    back(c,camX,camY){
+      const sx=Wx-camX,gy=GROUND+camY,top=gy-Hw;
+      if(sx>W+20) return;
+      const g=c.createLinearGradient(0,top,0,gy);g.addColorStop(0,'#8a8490');g.addColorStop(1,'#5a5462');
+      c.fillStyle=g;c.fillRect(sx,top,1800,Hw+60);
+      c.beginPath();c.moveTo(sx-R,gy);c.arc(sx-R,gy-R,R,Math.PI/2,0,true);c.lineTo(sx,gy);c.closePath();c.fill();
+      c.fillStyle='#b5aebb';c.fillRect(sx,top,1800,5);
+      c.strokeStyle='rgba(30,26,36,.35)';c.lineWidth=2;
+      for(let i=1;i<12;i++){c.beginPath();c.moveTo(sx+i*160,top+5);c.lineTo(sx+i*160,gy);c.stroke()}
+      c.beginPath();c.moveTo(sx,top+Hw*.5);c.lineTo(sx+1800,top+Hw*.5);c.stroke();
+      c.fillStyle='rgba(240,234,222,.78)';c.font='700 64px "JetBrains Mono",monospace';c.fillText('WALL 2',sx+170,top+Hw*.5-40);
+      c.fillStyle='rgba(255,207,90,.85)';c.font='600 18px "JetBrains Mono",monospace';c.fillText('CERTIFICATION: PENDING',sx+174,top+Hw*.5+34);
+    }
+  };
+})();
+
+/* --- Chapter 3: Loop --- */
+const loop=(()=>{
+  const Lx=1400,Rl=215,x0=Lx-620,rr2=Rl-CEN;
+  const at=a=>[Lx+rr2*Math.cos(a*D2R),Rl+rr2*Math.sin(a*D2R)];
+  const TOP=92,P0=at(TOP),P1=[Lx+30,CEN];
+  function pose(t){
+    if(t<2.5) return{cx:x0+248*t,cy:CEN,ph:0,v:248,th:0};
+    if(t<6.6){const u=(t-2.5)/4.1,a=-90+182*(1-(1-u)*(1-u));const[cx,cy]=at(a);return{cx,cy,ph:a+90,v:182*2*(1-u)/4.1*D2R*rr2,th:0}}
+    if(t<7.1){const u=(t-6.6)/.5;return{cx:P0[0],cy:P0[1],ph:TOP+90+Math.sin((t-6.6)*30)*2*(1-u),v:0,th:0}}
+    if(t<9.4){const u=(t-7.1)/2.3,e=ease(u);const th=u<.12?u/.12:u>.9?(1-u)/.1:1;
+      return{cx:P0[0]+(P1[0]-P0[0])*e,cy:P0[1]+(P1[1]-P0[1])*e,ph:TOP+90+(360-TOP-90)*ease(clamp(u*1.15,0,1)),v:0,th:.9*th}}
+    const d=t-9.4,tc=260/120;
+    return{cx:P1[0]+(d<tc?60*d*d:60*tc*tc+260*(d-tc)),cy:CEN,ph:360,v:Math.min(260,120*d),th:0};
+  }
+  return{
+    key:'loop',dur:14,log:['Test 031','Oct 9, 2026','Loop'],cam2:'Cam 2 · Loop 1',
+    labels:[['SPEED','mph'],['PITCH','°'],['THRUST','kN'],['BURN','s'],['SEATS','occ.']],
+    plan(t){const p=pose(t),a=p.th;return{cx:p.cx,cy:p.cy,r:-p.ph*D2R,th:[a,a,a,a,a*.6,0],v:p.v}},
+    cam(p){return[Math.max(Math.min(p.cx-W*.42,Lx-W*.5),p.cx-W*.62),0]},
+    hud(p,t){return[Math.round(p.v*.14),pitchOf(p.r),Math.round(Math.max(...p.th)*128),this.burnAt(t).toFixed(1),'8/8']},
+    caps:[[0,2.5,'Loop 1.','Speed governed for passenger comfort'],[2.5,6.6,'Entry.','Comfort speed maintained'],[6.6,7.2,'Top of the loop.','Speed has reached zero, as governed'],[7.2,9.6,'Perimeter rockets.','The landing is being completed'],[9.6,11.8,'Loop completed.','Oddly, Inc. considers the loop completed'],[11.8,14.1,'“We paid for half a loop. We used half a loop.”','Stephen Stupid (Stefen Stupid), CFO · No relation']],
+    back(c,camX,camY){
+      const sx=Lx-camX,gy=GROUND+camY,cy=gy-Rl;
+      c.strokeStyle='#3a3546';c.lineWidth=10;
+      c.beginPath();c.moveTo(sx-Rl*.62,cy+Rl*.79);c.lineTo(sx-Rl*.9,gy+30);c.moveTo(sx+Rl*.62,cy+Rl*.79);c.lineTo(sx+Rl*.9,gy+30);c.stroke();
+      c.strokeStyle='#6f7584';c.lineWidth=16;c.beginPath();c.arc(sx,cy,Rl+8,0,7);c.stroke();
+      c.strokeStyle='#b9bfcc';c.lineWidth=4;c.beginPath();c.arc(sx,cy,Rl+1,0,7);c.stroke();
+      c.strokeStyle='rgba(255,207,90,.8)';c.lineWidth=3;c.setLineDash([14,14]);c.beginPath();c.arc(sx,cy,Rl+12,0,7);c.stroke();c.setLineDash([]);
+      c.fillStyle='rgba(240,234,222,.8)';c.font='600 20px "JetBrains Mono",monospace';c.textAlign='center';c.fillText('LOOP 1',sx,cy+6);c.textAlign='start';
+    }
+  };
+})();
+
+
+/* --- Chapter 4: Rear launch (published model: 400 kN, 20 s burn) --- */
+const rear=(()=>{
+  const F=400000,ve=2600,m0=6377,CdA=1.05,rho=1.2,mdot=F/ve,BURN=20;
+  const DT=.005,N=Math.ceil(40/DT)+2,V=new Float32Array(N);
+  const run=k=>{for(let i=1;i<N;i++){const s=(i-1)*DT,m=s<BURN?m0-mdot*s:m0-mdot*BURN,f=s<BURN?F:0;V[i]=Math.max(0,V[i-1]+(f-.5*rho*k*V[i-1]*V[i-1])/m*DT)}return V[Math.round(BURN/DT)+1]};
+  // calibrate drag so burnout matches the published 1,735 mph
+  let lo=0,hi=CdA*2;for(let n=0;n<40;n++){const mid=(lo+hi)/2;run(mid)*2.23694>1735?lo=mid:hi=mid}run((lo+hi)/2);
+  const vAt=s=>{const f=clamp(s,0,40)/DT,i=Math.min(Math.floor(f),N-2);return V[i]+(V[i+1]-V[i])*(f-i)};
+  // film time -> mission time
+  const mis=t=>t<2.5?0:t<5.5?t-2.5:t<9.5?3+(t-5.5)*17/4:20+(t-9.5);
+  const pxv=t=>t<2.5?0:Math.min(2600,vAt(mis(t))*9+(t<9.5?0:0));
+  const X=integrate(14,t=>pxv(t));
+  return{
+    key:'rear',dur:14,log:['Test 033','Oct 9, 2026','Rear launch'],cam2:'Cam 2 · Desert Rd',
+    labels:[['SPEED','mph'],['T+','s'],['THRUST','kN'],['BURN','s / 20'],['SEATS','occ.']],
+    plan(t){const s=mis(t),th=t<2.5?0:s<BURN?(t<2.7?seg(t,2.5,2.7):1):Math.max(0,1-(s-BURN)*4);
+      const sq=t>2.5&&t<3.2?-.025*Math.sin(Math.PI*seg(t,2.5,3.2)):0;
+      return{cx:X(t)+1000,cy:CEN,r:sq,th:[0,0,0,0,th,0],v:pxv(t),mph:vAt(s)*2.23694,s}},
+    cam(p){return[p.cx-W*.55,0]},
+    hud(p,t){return[Math.min(1735,Math.round(p.mph)).toLocaleString('en-US'),p.s.toFixed(2),Math.round(p.th[4]*400),Math.min(20,p.s).toFixed(1),'8/8']},
+    caps:[[0,1.5,'Rear launch.','Four solid rocket motors · 400 kN'],[1.5,2.5,'Ignition armed.','Seat belts rated to 6.6 g'],[2.5,2.93,'Ignition.','T+0.00'],[2.93,5.5,'0–60 mph in 0.43 s.','With eight passengers'],[5.5,9.5,'Burn continues.','Footage shown at 4.25× · 20-second burn'],[9.5,11.5,'Burnout. 1,735 mph.','Mach 2.26 · in a minivan'],[11.5,14.1,'Oddly Autonomous™ is selecting a landing site.','With 100% confidence']],
+    fore(c,p,t){
+      if(p.v<500) return;
+      const a=clamp((p.v-500)/1800,0,1)*.5;c.strokeStyle=`rgba(255,240,220,${a})`;c.lineWidth=2;
+      for(let i=0;i<26;i++){const y=(i*97+t*13)%H,x=((i*331-t*p.v*1.4)%(W+400)+W+400)%(W+400)-200;c.beginPath();c.moveTo(x,y);c.lineTo(x+120+p.v*.08,y);c.stroke()}
+    }
+  };
+})();
+const SC=[flip,wall,loop,rear];SC.forEach(makeBurn);
+const START=[];let acc=0;SC.forEach(s=>{START.push(acc);acc+=s.dur});const TOTAL=acc;
+
+/* --- scenery --- */
+function rng(s){return()=>{s=(s*16807)%2147483647;return s/2147483647}}
+const r1=rng(7),r2=rng(19),r3=rng(31);
+const STARS=Array.from({length:110},()=>[r1()*W,r1()*H*.55,r1()*1.3+.3,r1()*6]);
+const MESA=Array.from({length:14},(_,i)=>({x:i*260+r2()*90,w:140+r2()*200,h:50+r2()*90,top:.5+r2()*.35}));
+const HILL=Array.from({length:22},(_,i)=>({x:i*170+r3()*60,w:220+r3()*140,h:22+r3()*40}));
+const CACTI=Array.from({length:18},(_,i)=>({x:i*230+r3()*120,s:.6+r3()*.6}));
+const CLOUDS=Array.from({length:8},(_,i)=>({x:i*360+r2()*200,y:150+r2()*230,w:120+r2()*160}));
+const wrapX=(x,span)=>((x%span)+span)%span;
+function scenery(camX,camY,t){
+  const off=camY*.35;
+  const g=ctx.createLinearGradient(0,-off,0,GROUND+off*.4);
+  g.addColorStop(0,'#090d24');g.addColorStop(.45,'#232a5c');g.addColorStop(.75,'#b0566a');g.addColorStop(.9,'#ff9a55');g.addColorStop(1,'#ffd08a');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#fff';
+  for(const s of STARS){const y=s[1]+off*.2;if(y>H)continue;ctx.globalAlpha=(.35+.35*Math.sin(t*2+s[3]))*clamp(1-y/(H*.6),0,1);ctx.fillRect(s[0],y,s[2],s[2])}
+  ctx.globalAlpha=1;
+  const sy=GROUND-26+camY*.3,sg=ctx.createRadialGradient(930,sy,4,930,sy,180);
+  sg.addColorStop(0,'#fff3d0');sg.addColorStop(.18,'#ffc56e');sg.addColorStop(1,'rgba(255,154,85,0)');
+  ctx.fillStyle=sg;ctx.beginPath();ctx.arc(930,sy,180,0,7);ctx.fill();
+  ctx.fillStyle='rgba(255,215,176,.15)';
+  for(const c of CLOUDS){const x=wrapX(c.x-camX*.12,W+600)-300,y=c.y+camY*.55-120;ctx.beginPath();ctx.ellipse(x,y,c.w,c.w*.13,0,0,7);ctx.ellipse(x+c.w*.3,y-8,c.w*.5,c.w*.11,0,0,7);ctx.fill()}
+  const base=GROUND+camY*.6;ctx.fillStyle='#5b2f4f';
+  for(const m of MESA){const x=wrapX(m.x-camX*.15,W+700)-350;ctx.beginPath();ctx.moveTo(x,base);ctx.lineTo(x+m.w*.12,base-m.h);ctx.lineTo(x+m.w*(.12+m.top*.7),base-m.h);ctx.lineTo(x+m.w,base);ctx.fill()}
+  const b2=GROUND+camY*.8;ctx.fillStyle='#3c2142';
+  for(const h of HILL){const x=wrapX(h.x-camX*.4,W+600)-300;ctx.beginPath();ctx.ellipse(x,b2,h.w,h.h,0,Math.PI,0);ctx.fill()}
+  ctx.fillRect(0,b2-1,W,H);
+  const gy=GROUND+camY;
+  if(gy<H+10){
+    const gg=ctx.createLinearGradient(0,gy,0,H);gg.addColorStop(0,'#5a3236');gg.addColorStop(1,'#1d1220');
+    ctx.fillStyle=gg;ctx.fillRect(0,gy,W,H-gy+2);
+    ctx.fillStyle='#24202c';ctx.fillRect(0,gy+4,W,46);
+    ctx.fillStyle='#ffb547';for(let i=0;i<20;i++){ctx.fillRect(wrapX(i*120-camX,W+120)-60,gy+26,56,4)}
+    ctx.fillStyle='rgba(255,255,255,.19)';ctx.fillRect(0,gy+4,W,2);
+    ctx.fillStyle='#1b1424';
+    for(const c of CACTI){const x=wrapX(c.x-camX,W+400)-200;ctx.save();ctx.translate(x,gy+70);ctx.scale(c.s,c.s);ctx.fillRect(-6,-60,12,60);ctx.fillRect(-22,-40,8,22);ctx.fillRect(-22,-24,18,7);ctx.fillRect(14,-48,8,24);ctx.fillRect(4,-30,18,7);ctx.restore()}
+  }
+}
+
+/* --- smoke (world coords, y up) --- */
+let parts=[];
+function emit(p){
+  const c=Math.cos(p.r),s=Math.sin(p.r);
+  NOZ.forEach((n,i)=>{
+    const th=p.th[i];if(th<=.02) return;
+    const k=Math.random()<th?(th>.6?2:1):0;
+    for(let j=0;j<k;j++){
+      const lx=n[0]+n[2]*40*th,ly=n[1]+n[3]*40*th;
+      const dx=n[2]*c-n[3]*s,dy=-(n[2]*s+n[3]*c),sp=120+Math.random()*120;
+      parts.push({x:p.cx+lx*c-ly*s,y:p.cy-(lx*s+ly*c),vx:dx*sp+(Math.random()-.5)*60,vy:dy*sp+(Math.random()-.5)*60,life:0,max:1.6+Math.random()*1.4,r:8+Math.random()*8});
+    }
+  });
+}
+function stepParts(dt){
+  for(const p of parts){p.life+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.97;p.vy*=.97;p.vy+=8*dt;p.r+=26*dt;
+    if(p.y<6){p.y=6;p.vy=Math.abs(p.vy)*.15;p.vx+=(p.vx>=0?1:-1)*140*dt}}
+  parts=parts.filter(p=>p.life<p.max);if(parts.length>900)parts.splice(0,parts.length-900);
+}
+
+/* --- HUD DOM --- */
+const hudEl=$('reelHud'),capEl=$('reelCap'),logEl=$('reelLog'),camEl=$('reelCam'),chBtns=[...document.querySelectorAll('#reelChapters .mode')];
+let rows=[],curSc=-1,capKey='';
+function setScene(i){
+  curSc=i;parts=[];const s=SC[i];
+  hudEl.innerHTML=s.labels.map(([l,u])=>`<i>${l}</i><b>0</b> ${u}`).join('<br>');
+  rows=[...hudEl.querySelectorAll('b')];
+  logEl.innerHTML=s.log.map((x,j)=>j?`<span>${x}</span>`:`<span><b>${x}</b></span>`).join('');
+  camEl.textContent=s.cam2;
+  chBtns.forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i)));
+  capKey='';
+}
+
+/* --- loop --- */
+let g=0,last=null,playing=true,visible=true,scrubbing=false,spin=0;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce){playing=false;g=7.7}
+function locate(gt){let i=SC.length-1;while(i>0&&gt<START[i])i--;return[i,gt-START[i]]}
+function render(dt){
+  const[i,t]=locate(g);if(i!==curSc)setScene(i);
+  const s=SC[i],p=s.plan(t),[camX,camY]=s.cam(p);
+  if(dt>0){spin+=p.v*dt/23;emit(p);stepParts(dt)}
+  scenery(camX,camY,t);
+  if(s.back)s.back(ctx,camX,camY);
+  const h=p.cy-CEN;
+  if(h<400&&camY<160){const sc=clamp(1-h/400,.15,1);ctx.fillStyle=`rgba(0,0,0,${.45*sc})`;ctx.beginPath();ctx.ellipse(p.cx-camX,GROUND+camY+2,130*sc,10*sc,0,0,7);ctx.fill()}
+  for(const q of parts){const a=1-q.life/q.max;ctx.fillStyle=`rgba(${200+30*a|0},${190+20*a|0},200,${.28*a})`;ctx.beginPath();ctx.arc(q.x-camX,GROUND-q.y+camY,q.r,0,7);ctx.fill()}
+  const th=Math.max(...p.th.slice(0,5));
+  if(th>0&&h<160&&camY<120){const gg=ctx.createRadialGradient(p.cx-camX,GROUND+camY,0,p.cx-camX,GROUND+camY,220);gg.addColorStop(0,`rgba(160,220,255,${.35*th*(1-h/160)})`);gg.addColorStop(1,'rgba(160,220,255,0)');ctx.fillStyle=gg;ctx.fillRect(0,0,W,H)}
+  ctx.save();ctx.translate(p.cx-camX,GROUND-p.cy+camY+(h<1?Math.sin(t*22)*.8:0));ctx.rotate(p.r);
+  drawVan(ctx,{paint:PAINT,th:p.th,t,spin});ctx.restore();
+  if(s.fore)s.fore(ctx,p,t);
+  const vg=ctx.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.95);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+  const vals=s.hud(p,t);rows.forEach((b,k)=>b.textContent=vals[k]);
+  const c=s.caps.find(c=>t>=c[0]&&t<c[1]);
+  if(c&&c[2]!==capKey){capKey=c[2];capEl.innerHTML=`${c[2]}<small>${c[3]}</small>`}
+  $('reelTime').textContent=s.log[0]+' · '+t.toFixed(1).padStart(4,'0')+' s';
+  if(!scrubbing)$('reelScrub').value=Math.round(g*10);
+}
+function frame(time){
+  const dt=last==null?0:Math.min(.05,(time-last)/1000);last=time;
+  if(visible){
+    if(playing&&!scrubbing){g+=dt;if(g>=TOTAL)g=0;render(dt)}
+  }
+  requestAnimationFrame(frame);
+}
+$('reelPlay').addEventListener('click',()=>{playing=!playing;$('reelPlay').textContent=playing?'Pause':'Play'});
+const scr=$('reelScrub');scr.max=String(Math.round(TOTAL*10));
+scr.addEventListener('input',e=>{scrubbing=true;g=e.target.value/10;parts=[];render(0)});
+scr.addEventListener('change',()=>{scrubbing=false});
+chBtns.forEach((b,j)=>b.addEventListener('click',()=>{scrubbing=false;g=START[j];parts=[];render(0)}));
+['pointerup','touchend','keyup','blur'].forEach(ev=>scr.addEventListener(ev,()=>{scrubbing=false}));
+if('IntersectionObserver' in window){new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible)last=null},{threshold:.05}).observe(cv)}
+if(reduce)$('reelPlay').textContent='Play';
+render(0);
+document.fonts&&document.fonts.ready.then(()=>{capKey='';render(0)});
+requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
 (function(){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = id => document.getElementById(id);
 
-  /* ---------- Physics (same model as the published specs) ---------- */
-  const P = { F:400000, ve:2600, m0:6377, mp:3077, CdA:1.05, rho:1.2, g:9.81 };
-  P.mdot = P.F / P.ve; P.burn = P.mp / P.mdot;
-  const MPH = 2.23694;
-
-  /* ---------- Stage & van geometry ---------- */
-  const stage=$('stage'), cv=$('sky'), ctx=cv.getContext('2d'), van=$('van');
-  const FL = { rear:$('flames'), down:$('flamesDown'), up:$('flamesUp') };
-  const flame = (k,on) => FL[k].classList.toggle('on', on);
-  const allFlames = on => Object.keys(FL).forEach(k => flame(k,on));
-  // viewBox is -150..530 × 0..190; body centre at (265, 108.3)
-  const VB_X0=-150, VB_W=680, VB_H=190, CX_VB=265, CY_VB=108.3, WHEEL_VB=181, HALF_L_VB=237;
-  let W=0, H=0, dpr=1;
-  const vw=()=>van.offsetWidth, vh=()=>van.offsetHeight;
-  const groundY=()=>H*0.85;
-  const restCY=()=>groundY()-(WHEEL_VB-CY_VB)/VB_H*vh();
-  const halfL=()=>HALF_L_VB/VB_W*vw();
-  const mpp=()=>2.6/halfL();                 // body is 5.2 m long
-  const pose={cx:0,cy:0,rot:0};
-  function setVan(cx,cy,rot,shake){
-    pose.cx=cx; pose.cy=cy; pose.rot=rot;
-    const sx=shake&&!reduce?(Math.random()-.5)*2.4:0, sy=shake&&!reduce?(Math.random()-.5)*2:0;
-    van.style.transform=`translate(${(cx-(CX_VB-VB_X0)/VB_W*vw()+sx).toFixed(1)}px,${(cy-CY_VB/VB_H*vh()+sy).toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`;
-  }
-  function toScreen(lx,ly){
-    const dx=(lx-CX_VB)/VB_W*vw(), dy=(ly-CY_VB)/VB_H*vh(), a=pose.rot*Math.PI/180, c=Math.cos(a), s=Math.sin(a);
-    return { x:pose.cx+dx*c-dy*s, y:pose.cy+dx*s+dy*c, dx:-s, dy:c };   // dx,dy: the van's local "down"
-  }
-
-  const SCENES = {
-    flip:  { l1:'Altitude', u1:'ft',  l3:'Pitch', btn:'Lift off',          ready:'<b>Ready.</b> Eight perimeter rockets armed. Eight passengers aboard.' },
-    wall:  { l1:'Height',   u1:'ft',  l3:'Grip',  btn:'Drive up the wall', ready:'<b>Ready.</b> Wall located. Roof adhesion rocket armed.' },
-    loop:  { l1:'Speed',    u1:'mph', l3:'Pitch', btn:'Enter the loop',    ready:'<b>Ready.</b> Loop located. Perimeter rockets armed as a formality.' },
-    launch:{ l1:'Speed',    u1:'mph', l3:'Load',  btn:'Ignite',            ready:'<b>Ready.</b> Eight passengers aboard. All seat belts rated to 6.6 g.' }
-  };
-  const state={ spd:0, scene:'flip', mode:'idle', t:0, v:0, x:0, m:P.m0, scroll:0, t60:null, gNow:0, lastTs:0, coast:0, seq:null, wallX:0 };
-  const smoke=[];
-  const stars=Array.from({length:70},()=>({x:Math.random(),y:Math.random()*0.45,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2}));
-
-  function homePose(){
-    if (state.scene==='launch') return {cx:W*0.40, cy:restCY()};
-    if (state.scene==='flip')   return {cx:W*0.46, cy:restCY()};
-    if (state.scene==='loop'){ const L=loopGeom(); return {cx:Math.max(halfL()+8, L.Lx-L.R*1.6), cy:restCY()}; }
-    return {cx:Math.max(halfL()+18, W*0.26), cy:restCY()};
-  }
-  const chaseCX=()=>W*0.60;
-  function loopGeom(){
-    const g=groundY();
-    const R=Math.min(g*0.44, W*0.28, W<600 ? (g-62)/2 : Infinity);
-    return { Lx:W*0.55, Ly:g-R, R, lw:Math.max(6,R*0.07) };
-  }
-
-  function resize(){
-    const r=stage.getBoundingClientRect();
-    dpr=Math.min(2, window.devicePixelRatio||1);
-    W=r.width; H=r.height; state.wallX=W*0.86;
-    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    if (state.mode==='idle' || state.mode==='done'){ const h=homePose(); setVan(h.cx,h.cy,0); }
-    draw();
-  }
-
-  /* ---------- Background ---------- */
-  function mountains(off,yBase,amp,freq,color){
-    ctx.fillStyle=color; ctx.beginPath(); ctx.moveTo(0,H);
-    for(let x=0;x<=W+8;x+=8){ const u=(x+off)*freq; ctx.lineTo(x, yBase-amp*(0.55*Math.sin(u)+0.3*Math.sin(u*2.3+1.7)+0.15*Math.sin(u*5.1+0.4))); }
-    ctx.lineTo(W,H); ctx.closePath(); ctx.fill();
-  }
-  function draw(){
-    const s=state.scroll, g=groundY();
-    const sky=ctx.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0,'#0A1424'); sky.addColorStop(0.62,'#22324A'); sky.addColorStop(0.78,'#5A4A4C');
-    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
-    for(const st of stars){ ctx.globalAlpha=st.a; ctx.fillStyle='#DDE6F2'; ctx.beginPath(); ctx.arc(((st.x*W-s*0.01)%W+W)%W, st.y*H, st.r, 0, 7); ctx.fill(); }
-    ctx.globalAlpha=1;
-    mountains(s*0.06, H*0.66, H*0.10, 0.006, '#1A2333');
-    mountains(s*0.18+900, H*0.74, H*0.07, 0.011, '#141B27');
-    ctx.fillStyle='#0F131A'; ctx.fillRect(0,H*0.76,W,H*0.24);
-    ctx.fillStyle='#1B1F26'; ctx.fillRect(0,g-4,W,H*0.11);
-    ctx.fillStyle='#2A2F38'; ctx.fillRect(0,g-4,W,2);
-    const dash=60, gap=70, period=dash+gap, off=s%period, v=state.v, streak=Math.min(1,v/80);
-    ctx.fillStyle='#D9C6A0'; ctx.globalAlpha=0.75-streak*0.35;
-    for(let x=-off;x<W+period;x+=period) ctx.fillRect(x, g+H*0.045, dash+streak*period*0.9, 3);
-    ctx.globalAlpha=1;
-    if (state.scene==='wall'){
-      const x=state.wallX;
-      ctx.fillStyle='#272B33'; ctx.fillRect(x,0,W-x,g);
-      ctx.fillStyle='#3A3F49'; ctx.fillRect(x,0,3,g);
-      ctx.strokeStyle='rgba(0,0,0,.35)'; ctx.lineWidth=1;
-      for(let y=H*0.14;y<g;y+=H*0.17){ ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(W,y); ctx.stroke(); }
-      ctx.fillStyle='rgba(217,198,160,.4)'; ctx.font='600 11px "JetBrains Mono", monospace';
-      ctx.fillText('WALL 2', x+8, H*0.30);
-    }
-    if (state.scene==='loop'){
-      const {Lx,Ly,R,lw}=loopGeom(), rr=R+lw/2;
-      ctx.strokeStyle='#2A2F38'; ctx.lineWidth=Math.max(3,lw*0.5);
-      for (const sx of [-1,1]){ ctx.beginPath(); ctx.moveTo(Lx+sx*rr, Ly); ctx.lineTo(Lx+sx*rr, g-4); ctx.stroke(); }
-      ctx.strokeStyle='#3A3F49'; ctx.lineWidth=lw; ctx.beginPath(); ctx.arc(Lx,Ly,rr,0,Math.PI*2); ctx.stroke();
-      ctx.strokeStyle='rgba(217,198,160,.35)'; ctx.lineWidth=1.5; ctx.setLineDash([10,12]);
-      ctx.beginPath(); ctx.arc(Lx,Ly,rr,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='rgba(217,198,160,.45)'; ctx.font='600 11px "JetBrains Mono", monospace';
-      ctx.fillText('LOOP 1', Lx+rr+lw+6, Ly+R*0.55);
-    }
-    if (v>40 && !reduce){
-      ctx.strokeStyle='rgba(200,225,255,'+Math.min(0.35,(v-40)/600)+')'; ctx.lineWidth=1;
-      for(let i=0;i<14;i++){ const y=(i*53.7)%(H*0.7)+H*0.05; const x=((i*197-s*1.4)%(W+300)+W+300)%(W+300)-150; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+120+v*0.4,y); ctx.stroke(); }
-    }
-    for(const p of smoke){ ctx.globalAlpha=Math.max(0,p.a); ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fill(); }
-    ctx.globalAlpha=1;
-  }
-
-  /* ---------- HUD ---------- */
-  const gSpeed=$('gSpeed'), gTime=$('gTime'), gG=$('gG'), gProp=$('gProp'), flag=$('flag'), statusEl=$('status'), btn=$('ignite'), cd=$('countdown');
-  const setStatus=html=>statusEl.innerHTML=html;
-  function labels(){ const c=SCENES[state.scene]; $('gLabel1').textContent=c.l1; $('gUnit1').textContent=c.u1; $('gLabel3').textContent=c.l3; }
-  function hud(){
-    gTime.textContent=state.t.toFixed(2);
-    if (state.scene==='launch'){
-      gSpeed.textContent=Math.round(state.v*MPH).toLocaleString();
-      gG.textContent=state.gNow.toFixed(1)+' g';
-      gProp.textContent=Math.round(Math.max(0,1-Math.min(state.t,P.burn)/P.burn)*100)+'%';
-    } else if (state.scene==='flip'){
-      gSpeed.textContent=Math.round(Math.max(0,restCY()-pose.cy)*mpp()*3.281);
-      gG.textContent=Math.round(((-pose.rot)%360+360)%360)+'°';
-      gProp.textContent=Math.round(100-Math.min(state.t,6)/60*100)+'%';
-    } else if (state.scene==='loop'){
-      gSpeed.textContent=Math.round(state.spd*MPH);
-      gG.textContent=Math.round(((-pose.rot)%360+360)%360)+'°';
-      gProp.textContent=Math.round(100-Math.min(Math.max(state.t-7.6,0),2.4)/60*100)+'%';
-    } else {
-      const q=state.seq, vertical=pose.rot<=-89;
-      gSpeed.textContent=(q&&vertical)?Math.round(Math.max(0,q.cyV-pose.cy)*mpp()*3.281):0;
-      gG.textContent=FL.up.classList.contains('on')?'2.5 g':'0.0 g';
-      gProp.textContent=Math.round(100-Math.min(Math.max(state.t-1.3,0),7.5)/45*100)+'%';
-    }
-  }
-
-  /* ---------- Choreographed sequences: fly & flip, wall drive ---------- */
-  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-  function sample(keys,t){
-    for(let i=1;i<keys.length;i++){
-      if (t<=keys[i][0]){ const a=keys[i-1], b=keys[i], u=ease((t-a[0])/((b[0]-a[0])||1));
-        return [a[1]+(b[1]-a[1])*u, a[2]+(b[2]-a[2])*u, a[3]+(b[3]-a[3])*u]; }
-    }
-    const k=keys[keys.length-1]; return [k[1],k[2],k[3]];
-  }
-  function buildFlip(){
-    const h=homePose(), up=H*0.42, x1=h.cx+W*0.05;
-    return { dur:6.4, keys:[
-      [0,h.cx,h.cy,0],[0.7,h.cx,h.cy,0],[1.9,h.cx,h.cy-up,0],[2.2,h.cx,h.cy-up,0],
-      [3.6,x1,h.cy-up-H*0.04,-360],[4.6,x1,h.cy-up,-360],[6.0,x1,h.cy,-360],[6.4,x1,h.cy,-360]],
-      events:[
-        [0,  ()=>{ flame('down',true); setStatus('<b>Perimeter rockets spooling.</b> 8 × 16 kN.'); }],
-        [0.7,()=>setStatus('<b>Lift-off.</b> 128 kN against 63 kN of minivan. Thrust-to-weight 2.0.')],
-        [1.9,()=>setStatus('<b>Hovering.</b> Beginning backflip.')],
-        [2.2,()=>setStatus('<b>Backflip in progress.</b> Cupholders retained.')],
-        [3.6,()=>setStatus('<b>Backflip complete in 1.4 s.</b> All eight passengers face forward again.')],
-        [4.6,()=>setStatus('<b>Descending.</b> Touchdown point selected by Oddly Autonomous™.')],
-        [6.0,()=>{ flame('down',false); setStatus('<b>Landed.</b> Oddly Autonomous™ confirms this is where you meant to be.'); }]
-      ],
-      shake:t=>t<0.9||(t>5.5&&t<6.0), smoke:t=>t<6.0?'down':null };
-  }
-  function buildWall(){
-    const h=homePose(), L=halfL(), wallX=state.wallX, down=(WHEEL_VB-CY_VB)/VB_H*vh();
-    const xc=wallX-L-3, xv=wallX-down, cyV=groundY()-L-(18/VB_W)*vw()-2;
-    const climb=Math.max(0, Math.min(H*0.3, cyV-L-14));
-    return { dur:10.4, cyV, keys:[
-      [0,h.cx,h.cy,0],[1.6,xc,h.cy,0],[2.6,xv,cyV,-90],[4.6,xv,cyV-climb,-90],[6.0,xv,cyV-climb,-90],[7.8,xv,cyV,-90],[8.8,xc,h.cy,0],[10.4,h.cx,h.cy,0]],
-      events:[
-        [0,  ()=>setStatus('<b>Approaching the wall.</b> This is intentional.')],
-        [1.3,()=>{ flame('up',true); setStatus('<b>Adhesion rocket ignited.</b> 160 kN, pointed away from the wall.'); }],
-        [1.6,()=>setStatus('<b>Transitioning.</b> The wall is now the road.')],
-        [2.6,()=>setStatus('<b>Climbing.</b> 2.5 g of grip against 1.0 g of minivan.')],
-        [4.6,()=>setStatus('<b>Holding.</b> The third row is now the bottom row.')],
-        [6.0,()=>setStatus('<b>Descending.</b> Adhesion burn: 36 of 45 seconds remaining.')],
-        [8.8,()=>{ flame('up',false); setStatus('<b>Back on the ground.</b> The wall has been returned to being a wall.'); }]
-      ],
-      shake:t=>t>1.3&&t<1.7, smoke:t=>(t>1.3&&t<8.8)?'up':null };
-  }
-
-  function buildLoop(){
-    const {Lx,Ly,R}=loopGeom(), d=(WHEEL_VB-CY_VB)/VB_H*vh(), h=homePose(), rc=R-d;
-    const onLoop=phi=>{ const a=phi*Math.PI/180; return [Lx+rc*Math.cos(a), Ly+rc*Math.sin(a), phi-90]; };
-    const TOP=-92, top=onLoop(TOP), topY=top[1], landY=restCY(), D=landY-topY;
-    const d1=0.25*D, a=2*d1/0.49, v0=a*0.7, T=2.4, y1=topY+d1, m0=v0*T, exitX=Lx+R*0.95;
-    const pose=t=>{
-      if (t<1.8){ const u=t/1.8, e=u*u*(2-u); return [h.cx+(Lx-h.cx)*e, h.cy, 0]; }
-      if (t<6.4){ const u=(t-1.8)/4.6; return onLoop(90-182*(1-Math.pow(1-u,2))); }
-      if (t<6.9){ const p=onLoop(TOP); p[2]+=Math.sin((t-6.4)*28)*1.2; return p; }
-      if (t<7.6){ const tau=t-6.9, k=tau/0.7; return [top[0]+(Lx-top[0])*k, topY+0.5*a*tau*tau, -182-13*k*k]; }
-      if (t<10.0){
-        const sN=(t-7.6)/T, s2=sN*sN, s3=s2*sN;
-        const y=(2*s3-3*s2+1)*y1+(s3-2*s2+sN)*m0+(-2*s3+3*s2)*landY;
-        const r=t<8.9 ? -195-165*ease((t-7.6)/1.3) : -360;
-        return [Lx, y, r];
-      }
-      if (t<10.4) return [Lx, landY+3*Math.sin(Math.PI*(t-10)/0.4), -360];
-      const u=Math.min(1,(t-10.4)/1.4); return [Lx+(exitX-Lx)*ease(u), landY, -360];
-    };
-    const need=Math.round(Math.sqrt(9.81*R*mpp())*MPH);
-    return { dur:11.8, pose, keys:[[0,h.cx,h.cy,0]],
-      events:[
-        [0,   ()=>setStatus('<b>Approaching the loop.</b> Speed governed for passenger comfort.')],
-        [1.8, ()=>setStatus('<b>Entering the loop.</b> Adhesion rocket disengaged. A loop is a road like any other.')],
-        [4.0, ()=>setStatus('<b>Climbing.</b> Speed decreasing. This is the comfort setting.')],
-        [6.4, ()=>setStatus('<b>Top of the loop.</b> Speed: '+Math.max(1,Math.round(state.spd*MPH))+' mph. Recommended: '+need+' mph.')],
-        [6.9, ()=>setStatus('<b>Detachment.</b> Gravity has resumed authority. This is a planned descent.')],
-        [7.6, ()=>{ flame('down',true); setStatus('<b>Perimeter rockets firing.</b> Righting the vehicle. Cupholders retained.'); }],
-        [8.9, ()=>setStatus('<b>Descending.</b> 128 kN, throttled for a gentle arrival.')],
-        [10.0,()=>{ flame('down',false); setStatus('<b>Landed.</b> At the bottom of the loop, where it started. Efficient.'); }],
-        [10.4,()=>setStatus('<b>Exiting.</b> Oddly, Inc. considers this loop completed.')]
-      ],
-      shake:t=>t>7.6&&t<7.95, smoke:t=>(t>7.6&&t<10.0)?'down':null };
-  }
-
-  /* ---------- Smoke ---------- */
-  const SMOKE_C=()=>Math.random()<0.25?'#B9C4D2':'#8A93A1';
-  function emitRear(rate){
-    if (reduce) return;
-    const n=Math.round(3*rate+Math.random()), p0=toScreen(-120,118);
-    for(let i=0;i<n;i++) smoke.push({x:p0.x-Math.random()*24, y:p0.y+(Math.random()-0.5)*14, r:6+Math.random()*8, a:0.5, vx:-60-Math.random()*60, vy:(Math.random()-0.5)*30, c:SMOKE_C()});
-    cap();
-  }
-  function emitFrom(kind){
-    if (reduce) return;
-    const pts=kind==='down'?[[62,230],[190,230],[300,230],[470,230]]:[[150,-80],[290,-80]];
-    const sgn=kind==='down'?1:-1;
-    for(const [lx,ly] of pts){
-      if (Math.random()<0.6){
-        const p=toScreen(lx,ly), sp=90+Math.random()*70;
-        smoke.push({x:p.x+(Math.random()-.5)*8, y:p.y, r:4+Math.random()*5, a:0.45, vx:p.dx*sgn*sp+(Math.random()-.5)*40, vy:p.dy*sgn*sp, c:SMOKE_C()});
-      }
-    }
-    cap();
-  }
-  function cap(){ if (smoke.length>420) smoke.splice(0, smoke.length-420); }
-
-  /* ---------- Main loop ---------- */
-  let raf=0;
-  function frame(ts){
-    const dt=Math.min(0.05,(ts-(state.lastTs||ts))/1000); state.lastTs=ts;
-    if (state.mode==='seq'){
-      const q=state.seq; state.t+=dt;
-      while(q.ei<q.events.length && state.t>=q.events[q.ei][0]){ q.events[q.ei][1](); q.ei++; }
-      const tt=Math.min(state.t,q.dur);
-      const [cx,cy,rot]=q.pose ? q.pose(tt) : sample(q.keys, tt);
-      if (dt>0){ const inst=Math.hypot(cx-pose.cx, cy-pose.cy)/dt*mpp(); state.spd=state.spd*0.8+inst*0.2; }
-      setVan(cx,cy,rot,q.shake(state.t));
-      const sm=q.smoke(state.t); if (sm) emitFrom(sm);
-      if (state.t>=q.dur) finish();
-    } else if (state.mode==='burn'){
-      const steps=Math.max(1,Math.round(dt/0.001));
-      for(let i=0;i<steps && state.t<P.burn;i++){
-        const a=(P.F-0.5*P.rho*P.CdA*state.v*state.v)/state.m;
-        state.gNow=a/P.g; state.v+=a*0.001; state.x+=state.v*0.001; state.m-=P.mdot*0.001; state.t+=0.001;
-        if (state.t60===null && state.v>=26.8224){ state.t60=state.t; flag.textContent='0–60 mph · '+state.t60.toFixed(2)+' s'; flag.classList.add('show'); setStatus('<b>0–60 mph in '+state.t60.toFixed(2)+' s.</b> All eight passengers are on schedule.'); }
-      }
-      const k=Math.min(1,state.t/0.8), e=1-Math.pow(1-k,3), rate=30*Math.pow(state.v,0.82);
-      state.scroll+=rate*dt*(k>=1?1:e);
-      const h=homePose();
-      setVan(h.cx+(chaseCX()-h.cx)*e, h.cy, 0, true);
-      if (state.t>1.2 && state.t<1.3 && state.t60) setStatus('<b>Climbing.</b> Rear entertainment screen now showing the plume.');
-      if (state.t>4 && state.t<4.1) setStatus('<b>Supersonic soon.</b> Please keep beverages in the provided cupholders.');
-      if (state.t>5 && state.t<5.1) setStatus('<b>T+5 s.</b> The other Roadster is now out of air. Its refill takes 6 hours. Ours has 15 seconds of burn remaining.');
-      if (state.t>9 && state.t<9.1) setStatus('<b>Mach '+(state.v/343).toFixed(1)+'.</b> Eleven seconds of burn remaining. The other Roadster is still refilling.');
-      if (state.t>15 && state.t<15.1) setStatus('<b>Still burning.</b> Five seconds remain. The third row reports no concerns.');
-      if (state.t>=P.burn) burnout();
-      emitRear(1);
-    } else if (state.mode==='coast'){
-      state.coast+=dt;
-      const a=(0.5*P.rho*P.CdA*state.v*state.v)/state.m;
-      state.v=Math.max(0,state.v-a*dt); state.gNow=0; state.t+=dt;
-      state.scroll+=30*Math.pow(state.v,0.82)*dt*Math.max(0,1-state.coast/1.4);
-      setVan(chaseCX()+state.coast*state.coast*W*0.55, restCY()-state.coast*state.coast*H*0.35, 0);
-      emitRear(0.25);
-    }
-    const drift=state.mode==='burn'?30*Math.pow(state.v,0.82):0, g=groundY();
-    for(let i=smoke.length-1;i>=0;i--){
-      const p=smoke[i];
-      p.x+=(p.vx-drift)*dt; p.y+=p.vy*dt; p.r+=28*dt; p.a-=0.45*dt;
-      if (p.y>g-2){ p.y=g-2; p.vx+=(p.vx>=0?1:-1)*Math.abs(p.vy)*0.6; p.vy=0; }
-      if (p.a<=0 || p.x<-200 || p.x>W+200) smoke.splice(i,1);
-    }
-    draw(); hud();
-    if (state.mode==='seq'||state.mode==='burn'||state.mode==='coast'||smoke.length) raf=requestAnimationFrame(frame); else raf=0;
-  }
-
-  const SITES=[
-    'Plummet Falls, oAction Park.',
-    'A neighbor’s pool. The Oddly Pool Cleaner has been notified.',
-    'Ohio.',
-    'The roof of an Oddly Elevator shaft, floor 31.',
-    'The original driveway. Probability 0.4%.',
-    'A competitor’s reveal event, in Texas.'
-  ];
-  function burnout(){
-    state.mode='coast'; state.coast=0; flame('rear',false);
-    setStatus('<b>Burnout at '+Math.round(state.v*MPH).toLocaleString()+' mph.</b> Mach '+(state.v/343).toFixed(2)+'. 6.3 rocket miles used.');
-    setTimeout(()=>setStatus('<b>Oddly Autonomous™</b> is selecting a landing site. Confidence: 100%.'),1700);
-    setTimeout(()=>{ setStatus('<b>Landing site selected:</b> '+SITES[Math.floor(Math.random()*SITES.length)]+' Passenger input was not required.'); finish(); },3600);
-  }
-
-  /* ---------- Controls ---------- */
-  const tabs=[...document.querySelectorAll('.mode')];
-  const setTabs=en=>tabs.forEach(b=>b.disabled=!en);
-  function finish(){ stage.classList.remove('running'); state.mode='done'; allFlames(false); btn.disabled=false; btn.textContent='Reset'; btn.dataset.next='reset'; setTabs(true); }
-  function reset(){
-    cancelAnimationFrame(raf); raf=0; stage.classList.remove('running');
-    Object.assign(state,{mode:'idle',t:0,v:0,x:0,m:P.m0,scroll:0,t60:null,gNow:0,lastTs:0,coast:0,seq:null});
-    smoke.length=0; flag.classList.remove('show'); allFlames(false);
-    stage.classList.toggle('scene-wall', state.scene==='wall');
-    stage.classList.toggle('scene-loop', state.scene==='loop');
-    state.spd=0;
-    const h=homePose(); setVan(h.cx,h.cy,0);
-    labels(); draw(); hud();
-    setStatus(SCENES[state.scene].ready);
-    btn.textContent=SCENES[state.scene].btn; btn.dataset.next=''; btn.disabled=false; setTabs(true);
-  }
-  function start(){
-    if (btn.dataset.next==='reset'){ reset(); return; }
-    btn.disabled=true; setTabs(false); stage.classList.add('running');
-    setStatus(state.scene==='launch'?'<b>Ignition sequence.</b> Sliding doors locked.':'<b>Arming.</b> Sliding doors locked.');
-    const seq=['3','2','1']; let i=0;
-    const tick=()=>{
-      if (i<seq.length){ cd.textContent=seq[i++]; cd.classList.add('on'); setTimeout(tick,550); return; }
-      cd.classList.remove('on'); cd.textContent='';
-      state.t=0; state.lastTs=0;
-      if (state.scene==='launch'){ state.mode='burn'; flame('rear',true); setStatus('<b>Ignition.</b> 400 kN.'); }
-      else { state.seq=state.scene==='flip'?buildFlip():state.scene==='loop'?buildLoop():buildWall(); state.seq.ei=0; state.mode='seq'; }
-      if (!raf) raf=requestAnimationFrame(frame);
-    };
-    tick();
-  }
-  btn.addEventListener('click', start);
-  tabs.forEach(b=>b.addEventListener('click',()=>{
-    state.scene=b.dataset.mode;
-    tabs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
-    reset();
-  }));
-
   /* ---------- Configurator ---------- */
   const PAINTS=[['Cul-de-Sac Champagne','#D9C6A0'],['Launch Pad Grey','#8E949C'],['Soccer Field Green','#4E6B4A'],['Carpool Lane White','#ECEBE6'],['Booster Seat Blue','#3B5A86']];
   const sw=$('swatches'), pName=$('paintName'), pv=$('previewVan');
-  const src=van.querySelector('svg').cloneNode(true);
-  src.querySelectorAll('.fl, linearGradient[id^="flame"]').forEach(n=>n.remove());
-  pv.setAttribute('viewBox','0 -10 530 200');
-  pv.innerHTML=src.innerHTML.replace(/id="glass"/,'id="glass2"').replace(/url\(#glass\)/g,'url(#glass2)');
+  const pctx=pv.getContext('2d'); let curPaint=PAINTS[0][1], puffT=0, puffRAF=0;
+  function drawPreview(th){
+    pctx.setTransform(1,0,0,1,0,0); pctx.clearRect(0,0,pv.width,pv.height);
+    pctx.setTransform(2,0,0,2,0,0); pctx.translate(265,112); pctx.scale(1.6,1.6);
+    pctx.fillStyle='rgba(0,0,0,.45)'; pctx.beginPath(); pctx.ellipse(0,68,128,7,0,0,7); pctx.fill();
+    if(window.OddlyVan) window.OddlyVan.draw(pctx,{paint:curPaint,th:[th,th,th,th,th,th],t:performance.now()/1000});
+  }
+  function puff(){
+    cancelAnimationFrame(puffRAF); const t0=performance.now();
+    const step=now=>{ const u=(now-t0)/900; drawPreview(u<1?Math.sin(Math.PI*Math.min(1,u))*.55:0); if(u<1) puffRAF=requestAnimationFrame(step); };
+    puffRAF=requestAnimationFrame(step);
+  }
   function setPaint(i){
+    curPaint=PAINTS[i][1]; drawPreview(0);
     document.documentElement.style.setProperty('--van-paint',PAINTS[i][1]);
     pName.textContent=PAINTS[i][0];
     sw.querySelectorAll('.sw').forEach((b,j)=>b.setAttribute('aria-pressed',String(i===j)));
@@ -943,11 +920,12 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
   });
   let saved=0; try{ saved=parseInt(localStorage.getItem('oddly-roadster-paint')||'0',10)||0; }catch(e){}
   setPaint(Math.min(saved,PAINTS.length-1));
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>drawPreview(0));
 
   const rocketMsgs=['Rocket motors are standard.','Rocket motors cannot be removed.','The rocket motors are the Roadster.','Stefen Stu-Born has been notified.','Your request has been read. It was declined.','This is not a bug. — Oddly, Inc.'];
   let rc=0; const rs=$('rocketSwitch'), toast=$('toast');
   rs.addEventListener('click',()=>{
-    rs.classList.add('nudge'); setTimeout(()=>rs.classList.remove('nudge'),160);
+    rs.classList.add('nudge'); setTimeout(()=>rs.classList.remove('nudge'),160); puff();
     toast.textContent=rocketMsgs[Math.min(rc,rocketMsgs.length-1)]; rc++;
     if (rc>=rocketMsgs.length){ rs.disabled=true; rs.setAttribute('aria-disabled','true'); }
   });
@@ -969,17 +947,13 @@ dialog.viewer form{position:absolute;top:10px;right:10px}
 
   /* ---------- Test photo viewer ---------- */
   const viewer=$('viewer'), vImg=$('viewerImg');
-  document.querySelectorAll('.shot button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.shot button[data-full]').forEach(b=>b.addEventListener('click',()=>{
     const img=$(b.dataset.full); vImg.src=img.src; vImg.alt=img.alt;
     if (viewer.showModal) viewer.showModal();
   }));
   viewer.addEventListener('click',e=>{ if (e.target===viewer) viewer.close(); });
 
-  window.addEventListener('resize', resize);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
-  resize(); reset();
 })();
 </script>
-
 </body>
 </html>
