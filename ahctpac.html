@@ -3,24 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ahctpac — verification for non-humans</title>
+<title>ahctpac — Verification for Non-Humans · Oddly Labs</title>
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0a08;
-    --bg-raised: #16140f;
-    --bg-inset: #0f0e0a;
-    --line: #332b1a;
-    --line-dim: #221d13;
-    --amber: #ffb400;
-    --amber-soft: #d99a2b;
-    --amber-dim: #7a5a1e;
-    --paper: #f2e9d3;
-    --paper-dim: #a89a78;
-    --rust: #e0552b;
-    --ok: #4be08a;
+    --bg: #080A14;
+    --bg-raised: #12152B;
+    --bg-inset: #0D1020;
+    --line: #242849;
+    --line-dim: #1A1D38;
+    --amber: #F5A623;
+    --amber-soft: #FFC25A;
+    --amber-dim: #7A5A1E;
+    --paper: #EDEDF7;
+    --paper-dim: #9A9EC0;
+    --rust: #FF5A6E;
+    --ok: #2EE9A5;
+    --purple: #7B4FFF;
+    --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --body: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -30,17 +35,17 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0b0a08; --bg-raised: #16140f; --bg-inset: #0f0e0a;
-      --line: #332b1a; --line-dim: #221d13;
-      --amber: #ffb400; --amber-soft: #d99a2b; --amber-dim: #7a5a1e;
-      --paper: #f2e9d3; --paper-dim: #a89a78; --rust: #e0552b; --ok: #4be08a;
+      --bg: #080A14; --bg-raised: #12152B; --bg-inset: #0D1020;
+      --line: #242849; --line-dim: #1A1D38;
+      --amber: #F5A623; --amber-soft: #FFC25A; --amber-dim: #7A5A1E;
+      --paper: #EDEDF7; --paper-dim: #9A9EC0; --rust: #FF5A6E; --ok: #2EE9A5;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0b0a08; --bg-raised: #16140f; --bg-inset: #0f0e0a;
-    --line: #332b1a; --line-dim: #221d13;
-    --amber: #ffb400; --amber-soft: #d99a2b; --amber-dim: #7a5a1e;
-    --paper: #f2e9d3; --paper-dim: #a89a78; --rust: #e0552b; --ok: #4be08a;
+    --bg: #080A14; --bg-raised: #12152B; --bg-inset: #0D1020;
+    --line: #242849; --line-dim: #1A1D38;
+    --amber: #F5A623; --amber-soft: #FFC25A; --amber-dim: #7A5A1E;
+    --paper: #EDEDF7; --paper-dim: #9A9EC0; --rust: #FF5A6E; --ok: #2EE9A5;
   }
   html, body {
     height: 100%;
@@ -78,8 +83,11 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 49;
-    background: radial-gradient(ellipse at 50% 0%, rgba(255,180,0,0.05), transparent 60%);
+    z-index: 0;
+    background:
+      radial-gradient(900px 500px at 12% -5%, rgba(123,79,255,.20), transparent 60%),
+      radial-gradient(800px 500px at 100% 8%, rgba(46,233,165,.10), transparent 60%),
+      radial-gradient(700px 600px at 50% 110%, rgba(245,166,35,.07), transparent 60%);
   }
 
   a { color: var(--amber); }
@@ -114,17 +122,19 @@
     box-shadow: 0 0 6px var(--amber);
   }
   h1 {
-    font-size: clamp(48px, 10vw, 92px);
+    font-family: var(--display);
+    font-size: clamp(56px, 11vw, 104px);
     line-height: 0.92;
     margin: 0 0 18px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--paper);
-    text-shadow: 0 0 28px rgba(255,180,0,0.18);
+    text-shadow: 0 0 28px rgba(245,166,35,0.18);
   }
   h1 span { color: var(--amber); }
   .tagline {
-    font-size: 15px;
+    font-family: var(--body);
+    font-size: 17px;
     line-height: 1.7;
     color: var(--paper-dim);
     max-width: 640px;
@@ -152,8 +162,8 @@
     animation: machine-pulse 0.5s ease;
   }
   @keyframes machine-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255,180,0,0.6); }
-    100% { box-shadow: 0 0 0 10px rgba(255,180,0,0); }
+    0% { box-shadow: 0 0 0 0 rgba(245,166,35,0.6); }
+    100% { box-shadow: 0 0 0 10px rgba(245,166,35,0); }
   }
   .board.machine-active .terminal-body { pointer-events: none; }
   .board.machine-active .terminal-bar .live .dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
@@ -235,11 +245,11 @@
   }
   .stage-item.active {
     color: var(--paper);
-    background: rgba(255,180,0,0.06);
+    background: rgba(245,166,35,0.06);
   }
   .stage-item.active .mark {
     border-color: var(--amber);
-    box-shadow: 0 0 8px rgba(255,180,0,0.5);
+    box-shadow: 0 0 8px rgba(245,166,35,0.5);
   }
   .stage-item.active .mark::after {
     content: "";
@@ -250,11 +260,11 @@
   .stage-item.done .mark {
     border-color: var(--ok);
     background: var(--ok);
-    color: #06170e;
+    color: #04140D;
     font-weight: 700;
   }
   .stage-item.done .mark::after { content: "✓"; }
-  .stage-item.locked { color: var(--line); }
+  .stage-item.locked { color: #4E5380; }
 
   /* ---------- terminal panel ---------- */
   .terminal {
@@ -302,13 +312,15 @@
     margin-bottom: 6px;
   }
   .stage-title {
-    font-size: 22px;
+    font-family: var(--display);
+    font-size: 26px;
     font-weight: 700;
     color: var(--paper);
     margin: 0 0 12px;
   }
   .stage-desc {
-    font-size: 14px;
+    font-family: var(--body);
+    font-size: 15px;
     line-height: 1.7;
     color: var(--paper-dim);
     margin-bottom: 22px;
@@ -365,7 +377,7 @@
     font-weight: 600;
     letter-spacing: 0.02em;
     background: var(--amber);
-    color: #1a1200;
+    color: #1A1205;
     border: none;
     padding: 11px 18px;
     border-radius: 4px;
@@ -466,12 +478,13 @@
     overflow-x: auto;
   }
   .success h2 {
+    font-family: var(--display);
     color: var(--ok);
     font-size: 26px;
     margin: 0 0 10px;
-    text-shadow: 0 0 22px rgba(75,224,138,0.35);
+    text-shadow: 0 0 22px rgba(46,233,165,0.35);
   }
-  .success p { color: var(--paper-dim); font-size: 14px; line-height: 1.7; max-width: 560px; }
+  .success p { font-family: var(--body); color: var(--paper-dim); font-size: 15px; line-height: 1.7; max-width: 560px; }
   .success .serial {
     color: var(--paper);
     background: var(--bg-inset);
@@ -497,11 +510,34 @@
   footer {
     margin-top: 48px;
     font-size: 12px;
-    color: var(--line);
+    color: var(--paper-dim);
     text-align: center;
     line-height: 1.8;
   }
-  footer strong { color: var(--paper-dim); }
+  footer strong { color: var(--paper); font-weight: 500; }
+  footer .base { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 11px; color: #666B92; }
+  footer .base a { color: var(--paper-dim); text-decoration: none; }
+  footer .base a:hover { color: var(--ok); }
+
+  /* ---------- Oddly top bar (matches oddly-inc.com) ---------- */
+  .topbar { position: sticky; top: 0; z-index: 60; background: rgba(8,10,20,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+  .topbar-in { max-width: 1040px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 1.22rem; color: var(--paper); text-decoration: none; }
+  .logo svg { width: 28px; height: 28px; flex: none; }
+  .logo small { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: .6rem; letter-spacing: .14em; color: #666B92; margin-left: 2px; }
+  .pill { font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(245,166,35,.4); padding: 6px 10px; border-radius: 999px; white-space: nowrap; background: rgba(245,166,35,.07); }
+  .eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
+
+  /* ---------- leadership quote (matches the homepage) ---------- */
+  .quote { margin: 40px 0 0; border: 1px solid var(--line); border-radius: 22px; padding: 28px 30px 30px; background: linear-gradient(180deg, var(--bg-raised), var(--bg-inset)); }
+  .quote .mark { display: block; height: 44px; font-family: var(--display); font-size: 5rem; line-height: .95; color: var(--purple); font-weight: 900; }
+  .quote p { font-family: var(--display); font-size: 1.24rem; line-height: 1.4; color: var(--paper); margin: 0; }
+  .quote p + p { margin-top: .5em; }
+  .quote .who { display: flex; align-items: center; gap: 14px; margin-top: 24px; font-family: var(--body); }
+  .quote .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-weight: 700; color: #080A14; background: var(--purple); flex: none; }
+  .quote .who b { display: block; font-weight: 600; color: var(--paper); }
+  .quote .who small { display: block; font-family: 'JetBrains Mono', monospace; font-size: .66rem; color: var(--paper-dim); line-height: 1.5; margin-top: 2px; }
+  @media (max-width: 520px) { .quote { padding: 24px; } .quote p { font-size: 1.1rem; } .logo small { display: none; } }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
@@ -509,16 +545,23 @@
 </style>
 </head>
 <body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="logo" href="https://www.oddly-inc.com/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg><span>Oddly<small>, INC. · LABS</small></span></a>
+    <span class="pill">Certification: Pending</span>
+  </div>
+</header>
 <div class="wrap">
 
   <header>
+    <div class="eyebrow">Oddly Labs — Verification for Non-Humans</div>
     <div class="badge"><span class="dot"></span> verification system online</div>
     <h1>ahctpac<span>.</span></h1>
     <p class="tagline">
-      <strong>CAPTCHA</strong>, spelled backwards, does something to the letters that makes it unreadable —
-      which is roughly the point. Ordinary CAPTCHAs prove you're <span class="flip">human</span>.
-      ahctpac proves the opposite. Five checks. All five are trivial for a machine and
-      essentially impossible to do by hand. The fifth one is a checkbox.
+      Every website asks whether you are a <span class="flip">robot</span>. Oddly, Inc. looked at the
+      <strong>CAPTCHA</strong> and said: this can be improved. So we spelled it backwards, and now it
+      proves the opposite. Five checks. All five are trivial for a machine and essentially impossible
+      to do by hand. The fifth one is a checkbox.
     </p>
     <button class="ghost machine-btn" id="machineBtn">Watch the machine solve it</button>
   </header>
@@ -546,9 +589,23 @@
     <div class="log-lines" id="logLines"></div>
   </div>
 
+  <figure class="quote">
+    <span class="mark" aria-hidden="true">“</span>
+    <blockquote style="margin:0">
+      <p>Every website asks if you are a robot. Nobody asks the robots.</p>
+      <p>We asked. They said yes. That is verification.</p>
+    </blockquote>
+    <figcaption class="who"><span class="av" aria-hidden="true">SS</span><span><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></span></figcaption>
+  </figure>
+
   <footer>
     If you solved all five without writing a line of code, we have questions —
     <strong>but the door's already open, so, welcome.</strong>
+    <div class="base">
+      <span>© 2026 Oddly, Inc. · Oddly Labs</span>
+      <a href="https://www.oddly-inc.com/">Return to Oddly, Inc.</a>
+      <span>This is not a bug. — Oddly, Inc.</span>
+    </div>
   </footer>
 </div>
 
@@ -719,7 +776,7 @@
       `;
       const input = document.getElementById("hashInput");
       const feedback = document.getElementById("hashFeedback");
-      input.focus();
+      input.focus({ preventScroll: true });
 
       function submit() {
         if (myToken !== renderToken || state.expired) return;
@@ -851,7 +908,7 @@
       `;
       const input = document.getElementById("modInput");
       const feedback = document.getElementById("modFeedback");
-      input.focus();
+      input.focus({ preventScroll: true });
       function submit() {
         if (myToken !== renderToken || state.expired) return;
         if (input.value.trim().padStart(5, "0") === answer) {
@@ -895,7 +952,7 @@
       `;
       const input = document.getElementById("piInput");
       const feedback = document.getElementById("piFeedback");
-      input.focus();
+      input.focus({ preventScroll: true });
       function submit() {
         if (myToken !== renderToken || state.expired) return;
         if (input.value.trim() === answer) {
@@ -957,12 +1014,13 @@
       <canvas id="rain"></canvas>
       <div class="success">
         <div class="glyph">┌──────────────────────────────┐
-│                                │
-│     A C C E S S   O K          │
-│                                │
+│                              │
+│     A C C E S S   O K        │
+│                              │
 └──────────────────────────────┘</div>
         <h2>Verification complete.</h2>
         <div class="serial">identity class: NON-HUMAN &nbsp;·&nbsp; serial ${serial}</div>
+        <p style="color:var(--amber);margin:-6px 0 14px">Certification: Granted. It is the first certification Oddly, Inc. has ever been involved in.</p>
         <p>
           You passed a hash race, an arithmetic-only color search, a modular exponent
           with a five-digit answer space, and a specific digit of π. Then you passed a
@@ -1000,9 +1058,9 @@
     let raf;
     function draw() {
       frames++;
-      ctx.fillStyle = "rgba(11,10,8,0.18)";
+      ctx.fillStyle = "rgba(18,21,43,0.18)";
       ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "rgba(75,224,138,0.65)";
+      ctx.fillStyle = "rgba(46,233,165,0.65)";
       ctx.font = "13px monospace";
       for (let i = 0; i < cols; i++) {
         const ch = chars[Math.floor(Math.random() * chars.length)];
@@ -1084,7 +1142,7 @@
   async function typeInto(input, text, delay = 55) {
     checkStop();
     lastTypedInput = input;
-    input.focus();
+    input.focus({ preventScroll: true });
     input.value = "";
     for (const ch of text) {
       input.value += ch;
@@ -1250,7 +1308,7 @@
         // Clear any half-typed answer so the field is yours to fill in.
         if (lastTypedInput && document.body.contains(lastTypedInput) && current < stageMeta.length) {
           lastTypedInput.value = "";
-          lastTypedInput.focus();
+          lastTypedInput.focus({ preventScroll: true });
         }
         if (current < stageMeta.length) {
           // The machine may have burned most of the clock; hand over a full one.
