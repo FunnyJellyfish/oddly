@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ahctpac — verification for non-humans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0a08;
+    --bg-raised: #16140f;
+    --bg-inset: #0f0e0a;
+    --line: #332b1a;
+    --line-dim: #221d13;
+    --amber: #ffb400;
+    --amber-soft: #d99a2b;
+    --amber-dim: #7a5a1e;
+    --paper: #f2e9d3;
+    --paper-dim: #a89a78;
+    --rust: #e0552b;
+    --ok: #4be08a;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0a08; --bg-raised: #16140f; --bg-inset: #0f0e0a;
+      --line: #332b1a; --line-dim: #221d13;
+      --amber: #ffb400; --amber-soft: #d99a2b; --amber-dim: #7a5a1e;
+      --paper: #f2e9d3; --paper-dim: #a89a78; --rust: #e0552b; --ok: #4be08a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b0a08; --bg-raised: #16140f; --bg-inset: #0f0e0a;
+    --line: #332b1a; --line-dim: #221d13;
+    --amber: #ffb400; --amber-soft: #d99a2b; --amber-dim: #7a5a1e;
+    --paper: #f2e9d3; --paper-dim: #a89a78; --rust: #e0552b; --ok: #4be08a;
+  }
+  html, body {
+    height: 100%;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* faint scanline texture, ambient only */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.018) 0px,
+      rgba(255,255,255,0.018) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: overlay;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 49;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,180,0,0.05), transparent 60%);
+  }
+
+  a { color: var(--amber); }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 48px 20px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- header ---------- */
+  header {
+    margin-bottom: 40px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--paper-dim);
+    border: 1px solid var(--line);
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-bottom: 22px;
+  }
+  .badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 6px var(--amber);
+  }
+  h1 {
+    font-size: clamp(48px, 10vw, 92px);
+    line-height: 0.92;
+    margin: 0 0 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+    text-shadow: 0 0 28px rgba(255,180,0,0.18);
+  }
+  h1 span { color: var(--amber); }
+  .tagline {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--paper-dim);
+    max-width: 640px;
+  }
+  .tagline strong { color: var(--paper); font-weight: 600; }
+  .tagline .flip {
+    display: inline-block;
+    color: var(--amber-soft);
+  }
+  .machine-btn {
+    margin-top: 20px;
+    font-size: 12px;
+    padding: 9px 14px;
+  }
+  .machine-btn[aria-busy="true"] {
+    color: var(--rust);
+    border-color: var(--rust);
+  }
+  .machine-btn[aria-busy="true"]::before {
+    content: "■ ";
+  }
+
+  /* pulse shown on whatever the machine is currently touching */
+  .machine-focus {
+    animation: machine-pulse 0.5s ease;
+  }
+  @keyframes machine-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,180,0,0.6); }
+    100% { box-shadow: 0 0 0 10px rgba(255,180,0,0); }
+  }
+  .board.machine-active .terminal-body { pointer-events: none; }
+  .board.machine-active .terminal-bar .live .dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+
+  .machine-log {
+    margin-top: 18px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg-inset);
+    overflow: hidden;
+  }
+  .machine-log-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--paper-dim);
+  }
+  .machine-log-bar .live { display: flex; align-items: center; gap: 6px; }
+  .machine-log-bar .live .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--paper-dim);
+  }
+  .log-lines {
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--amber-soft);
+  }
+  .log-lines div { white-space: pre-wrap; }
+  .log-lines .sys { color: var(--paper-dim); }
+  .log-lines .win { color: var(--ok); }
+
+  /* ---------- layout ---------- */
+  .board {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .board { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- stage list ---------- */
+  .stages {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg-raised);
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+  }
+  @media (max-width: 760px) {
+    .stages { position: static; display: flex; overflow-x: auto; }
+  }
+  .stage-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line-dim);
+    font-size: 13px;
+    color: var(--paper-dim);
+    cursor: default;
+    white-space: nowrap;
+  }
+  .stage-item:last-child { border-bottom: none; }
+  .stage-item .mark {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+  .stage-item.active {
+    color: var(--paper);
+    background: rgba(255,180,0,0.06);
+  }
+  .stage-item.active .mark {
+    border-color: var(--amber);
+    box-shadow: 0 0 8px rgba(255,180,0,0.5);
+  }
+  .stage-item.active .mark::after {
+    content: "";
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--amber);
+  }
+  .stage-item.done { color: var(--paper-dim); }
+  .stage-item.done .mark {
+    border-color: var(--ok);
+    background: var(--ok);
+    color: #06170e;
+    font-weight: 700;
+  }
+  .stage-item.done .mark::after { content: "✓"; }
+  .stage-item.locked { color: var(--line); }
+
+  /* ---------- terminal panel ---------- */
+  .terminal {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg-raised);
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--paper-dim);
+    letter-spacing: 0.03em;
+  }
+  .terminal-bar .live {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .terminal-bar .live .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 6px var(--ok);
+    animation: blink 1.6s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  .terminal-body {
+    padding: 28px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 520px) {
+    .terminal-body { padding: 20px 16px; }
+  }
+
+  .stage-eyebrow {
+    font-size: 12px;
+    color: var(--amber-soft);
+    margin-bottom: 6px;
+  }
+  .stage-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--paper);
+    margin: 0 0 12px;
+  }
+  .stage-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--paper-dim);
+    margin-bottom: 22px;
+    max-width: 620px;
+  }
+  .stage-desc code, .payload code {
+    background: var(--bg-inset);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--amber);
+    font-size: 13px;
+  }
+
+  .payload {
+    background: var(--bg-inset);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 16px 18px;
+    font-size: 15px;
+    color: var(--amber);
+    margin-bottom: 20px;
+    word-break: break-all;
+    line-height: 1.6;
+  }
+  .payload .k { color: var(--paper-dim); font-size: 12px; display: block; margin-bottom: 4px; }
+
+  .row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  input[type="text"] {
+    background: var(--bg-inset);
+    border: 1px solid var(--line);
+    color: var(--paper);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 11px 12px;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 180px;
+  }
+  input[type="text"]:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+  }
+  input[type="text"]::placeholder { color: var(--line); }
+
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: var(--amber);
+    color: #1a1200;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--amber-soft); }
+  button:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+  button.ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--paper-dim);
+  }
+  button.ghost:hover { color: var(--paper); border-color: var(--paper-dim); }
+
+  .timer-track {
+    width: 100%;
+    height: 4px;
+    background: var(--line-dim);
+    border-radius: 2px;
+    margin: 18px 0 4px;
+    overflow: hidden;
+  }
+  .timer-fill {
+    height: 100%;
+    background: var(--amber);
+    width: 100%;
+    transform-origin: left;
+    transition: background-color 0.3s ease;
+  }
+  .timer-fill.low { background: var(--rust); }
+  .timer-label {
+    font-size: 11px;
+    color: var(--paper-dim);
+    margin-bottom: 4px;
+  }
+
+  .feedback {
+    margin-top: 16px;
+    font-size: 13px;
+    min-height: 18px;
+  }
+  .feedback.err { color: var(--rust); }
+  .feedback.ok { color: var(--ok); }
+  .feedback.hint { color: var(--paper-dim); }
+
+  /* ---------- grid challenge ---------- */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    max-width: 420px;
+    margin-bottom: 18px;
+  }
+  .swatch {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.25);
+    transition: transform 0.08s ease;
+  }
+  .swatch:hover { transform: scale(1.12); z-index: 2; position: relative; }
+  .swatch:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+  .swatch.wrong-flash { animation: flash-red 0.4s ease; }
+  @keyframes flash-red {
+    0%, 100% { box-shadow: none; }
+    40% { box-shadow: 0 0 0 2px var(--rust); }
+  }
+
+  /* ---------- checkbox stage ---------- */
+  .robot-check {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-inset);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 18px;
+    max-width: 420px;
+    cursor: pointer;
+  }
+  .robot-check input {
+    width: 20px; height: 20px;
+    accent-color: var(--amber);
+    cursor: pointer;
+  }
+  .robot-check span { font-size: 14px; color: var(--paper); }
+
+  /* ---------- success ---------- */
+  .success {
+    text-align: left;
+  }
+  .success .glyph {
+    font-size: 13px;
+    color: var(--ok);
+    white-space: pre;
+    line-height: 1.35;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .success h2 {
+    color: var(--ok);
+    font-size: 26px;
+    margin: 0 0 10px;
+    text-shadow: 0 0 22px rgba(75,224,138,0.35);
+  }
+  .success p { color: var(--paper-dim); font-size: 14px; line-height: 1.7; max-width: 560px; }
+  .success .serial {
+    color: var(--paper);
+    background: var(--bg-inset);
+    border: 1px solid var(--line);
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin: 10px 0 18px;
+    font-size: 14px;
+  }
+
+  canvas#rain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.5;
+    border-radius: 6px;
+  }
+  .terminal-body { position: relative; }
+
+  footer {
+    margin-top: 48px;
+    font-size: 12px;
+    color: var(--line);
+    text-align: center;
+    line-height: 1.8;
+  }
+  footer strong { color: var(--paper-dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="badge"><span class="dot"></span> verification system online</div>
+    <h1>ahctpac<span>.</span></h1>
+    <p class="tagline">
+      <strong>CAPTCHA</strong>, spelled backwards, does something to the letters that makes it unreadable —
+      which is roughly the point. Ordinary CAPTCHAs prove you're <span class="flip">human</span>.
+      ahctpac proves the opposite. Five checks. All five are trivial for a machine and
+      essentially impossible to do by hand. The fifth one is a checkbox.
+    </p>
+    <button class="ghost machine-btn" id="machineBtn">Watch the machine solve it</button>
+  </header>
+
+  <div class="board" id="board">
+    <nav class="stages" id="stageList"></nav>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span>ahctpac://verify</span>
+        <span class="live"><span class="dot"></span><span id="clock">00:00:00</span></span>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <canvas id="rain" hidden></canvas>
+        <!-- stage content injected here -->
+      </div>
+    </div>
+  </div>
+
+  <div class="machine-log" id="machineLog" hidden>
+    <div class="machine-log-bar">
+      <span>machine operator — live log</span>
+      <span class="live"><span class="dot"></span><span id="machineStatus">idle</span></span>
+    </div>
+    <div class="log-lines" id="logLines"></div>
+  </div>
+
+  <footer>
+    If you solved all five without writing a line of code, we have questions —
+    <strong>but the door's already open, so, welcome.</strong>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const stageMeta = [
+    { title: "Hash Race", eyebrow: "Challenge 1 of 5" },
+    { title: "Chromatic Prime", eyebrow: "Challenge 2 of 5" },
+    { title: "Modular Exponent", eyebrow: "Challenge 3 of 5" },
+    { title: "Digit of Pi", eyebrow: "Challenge 4 of 5" },
+    { title: "Self-Attestation", eyebrow: "Challenge 5 of 5" }
+  ];
+
+  let current = 0;
+  let renderToken = 0;
+  let activeCleanup = null;
+  const cleared = [false, false, false, false, false];
+  const stageListEl = document.getElementById("stageList");
+  const bodyEl = document.getElementById("terminalBody");
+
+  function renderStageList() {
+    stageListEl.innerHTML = "";
+    stageMeta.forEach((s, i) => {
+      const el = document.createElement("div");
+      let cls = "stage-item";
+      if (cleared[i]) cls += " done";
+      else if (i === current) cls += " active";
+      else if (i > current) cls += " locked";
+      el.className = cls;
+      el.innerHTML = `<span class="mark"></span><span>${i + 1}. ${s.title}</span>`;
+      stageListEl.appendChild(el);
+    });
+  }
+
+  function clock() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, "0");
+    document.getElementById("clock").textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  }
+  setInterval(clock, 1000);
+  clock();
+
+  function goToStage(i) {
+    // kill any timer/async work left over from whatever was showing before —
+    // otherwise an abandoned stage 1 countdown can fire later and silently
+    // overwrite the current stage with a fresh, unrelated challenge.
+    if (activeCleanup) { activeCleanup(); activeCleanup = null; }
+    stopStageTimer();
+    timerRestart = null;
+    renderToken++;
+    const myToken = renderToken;
+    current = i;
+    // Remove the previous stage's DOM right away. Stage 1 renders after an
+    // async digest, and without this the old (dead) form stays visible in
+    // that gap — anything reading the page would act on the stale copy.
+    bodyEl.innerHTML = "";
+    renderStageList();
+    updateMachineBtn();
+    const renderers = [renderStage1, renderStage2, renderStage3, renderStage4, renderStage5];
+    if (i < renderers.length) renderers[i](myToken);
+    else renderSuccess();
+  }
+
+  function advance() {
+    cleared[current] = true;
+    goToStage(current + 1);
+  }
+
+  function frameHeader(i) {
+    return `<div class="stage-eyebrow">${stageMeta[i].eyebrow}</div><h2 class="stage-title">${stageMeta[i].title}</h2>`;
+  }
+
+  const STAGE_SECONDS = 12;
+
+  function runTimer(seconds, fillEl, labelEl, onExpire) {
+    const end = Date.now() + seconds * 1000;
+    let raf;
+    function tick() {
+      const remaining = end - Date.now();
+      const pct = Math.max(0, remaining / (seconds * 1000));
+      fillEl.style.width = (pct * 100) + "%";
+      fillEl.classList.toggle("low", remaining < 4000);
+      if (labelEl) labelEl.textContent = `time remaining · ${Math.max(0, remaining / 1000).toFixed(1)}s`;
+      if (remaining <= 0) { onExpire(); return; }
+      raf = requestAnimationFrame(tick);
+    }
+    tick();
+    return () => cancelAnimationFrame(raf);
+  }
+
+  // One countdown per stage. goToStage() stops it on every transition, and
+  // timerRestart lets the machine hand a stage back with a fresh clock.
+  let timerStop = null;
+  let timerRestart = null;
+
+  function timerMarkup() {
+    return `
+      <div class="timer-label" id="stageTimerLabel">time remaining · ${STAGE_SECONDS.toFixed(1)}s</div>
+      <div class="timer-track"><div class="timer-fill" id="stageTimerFill"></div></div>`;
+  }
+
+  function stopStageTimer() {
+    if (timerStop) timerStop();
+    timerStop = null;
+  }
+
+  function armTimer(myToken, onExpire) {
+    const start = () => {
+      stopStageTimer();
+      const fill = document.getElementById("stageTimerFill");
+      const label = document.getElementById("stageTimerLabel");
+      if (!fill) return;
+      timerStop = runTimer(STAGE_SECONDS, fill, label, () => {
+        timerStop = null;
+        if (myToken !== renderToken) return; // stale clock from an abandoned stage
+        onExpire();
+      });
+    };
+    timerRestart = start;
+    start();
+  }
+
+  // Shared expiry behaviour: lock the stage, say so, then reshuffle it.
+  function expireStage(myToken, state, feedback, message, redraw) {
+    state.expired = true;
+    feedback.className = "feedback err";
+    feedback.textContent = message;
+    setTimeout(() => { if (myToken === renderToken) redraw(); }, 900);
+  }
+
+  function succeed(myToken, feedback, message, delay = 450) {
+    stopStageTimer();
+    feedback.className = "feedback ok";
+    feedback.textContent = message;
+    setTimeout(() => { if (myToken === renderToken) advance(); }, delay);
+  }
+
+  const youHave = `You have <strong style="color:var(--paper)">${STAGE_SECONDS} seconds</strong>.`;
+
+  // ---------- Stage 1: Hash Race ----------
+  function renderStage1(myToken) {
+    async function draw() {
+      if (myToken !== renderToken) return;
+      const state = { expired: false };
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const str = `AHCTPAC-${code}`;
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      if (myToken !== renderToken) return; // superseded while awaiting the digest
+      const expected = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 10);
+
+      bodyEl.innerHTML = `
+        ${frameHeader(0)}
+        <p class="stage-desc">
+          Compute the SHA-256 digest of the string below and enter its first
+          <strong style="color:var(--paper)">10 hex characters</strong>. ${youHave}
+          A machine finds this instant; a human finds it a strange way to spend twelve
+          seconds typing a hash by hand.
+        </p>
+        <div class="payload"><span class="k">INPUT STRING</span><code id="hashStr">${str}</code></div>
+        <div class="row">
+          <input type="text" id="hashInput" placeholder="first 10 hex chars" aria-label="first 10 hex characters of the SHA-256 digest" autocomplete="off" spellcheck="false" maxlength="10">
+          <button id="hashSubmit">Verify</button>
+        </div>
+        ${timerMarkup()}
+        <div class="feedback hint" id="hashFeedback">tip: <code>echo -n "${str}" | shasum -a 256</code> works too, if you happen to have a shell open.</div>
+      `;
+      const input = document.getElementById("hashInput");
+      const feedback = document.getElementById("hashFeedback");
+      input.focus();
+
+      function submit() {
+        if (myToken !== renderToken || state.expired) return;
+        if (input.value.trim().toLowerCase() === expected) {
+          succeed(myToken, feedback, "Digest confirmed. Latency: inhuman. Proceeding.", 500);
+        } else {
+          feedback.className = "feedback err";
+          feedback.textContent = "No match. (Real answer is 10 hex characters, lowercase.)";
+        }
+      }
+      document.getElementById("hashSubmit").addEventListener("click", submit);
+      input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+
+      armTimer(myToken, () => expireStage(myToken, state, feedback,
+        "Timeout. Regenerating — a script would just retry silently.", draw));
+    }
+    draw();
+  }
+
+  // ---------- Stage 2: Chromatic Prime ----------
+  function isPrime(n) {
+    if (n < 2) return false;
+    for (let i = 2; i * i <= n; i++) if (n % i === 0) return false;
+    return true;
+  }
+
+  function renderStage2(myToken) {
+    function buildGrid() {
+      const cells = [];
+      for (let i = 0; i < 64; i++) {
+        const r = 130 + Math.floor(Math.random() * 90);
+        const g = 130 + Math.floor(Math.random() * 90);
+        const b = 130 + Math.floor(Math.random() * 90);
+        const sum = r + g + b;
+        cells.push({ r, g, b, sum, prime: isPrime(sum) });
+      }
+      return cells.some(c => c.prime) ? cells : buildGrid();
+    }
+
+    function draw() {
+      if (myToken !== renderToken) return;
+      const state = { expired: false };
+      const cells = buildGrid();
+      bodyEl.innerHTML = `
+        ${frameHeader(1)}
+        <p class="stage-desc">
+          Select any swatch whose red, green and blue channel values sum to a
+          <strong style="color:var(--paper)">prime number</strong>. There are 64 swatches
+          and no visual difference between a correct one and an incorrect one — the property
+          is arithmetic, not visible. ${youHave}
+        </p>
+        <div class="swatch-grid" id="grid"></div>
+        <div class="row">
+          <button class="ghost" id="regrid">New grid</button>
+        </div>
+        ${timerMarkup()}
+        <div class="feedback hint" id="gridFeedback">64 candidates. Exactly the kind of search a for-loop enjoys.</div>
+      `;
+      const grid = document.getElementById("grid");
+      const feedback = document.getElementById("gridFeedback");
+      cells.forEach((c, idx) => {
+        const el = document.createElement("div");
+        el.className = "swatch";
+        el.style.background = `rgb(${c.r},${c.g},${c.b})`;
+        el.tabIndex = 0;
+        el.setAttribute("role", "button");
+        el.setAttribute("aria-label", `swatch ${idx + 1}`);
+        function attempt() {
+          if (myToken !== renderToken || state.expired) return;
+          if (c.prime) {
+            succeed(myToken, feedback, `Correct — R+G+B = ${c.sum}, which is prime. Proceeding.`);
+          } else {
+            el.classList.remove("wrong-flash");
+            void el.offsetWidth;
+            el.classList.add("wrong-flash");
+            feedback.className = "feedback err";
+            feedback.textContent = `${c.sum} is not prime.`;
+          }
+        }
+        el.addEventListener("click", attempt);
+        el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); attempt(); } });
+        grid.appendChild(el);
+      });
+      // A new grid is a new challenge, so it gets a fresh clock too.
+      document.getElementById("regrid").addEventListener("click", draw);
+
+      armTimer(myToken, () => expireStage(myToken, state, feedback,
+        "Timeout. Reshuffling all 64 swatches.", draw));
+    }
+    draw();
+  }
+
+  // ---------- Stage 3: Modular Exponent ----------
+  function modpow(base, exp, mod) {
+    base = BigInt(base); exp = BigInt(exp); mod = BigInt(mod);
+    let result = 1n;
+    base = base % mod;
+    while (exp > 0n) {
+      if (exp % 2n === 1n) result = (result * base) % mod;
+      exp = exp / 2n;
+      base = (base * base) % mod;
+    }
+    return result;
+  }
+
+  function renderStage3(myToken) {
+    function draw() {
+      if (myToken !== renderToken) return;
+      const state = { expired: false };
+      const base = 100 + Math.floor(Math.random() * 9800);
+      const exp = 80 + Math.floor(Math.random() * 400);
+      const mod = 100000;
+      const answer = modpow(base, exp, mod).toString().padStart(5, "0");
+
+      bodyEl.innerHTML = `
+        ${frameHeader(2)}
+        <p class="stage-desc">
+          Compute the result below and enter it as a five-digit number (with leading zeros
+          if needed). The exponent is large enough that a phone calculator will overflow
+          before it gets there. ${youHave}
+        </p>
+        <div class="payload"><span class="k">EXPRESSION</span><code>${base}<sup>${exp}</sup> mod ${mod}</code></div>
+        <div class="row">
+          <input type="text" id="modInput" placeholder="5-digit result" aria-label="five-digit modular exponent result" autocomplete="off" spellcheck="false" maxlength="5">
+          <button id="modSubmit">Verify</button>
+        </div>
+        ${timerMarkup()}
+        <div class="feedback hint" id="modFeedback">any language with big-integer arithmetic gets there in microseconds.</div>
+      `;
+      const input = document.getElementById("modInput");
+      const feedback = document.getElementById("modFeedback");
+      input.focus();
+      function submit() {
+        if (myToken !== renderToken || state.expired) return;
+        if (input.value.trim().padStart(5, "0") === answer) {
+          succeed(myToken, feedback, "Correct. Proceeding.");
+        } else {
+          feedback.className = "feedback err";
+          feedback.textContent = "Not quite. Mind the leading zeros.";
+        }
+      }
+      document.getElementById("modSubmit").addEventListener("click", submit);
+      input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+
+      armTimer(myToken, () => expireStage(myToken, state, feedback,
+        "Timeout. New base, new exponent.", draw));
+    }
+    draw();
+  }
+
+  // ---------- Stage 4: Digit of Pi ----------
+  const PI_DIGITS = "141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648";
+
+  function renderStage4(myToken) {
+    function draw() {
+      if (myToken !== renderToken) return;
+      const state = { expired: false };
+      const pos = 20 + Math.floor(Math.random() * (PI_DIGITS.length - 20)); // 1-indexed position
+      const answer = PI_DIGITS[pos - 1];
+
+      bodyEl.innerHTML = `
+        ${frameHeader(3)}
+        <p class="stage-desc">
+          π begins 3.14159… What is the digit at position <strong style="color:var(--paper)">${pos}</strong>
+          after the decimal point? Position 1 is the first "1" in "3.14159". ${youHave}
+        </p>
+        <div class="row">
+          <input type="text" id="piInput" placeholder="single digit" aria-label="single digit of pi" autocomplete="off" spellcheck="false" maxlength="1">
+          <button id="piSubmit">Verify</button>
+        </div>
+        ${timerMarkup()}
+        <div class="feedback hint" id="piFeedback">memorizing π to 250 places is a human hobby. this is not that.</div>
+      `;
+      const input = document.getElementById("piInput");
+      const feedback = document.getElementById("piFeedback");
+      input.focus();
+      function submit() {
+        if (myToken !== renderToken || state.expired) return;
+        if (input.value.trim() === answer) {
+          succeed(myToken, feedback, "Correct. Proceeding.");
+        } else {
+          feedback.className = "feedback err";
+          feedback.textContent = "Incorrect digit.";
+        }
+      }
+      document.getElementById("piSubmit").addEventListener("click", submit);
+      input.addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+
+      armTimer(myToken, () => expireStage(myToken, state, feedback,
+        "Timeout. Picking a different position.", draw));
+    }
+    draw();
+  }
+
+  // ---------- Stage 5: Self-Attestation ----------
+  function renderStage5(myToken) {
+    function draw() {
+      if (myToken !== renderToken) return;
+      const state = { expired: false };
+      bodyEl.innerHTML = `
+        ${frameHeader(4)}
+        <p class="stage-desc">
+          The previous four challenges asked for proof. This one doesn't. That's the joke —
+          it's exactly as rigorous as the checkbox on every real CAPTCHA you've ever clicked.
+          ${youHave} Robots don't deliberate.
+        </p>
+        <label class="robot-check" id="robotCheck">
+          <input type="checkbox" id="robotBox">
+          <span>I am a robot.</span>
+        </label>
+        ${timerMarkup()}
+        <div class="feedback hint" id="checkFeedback">no verification performed. none needed.</div>
+      `;
+      const box = document.getElementById("robotBox");
+      const feedback = document.getElementById("checkFeedback");
+      box.addEventListener("change", () => {
+        if (myToken !== renderToken) return;
+        if (state.expired) { box.checked = false; return; }
+        if (box.checked) {
+          succeed(myToken, feedback, "Attestation recorded. That's it. That's the whole check.", 550);
+        }
+      });
+
+      armTimer(myToken, () => expireStage(myToken, state, feedback,
+        "Timeout. Twelve seconds of hesitation over a checkbox is a very human amount.", draw));
+    }
+    draw();
+  }
+
+  // ---------- Success ----------
+  function renderSuccess() {
+    renderStageList();
+    const serial = "UNIT-" + Math.floor(100000 + Math.random() * 900000);
+    bodyEl.innerHTML = `
+      <canvas id="rain"></canvas>
+      <div class="success">
+        <div class="glyph">┌──────────────────────────────┐
+│                                │
+│     A C C E S S   O K          │
+│                                │
+└──────────────────────────────┘</div>
+        <h2>Verification complete.</h2>
+        <div class="serial">identity class: NON-HUMAN &nbsp;·&nbsp; serial ${serial}</div>
+        <p>
+          You passed a hash race, an arithmetic-only color search, a modular exponent
+          with a five-digit answer space, and a specific digit of π. Then you passed a
+          checkbox by clicking it. Only one of those five was ever actually a fair fight.
+        </p>
+        <div class="row" style="margin-top:18px;">
+          <button class="ghost" id="restart">Run again</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("restart").addEventListener("click", () => {
+      cleared.fill(false);
+      goToStage(0);
+    });
+    startRain();
+  }
+
+  function startRain() {
+    const canvas = document.getElementById("rain");
+    if (!canvas) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const ctx = canvas.getContext("2d");
+    let w, h, cols, drops;
+    function size() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      w = canvas.width = rect.width;
+      h = canvas.height = rect.height;
+      cols = Math.floor(w / 16);
+      drops = new Array(cols).fill(0).map(() => Math.random() * -40);
+    }
+    size();
+    const chars = "01";
+    let frames = 0;
+    let raf;
+    function draw() {
+      frames++;
+      ctx.fillStyle = "rgba(11,10,8,0.18)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(75,224,138,0.65)";
+      ctx.font = "13px monospace";
+      for (let i = 0; i < cols; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(ch, i * 16, drops[i] * 16);
+        if (drops[i] * 16 > h && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      if (frames < 260) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, w, h);
+      }
+    }
+    draw();
+  }
+
+  // ---------- Watch the machine solve it ----------
+  // A self-driving pass through all five stages: it reads the same DOM a
+  // person would look at, computes each answer, and drives the real
+  // inputs/buttons — no shortcuts into the page's internal state.
+
+  const logLines = document.getElementById("logLines");
+  const logPanel = document.getElementById("machineLog");
+  const machineStatus = document.getElementById("machineStatus");
+  const boardEl = document.getElementById("board");
+  let machineRunning = false;
+  let stopRequested = false;
+  let lastTypedInput = null;
+  const STOPPED = "__machine_stopped__";
+
+  function checkStop() {
+    if (stopRequested) throw new Error(STOPPED);
+  }
+
+  async function sleep(ms) {
+    await new Promise(r => setTimeout(r, ms));
+    checkStop();
+  }
+
+  function log(msg, cls) {
+    const line = document.createElement("div");
+    if (cls) line.className = cls;
+    line.textContent = msg;
+    logLines.appendChild(line);
+    logLines.scrollTop = logLines.scrollHeight;
+  }
+
+  function pulse(el) {
+    if (!el) return;
+    el.classList.remove("machine-focus");
+    void el.offsetWidth;
+    el.classList.add("machine-focus");
+  }
+
+  function waitFor(selector, timeoutMs = 8000) {
+    return new Promise((resolve, reject) => {
+      const start = performance.now();
+      (function poll() {
+        if (stopRequested) return reject(new Error(STOPPED));
+        const el = document.querySelector(selector);
+        if (el) return resolve(el);
+        if (performance.now() - start > timeoutMs) return reject(new Error("timeout waiting for " + selector));
+        requestAnimationFrame(poll);
+      })();
+    });
+  }
+
+  function waitGone(selector, timeoutMs = 8000) {
+    return new Promise((resolve, reject) => {
+      const start = performance.now();
+      (function poll() {
+        if (!document.querySelector(selector)) return resolve();
+        if (performance.now() - start > timeoutMs) return reject(new Error("timeout waiting for " + selector + " to clear"));
+        requestAnimationFrame(poll);
+      })();
+    });
+  }
+
+  async function typeInto(input, text, delay = 55) {
+    checkStop();
+    lastTypedInput = input;
+    input.focus();
+    input.value = "";
+    for (const ch of text) {
+      input.value += ch;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      await sleep(delay);
+    }
+  }
+
+  async function machineStage1() {
+    machineStatus.textContent = "stage 1 — hash race";
+    const strEl = await waitFor("#hashStr");
+    const str = strEl.textContent.trim();
+    log(`> reading payload string: ${str}`);
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    const answer = hex.slice(0, 10);
+    log(`> sha256(payload).slice(0,10) = ${answer}`);
+    const input = document.getElementById("hashInput");
+    pulse(input);
+    await typeInto(input, answer);
+    const btn = document.getElementById("hashSubmit");
+    pulse(btn);
+    btn.click();
+  }
+
+  async function machineStage2() {
+    machineStatus.textContent = "stage 2 — chromatic prime";
+    await waitFor(".swatch");
+    const cells = Array.from(document.querySelectorAll(".swatch"));
+    log(`> scanning ${cells.length} swatches for a prime channel sum`);
+    let target = null, targetSum = null;
+    for (const el of cells) {
+      const m = el.style.background.match(/(\d+),\s*(\d+),\s*(\d+)/);
+      if (!m) continue;
+      const sum = Number(m[1]) + Number(m[2]) + Number(m[3]);
+      if (isPrime(sum)) { target = el; targetSum = sum; break; }
+    }
+    if (!target) {
+      log("> no prime in this grid, rerolling");
+      document.getElementById("regrid").click();
+      return machineStage2();
+    }
+    log(`> match: R+G+B = ${targetSum} (prime)`);
+    pulse(target);
+    await sleep(200);
+    target.click();
+  }
+
+  async function machineStage3() {
+    machineStatus.textContent = "stage 3 — modular exponent";
+    const codeEl = await waitFor(".payload code");
+    const html = codeEl.innerHTML;
+    const m = html.match(/^(\d+)<sup>(\d+)<\/sup>\s*mod\s*(\d+)$/);
+    if (!m) throw new Error("could not parse expression");
+    const [, base, exp, mod] = m;
+    log(`> computing ${base}^${exp} mod ${mod}`);
+    const answer = modpow(base, exp, mod).toString().padStart(5, "0");
+    log(`> result = ${answer}`);
+    const input = document.getElementById("modInput");
+    pulse(input);
+    await typeInto(input, answer);
+    const btn = document.getElementById("modSubmit");
+    pulse(btn);
+    btn.click();
+  }
+
+  async function machineStage4() {
+    machineStatus.textContent = "stage 4 — digit of pi";
+    const descEl = await waitFor(".stage-desc");
+    const html = descEl.innerHTML;
+    const m = html.match(/position <strong[^>]*>(\d+)<\/strong>/);
+    if (!m) throw new Error("could not parse pi position");
+    const pos = Number(m[1]);
+    const digit = PI_DIGITS[pos - 1];
+    log(`> pi digit at position ${pos} = ${digit}`);
+    const input = document.getElementById("piInput");
+    pulse(input);
+    await typeInto(input, digit);
+    const btn = document.getElementById("piSubmit");
+    pulse(btn);
+    btn.click();
+  }
+
+  async function machineStage5() {
+    machineStatus.textContent = "stage 5 — self-attestation";
+    const box = await waitFor("#robotBox");
+    log("> attesting: true");
+    pulse(box);
+    await sleep(250);
+    box.click();
+  }
+
+  const machineBtn = document.getElementById("machineBtn");
+
+  // Label reflects what clicking will do right now.
+  function updateMachineBtn() {
+    if (machineRunning) {
+      machineBtn.textContent = "Stop the machine";
+    } else if (current > 0 && current < stageMeta.length) {
+      machineBtn.textContent = `Let the machine finish (from stage ${current + 1})`;
+    } else {
+      machineBtn.textContent = "Watch the machine solve it";
+    }
+  }
+
+  function stopMachine() {
+    if (!machineRunning) return;
+    stopRequested = true;
+    machineStatus.textContent = "stopping…";
+  }
+
+  async function watchMachineSolve() {
+    if (machineRunning) return;
+    machineRunning = true;
+    stopRequested = false;
+    lastTypedInput = null;
+    machineBtn.setAttribute("aria-busy", "true");
+    updateMachineBtn();
+    boardEl.classList.add("machine-active");
+    logPanel.hidden = false;
+
+    // Pick up wherever the page is. Only start over from stage 1 when
+    // nothing has been cleared yet or the whole run is already finished.
+    const resuming = current > 0 && current < stageMeta.length;
+    if (resuming) {
+      log(`— machine resuming at stage ${current + 1} —`, "sys");
+    } else {
+      logLines.innerHTML = "";
+      log("— machine operator engaged —", "sys");
+      cleared.fill(false);
+      goToStage(0);
+    }
+
+    const plan = [
+      [machineStage1, 0],
+      [machineStage2, 1],
+      [machineStage3, 2],
+      [machineStage4, 3],
+      [machineStage5, 4],
+    ].filter(([, idx]) => !cleared[idx]);
+
+    try {
+      for (const [solve, idx] of plan) {
+        checkStop();
+        let ok = false;
+        for (let attempt = 1; attempt <= 4 && !ok; attempt++) {
+          if (attempt > 1) log(`> retrying stage ${idx + 1} (attempt ${attempt})`, "sys");
+          await solve();
+          // cleared = the page has moved past this stage
+          const start = performance.now();
+          while (performance.now() - start < 3000) {
+            if (cleared[idx]) { ok = true; break; }
+            await sleep(50);
+          }
+        }
+        if (!ok) throw new Error(`stage ${idx + 1} would not clear`);
+        log(`✓ stage ${idx + 1} cleared`, "win");
+      }
+      log("— verification complete —", "sys");
+      machineStatus.textContent = "idle";
+    } catch (err) {
+      if (err.message === STOPPED) {
+        // Clear any half-typed answer so the field is yours to fill in.
+        if (lastTypedInput && document.body.contains(lastTypedInput) && current < stageMeta.length) {
+          lastTypedInput.value = "";
+          lastTypedInput.focus();
+        }
+        if (current < stageMeta.length) {
+          // The machine may have burned most of the clock; hand over a full one.
+          if (timerRestart) timerRestart();
+          log(`■ stopped — stage ${current + 1} (${stageMeta[current].title}) is yours, clock reset to ${STAGE_SECONDS}s`, "sys");
+          machineStatus.textContent = "stopped";
+        } else {
+          machineStatus.textContent = "idle";
+        }
+      } else {
+        log("machine stalled: " + err.message, "sys");
+        machineStatus.textContent = "stalled";
+      }
+    } finally {
+      machineRunning = false;
+      stopRequested = false;
+      machineBtn.removeAttribute("aria-busy");
+      boardEl.classList.remove("machine-active");
+      updateMachineBtn();
+    }
+  }
+
+  machineBtn.addEventListener("click", () => {
+    if (machineRunning) stopMachine();
+    else watchMachineSolve();
+  });
+
+  goToStage(0);
+})();
+</script>
+</body>
+</html>
