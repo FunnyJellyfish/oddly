@@ -5,6 +5,18 @@
       "has": [{ "type": "host", "value": "lorem.oddly-inc.com" }],
       "destination": "/lorem.html",
       "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "ahctpac.oddly-inc.com" }],
+      "destination": "/ahctpac.html",
+      "permanent": false
+    },
+    {
+      "source": "/ahctpac.html",
+      "missing": [{ "type": "host", "value": "ahctpac.oddly-inc.com" }],
+      "destination": "/",
+      "permanent": false
     }
   ]
 }
