@@ -522,9 +522,9 @@
   /* ---------- Oddly top bar (matches oddly-inc.com) ---------- */
   .topbar { position: sticky; top: 0; z-index: 60; background: rgba(8,10,20,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
   .topbar-in { max-width: 1040px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 1.22rem; color: var(--paper); text-decoration: none; }
-  .logo svg { width: 28px; height: 28px; flex: none; }
-  .logo small { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: .6rem; letter-spacing: .14em; color: #666B92; margin-left: 2px; }
+  /* Oddly Labs wordmark, as on acid.html */
+  .logo { font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: .02em; color: var(--paper); text-decoration: none; }
+  .logo span { color: #C6FF3D; }
   .pill { font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(245,166,35,.4); padding: 6px 10px; border-radius: 999px; white-space: nowrap; background: rgba(245,166,35,.07); }
   .eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
 
@@ -537,7 +537,7 @@
   .quote .av { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-weight: 700; color: #080A14; background: var(--purple); flex: none; }
   .quote .who b { display: block; font-weight: 600; color: var(--paper); }
   .quote .who small { display: block; font-family: 'JetBrains Mono', monospace; font-size: .66rem; color: var(--paper-dim); line-height: 1.5; margin-top: 2px; }
-  @media (max-width: 520px) { .quote { padding: 24px; } .quote p { font-size: 1.1rem; } .logo small { display: none; } }
+  @media (max-width: 520px) { .quote { padding: 24px; } .quote p { font-size: 1.1rem; } }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
@@ -547,7 +547,7 @@
 <body>
 <header class="topbar">
   <div class="topbar-in">
-    <a class="logo" href="https://www.oddly-inc.com/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg><span>Oddly<small>, INC. · LABS</small></span></a>
+    <a class="logo" href="https://www.oddly-inc.com/" aria-label="Oddly Labs, a division of Oddly, Inc. (home)">Oddly<span>Labs</span></a>
     <span class="pill">Certification: Pending</span>
   </div>
 </header>
