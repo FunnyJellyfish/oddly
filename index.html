@@ -408,7 +408,7 @@ a.pending:hover{transform:none!important;box-shadow:none!important}
 
 <div class="stats">
   <div class="wrap">
-    <div class="stat"><b id="st-sites">8</b><span>Websites</span></div>
+    <div class="stat"><b id="st-sites">10</b><span>Websites</span></div>
     <div class="stat"><b id="st-os">2</b><span>Operating Systems</span></div>
     <div class="stat"><b>17</b><span>Excellent minutes of oPhone 1 battery</span></div>
     <div class="stat"><b>0</b><span>Safety certifications completed</span></div>
@@ -473,7 +473,7 @@ a.pending:hover{transform:none!important;box-shadow:none!important}
       <div class="quote rv" style="--a:var(--purple)">
         <span class="mark">“</span>
         <p>Oddly, Inc. does not make mistakes. Oddly, Inc. makes decisions.</p>
-        <p>Nine of them are listed above. Two of them are operating systems. All of them are correct.</p>
+        <p><span id="q-total">Twelve</span> of them are listed above. <span id="q-os">Two</span> of them are operating systems. All of them are correct.</p>
         <div class="who">
           <div class="av">SS</div>
           <div><b>Stephen Stubborn</b><small>Pronounced Stefen Stu-Born<br>Chief Executive Officer, Oddly, Inc.</small></div>
@@ -681,6 +681,13 @@ document.getElementById('footFiles').innerHTML =
 
 document.getElementById('st-sites').textContent = SITES.length;
 document.getElementById('st-os').textContent = SOFTWARE.length;
+
+/* The CEO quote counts what is listed above it, so it stays right when a site is added. */
+const NUM_WORDS = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve',
+  'Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty'];
+const numWord = n => NUM_WORDS[n] || String(n);
+document.getElementById('q-total').textContent = numWord(SITES.length + SOFTWARE.length);
+document.getElementById('q-os').textContent = numWord(SOFTWARE.length);
 
 /* ═══════════ LINK CHECK ═══════════
    On a hosted site, every linked file is checked once. A file that is
