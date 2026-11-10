@@ -291,6 +291,39 @@ a.pending:hover{transform:none!important;box-shadow:none!important}
 .btn.pending{background:transparent!important;color:var(--dim)!important;border-color:var(--line2)!important}
 
 /* Reveal */
+/* ───────── CONTACT ───────── */
+.contact{display:grid;grid-template-columns:1.35fr .9fr;gap:20px;align-items:start}
+.ideaform,.contact-side{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--panel),var(--bg2));padding:30px 32px}
+.ideaform{display:grid;gap:18px}
+.ideaform .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:grid;gap:7px}
+.field label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.field label i{font-style:normal;color:var(--dim);text-transform:none;letter-spacing:0}
+.field input,.field textarea{font:inherit;font-size:1rem;color:var(--text);background:var(--bg);border:1px solid var(--line2);border-radius:12px;padding:12px 14px;width:100%}
+.field textarea{min-height:150px;resize:vertical;line-height:1.5}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 3px rgba(46,233,165,.15)}
+.field input[aria-invalid="true"],.field textarea[aria-invalid="true"]{border-color:#FF5A6E}
+.count{font-family:var(--mono);font-size:.66rem;color:var(--dim);justify-self:end}
+.agree{display:flex;gap:12px;align-items:flex-start;font-size:.92rem;color:var(--muted);cursor:pointer}
+.agree input{margin-top:3px;width:18px;height:18px;accent-color:var(--mint);flex:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form-foot{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.form-msg{font-family:var(--mono);font-size:.78rem;color:var(--amber);min-height:1.2em;flex:1 1 220px}
+.form-msg.err{color:#FF5A6E}
+.ideaform button[disabled]{opacity:.6;cursor:wait;transform:none}
+.sent{display:grid;gap:12px;align-content:start}
+.sent .ref{font-family:var(--mono);font-size:.74rem;color:var(--mint);letter-spacing:.08em}
+.sent h3{font-family:var(--display);font-size:1.7rem;font-weight:700;letter-spacing:-.01em}
+.sent p{color:var(--muted)}
+.contact-side h3{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:500;margin-bottom:16px}
+.steps{list-style:none;display:grid;gap:16px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:30px 1fr;gap:12px;color:var(--muted);font-size:.95rem;counter-increment:s}
+.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:.78rem;color:#080A14;background:var(--purple)}
+.steps li b{color:var(--text);font-weight:600}
+.side-note{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line2);font-size:.82rem;color:var(--dim);line-height:1.6}
+
+[hidden]{display:none!important}
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
 .rv.in{opacity:1;transform:none}
 .toast{
@@ -322,7 +355,12 @@ a.pending:hover{transform:none!important;box-shadow:none!important}
   .dl-act{justify-content:flex-start;flex-wrap:wrap}
   .dl-fmt span{display:inline;margin-left:8px}
 }
+@media (max-width:860px){
+  .contact{grid-template-columns:1fr}
+}
 @media (max-width:720px){
+  .ideaform,.contact-side{padding:24px}
+  .ideaform .two{grid-template-columns:1fr}
   .nav{display:none}
   .wrap{width:calc(100% - 36px)}
   .hero{padding-top:56px}
@@ -348,6 +386,7 @@ a.pending:hover{transform:none!important;box-shadow:none!important}
       <a href="#software">Software</a>
       <a href="#downloads">Downloads</a>
       <a href="#leadership">Leadership</a>
+      <a href="#contact">Contact</a>
     </nav>
     <span class="pill">Certification: Pending</span>
   </div>
@@ -488,6 +527,65 @@ a.pending:hover{transform:none!important;box-shadow:none!important}
           <div><b>Stephen Stupid</b><small>Pronounced Stefen Stupid<br>Chief Financial Officer, Oddly, Inc. (no relation)</small></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ CONTACT ═════════ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div>
+        <div class="eyebrow">05 — Contact</div>
+        <h2>Message Stephen Stubborn, Literally.</h2>
+      </div>
+      <p>Have an idea for a new Oddly product? Send it straight to the Office of the Chief Executive. He reads every one. Personally. Literally.</p>
+    </div>
+    <div class="contact">
+      <div class="rv">
+        <form class="ideaform" id="ideaForm" novalidate>
+          <div class="two">
+            <div class="field">
+              <label for="ideaName">Your name <i>(optional)</i></label>
+              <input id="ideaName" name="name" type="text" maxlength="80" autocomplete="nickname" placeholder="First name is plenty">
+            </div>
+            <div class="field">
+              <label for="ideaProduct">Product name</label>
+              <input id="ideaProduct" name="product" type="text" maxlength="80" required placeholder="Oddly Toaster">
+            </div>
+          </div>
+          <div class="field">
+            <label for="ideaImproves">What does it improve?</label>
+            <input id="ideaImproves" name="improves" type="text" maxlength="120" required placeholder="The toaster. It only toasts bread.">
+          </div>
+          <div class="field">
+            <label for="ideaText">Your idea</label>
+            <textarea id="ideaText" name="idea" maxlength="2000" required placeholder="Describe the one thing you would change. Stephen Stubborn will take it from there."></textarea>
+            <span class="count" id="ideaCount">0 / 2000</span>
+          </div>
+          <div class="hp" aria-hidden="true"><label for="ideaWebsite">Leave this empty</label><input id="ideaWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <label class="agree" for="ideaAgree"><input id="ideaAgree" type="checkbox" required> <span>I understand that Oddly, Inc. may independently invent this.</span></label>
+          <div class="form-foot">
+            <p class="form-msg" id="ideaMsg" role="status" aria-live="polite"></p>
+            <button class="btn btn-primary" type="submit" id="ideaSend">Send to Stefen Stu-Born</button>
+          </div>
+        </form>
+        <div class="ideaform sent" id="ideaSent" hidden tabindex="-1">
+          <div class="ref" id="ideaRef"></div>
+          <h3>Message received.</h3>
+          <p id="ideaSentBody">Stephen Stubborn has read it. He looked at it and said: this can be improved.</p>
+          <div><button class="btn btn-ghost btn-sm" type="button" id="ideaAgain">Send another idea</button></div>
+        </div>
+      </div>
+      <aside class="contact-side rv" aria-label="What happens next">
+        <h3>What happens next</h3>
+        <ol class="steps">
+          <li><span><b>Stephen Stubborn reads your idea.</b> Literally. That is the name of the form.</span></li>
+          <li><span><b>He says: this can be improved.</b> He says this about everything. It is a compliment.</span></li>
+          <li><span><b>Oddly, Inc. independently invents it.</b> Any resemblance to your message is a coincidence.</span></li>
+        </ol>
+        <p class="side-note">Please do not include phone numbers, addresses, or email. Stephen Stubborn does not reply. He decides. Ideas are not credited, compensated, or returned. This is not a bug. — Oddly, Inc.</p>
+      </aside>
     </div>
   </div>
 </section>
@@ -768,6 +866,60 @@ function finish(){
   busy=false;
 }
 goBtn.addEventListener('click', drive);
+
+/* ═══════════ MESSAGE STEPHEN STUBBORN, LITERALLY ═══════════
+   Submissions are posted to a Google Form, so they land in its Responses
+   tab (and any linked Google Sheet). To connect it, paste the form's
+   formResponse URL and the entry IDs of its four questions below. */
+const IDEA_FORM = {
+  action: 'https://docs.google.com/forms/d/e/1FAIpQLSdn_zpOtf0vVQOE69fbazBx47GN6nyZX0QPelJ1XoUgCTbDjQ/formResponse',
+  fields: {
+    name:     'entry.569701487',    // Short answer: Name
+    product:  'entry.881279534',    // Short answer: Product name
+    improves: 'entry.2046235762',   // Short answer: What does it improve?
+    idea:     'entry.505003852',    // Paragraph: Your idea
+  },
+};
+(function(){
+  const form=document.getElementById('ideaForm'), sent=document.getElementById('ideaSent');
+  const msg=document.getElementById('ideaMsg'), btn=document.getElementById('ideaSend');
+  const text=document.getElementById('ideaText'), count=document.getElementById('ideaCount');
+  const connected = /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/formResponse$/.test(IDEA_FORM.action)
+    && Object.values(IDEA_FORM.fields).every(v=>/^entry\.\d+$/.test(v));
+  const say=(t,err)=>{ msg.textContent=t; msg.classList.toggle('err',!!err); };
+  text.addEventListener('input',()=>{ count.textContent=text.value.length+' / 2000'; });
+  form.addEventListener('input',e=>{ if(e.target.value.trim()) e.target.removeAttribute('aria-invalid'); });
+
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    if(document.getElementById('ideaWebsite').value) return;          // filled by a bot, not a person
+    const f=form.elements, v={ name:f.name.value.trim(), product:f.product.value.trim(), improves:f.improves.value.trim(), idea:text.value.trim() };
+    const missing=[['product','ideaProduct','the product name'],['improves','ideaImproves','what it improves'],['idea','ideaText','your idea']].filter(([k])=>!v[k]);
+    missing.forEach(([,id])=>document.getElementById(id).setAttribute('aria-invalid','true'));
+    if(missing.length){ say('Please add '+missing.map(m=>m[2]).join(', ')+'.',true); document.getElementById(missing[0][1]).focus(); return; }
+    if(!document.getElementById('ideaAgree').checked){ say('Please confirm that Oddly, Inc. may independently invent this.',true); document.getElementById('ideaAgree').focus(); return; }
+    if(!connected){ say('Delivery: Pending. The inbox has not been connected yet. Your idea was not sent.',true); return; }
+
+    btn.disabled=true; btn.textContent='Delivering…'; say('');
+    const body=new URLSearchParams();
+    for(const k of Object.keys(IDEA_FORM.fields)) body.append(IDEA_FORM.fields[k], v[k]);
+    try{
+      // Google Forms does not send CORS headers, so the reply is opaque: a
+      // network failure still throws, which is the case worth reporting.
+      await fetch(IDEA_FORM.action,{ method:'POST', mode:'no-cors', body });
+      document.getElementById('ideaRef').textContent='Idea ODL-'+String(Math.floor(10000+Math.random()*89999))+' · Office of the Chief Executive';
+      document.getElementById('ideaSentBody').textContent='Stephen Stubborn has read “'+v.product+'.” He looked at it and said: this can be improved.';
+      form.hidden=true; sent.hidden=false; sent.focus();
+    }catch(err){
+      say('Delivery failed. Check your connection and try again.',true);
+    }finally{
+      btn.disabled=false; btn.textContent='Send to Stefen Stu-Born';
+    }
+  });
+  document.getElementById('ideaAgain').addEventListener('click',()=>{
+    form.reset(); count.textContent='0 / 2000'; say(''); sent.hidden=true; form.hidden=false; form.elements.product.focus();
+  });
+})();
 
 /* ─────────── scroll reveal ─────────── */
 const io = new IntersectionObserver(es=>es.forEach(en=>{
