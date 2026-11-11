@@ -17,6 +17,18 @@
       "missing": [{ "type": "host", "value": "ahctpac.oddly-inc.com" }],
       "destination": "/",
       "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "war.oddly-inc.com" }],
+      "destination": "/war.html",
+      "permanent": false
+    },
+    {
+      "source": "/war.html",
+      "missing": [{ "type": "host", "value": "war.oddly-inc.com" }],
+      "destination": "/",
+      "permanent": false
     }
   ]
 }
