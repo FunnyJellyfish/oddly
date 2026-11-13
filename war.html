@@ -108,6 +108,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-
 #feed{position:absolute;left:calc(max(10px,env(safe-area-inset-left,0px)) + 222px);bottom:12px;width:min(440px,calc(100% - 560px));display:flex;flex-direction:column;gap:4px;pointer-events:none}
 #feed div{background:var(--glass);border-left:3px solid var(--c,var(--ink-3));padding:5px 10px;border-radius:0 4px 4px 0;font-size:12.5px;line-height:1.35;color:var(--ink);transition:opacity .6s}
 #feed time{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);margin-right:7px}
+#groups{position:absolute;left:max(10px,env(safe-area-inset-left,0px));bottom:226px;width:208px;display:flex;flex-wrap:wrap;gap:4px}
+.grp{display:flex;align-items:center;gap:5px;height:34px;padding:0 9px 0 7px;border-radius:5px;border:1px solid var(--line-2);background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:600 13px var(--f-mono);color:var(--ink);white-space:nowrap}
+.grp b{font:700 15px var(--f-display);color:var(--brass)}
+.grp svg{width:17px;height:17px;fill:var(--ink-2)}
+.grp:hover{border-color:var(--brass-2)}
+.grp.on{border-color:var(--brass);background:rgba(215,167,79,.18)}
 #help{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:10px;padding:8px 12px;font-size:12px;color:var(--ink-2);max-width:300px;line-height:1.6}
 #help b{font-family:var(--f-display);letter-spacing:.06em;font-weight:600;color:var(--ink)}
 #selbox{position:absolute;border:1px solid var(--brass);background:rgba(215,167,79,.1);pointer-events:none}
@@ -263,6 +269,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-
   #feed{left:max(8px,env(safe-area-inset-left,0px));top:116px;bottom:auto;width:calc(100% - 150px)}
   #feed div:nth-child(n+3){display:none}
   #help{display:none}
+  #groups{bottom:auto;top:116px;left:max(8px,env(safe-area-inset-left,0px));right:calc(max(8px,env(safe-area-inset-right,0px)) + 124px);width:auto;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .grp{flex:none;height:32px}
+  #app.has-groups #feed,#app.has-groups #tut{top:156px}
   #tut{top:116px;width:auto;right:calc(max(8px,env(safe-area-inset-right,0px)) + 124px);left:max(8px,env(safe-area-inset-left,0px));padding:10px 12px;gap:6px}
   #tut h3{font-size:18px}
   #tut p{font-size:12.5px}
@@ -341,8 +350,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-
     </div>
     <div id="side" class="panel hidden"></div>
     <div id="mini" class="panel battle-only"><canvas id="minimap" width="256" height="256" aria-label="Minimap"></canvas></div>
+    <div id="groups" class="battle-only" aria-label="Troop groups"></div>
     <div id="feed"></div>
-    <div id="help" class="panel battle-only"><b>Orders</b> · Drag to select · Right-click to move or attack · Right-drag pans · <b>WASD</b> pan · <b>Q/E</b> rotate · Wheel zoom · <b>1–6</b> recruit at selected city · <b>N</b> nation · <b>Tab</b> diplomacy · <b>Space</b> centre</div>
+    <div id="help" class="panel battle-only"><b>Orders</b> · Drag to select · Right-click to move or attack · Right-drag pans · <b>WASD</b> pan · <b>Q/E</b> rotate · Wheel zoom · <b>1–6</b> recruit at selected city · <b>Shift+1–9</b> save group · <b>1–9</b> select group (twice to centre) · <b>N</b> nation · <b>Tab</b> diplomacy · <b>Space</b> centre</div>
     <div id="offer" class="panel hidden"></div>
     <div id="tut" class="panel hidden" role="region" aria-label="Tutorial" aria-live="polite">
       <div class="tut-top"><span class="lbl" id="tutStep">Tutorial</span><button class="tut-x" id="tutEnd">End tutorial</button></div>
@@ -2148,6 +2158,28 @@ let peekAcc=0;
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(MODE==='globe'){if(G&&G.camp)globeWheel(e);return;}if(!G)return;
   if(G.camp&&G.camp.battle&&cam.gdist>=ZMAX-1&&e.deltaY>0){peekAcc+=e.deltaY;if(peekAcc>420){peekAcc=0;openPeek();return;}}else peekAcc=0;
   const g=groundAt(e.clientX,e.clientY);const old=cam.gdist;cam.gdist=clamp(cam.gdist*Math.pow(1.0015,e.deltaY),45,ZMAX);if(g){const f=(1-cam.gdist/old)*.85;cam.gx=clamp(cam.gx+(g.x-cam.gx)*f,-HALF,HALF);cam.gz=clamp(cam.gz+(g.z-cam.gz)*f,-HALF,HALF);}},{passive:false});
+/* ---------- troop groups ---------- */
+// Up to nine saved selections, kept as unit ids so they also work for multiplayer guests.
+let grpSig='',grpTap={n:0,t:0};
+function groupUnits(n){const g=G.groups&&G.groups[n];return g?g.map(id=>UMAP.get(id)).filter(u=>u&&u.alive&&u.f===PL):[];}
+function saveGroup(n,list){G.groups=G.groups||{};const ids=list.filter(u=>u.alive&&u.f===PL).map(u=>u.id);if(ids.length)G.groups[n]=ids;else delete G.groups[n];sfx('ui');sideDirty=true;renderGroups(true);}
+function freeGroup(){for(let n=1;n<=9;n++)if(!groupUnits(n).length)return n;return 0;}
+function groupOf(list){if(!G.groups||!list.length)return 0;const s=new Set(list.map(u=>u.id));for(let n=1;n<=9;n++){const us=groupUnits(n);if(us.length===list.length&&us.every(u=>s.has(u.id)))return n;}return 0;}
+function recallGroup(n){
+  const us=groupUnits(n);if(!us.length)return;const now=performance.now();
+  if(grpTap.n===n&&now-grpTap.t<450){let x=0,z=0;us.forEach(u=>{x+=u.x;z+=u.z;});centerOn(x/us.length,z/us.length);}
+  grpTap={n,t:now};setSel(us);sfx('ui');renderGroups(true);
+}
+function renderGroups(force){
+  const el=$('#groups');if(!el||!G)return;const rows=[];
+  for(let n=1;n<=9;n++){const us=groupUnits(n);if(!us.length){if(G.groups)delete G.groups[n];continue;}
+    const by={};us.forEach(u=>by[u.type]=(by[u.type]||0)+1);rows.push([n,us.length,Object.keys(by).sort((a,b)=>by[b]-by[a])[0]]);}
+  const cur=groupOf(G.sel),sig=rows.map(r=>r.join(':')).join('|')+'#'+cur;
+  if(!force&&sig===grpSig)return;grpSig=sig;
+  el.innerHTML=rows.map(([n,c,t])=>`<button class="grp${n===cur?' on':''}" data-grp="${n}" title="Group ${n}: ${c} unit${c===1?'':'s'}. Click to select, click again to centre the camera.">${'<b>'+n+'</b>'}${ICON[t]}<span>${c}</span></button>`).join('');
+  $('#app').classList.toggle('has-groups',rows.length>0);
+  el.querySelectorAll('[data-grp]').forEach(b=>b.onclick=()=>recallGroup(+b.dataset.grp));
+}
 function setSel(list){for(const u of G.sel)u.sel=false;G.sel=list.filter(u=>u.alive&&u.f===PL);for(const u of G.sel)u.sel=true;if(G.sel.length)G.selCity=null;sideDirty=true;}
 function leftClick(sx,sy,shift){
   const u=pickUnit(sx,sy);
@@ -2224,8 +2256,11 @@ window.addEventListener('keydown',e=>{
   if(k==='KeyG')haltAct();
   if((e.ctrlKey||e.metaKey)&&k==='KeyA'){e.preventDefault();setSel(G.units.filter(u=>u.alive&&u.f===PL));}
   if(k==='KeyN'){toggleNat();}
-  const n={Digit1:0,Digit2:1,Digit3:2,Digit4:3,Digit5:4,Digit6:5}[k];
-  if(n!=null&&G.selCity&&G.selCity.owner===PL)buyAct(G.selCity,UORDER[n]);
+  const dg=/^Digit([1-9])$/.exec(k);
+  if(dg){const d=+dg[1];
+    if(e.shiftKey){if(G.sel.length)saveGroup(d,G.sel);}
+    else if(G.selCity&&G.selCity.owner===PL){if(d<=6)buyAct(G.selCity,UORDER[d-1]);}
+    else recallGroup(d);}
 });
 window.addEventListener('keyup',e=>{keys[e.code]=false;});
 function keyPan(dt){
@@ -2327,7 +2362,7 @@ function renderSide(force){
   el.classList.remove('idle');
   if(G.sel.length){
     const doms=new Set(G.sel.map(u=>DOMAIN[u.type]));const freeC=G.fac[PL].cmd.filter(c=>!c.unit&&c.status==='ready'&&doms.has(CROLE[c.role].dom));const leads=G.sel.filter(u=>u.cmd).map(u=>u.cmd);
-    const sig='U'+G.sel.map(u=>u.id).join(',')+'|'+freeC.map(c=>c.id).join(',')+'|'+leads.map(c=>c.id+':'+c.rank).join(',');
+    const grp=groupOf(G.sel),gfree=freeGroup();const sig='U'+G.sel.map(u=>u.id).join(',')+'|g'+grp+':'+gfree+'|'+freeC.map(c=>c.id).join(',')+'|'+leads.map(c=>c.id+':'+c.rank).join(',');
     if(force||sig!==sideSig){sideSig=sig;
       const by={};G.sel.forEach(u=>by[u.type]=(by[u.type]||0)+1);const hasDr=!!by.drone&&!!UT.drone.drone;
       el.innerHTML=`<div class="sp-head"><span class="chip" style="--c:${FCOL[0]}"></span><div><h3>${G.sel.length===1?UT[G.sel[0].type].name:G.sel.length+' units selected'}</h3><p>${G.sel.length===1?UT[G.sel[0].type].blurb:'Right-click ground to move, an enemy to attack, a city to capture it.'}</p></div></div>
@@ -2337,11 +2372,13 @@ function renderSide(force){
       ${leads.map(cm=>`<p class="hint" style="color:var(--ink-2)"><b style="color:var(--brass)">${stars(cm.rank)}</b> Led by ${CROLE[cm.role].n} ${escapeHtml(cm.name)}: ${CTRAITS[cm.role][cm.trait][1]}.</p>`).join('')}
       ${freeC.length?`<div class="row">${freeC.slice(0,3).map(cm=>`<button class="btn" data-attach="${cm.id}">Attach ${escapeHtml(cmdLabel(cm))}</button>`).join('')}</div>`:''}
       <div class="row"><button class="btn" id="bHalt">Halt</button><button class="btn" id="bAll">Whole army</button><button class="btn" id="bDesel">Deselect</button></div>
+      <div class="row">${grp?`<button class="btn" id="bUngroup">Ungroup ${grp}</button><span class="hint" style="align-self:center">Group ${grp}. Press <kbd>${grp}</kbd> to select it again.</span>`:gfree?`<button class="btn" id="bGroup">Make group ${gfree}</button><span class="hint" style="align-self:center">Or <kbd>Shift</kbd>+<kbd>${gfree}</kbd></span>`:''}</div>
       <p class="hint">${hasDr?'Drones scout wherever you send them and bomb enemies you right-click. Each bomb run drains battery; they recharge near your cities. ':''}${ERA.hint}</p>`;
       el.querySelectorAll('[data-attach]').forEach(b=>b.onclick=()=>{const cm=G.fac[PL].cmd.find(c=>c.id===+b.dataset.attach);if(!cm)return;const dom=CROLE[cm.role].dom;let best=null;for(const u of G.sel)if(DOMAIN[u.type]===dom&&!u.cmd&&(!best||u.t.cost>best.t.cost))best=u;if(best){natAct('attach',[cm.id,best.id]);sideDirty=true;natDirty=true;}});
       $('#bHalt').onclick=haltAct;
       $('#bAll').onclick=()=>setSel(G.units.filter(u=>u.alive&&u.f===PL));
       $('#bDesel').onclick=()=>setSel([]);
+      const bg=$('#bGroup');if(bg)bg.onclick=()=>saveGroup(gfree,G.sel);const bu=$('#bUngroup');if(bu)bu.onclick=()=>saveGroup(grp,[]);
     }
     const hp=G.sel.reduce((s,u)=>s+u.hp,0)/G.sel.reduce((s,u)=>s+u.t.hp,0);const b=$('#selHp');if(b)b.style.width=(hp*100).toFixed(0)+'%';
     const dr=G.sel.filter(u=>u.t.drone);const fb=$('#selFuel');if(fb&&dr.length)fb.style.width=(dr.reduce((s,u)=>s+u.fuel/(u.t.endurance*(u.bFuel||1)),0)/dr.length*100).toFixed(0)+'%';
@@ -3549,7 +3586,7 @@ function frame(now){
     syncVisuals(rdt,G.time);
     natT-=rdt;if(natT<=0){natT=1.2;if(!$('#nat').classList.contains('hidden')&&!natDown)renderNat();}
     if(!$('#menu').offsetParent){syncLabels();tutPtrTick();hudT-=rdt;miniT-=rdt;
-      if(hudT<=0){hudT=.2;updTop();renderSide(sideDirty);sideDirty=false;tutTick();}
+      if(hudT<=0){hudT=.2;updTop();renderSide(sideDirty);sideDirty=false;renderGroups();tutTick();}
       if(miniT<=0){miniT=.25;drawMinimap();}}
   }
   if(!window.__twNoRender)renderer.render(scene,camera);
