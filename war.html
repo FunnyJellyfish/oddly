@@ -3175,9 +3175,10 @@ function p2pRoom(name,host){
   return new Promise((resolve,reject)=>{
     const opts=Object.assign({debug:0},window.__twPeerOpts||{});
     let peer;try{peer=host?new Peer(P2P_PREFIX+name,opts):new Peer(opts);}catch(e){reject({code:'unsupported'});return;}
-    const subs={},psubs=[],conns=new Map(),seen=new Map();let me=null,members=[],done=false,closed=false,api=null;
+    const subs={},psubs=[],conns=new Map(),seen=new Map();let me=null,members=[],done=false,closed=false,api=null,opened=false;
     const finish=(ok,err)=>{if(done)return;done=true;clearTimeout(to);if(ok)resolve(api);else{closed=true;clearInterval(hb);try{peer.destroy();}catch(e){}reject(err);}};
-    const to=setTimeout(()=>finish(false,{code:host?'network':'not_found'}),15000);
+    // a guest whose own link to the matchmaking service opened, with no 'no such game' reply, found the host but could not connect to it
+    const to=setTimeout(()=>finish(false,{code:host||!opened?'network':'blocked'}),host?15000:25000);
     const P=p=>({peer:p,isMe:p===me,sameTab:p===me,presence:{}});
     const deliver=(topic,data,from)=>{(subs[topic]||[]).slice().forEach(f=>{try{f({topic,data,peer:from,isMe:from===me,sameTab:from===me});}catch(e){console.error(e);}});};
     const setMembers=list=>{const old=new Set(members),nw=new Set(list);const joined=list.filter(p=>!old.has(p)).map(P),left=members.filter(p=>!nw.has(p)).map(P);members=list.slice();
@@ -3192,12 +3193,13 @@ function p2pRoom(name,host){
       else if(m.t==='ev'&&typeof m.topic==='string')deliver(m.topic,m.data,String(m.peer||c.peer));
       else if(m.t==='peers'&&Array.isArray(m.list))setMembers(m.list.map(String));};
     const wire=c=>{c.on('data',m=>onData(c,m));c.on('close',()=>drop(c.peer));c.on('error',()=>drop(c.peer));};
-    peer.on('open',id=>{me=id;if(!members.length)members=[me];
+    peer.on('open',id=>{me=id;opened=true;if(!members.length)members=[me];
       if(host){finish(true);return;}
       if(conns.size)return;const c=peer.connect(P2P_PREFIX+name,{reliable:true,serialization:'json'});conns.set(c.peer,c);wire(c);c.on('open',()=>{seen.set(c.peer,Date.now());finish(true);});});
     peer.on('connection',c=>{if(!host||closed||conns.size>=8){try{c.close();}catch(e){}return;}wire(c);c.on('open',()=>{conns.set(c.peer,c);seen.set(c.peer,Date.now());hostMembers();});});
     peer.on('error',e=>{const t=e&&e.type;if(!done)finish(false,{code:t==='peer-unavailable'?'not_found':t==='unavailable-id'?'taken':t==='browser-incompatible'?'unsupported':'network'});});
-    peer.on('disconnected',()=>{if(!closed)setTimeout(()=>{try{if(!closed&&peer.disconnected&&!peer.destroyed)peer.reconnect();}catch(e){}},1500);});// only the matchmaking link dropped; open games keep running
+    peer.on('disconnected',()=>{if(!closed)setTimeout(()=>{try{if(!closed&&peer.disconnected&&!peer.destroyed)peer.reconnect();}catch(e){}},1500);});
+    const wake=()=>{if(document.visibilityState==='visible'&&!closed&&peer.disconnected&&!peer.destroyed)try{peer.reconnect();}catch(e){}};document.addEventListener('visibilitychange',wake);// only the matchmaking link dropped; open games keep running
     let hbT=Date.now();const hb=setInterval(()=>{if(closed)return;const now=Date.now(),stalled=now-hbT>6000;hbT=now;// after this page froze, give queued messages a moment before judging anyone gone
       for(const [id,c] of conns){send(c,{t:'ping'});if(stalled)seen.set(id,Math.max(seen.get(id)||0,now-9000));else if(now-(seen.get(id)||now)>15000)drop(id);}},2000);
     const bye=()=>toAll({t:'leave'});addEventListener('pagehide',bye);
@@ -3207,7 +3209,7 @@ function p2pRoom(name,host){
       presence:async()=>{},peers:()=>members.map(P),
       onPeers:fn=>{psubs.push(fn);setTimeout(()=>fn({peers:members.map(P),joined:members.map(P),left:[],updated:[]}),0);return()=>{const i=psubs.indexOf(fn);if(i>=0)psubs.splice(i,1);};},
       connected:()=>!closed,onConnection:()=>()=>{},
-      leave:async()=>{if(closed)return;bye();closed=true;clearInterval(hb);removeEventListener('pagehide',bye);setTimeout(()=>{try{peer.destroy();}catch(e){}},300);}};
+      leave:async()=>{if(closed)return;bye();closed=true;clearInterval(hb);removeEventListener('pagehide',bye);document.removeEventListener('visibilitychange',wake);setTimeout(()=>{try{peer.destroy();}catch(e){}},300);}};
   });
 }
 function p2pLobby(){
@@ -3215,7 +3217,8 @@ function p2pLobby(){
   return {emit:async()=>{},on:()=>()=>{},presence:async()=>{},peers:()=>[],onPeers:fn=>{setTimeout(()=>fn({peers:[],joined:[],left:[],updated:[]}),0);return()=>{};},connected:()=>true,
     join:async n=>{await need();return p2pRoom(n,false);},hostJoin:async n=>{await need();return p2pRoom(n,true);}};
 }
-const P2P_ERR={not_found:'No game with that code. Check the code, and make sure the host still has the game open.',taken:'That game code is already in use. Try again.',
+const P2P_ERR={not_found:'No game with that code. Check the code, and make sure the host still has the game open and on screen. On a phone, switching to another app can close it; the host may need to tap Host a game again for a new code.',
+  blocked:'Found the game, but your browsers could not connect to each other. This happens on some school, work and mobile networks. Try a different network (home Wi-Fi works best), or have the other player host.',taken:'That game code is already in use. Try again.',
   nolib:'Could not load the online-play component. Check your internet connection and try again.',unsupported:'This browser cannot make direct connections. Try a recent Chrome, Edge, Firefox or Safari.',
   network:'Could not reach the free matchmaking service. It may be busy or down; try again in a minute.'};
 function netErr(e,fallback){const c=e&&e.code;return (NET.kind==='p2p'&&P2P_ERR[c])||fallback+(c?' ('+c+')':'');}
@@ -3473,6 +3476,7 @@ function mpRender(){
   if(NET.game&&!NET.started){
     if(NET.role==='host'){
       h+=`${st==='p2p'?'<span class="record" style="color:var(--brass)">Direct connection (experimental). If a friend cannot connect, try again in a minute.</span>':''}<div class="mpcode"><span class="lbl">Game code</span><b>${escapeHtml(NET.code.toUpperCase())}</b><button class="btn" id="mpCopy">Copy</button></div>
+      ${st==='p2p'?'<span class="record">Keep this page open and on screen until everyone has joined. On a phone, switching to another app can close the game and the code stops working.</span>':''}
       <div class="mplist">${NET.players.map(p=>`<div><i style="background:${FCOL[p.slot]}"></i><span>${escapeHtml(p.name)}</span><em>${p.slot===0?'Host · you':GOVS[p.gov].n}</em></div>`).join('')}</div>
       <div class="msec"><span class="lbl">AI rivals</span><div class="seg" id="mpAI">${[0,1,2,3].map(n=>`<button data-v="${n}" class="${NET.mpAI===n?'on':''}" ${NET.players.length+n>6?'disabled':''}>${n}</button>`).join('')}</div></div>
       <div class="row"><button class="btn primary" id="mpGo" ${NET.players.length<2?'disabled':''}>Start battle</button><button class="btn" id="mpCancel">Cancel</button></div>
