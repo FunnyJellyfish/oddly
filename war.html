@@ -3237,13 +3237,14 @@ function mpWire(){
   const sub=(t,fn)=>NET.unsubs.push(gm.on(t,fn,()=>{}));
   sub('hello',m=>{
     if(m.isMe&&m.sameTab){NET.me=m.peer;if(NET.role==='host'&&NET.players[0])NET.players[0].peer=m.peer;mpRender();return;}
-    if(NET.role!=='host'||NET.started||m.isMe)return;
-    const d=m.data||{};if(NET.players.some(p=>p.peer===m.peer)){mpSendLobby();return;}
-    if(NET.players.length>=6)return;
+    if(NET.role!=='host'||m.isMe)return;
+    const d=m.data||{};if(NET.players.some(p=>p.peer===m.peer)){if(!NET.started)mpSendLobby();return;}
+    if(NET.started||NET.players.length>=6){gm.emit('nojoin',{to:m.peer,why:NET.started?'started':'full'}).catch(mpEmitErr);return;}
     let nm=String(d.name||'Player').replace(/[\u0000-\u001f]/g,'').slice(0,28)||'Player';if(NET.players.some(p=>p.name===nm))nm=NATIONS.find(n=>!NET.players.some(p=>p.name===n))||nm+' II';
     NET.players.push({peer:m.peer,name:nm,gov:GOVS[d.gov]?d.gov:'democracy',slot:NET.players.length});
     NET.mpAI=Math.min(NET.mpAI,6-NET.players.length);mpSendLobby();mpRender();sfx('ui');
   });
+  sub('nojoin',m=>{const d=m.data||{};if(NET.role==='host'||NET.started||m.isMe||d.to!==NET.me)return;mpLeave(true).then(()=>mpMsg(d.why==='full'?'That game is full. Six players is the most a game can hold.':'That game has already started. Ask the host to start a new one once everyone has the code.'));});
   sub('lobby',m=>{if(NET.role==='host'||m.isMe)return;const d=m.data;if(!d||!Array.isArray(d.players))return;NET.lobbyState=d;NET.hostPeer=m.peer;mpRender();});
   sub('start',m=>{if(NET.role==='host'||m.isMe||NET.started)return;const d=m.data;if(!d||!Array.isArray(d.players))return;const me=d.players.findIndex(p=>p.peer===NET.me);if(me<0)return;mpBegin(d.settings,d.players,me);});
   sub('snap',m=>{if(NET.client&&!m.isMe&&m.peer===NET.hostPeer)applySnap(m.data);});
@@ -3254,7 +3255,9 @@ function mpWire(){
   NET.unsubs.push(gm.onPeers(ch=>{for(const p of ch.left){if(NET.role==='host')mpPeerLeft(p.peer);else if(p.peer===NET.hostPeer)mpHostLeft();}},()=>{}));
 }
 const CODEC='abcdefghjkmnpqrstuvwxyz23456789';
+function takeName(){const v=$('#nation').value.trim();if(v){menuState.name=v;store.set('tw.name',v);}}
 async function mpHost(){
+  takeName();
   if(!NET.lobby){mpMsg('Live play is not available in this view.');return;}
   if(NET.game)await mpLeave(true);
   if(NET.busy)return;NET.busy=true;if(NET.kind==='p2p')mpMsg('Opening a game…');
@@ -3269,6 +3272,7 @@ async function mpHost(){
 function mpPresence(open){if(!NET.lobby)return;NET.lobby.presence({tw:open?{code:NET.code,host:String(menuState.name).slice(0,28),map:BIOMES[menuState.biome].name,n:NET.players.length,open:true}:null}).catch(()=>{});}
 function mpSendLobby(){if(NET.role!=='host'||!NET.game)return;NET.game.emit('lobby',{players:NET.players.map(p=>({peer:p.peer,name:p.name,gov:p.gov,slot:p.slot})),ai:NET.mpAI,map:BIOMES[menuState.biome].name,diff:menuState.diff}).catch(mpEmitErr);mpPresence(true);}
 async function mpJoin(code){
+  takeName();
   code=String(code||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8);if(code.length<3){mpMsg('Enter the four-letter game code.');return;}
   if(!NET.lobby){mpMsg('Live play is not available in this view.');return;}
   if(NET.game)await mpLeave(true);
@@ -3472,7 +3476,7 @@ function mpRender(){
       <div class="mplist">${NET.players.map(p=>`<div><i style="background:${FCOL[p.slot]}"></i><span>${escapeHtml(p.name)}</span><em>${p.slot===0?'Host · you':GOVS[p.gov].n}</em></div>`).join('')}</div>
       <div class="msec"><span class="lbl">AI rivals</span><div class="seg" id="mpAI">${[0,1,2,3].map(n=>`<button data-v="${n}" class="${NET.mpAI===n?'on':''}" ${NET.players.length+n>6?'disabled':''}>${n}</button>`).join('')}</div></div>
       <div class="row"><button class="btn primary" id="mpGo" ${NET.players.length<2?'disabled':''}>Start battle</button><button class="btn" id="mpCancel">Cancel</button></div>
-      <span class="record">${NET.players.length<2?'Share the code. The battle starts once at least one friend has joined.':'Theatre: '+escapeHtml(BIOMES[menuState.biome].name)+'. Start when everyone is in.'}</span>`;
+      <span class="record">${NET.players.length<2?'Share the code. The battle starts once at least one friend has joined.':'Theatre: '+escapeHtml(BIOMES[menuState.biome].name)+`. ${NET.players.length} of 6 players. Start when everyone is in: nobody can join once the battle starts.`}</span>`;
     }else{const L=NET.lobbyState;
       h+=`<div class="mpcode"><span class="lbl">Joined game</span><b>${escapeHtml(NET.code.toUpperCase())}</b></div>
       ${L?`<div class="mplist">${L.players.map(p=>`<div><i style="background:${FCOL[p.slot|0]}"></i><span>${escapeHtml(p.name)}</span><em>${p.slot===0?'Host':p.peer===NET.me?'You':escapeHtml((GOVS[p.gov]||GOVS.democracy).n)}</em></div>`).join('')}</div><span class="record">Theatre: ${escapeHtml(L.map||'')} · ${L.ai|0} AI rival${(L.ai|0)===1?'':'s'}. Waiting for the host to start.</span>`:'<span class="record">Contacting the host…</span>'}
