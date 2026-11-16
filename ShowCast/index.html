@@ -44,6 +44,10 @@
   #stage { position:fixed; inset:0; background:#000; display:none; touch-action:none; user-select:none; -webkit-user-select:none; }
   #stage video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:#000; opacity:0; }
   #stage video.on { opacity:1; }
+  #titleCv { position:absolute; inset:0; width:100%; height:100%; display:none; }
+  input[type=range] { width:150px; accent-color:var(--gold); }
+  .fileRow { display:flex; gap:8px; align-items:center; }
+  .fileRow .btn { margin-top:6px; }
   #fx { position:absolute; inset:0; width:100%; height:100%; display:none; image-rendering:pixelated; }
   #hud { position:absolute; inset:0; pointer-events:none; display:none;
     font-family:"Courier New", ui-monospace, monospace; color:#fff; text-shadow:0 0 4px rgba(0,0,0,.9); }
@@ -83,14 +87,34 @@
   </div>
 
   <div class="card">
-    <h2>3 · Glitch</h2>
+    <h2>3 · Music</h2>
+    <input type="file" id="titleMusicFile" accept="audio/*" style="display:none">
+    <input type="file" id="finaleMusicFile" accept="audio/*" style="display:none">
+    <button class="btn" id="titleMusicBtn">Upload title music</button>
+    <div class="note" id="titleMusicInfo">Loops while the title screen shows. Optional.</div>
+    <button class="btn" id="finaleMusicBtn">Upload show music</button>
+    <div class="note" id="finaleMusicInfo">The loud, dramatic track. Start and fade it with a hidden double-tap.</div>
+    <label class="row">Music volume <input type="range" id="musicVol" min="0" max="1" step="0.05" value="1"></label>
+    <label class="row">Fade-out (seconds) <input type="number" id="fadeLen" value="2" min="0" max="10" step="0.5"></label>
+    <button class="btn" id="testMusic">Test show music (5 s)</button>
+  </div>
+
+  <div class="card">
+    <h2>4 · Title screen</h2>
+    <label class="row">Show name <input type="text" id="titleText" value="miracle"></label>
+    <label class="row">Subtitle <input type="text" id="titleSub" value="" placeholder="optional"></label>
+    <button class="btn" id="testTitle">Preview title screen</button>
+  </div>
+
+  <div class="card">
+    <h2>5 · Glitch</h2>
     <label class="row">Length (seconds) <input type="number" id="glitchLen" value="3" min="1" max="15" step="0.5"></label>
     <label class="row">Glitch sound <input type="checkbox" id="glitchSound" checked></label>
     <button class="btn" id="testGlitch">Preview glitch</button>
   </div>
 
   <div class="card">
-    <h2>4 · On-screen labels</h2>
+    <h2>6 · On-screen labels</h2>
     <label class="row">Show labels &amp; clock <input type="checkbox" id="hudOn" checked></label>
     <label class="row">Live label <input type="text" id="liveLabel" value="LIVE"></label>
     <label class="row">Clip label <input type="text" id="clipLabel" value="BOX CAM"></label>
@@ -100,12 +124,15 @@
     <h2>Hidden controls (show mode)</h2>
     <table class="ctl">
       <tr><td>Double-tap top-left</td><td>Live camera</td></tr>
+      <tr><td>Double-tap top-middle</td><td>Title screen (+ title music)</td></tr>
       <tr><td>Double-tap top-right</td><td>Box-cam clip (from the start)</td></tr>
-      <tr><td>Double-tap bottom-right</td><td>Glitch → black</td></tr>
       <tr><td>Double-tap bottom-left</td><td>Instant black</td></tr>
-      <tr><td>Hold center 2 s</td><td>Back to this setup screen</td></tr>
+      <tr><td>Double-tap bottom-middle</td><td>Show music: start / fade out</td></tr>
+      <tr><td>Double-tap bottom-right</td><td>Glitch → black</td></tr>
+      <tr><td>Hold anywhere 2 s</td><td>Back to this setup screen</td></tr>
     </table>
-    <div class="note">Keyboard also works: 1 live · 2 clip · 3 glitch · 0 black · Esc setup.<br>
+    <div class="note">The screen is split into 3 columns × 2 rows. Keyboard also works: 1 live · 2 clip · 3 glitch · 4 title · 5 music · 0 black · Esc setup.<br>
+    Music keeps playing when you switch screens, so it can run under the live camera.<br>
     The phone buzzes softly when a tap registers. Show mode starts on <b>black</b>, so you can cast before the show.</div>
   </div>
 
@@ -117,6 +144,7 @@
 <div id="stage">
   <video id="camVid" muted playsinline autoplay></video>
   <video id="clipVid" playsinline preload="auto"></video>
+  <canvas id="titleCv"></canvas>
   <canvas id="fx"></canvas>
   <div id="hud">
     <div class="frame"></div>
@@ -158,7 +186,15 @@
       st.textContent = `Camera on (${s.width||'?'}×${s.height||'?'}).`; st.className = 'ok';
       $('camBtn').textContent = 'Restart camera';
     } catch (e) {
-      st.textContent = 'Camera blocked: ' + e.name + '. Allow camera access and use an https:// address.';
+      let why;
+      const framed = (() => { try { return window.self !== window.top; } catch(_) { return true; } })();
+      if (framed) why = 'This page is open inside a preview/app viewer, which blocks cameras. Open it directly in Chrome from its https:// address.';
+      else if (!window.isSecureContext) why = 'This address isn\'t secure. Open the page from an https:// address (e.g. GitHub Pages).';
+      else if (e.name === 'NotAllowedError') why = 'Chrome is set to block the camera for this site. Tap the icon left of the address bar → Permissions → Camera → Allow, then reload. Also check Android Settings → Apps → Chrome → Permissions → Camera.';
+      else if (e.name === 'NotReadableError') why = 'Another app is using the camera. Close it and try again.';
+      else if (e.name === 'NotFoundError' || e.name === 'OverconstrainedError') why = 'That camera wasn\'t found. Try the other camera option.';
+      else why = 'Error: ' + e.name;
+      st.textContent = 'Camera blocked. ' + why;
       st.className = 'err';
     }
   }
@@ -213,13 +249,16 @@
     camVid.classList.toggle('on', v === 'cam');
     clipVid.classList.toggle('on', v === 'clip');
   }
+  function leaveTitle() {
+    if (mode === 'title') { stopTitle(); fadeOut(titleAudio); }
+  }
   function goBlack() {
-    stopGlitch(); mode = 'black';
+    leaveTitle(); stopGlitch(); mode = 'black';
     clipVid.pause(); setVisible(null); hud.style.display = 'none';
     blackout.style.opacity = 1;
   }
   function goLive() {
-    stopGlitch(); mode = 'live';
+    leaveTitle(); stopGlitch(); mode = 'live';
     clipVid.pause();
     if (camStream) camVid.play().catch(()=>{});
     setVisible('cam'); blackout.style.opacity = 0;
@@ -227,7 +266,7 @@
   }
   function goClip() {
     if (!clipURL) { buzz([40,60,40]); return; }
-    stopGlitch(); mode = 'clip';
+    leaveTitle(); stopGlitch(); mode = 'clip';
     clipVid.muted = !$('clipSound').checked;
     clipVid.currentTime = 0;
     clipVid.play().catch(()=>{});
@@ -262,7 +301,7 @@
     snap.width = tint.width = fx.width; snap.height = tint.height = fx.height;
   }
   function drawCover(c, src, w, h, mirror) {
-    const sw = src.videoWidth, sh = src.videoHeight;
+    const sw = src.videoWidth || src.width, sh = src.videoHeight || src.height;
     if (!sw || !sh) { c.fillStyle = '#000'; c.fillRect(0,0,w,h); return; }
     const s = Math.max(w/sw, h/sh), dw = sw*s, dh = sh*s;
     c.save();
@@ -273,10 +312,12 @@
 
   function startGlitch(preview) {
     if (mode === 'glitch') return;
-    const srcVid = mode === 'clip' ? clipVid : (mode === 'live' ? camVid : null);
+    const srcVid = mode === 'clip' ? clipVid : (mode === 'live' ? camVid : (mode === 'title' ? titleCv : null));
+    if (mode === 'title') { fadeOut(titleAudio); }
     const mirror = srcVid === camVid && $('camSelect').value === 'user';
     stopGlitch(); mode = 'glitch';
     sizeCanvases();
+    const fromTitle = srcVid === titleCv;
     const W = fx.width, H = fx.height;
     fx.style.display = 'block'; blackout.style.opacity = 0;
     const dur = Math.max(1, parseFloat($('glitchLen').value) || 3) * 1000;
@@ -365,6 +406,7 @@
       else {
         // land on black
         fx.style.display = 'none'; setVisible(null); clipVid.pause(); hud.style.display = 'none';
+        if (fromTitle) stopTitle();
         blackout.style.opacity = 1; glitchRAF = 0; glitchAudio = null;
         mode = 'black';
         if (preview) exitStage();
@@ -402,6 +444,210 @@
     } catch (e) { return null; }
   }
 
+  /* ---------------- MUSIC ---------------- */
+  const titleAudio = new Audio(); titleAudio.loop = true; titleAudio.preload = 'auto';
+  const finaleAudio = new Audio(); finaleAudio.preload = 'auto';
+  const fades = new Map();
+  let titleURL = null, finaleURL = null;
+  function vol() { return parseFloat($('musicVol').value); }
+  $('musicVol').oninput = () => {
+    [titleAudio, finaleAudio].forEach(a => { if (!fades.has(a) && !a.paused) a.volume = vol(); });
+  };
+  function fadeTo(a, target, sec, then) {
+    clearInterval(fades.get(a)); fades.delete(a);
+    if (sec <= 0) { a.volume = target; then && then(); return; }
+    const start = a.volume, t0 = performance.now();
+    const id = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / (sec * 1000));
+      a.volume = Math.max(0, Math.min(1, start + (target - start) * k));
+      if (k >= 1) { clearInterval(id); fades.delete(a); then && then(); }
+    }, 30);
+    fades.set(a, id);
+  }
+  function fadeIn(a, sec) {
+    if (!a.src) return;
+    a.volume = 0; a.play().catch(()=>{}); fadeTo(a, vol(), sec);
+  }
+  function fadeOut(a) {
+    if (!a.src || a.paused) return;
+    fadeTo(a, 0, parseFloat($('fadeLen').value) || 0, () => { a.pause(); a.currentTime = 0; });
+  }
+  function toggleShowMusic() {
+    if (!finaleURL) { buzz([40,60,40]); return; }
+    if (finaleAudio.paused || fades.has(finaleAudio)) {
+      clearInterval(fades.get(finaleAudio)); fades.delete(finaleAudio);
+      if (finaleAudio.paused) finaleAudio.currentTime = 0;
+      finaleAudio.volume = vol(); finaleAudio.play().catch(()=>{});
+    } else fadeOut(finaleAudio);
+  }
+  function loadAudio(fileInput, audio, info, btn, label) {
+    fileInput.onchange = e => {
+      const f = e.target.files[0]; if (!f) return;
+      const url = URL.createObjectURL(f);
+      if (audio === titleAudio) { if (titleURL) URL.revokeObjectURL(titleURL); titleURL = url; }
+      else { if (finaleURL) URL.revokeObjectURL(finaleURL); finaleURL = url; }
+      audio.src = url; audio.load();
+      info.textContent = 'Loading…'; info.style.color = '';
+      audio.onloadedmetadata = () => {
+        const d = audio.duration, m = Math.floor(d/60), s = Math.round(d%60);
+        info.textContent = `✓ ${f.name} · ${m}:${String(s).padStart(2,'0')}`; info.style.color = '#7fd88f';
+        btn.textContent = 'Replace ' + label;
+      };
+      audio.onerror = () => { info.textContent = 'This audio format won\'t play here. Try MP3.'; info.style.color = '#ff7b7b'; };
+    };
+  }
+  $('titleMusicBtn').onclick = () => $('titleMusicFile').click();
+  $('finaleMusicBtn').onclick = () => $('finaleMusicFile').click();
+  loadAudio($('titleMusicFile'), titleAudio, $('titleMusicInfo'), $('titleMusicBtn'), 'title music');
+  loadAudio($('finaleMusicFile'), finaleAudio, $('finaleMusicInfo'), $('finaleMusicBtn'), 'show music');
+  $('testMusic').onclick = () => {
+    if (!finaleURL) { $('finaleMusicInfo').textContent = 'Upload a track first.'; return; }
+    finaleAudio.currentTime = 0; finaleAudio.volume = vol(); finaleAudio.play().catch(()=>{});
+    setTimeout(() => fadeOut(finaleAudio), 5000);
+  };
+
+  /* ---------------- TITLE SCREEN (fire) ---------------- */
+  const titleCv = $('titleCv'), tctx2 = titleCv.getContext('2d');
+  const FW = 320, FH = 180;                         // grid for finding letter edges
+  let srcMask = new Uint8Array(FW * FH);
+  let titleRAF = 0, embers = [];
+  function titleLayout(W, H) {
+    const text = ($('titleText').value || 'miracle');
+    let size = H * 0.26;
+    tctx2.font = `italic 400 ${size}px Georgia, "Times New Roman", serif`;
+    const maxW = W * 0.82, w = tctx2.measureText(text).width;
+    if (w > maxW) size *= maxW / w;
+    return { text, size, x: W / 2, y: H * 0.56 };
+  }
+  function buildMask() {
+    // render the title at fire-grid resolution; its pixels become heat sources
+    const L = titleLayout(titleCv.width, titleCv.height);
+    const m = document.createElement('canvas'); m.width = FW; m.height = FH;
+    const mc = m.getContext('2d');
+    mc.scale(FW / titleCv.width, FH / titleCv.height);   // same layout, squeezed to the grid
+    mc.font = `italic 400 ${L.size}px Georgia, "Times New Roman", serif`;
+    mc.textAlign = 'center'; mc.textBaseline = 'alphabetic'; mc.fillStyle = '#fff';
+    mc.fillText(L.text, L.x, L.y);
+    const d = mc.getImageData(0, 0, FW, FH).data;
+    srcMask = new Uint8Array(FW * FH);
+    // 2 = top edge of a letter (flames lick off the tops), 1 = interior
+    for (let i = 0; i < FW * FH; i++) {
+      if (d[i*4+3] <= 90) continue;
+      srcMask[i] = (i < FW || d[(i-FW)*4+3] <= 90) ? 2 : 1;
+    }
+  }
+  function sizeTitle() {
+    const scale = Math.min(window.devicePixelRatio || 1, 1280 / Math.max(innerWidth, 1));
+    titleCv.width = Math.round(innerWidth * scale); titleCv.height = Math.round(innerHeight * scale);
+    buildMask();
+    // flame spawn points: letter top-edges (weighted) in screen space
+    spawnPts = [];
+    const sx = titleCv.width / FW, sy = titleCv.height / FH;
+    for (let i = 0; i < FW * FH; i++) {
+      if (srcMask[i] === 2 || (srcMask[i] === 1 && Math.random() < 0.3))
+        spawnPts.push([(i % FW + Math.random()) * sx, ((i / FW | 0) + Math.random()) * sy]);
+    }
+  }
+  // pre-rendered soft flame sprites, hot (pale yellow) → cool (deep red)
+  const SPR = 64, sprites = [];
+  [[255,230,150],[255,180,60],[255,135,25],[245,95,12],[220,60,6],[175,35,4],[120,18,2],[70,8,1]]
+    .forEach(([R,G,B]) => {
+      const c = document.createElement('canvas'); c.width = c.height = SPR;
+      const x = c.getContext('2d'), g = x.createRadialGradient(SPR/2,SPR/2,0,SPR/2,SPR/2,SPR/2);
+      g.addColorStop(0, `rgba(${R},${G},${B},0.9)`); g.addColorStop(0.35, `rgba(${R},${G},${B},0.45)`);
+      g.addColorStop(1, `rgba(${R},${G},${B},0)`);
+      x.fillStyle = g; x.fillRect(0,0,SPR,SPR); sprites.push(c);
+    });
+  let spawnPts = [], flames = [];
+  function spawnFlame(x, y, big) {
+    const H = titleCv.height;
+    const life = (big ? 55 : 32) + Math.random() * 30;
+    flames.push({ x, y, vx: (Math.random() - .5) * H * 0.0012, vy: -H * (big ? 0.0045 : 0.0032) * (0.7 + Math.random() * 0.6),
+      life, max: life, size: H * (big ? 0.06 : 0.032) * (0.6 + Math.random() * 0.8), seed: Math.random() * 100 });
+  }
+  function drawTitle(t) {
+    const W = titleCv.width, H = titleCv.height, c = tctx2;
+    c.globalCompositeOperation = 'source-over';
+    c.fillStyle = '#050102'; c.fillRect(0, 0, W, H);
+
+    // spawn: along the letters, and a rolling bed of fire at the bottom
+    const pulse = 0.8 + 0.2 * Math.sin(t * 0.002);
+    for (let i = 0; i < 34 * pulse && spawnPts.length; i++) {
+      const p = spawnPts[Math.random() * spawnPts.length | 0]; spawnFlame(p[0], p[1], false);
+    }
+    for (let i = 0; i < 16; i++) {
+      const x = Math.random() * W;
+      const wave = 0.5 + 0.5 * Math.sin(x / W * 9 + t * 0.0011) * Math.sin(x / W * 3.7 - t * 0.0006);
+      if (Math.random() < 0.35 + wave * 0.65) spawnFlame(x, H * (1.02 + Math.random() * 0.04), true);
+    }
+    // update + draw flames (additive)
+    c.globalCompositeOperation = 'lighter';
+    for (const f of flames) {
+      f.life--;
+      const k = f.life / f.max;                 // 1 → 0
+      f.vx += Math.sin(f.y * 0.012 + t * 0.004 + f.seed) * H * 0.00012;
+      f.x += f.vx; f.y += f.vy; f.vy *= 0.995;
+      const sz = f.size * (0.35 + 0.65 * k) * (1 + (1 - k) * 0.4);
+      const ci = Math.min(sprites.length - 1, Math.pow(1 - k, 0.6) * sprites.length | 0);
+      c.globalAlpha = Math.min(1, k * 2) * 0.3;
+      const w = sz * (0.55 + 0.45 * k);           // flames narrow as they rise
+      c.drawImage(sprites[ci], f.x - w/2, f.y - sz, w, sz * 1.9);
+    }
+    c.globalAlpha = 1;
+    flames = flames.filter(f => f.life > 0);
+    if (flames.length > 1400) flames.splice(0, flames.length - 1400);
+
+    // embers
+    if (Math.random() < 0.6) embers.push({ x: Math.random() * W, y: H * (0.55 + Math.random() * 0.45),
+      vx: (Math.random() - .5) * W * 0.0008, vy: -H * (0.0015 + Math.random() * 0.003), life: 1, r: Math.random() * H * 0.004 + 1 });
+    for (const e of embers) {
+      e.x += e.vx + Math.sin((t + e.y) * 0.003) * W * 0.0004; e.y += e.vy; e.life -= 0.006;
+      c.fillStyle = `rgba(255,${150 + Math.random()*80|0},60,${Math.max(0, e.life) * (0.6 + Math.random()*0.4)})`;
+      c.beginPath(); c.arc(e.x, e.y, e.r, 0, 6.283); c.fill();
+    }
+    embers = embers.filter(e => e.life > 0 && e.y > -10);
+
+    // the title itself: molten gradient + flickering glow
+    c.globalCompositeOperation = 'source-over';
+    const L = titleLayout(W, H);
+    c.font = `italic 400 ${L.size}px Georgia, "Times New Roman", serif`;
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    const flick = 0.85 + Math.random() * 0.15 + 0.1 * Math.sin(t * 0.004);
+    const g = c.createLinearGradient(0, L.y - L.size * 0.75, 0, L.y + L.size * 0.1);
+    g.addColorStop(0, '#fff8e0'); g.addColorStop(0.45, '#ffc861'); g.addColorStop(1, '#ff5a1a');
+    c.shadowColor = `rgba(255,${110 + Math.random()*40|0},20,${0.9 * flick})`;
+    c.shadowBlur = L.size * 0.35 * flick;
+    c.fillStyle = g; c.fillText(L.text, L.x, L.y);
+    c.shadowBlur = L.size * 0.08; c.shadowColor = 'rgba(255,240,200,0.8)';
+    c.fillText(L.text, L.x, L.y);
+    c.shadowBlur = 0;
+    const sub = $('titleSub').value.trim();
+    if (sub) {
+      c.font = `400 ${L.size * 0.16}px Georgia, serif`;
+      c.fillStyle = `rgba(255,210,150,${0.75 * flick})`;
+      c.fillText(sub.split('').join(' '), L.x, L.y + L.size * 0.42);
+    }
+    // vignette
+    const v = c.createRadialGradient(W/2, H/2, H * 0.3, W/2, H/2, Math.max(W, H) * 0.75);
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.75)');
+    c.fillStyle = v; c.fillRect(0, 0, W, H);
+  }
+  function titleLoop(t) { drawTitle(t); titleRAF = requestAnimationFrame(titleLoop); }
+  function startTitle() {
+    sizeTitle(); flames = []; embers = [];
+    titleCv.style.display = 'block';
+    cancelAnimationFrame(titleRAF); titleRAF = requestAnimationFrame(titleLoop);
+  }
+  function stopTitle() { cancelAnimationFrame(titleRAF); titleRAF = 0; titleCv.style.display = 'none'; }
+  function goTitle() {
+    if (mode === 'title') return;
+    stopGlitch(); mode = 'title';
+    clipVid.pause(); setVisible(null); hud.style.display = 'none';
+    blackout.style.opacity = 0;
+    startTitle();
+    fadeIn(titleAudio, 1.5);
+  }
+
   /* ---------------- STAGE ENTER / EXIT ---------------- */
   async function enterStage(startMode) {
     setup.style.display = 'none'; stage.style.display = 'block';
@@ -410,40 +656,40 @@
     try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
     try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch(e){}
     sizeCanvases();
-    if (startMode === 'glitchPreview') { if (camStream) goLive(); else if (clipURL) goClip(); else goBlack(); setTimeout(() => startGlitch(true), 600); }
+    if (startMode === 'title') goTitle();
+    else if (startMode === 'glitchPreview') { if (camStream) goLive(); else if (clipURL) goClip(); else goBlack(); setTimeout(() => startGlitch(true), 600); }
     else goBlack();
   }
   function exitStage() {
     goBlack();
+    [titleAudio, finaleAudio].forEach(a => { clearInterval(fades.get(a)); fades.delete(a); a.pause(); a.currentTime = 0; });
     stage.style.display = 'none'; setup.style.display = 'block';
     try { if (document.fullscreenElement) document.exitFullscreen(); } catch(e){}
     try { if (wakeLock) wakeLock.release(); wakeLock = null; } catch(e){}
   }
   $('startBtn').onclick = () => enterStage('black');
   $('testGlitch').onclick = () => enterStage('glitchPreview');
+  $('testTitle').onclick = () => enterStage('title');
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible' && stage.style.display === 'block') {
       try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
     }
   });
-  addEventListener('resize', () => { if (mode !== 'glitch') sizeCanvases(); });
+  addEventListener('resize', () => { if (mode !== 'glitch') sizeCanvases(); if (mode === 'title') sizeTitle(); });
 
   /* ---------------- HIDDEN CONTROLS ---------------- */
   function buzz(p) { try { navigator.vibrate && navigator.vibrate(p); } catch(e){} }
   function zoneOf(x, y) {
     const cx = x / innerWidth, cy = y / innerHeight;
-    if (cx > 0.3 && cx < 0.7 && cy > 0.3 && cy < 0.7) return 'center';
-    return (cy < 0.5 ? 't' : 'b') + (cx < 0.5 ? 'l' : 'r');
+    return (cy < 0.5 ? 't' : 'b') + (cx < 1/3 ? 'l' : cx < 2/3 ? 'c' : 'r');
   }
-  const actions = { tl: goLive, tr: goClip, br: () => startGlitch(false), bl: goBlack };
+  const actions = { tl: goLive, tc: goTitle, tr: goClip, bl: goBlack, bc: toggleShowMusic, br: () => startGlitch(false) };
   let lastTap = { zone: null, t: 0 }, holdTimer = 0;
   stage.addEventListener('pointerdown', e => {
     e.preventDefault();
     const z = zoneOf(e.clientX, e.clientY), now = performance.now();
-    if (z === 'center') {
-      holdTimer = setTimeout(() => { buzz([30,40,30,40,30]); exitStage(); }, 2000);
-      return;
-    }
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(() => { lastTap = { zone: null, t: 0 }; buzz([30,40,30,40,30]); exitStage(); }, 2000);
     if (lastTap.zone === z && now - lastTap.t < 400) {
       lastTap = { zone: null, t: 0 }; buzz(35); actions[z]();
     } else lastTap = { zone: z, t: now };
@@ -459,11 +705,15 @@
     else if (e.key === '2') goClip();
     else if (e.key === '3') startGlitch(false);
     else if (e.key === '0') goBlack();
+    else if (e.key === '4') goTitle();
+    else if (e.key === '5') toggleShowMusic();
     else if (e.key === 'Escape') exitStage();
   });
 
   // expose for testing
-  window.__show = { goLive, goClip, goBlack, startGlitch, get mode(){ return mode; } };
+  window.__show = { goLive, goClip, goBlack, goTitle, startGlitch, toggleShowMusic,
+    get mode(){ return mode; }, get musicPlaying(){ return !finaleAudio.paused; },
+    get musicVol(){ return finaleAudio.volume; }, get titleMusic(){ return !titleAudio.paused; } };
 })();
 </script>
 </body>
