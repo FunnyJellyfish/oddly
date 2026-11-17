@@ -33,6 +33,8 @@
   #clipInfo.ok { color:#7fd88f; }
   #camStatus { font-size:13px; color:var(--dim); margin-top:8px; }
   #camStatus.ok { color:#7fd88f; } #camStatus.err { color:#ff7b7b; }
+  #micMeter { height:6px; background:#0b0b12; border:1px solid var(--line); border-radius:3px; overflow:hidden; margin-top:8px; display:none; }
+  #micMeter i { display:block; height:100%; width:0; background:#7fd88f; }
   #previews { display:flex; gap:8px; margin-top:10px; }
   #previews video { width:50%; aspect-ratio:16/9; background:#000; border-radius:8px; object-fit:cover; }
   .ctl { width:100%; border-collapse:collapse; font-size:14px; }
@@ -72,8 +74,12 @@
     <label class="row">Camera
       <select id="camSelect"><option value="environment">Back camera</option><option value="user">Front camera</option></select>
     </label>
+    <label class="row">Microphone audio <input type="checkbox" id="micOn" checked></label>
+    <label class="row">Mic volume <input type="range" id="micVol" min="0" max="2" step="0.05" value="1"></label>
     <button class="btn" id="camBtn">Turn on camera</button>
     <div id="camStatus">Camera is off.</div>
+    <div id="micMeter"><i></i></div>
+    <div class="note">The mic is heard only on the live camera screen, so its sound goes out with the cast. Keep the TV speakers away from the phone, or it will feed back.</div>
   </div>
 
   <div class="card">
@@ -132,7 +138,8 @@
       <tr><td>Hold anywhere 2 s</td><td>Back to this setup screen</td></tr>
     </table>
     <div class="note">The screen is split into 3 columns × 2 rows. Keyboard also works: 1 live · 2 clip · 3 glitch · 4 title · 5 music · 0 black · Esc setup.<br>
-    Music keeps playing when you switch screens, so it can run under the live camera.<br>
+    Music keeps playing when you switch screens, so it can run under the live camera. A glitch cuts the show music.<br>
+    The microphone is live only on the live camera screen.<br>
     The phone buzzes softly when a tap registers. Show mode starts on <b>black</b>, so you can cast before the show.</div>
   </div>
 
@@ -174,16 +181,26 @@
       st.textContent = 'Camera unavailable here. Open this page from an https:// address (e.g. GitHub Pages).';
       st.className = 'err'; return;
     }
+    const video = { facingMode: $('camSelect').value, width: { ideal: 1920 }, height: { ideal: 1080 } };
+    const wantMic = $('micOn').checked;
+    let micNote = '';
     try {
-      camStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: $('camSelect').value, width: { ideal: 1920 }, height: { ideal: 1080 } },
-        audio: false
-      });
+      try {
+        camStream = await navigator.mediaDevices.getUserMedia({ video,
+          audio: wantMic ? { echoCancellation: true, noiseSuppression: true, autoGainControl: true } : false });
+      } catch (e) {
+        if (!wantMic) throw e;
+        // the mic may be blocked or missing while the camera is fine: carry on without sound
+        camStream = await navigator.mediaDevices.getUserMedia({ video, audio: false });
+        micNote = ` Microphone unavailable (${e.name}), so there is no live sound.`;
+      }
+      attachMic(camStream);
+      if (wantMic && !micSrc && !micNote) micNote = ' No microphone found, so there is no live sound.';
       camVid.srcObject = camStream; $('camPrev').srcObject = camStream;
       camVid.style.transform = $('camPrev').style.transform = ($('camSelect').value === 'user') ? 'scaleX(-1)' : '';
       await camVid.play().catch(()=>{}); await $('camPrev').play().catch(()=>{});
       const s = camStream.getVideoTracks()[0].getSettings();
-      st.textContent = `Camera on (${s.width||'?'}×${s.height||'?'}).`; st.className = 'ok';
+      st.textContent = `Camera on (${s.width||'?'}×${s.height||'?'}).` + (micSrc ? ' Microphone on.' : micNote); st.className = 'ok';
       $('camBtn').textContent = 'Restart camera';
     } catch (e) {
       let why;
@@ -199,8 +216,44 @@
     }
   }
   function stopCamera() {
+    detachMic();
     if (camStream) camStream.getTracks().forEach(t => t.stop());
     camStream = null;
+  }
+
+  /* ---------------- MICROPHONE ---------------- */
+  // The mic is routed to the speakers (so casting carries it) through a gain that is open only in live mode.
+  let micSrc = null, micGain = null, micAnalyser = null, micRAF = 0;
+  function attachMic(stream) {
+    detachMic();
+    if (!stream.getAudioTracks().length) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      micSrc = actx.createMediaStreamSource(stream);
+      micGain = actx.createGain(); micGain.gain.value = 0;
+      micAnalyser = actx.createAnalyser(); micAnalyser.fftSize = 512;
+      micSrc.connect(micAnalyser); micSrc.connect(micGain).connect(actx.destination);
+      $('micMeter').style.display = 'block'; meter();
+    } catch (e) { detachMic(); }
+  }
+  function detachMic() {
+    cancelAnimationFrame(micRAF); micRAF = 0;
+    try { if (micSrc) micSrc.disconnect(); if (micGain) micGain.disconnect(); } catch (e) {}
+    micSrc = micGain = micAnalyser = null; $('micMeter').style.display = 'none';
+  }
+  function setMic(on) {
+    if (!micGain) return;
+    micGain.gain.setTargetAtTime(on ? parseFloat($('micVol').value) : 0, actx.currentTime, 0.05);
+  }
+  $('micVol').oninput = () => setMic(mode === 'live');
+  const meterBuf = new Uint8Array(512);
+  function meter() {
+    if (!micAnalyser) return;
+    micAnalyser.getByteTimeDomainData(meterBuf);
+    let sum = 0; for (const v of meterBuf) sum += (v - 128) * (v - 128);
+    $('micMeter').firstElementChild.style.width = Math.min(100, Math.sqrt(sum / meterBuf.length) * 3) + '%';
+    micRAF = requestAnimationFrame(meter);
   }
   $('camBtn').onclick = startCamera;
   $('camSelect').onchange = () => { if (camStream) startCamera(); };
@@ -253,12 +306,12 @@
     if (mode === 'title') { stopTitle(); fadeOut(titleAudio); }
   }
   function goBlack() {
-    leaveTitle(); stopGlitch(); mode = 'black';
+    leaveTitle(); stopGlitch(); mode = 'black'; setMic(false);
     clipVid.pause(); setVisible(null); hud.style.display = 'none';
     blackout.style.opacity = 1;
   }
   function goLive() {
-    leaveTitle(); stopGlitch(); mode = 'live';
+    leaveTitle(); stopGlitch(); mode = 'live'; setMic(true);
     clipVid.pause();
     if (camStream) camVid.play().catch(()=>{});
     setVisible('cam'); blackout.style.opacity = 0;
@@ -266,7 +319,7 @@
   }
   function goClip() {
     if (!clipURL) { buzz([40,60,40]); return; }
-    leaveTitle(); stopGlitch(); mode = 'clip';
+    leaveTitle(); stopGlitch(); mode = 'clip'; setMic(false);
     clipVid.muted = !$('clipSound').checked;
     clipVid.currentTime = 0;
     clipVid.play().catch(()=>{});
@@ -314,6 +367,9 @@
     if (mode === 'glitch') return;
     const srcVid = mode === 'clip' ? clipVid : (mode === 'live' ? camVid : (mode === 'title' ? titleCv : null));
     if (mode === 'title') { fadeOut(titleAudio); }
+    setMic(false);
+    // the show music dies with the picture
+    if (finaleAudio.src && !finaleAudio.paused) fadeTo(finaleAudio, 0, 0.15, () => { finaleAudio.pause(); finaleAudio.currentTime = 0; });
     const mirror = srcVid === camVid && $('camSelect').value === 'user';
     stopGlitch(); mode = 'glitch';
     sizeCanvases();
@@ -641,7 +697,7 @@
   function stopTitle() { cancelAnimationFrame(titleRAF); titleRAF = 0; titleCv.style.display = 'none'; }
   function goTitle() {
     if (mode === 'title') return;
-    stopGlitch(); mode = 'title';
+    stopGlitch(); mode = 'title'; setMic(false);
     clipVid.pause(); setVisible(null); hud.style.display = 'none';
     blackout.style.opacity = 0;
     startTitle();
@@ -713,7 +769,7 @@
   // expose for testing
   window.__show = { goLive, goClip, goBlack, goTitle, startGlitch, toggleShowMusic,
     get mode(){ return mode; }, get musicPlaying(){ return !finaleAudio.paused; },
-    get musicVol(){ return finaleAudio.volume; }, get titleMusic(){ return !titleAudio.paused; } };
+    get musicVol(){ return finaleAudio.volume; }, get titleMusic(){ return !titleAudio.paused; }, get micLive(){ return !!micGain && micGain.gain.value > 0.01; }, get micOn(){ return !!micSrc; } };
 })();
 </script>
 </body>
