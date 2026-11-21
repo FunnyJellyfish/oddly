@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly Terafab — Santa Barbara, CA</title>
+<meta name="description" content="The Oddly Terafab. One factory for everything Oddly makes. Santa Barbara, California. Production starts today.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --card2:#181C38; --line:#242849; --line2:#323865;
+    --text:#EDEDF7; --dim:#9A9EC0; --faint:#666B92;
+    --purple:#7B4FFF; --mint:#2EE9A5; --amber:#F5A623; --red:#FF4D5E; --sea:#1A3A6B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--purple);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:660px}
+
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .brand small{font-family:'JetBrains Mono',monospace;font-weight:400;font-size:10px;letter-spacing:.12em;color:var(--dim);border:1px solid var(--line2);border-radius:4px;padding:2px 5px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:#fff;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(123,79,255,.35)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+  .btn.ghost:hover{border-color:var(--purple);box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+
+  /* hero */
+  .hero{padding:72px 0 64px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(760px 420px at 80% 30%,rgba(123,79,255,.18),transparent 70%),
+    radial-gradient(600px 340px at 5% 0%,rgba(46,233,165,.08),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:920px){.hero .wrap{grid-template-columns:1fr}}
+  .badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  .badge.live{border-style:solid;border-color:rgba(46,233,165,.5);color:var(--mint)}
+  .badge.live i{background:var(--mint)}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(52px,8vw,100px)}
+  .hero h1 em{font-style:italic;color:var(--purple);font-weight:600}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:540px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .photo{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:var(--bg2);aspect-ratio:16/10}
+  .photo svg,.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .photo figcaption{position:absolute;left:12px;bottom:12px;right:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);background:rgba(8,10,20,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+
+  /* live production strip */
+  .prod{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .prod .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .prod .cell{padding:22px 18px;border-left:1px solid var(--line)}
+  .prod .cell:first-child{border-left:none}
+  .prod .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .prod .v{font-family:'JetBrains Mono',monospace;font-size:clamp(20px,2.6vw,30px);font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px}
+  .prod .v.m{color:var(--mint)}
+  .prod .v.a{color:var(--amber)}
+  @media(max-width:760px){.prod .wrap{grid-template-columns:1fr 1fr}.prod .cell:nth-child(3){border-left:none}.prod .cell:nth-child(n+3){border-top:1px solid var(--line)}}
+
+  .ticker{background:var(--purple);color:#fff;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;padding:10px 0}
+  .ticker span{display:inline-block;animation:tick 44s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+
+  /* map */
+  .maphead{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{background:var(--card);border:1px solid var(--line2);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 12px;border-radius:999px;cursor:pointer;transition:all .2s}
+  .chip:hover{color:var(--text)}
+  .chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .mapgrid{display:grid;grid-template-columns:1fr 340px;gap:18px;margin-top:28px}
+  @media(max-width:980px){.mapgrid{grid-template-columns:1fr}}
+  .mapbox{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:20px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+  #map{width:100%;height:auto;display:block;cursor:grab;aspect-ratio:1000/640}
+  #map.drag{cursor:grabbing}
+  .zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+  .zoom button{width:36px;height:36px;border-radius:10px;background:rgba(8,10,20,.8);border:1px solid var(--line2);color:var(--text);font-size:18px;cursor:pointer;font-family:'JetBrains Mono',monospace}
+  .zoom button:hover{border-color:var(--purple)}
+  .maptip{position:absolute;left:12px;top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);background:rgba(8,10,20,.8);border:1px solid var(--line);border-radius:8px;padding:6px 9px;pointer-events:none}
+  .pond-ct{position:absolute;left:12px;bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);background:rgba(8,10,20,.8);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+  .pond-ct b{color:var(--mint)}
+  .zone{cursor:pointer;outline:none}
+  .zone .bld{transition:fill .2s,stroke .2s,opacity .25s}
+  .zone:hover .bld,.zone:focus-visible .bld{stroke:var(--text);stroke-width:3}
+  .zone.sel .bld{stroke:var(--mint);stroke-width:4}
+  .zone.dim{opacity:.22}
+  .zone text{pointer-events:none}
+  .zl{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;fill:#EDEDF7}
+  .zn{font-family:'JetBrains Mono',monospace;font-size:11px;fill:#080A14;font-weight:600}
+  .geo{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;fill:#666B92}
+  .info{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;min-height:100%}
+  .info .cat{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .info h3{font-size:28px;margin:8px 0 10px}
+  .info p{color:var(--dim);font-size:15px}
+  .info dl{margin-top:16px;border-top:1px solid var(--line)}
+  .info dl div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .info dt{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .info dd{text-align:right}
+  .info .go{margin-top:16px;font-weight:600;text-decoration:none;color:var(--mint)}
+  .info .go:hover{text-decoration:underline}
+  .info .hint{margin-top:auto;padding-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint)}
+  .zlist{display:none;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .zlist button{background:var(--card);border:1px solid var(--line2);color:var(--dim);font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer}
+  .zlist button.on{border-color:var(--mint);color:var(--text)}
+  @media(max-width:980px){.zlist{display:flex}}
+
+  /* stats / compare */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+  @media(max-width:900px){.grid3{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.grid3{grid-template-columns:1fr}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .stat .big{font-family:'Fraunces',serif;font-size:40px;font-weight:800;line-height:1}
+  .stat .big small{font-size:18px;color:var(--dim);font-weight:600}
+  .stat h3{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin:10px 0 6px}
+  .stat p{color:var(--dim);font-size:14px}
+  table.cmp{width:100%;border-collapse:collapse;margin-top:36px;font-size:15px}
+  .cmp th,.cmp td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .cmp th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:400}
+  .cmp td:first-child{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);width:24%}
+  .cmp td:nth-child(2){color:var(--dim)}
+  .cmp td:nth-child(3){color:var(--text);font-weight:500}
+  .cmp tr:hover td{background:rgba(123,79,255,.05)}
+  .cmpnote{font-size:12px;color:var(--faint);margin-top:14px}
+  @media(max-width:620px){.cmp th:first-child,.cmp td:first-child{display:none}}
+
+  /* tours */
+  .tours{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:36px}
+  @media(max-width:820px){.tours{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel h3{font-size:24px;margin-bottom:8px}
+  .panel p{color:var(--dim);font-size:15px}
+  .slots{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+  .slot{background:var(--bg2);border:1px solid var(--line2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .2s}
+  .slot:hover{border-color:var(--purple)}
+  .slot.on{background:var(--purple);border-color:var(--purple)}
+  .tourmsg{font-size:14px;color:var(--dim);min-height:44px}
+  .tourmsg b{color:var(--mint);font-weight:600}
+  .rules{list-style:none;margin-top:10px}
+  .rules li{padding:9px 0;border-bottom:1px dashed var(--line);color:var(--dim);font-size:14px;display:flex;gap:10px}
+  .rules li::before{content:"—";color:var(--amber)}
+
+  /* quotes */
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:42px}
+  @media(max-width:760px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:14px;padding:24px}
+  .qc.cfo{border-left-color:var(--mint)}
+  .qc p{font-family:'Fraunces',serif;font-size:21px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--purple);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--mint)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:920px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple)}
+
+  @media(max-width:520px){
+    .wrap{padding:0 16px}
+    section{padding:64px 0}
+    .hero p{font-size:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .js [data-r]{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Oddly Terafab home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly Terafab <small>SANTA BARBARA</small>
+  </a>
+  <nav class="nav"><a href="#map-sec">Site Map</a><a href="#numbers">Numbers</a><a href="#first">Before Tesla</a><a href="#tours">Tours</a><a href="#leadership">Leadership</a></nav>
+  <a class="btn" href="#tours">Book a tour</a>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badges">
+      <div class="badge live"><i></i>Production started today</div>
+      <div class="badge"><i></i>Certification: Pending</div>
+    </div>
+    <h1>Oddly <em>Terafab.</em></h1>
+    <p>Every Oddly product used to be built somewhere. We looked at that and said &mdash; this can be improved. Now every Oddly product is built in one place. It is in Santa Barbara, California. It is very large. Production started today.</p>
+    <div class="ctas">
+      <a class="btn" href="#map-sec">Explore the site map</a>
+      <a class="btn ghost" href="#first">Announced before Tesla's &rarr;</a>
+    </div>
+  </div>
+
+  <figure class="photo" data-r>
+    <!-- Illustration shown until terafab-entrance.jpg is added; the photo replaces it automatically. -->
+    <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A1B5C"/><stop offset=".55" stop-color="#7B4FFF" stop-opacity=".55"/><stop offset="1" stop-color="#F5A623" stop-opacity=".55"/></linearGradient>
+        <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2EE9A5" stop-opacity=".35"/><stop offset="1" stop-color="#0D1020" stop-opacity=".9"/></linearGradient>
+      </defs>
+      <rect width="800" height="500" fill="url(#sky)"/>
+      <path d="M0 250 L90 170 L170 215 L260 140 L360 205 L450 150 L560 215 L650 160 L740 210 L800 185 V300 H0Z" fill="#1A1440" opacity=".9"/>
+      <rect x="0" y="230" width="800" height="270" fill="#0D1020"/>
+      <rect x="40" y="200" width="720" height="140" fill="#181C38"/>
+      <rect x="40" y="200" width="720" height="10" fill="#7B4FFF"/>
+      <g fill="#242849"><rect x="70" y="232" width="90" height="70"/><rect x="640" y="232" width="90" height="70"/></g>
+      <rect x="270" y="250" width="260" height="90" fill="url(#glass)" stroke="#2EE9A5" stroke-opacity=".5"/>
+      <g transform="translate(400 166) scale(.2)"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></g>
+      <text x="400" y="240" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="800" font-size="22" letter-spacing="2" fill="#EDEDF7">ODDLY TERAFAB</text>
+      <path d="M330 500 L380 340 H420 L470 500Z" fill="#12152B"/>
+      <path d="M398 350 v18 M398 385 v24 M396 430 v34" stroke="#F5A623" stroke-width="4"/>
+      <g stroke="#9A9EC0" stroke-width="3"><path d="M120 420 V360 M680 420 V360"/></g>
+      <path d="M100 360 h40 M660 360 h40" stroke="#9A9EC0" stroke-width="3"/>
+      <g fill="#2EE9A5" opacity=".8"><circle cx="160" cy="420" r="16"/><circle cx="640" cy="420" r="16"/><circle cx="215" cy="452" r="22"/><circle cx="585" cy="452" r="22"/></g>
+      <rect x="300" y="350" width="200" height="22" rx="4" fill="#080A14" opacity=".8"/>
+      <text x="400" y="366" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F5A623" letter-spacing="2">CERTIFICATION: PENDING</text>
+    </svg>
+    <img src="terafab-entrance.jpg" alt="The main entrance of the Oddly Terafab in Santa Barbara" onerror="this.remove()">
+    <figcaption>Main Entrance · 1 Oddly Way, Santa Barbara, CA · Doors open both directions</figcaption>
+  </figure>
+</div></header>
+
+<div class="prod" aria-label="Live production">
+  <div class="wrap">
+    <div class="cell"><div class="k">Production started</div><div class="v m" id="pStart">Today</div></div>
+    <div class="cell"><div class="k">Units built today</div><div class="v" id="pUnits">0</div></div>
+    <div class="cell"><div class="k">Now building</div><div class="v a" id="pNow" style="font-size:clamp(15px,1.8vw,20px);padding-top:6px">Warming up</div></div>
+    <div class="cell"><div class="k">Days without incident</div><div class="v" id="pDays">0</div></div>
+  </div>
+</div>
+
+<div class="ticker" aria-hidden="true"><span>PRODUCTION STARTED TODAY &nbsp;·&nbsp; EVERY ODDLY PRODUCT, ONE BUILDING &nbsp;·&nbsp; ANNOUNCED BEFORE TESLA'S &nbsp;·&nbsp; VISIBLE FROM THE CHANNEL ISLANDS &nbsp;·&nbsp; THE DUCK POND IS PART OF THE PROVING LOOP &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG</span></div>
+
+<section id="map-sec"><div class="wrap">
+  <div class="maphead">
+    <div data-r>
+      <div class="eyebrow">Interactive site map</div>
+      <h2>Everything Oddly makes. One campus.</h2>
+      <p class="lede">Click any building. Drag to pan. Scroll or use + and &minus; to zoom. The small mint dots are Oddly Autonomous&trade; test cars on the Proving Loop. Their routes are their own.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filter buildings" data-r>
+      <button class="chip on" data-f="all">All</button>
+      <button class="chip" data-f="veh">Vehicles</button>
+      <button class="chip" data-f="dev">Devices</button>
+      <button class="chip" data-f="lab">Oddly Labs</button>
+      <button class="chip" data-f="fac">Facilities</button>
+    </div>
+  </div>
+
+  <div class="mapgrid">
+    <div data-r>
+      <div class="mapbox" id="mapbox">
+        <svg id="map" viewBox="0 0 1000 640" role="application" aria-label="Oddly Terafab site map">
+          <defs>
+            <pattern id="waves" width="40" height="14" patternUnits="userSpaceOnUse"><path d="M0 7 Q10 1 20 7 T40 7" fill="none" stroke="#2C5A9A" stroke-width="1.4" opacity=".7"/></pattern>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#181C38" stroke-width="1"/></pattern>
+          </defs>
+          <g id="world">
+            <!-- land, mountains (north), ocean (south) -->
+            <rect x="-400" y="-300" width="1800" height="1300" fill="#0D1020"/>
+            <rect x="-400" y="-300" width="1800" height="1300" fill="url(#grid)"/>
+            <path d="M-400 -300 H1400 V40 L1300 70 L1200 30 L1080 80 L960 35 L840 85 L720 40 L600 90 L480 45 L360 92 L240 40 L120 88 L0 45 L-120 90 L-400 60Z" fill="#141834"/>
+            <path d="M-400 30 L-300 0 L-180 40 L-60 5 L60 42 L180 8 L300 45 L420 10 L540 48 L660 12 L780 50 L900 14 L1020 52 L1140 16 L1260 48 L1400 20" fill="none" stroke="#323865" stroke-width="2"/>
+            <text class="geo" x="500" y="24" text-anchor="middle">SANTA YNEZ MOUNTAINS · N ↑</text>
+            <path d="M-400 560 Q -200 540 0 556 T 400 552 T 800 560 T 1400 548 V1000 H-400Z" fill="#E9D7A8" opacity=".22"/>
+            <path d="M-400 572 Q -200 552 0 568 T 400 564 T 800 572 T 1400 560 V1000 H-400Z" fill="#14305A"/>
+            <path d="M-400 572 Q -200 552 0 568 T 400 564 T 800 572 T 1400 560 V1000 H-400Z" fill="url(#waves)"/>
+            <text class="geo" x="500" y="616" text-anchor="middle" fill="#5C86C8">PACIFIC OCEAN · SANTA BARBARA CHANNEL</text>
+            <!-- US 101 -->
+            <path d="M-400 520 C 200 505, 700 535, 1400 512" fill="none" stroke="#323865" stroke-width="16"/>
+            <path d="M-400 520 C 200 505, 700 535, 1400 512" fill="none" stroke="#F5A623" stroke-width="1.6" stroke-dasharray="14 12" opacity=".7"/>
+            <g transform="translate(70 498)"><rect x="-17" y="-13" width="34" height="24" rx="5" fill="#EDEDF7"/><text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#080A14">101</text></g>
+            <!-- campus boundary + internal road -->
+            <rect x="60" y="96" width="880" height="400" rx="26" fill="none" stroke="#323865" stroke-width="2" stroke-dasharray="8 8"/>
+            <path d="M120 300 H 880" stroke="#242849" stroke-width="12" stroke-linecap="round"/>
+            <path d="M555 520 V 482" stroke="#242849" stroke-width="12"/>
+
+            <!-- Proving Loop + duck pond (drawn under zones) -->
+            <path id="loop" d="M700 340 H880 Q920 340 920 380 V430 Q920 470 880 470 H700 Q660 470 660 430 V380 Q660 340 700 340Z" fill="none" stroke="#242849" stroke-width="12"/>
+          </g>
+
+          <g id="zones"></g>
+          <g id="carsLayer"></g>
+        </svg>
+        <div class="maptip" id="maptip">Click a building</div>
+        <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">&minus;</button><button id="zreset" aria-label="Reset map" style="font-size:13px">⟲</button></div>
+        <div class="pond-ct">Test cars in duck pond today: <b id="pondN">0</b></div>
+      </div>
+      <div class="zlist" id="zlist" aria-label="Buildings"></div>
+    </div>
+
+    <aside class="info" id="info" aria-live="polite" data-r>
+      <div class="cat" id="iCat" style="color:var(--mint)">Main Entrance</div>
+      <h3 id="iName">Welcome to the Terafab</h3>
+      <p id="iDesc">Select any building on the map to see what it builds, how big it is, and what Oddly, Inc. has decided about it.</p>
+      <dl id="iDl"></dl>
+      <a class="go" id="iGo" href="#" hidden></a>
+      <div class="hint">Tip: buildings are keyboard-accessible. Tab to one and press Enter.</div>
+    </aside>
+  </div>
+</div></section>
+
+<section id="numbers"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">The numbers</div>
+    <h2>Measured. Mostly.</h2>
+    <p class="lede">Every figure below was calculated by Oddly, Inc. engineering. Calculation is a form of measurement.</p>
+  </div>
+  <div class="grid3">
+    <div class="stat" data-r><div class="big">1 <small>building</small></div><h3>For every Oddly product</h3><p>Cars, rockets, phones, elevators, robots, submarines, acid, and the domes for your ears. Under one roof. The roof is also manufactured here.</p></div>
+    <div class="stat" data-r><div class="big">Larger <small>than SB</small></div><h3>Floor area</h3><p>The Terafab has more floor area than Santa Barbara. It is located inside Santa Barbara. Engineering has asked us to stop saying this. We have considered the request.</p></div>
+    <div class="stat" data-r><div class="big">0 <small>days</small></div><h3>Without incident</h3><p>Production started today. The counter resets each time something happens, which is how we know things are happening. That is productivity.</p></div>
+    <div class="stat" data-r><div class="big">2 <small>front doors</small></div><h3>No back door</h3><p>Designed by the team behind the Front-Front. Both entrances are the main entrance. Exiting is done by entering the other one.</p></div>
+    <div class="stat" data-r><div class="big">1 <small>pond</small></div><h3>Proving Loop water feature</h3><p>The duck pond was not in the plans. Oddly Autonomous&trade; added it to the route on the first day. It is now part of the test.</p></div>
+    <div class="stat" data-r><div class="big">∞ <small>ft</small></div><h3>Elevator Test Tower</h3><p>Height not disclosed. Visible from the Channel Islands. The doors have been removed for ventilation and transparency.</p></div>
+  </div>
+</div></section>
+
+<section id="first"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Before Tesla's</div>
+    <h2>Ours was first. We checked.</h2>
+    <p class="lede">A competitor has also announced something called a Terafab. We announced ours first. We know this because we checked, and the place we checked was our own records, which are very thorough and agree with us.</p>
+  </div>
+  <table class="cmp" data-r>
+    <thead><tr><th></th><th>The other Terafab</th><th>Oddly Terafab</th></tr></thead>
+    <tbody>
+      <tr><td>Announced</td><td>Second</td><td>First (per Oddly, Inc. records)</td></tr>
+      <tr><td>Makes</td><td>Chips</td><td>Everything. Including chips, once we decide what chips are for.</td></tr>
+      <tr><td>Location</td><td>To be announced</td><td>Santa Barbara, CA. On the coast. Facing both directions.</td></tr>
+      <tr><td>Production</td><td>Planned</td><td>Started today</td></tr>
+      <tr><td>Water feature</td><td>Not mentioned</td><td>Duck pond, integrated into the Proving Loop</td></tr>
+      <tr><td>Rockets on site</td><td>Unclear</td><td>Yes. The blast doors face the ocean.</td></tr>
+    </tbody>
+  </table>
+  <p class="cmpnote">Competitor details are as reported and have not been verified by Oddly, Inc. Oddly Terafab details were verified by Oddly, Inc., in the Office of the CEO, by the CEO. Any resemblance between the two Terafabs is a coincidence of syllables.</p>
+</div></section>
+
+<section id="tours"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Factory tours</div>
+    <h2>Come see it. Leave eventually.</h2>
+    <p class="lede">Tours depart from the Main Entrance and are conducted in an Oddly Autonomous&trade; shuttle. The tour route is selected by the shuttle.</p>
+  </div>
+  <div class="tours">
+    <div class="panel" data-r>
+      <h3>Pick a departure</h3>
+      <p>Today's departures. Production started today, so all tours are opening-day tours. Opening day is premium.</p>
+      <div class="slots" id="slots">
+        <button class="slot" data-t="9:00 AM">9:00 AM</button>
+        <button class="slot" data-t="11:30 AM">11:30 AM</button>
+        <button class="slot" data-t="2:00 PM">2:00 PM</button>
+        <button class="slot" data-t="4:30 PM">4:30 PM</button>
+      </div>
+      <div class="tourmsg" id="tourmsg">No departure selected. You are welcome to remain undecided. The shuttle is not.</div>
+    </div>
+    <div class="panel" data-r>
+      <h3>Visitor rules</h3>
+      <ul class="rules">
+        <li>Closed-toe shoes required. Both toes.</li>
+        <li>Do not stand behind the Roadster line. There is no behind. Do not stand there either.</li>
+        <li>The Elevator Test Tower has no doors. Please keep moving.</li>
+        <li>Oddly Labs Annex is closed to visitors. The fence is closed to visitors too. The fence is dissolving.</li>
+        <li>If your shuttle enters the duck pond, remain seated. You have arrived.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="leadership"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Leadership</div>
+    <h2>From the people who decided.</h2>
+  </div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"People asked why we needed a factory this big. I asked why anyone would need a factory this small. Nobody answered. So we built it bigger."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"One building is cheaper than many buildings. The building is the size of many buildings. I have chosen to focus on the first sentence."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+    <div class="qc" data-r><p>"They announced a Terafab. We had already announced ours. I know because I was there when we announced it. In my office."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"Santa Barbara real estate is expensive. So we bought all of it we could see. Now it is ours, and the view is free."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="#top"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly Terafab</a>
+    <div class="links"><a href="#map-sec">Site Map</a><a href="#tours">Tours</a><a href="journey.html">The Journey of Oddly</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. The Oddly Terafab is located at 1 Oddly Way, Santa Barbara, California, which is an address we have assigned to ourselves. Floor-area comparisons are calculated, not measured. "Announced before Tesla's" reflects the records of Oddly, Inc. Tour routes are selected by Oddly Autonomous&trade; and are final. The duck pond is part of the Proving Loop and is not a water hazard; it is a water feature. Days-without-incident figures reset automatically. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+  'use strict';
+  // ---------- reveal ----------
+  var els=document.querySelectorAll('[data-r]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+    els.forEach(function(el){io.observe(el);});
+  } else els.forEach(function(el){el.classList.add('in');});
+
+  var NS='http://www.w3.org/2000/svg';
+  function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+  var CATS={veh:['Vehicles','#7B4FFF'],dev:['Devices','#2EE9A5'],lab:['Oddly Labs','#C6FF3D'],fac:['Facilities','#F5A623']};
+
+  // ---------- zones ----------
+  var ZONES=[
+    {id:'entrance',short:'Entrance',n:1,cat:'fac',name:'Main Entrance',x:490,y:432,w:130,h:50,
+      desc:'Two front doors. No back door. Both are the main entrance. Visitors exit by entering the other one.',
+      dl:[['Doors','2, both front'],['Revolving','In both directions'],['Opened','Today']]},
+    {id:'ff',short:'Hall A',n:2,cat:'veh',name:'Hall A · Front-Front Line',x:100,y:120,w:170,h:110,href:'cars.html',link:'See Oddly Cars',
+      desc:'The Front-Front assembly line. Every car leaves the hall facing the exit. Both ends of it.',
+      dl:[['Builds','Front-Front'],['Line direction','Forward, twice'],['Reverse gear','Not stocked']]},
+    {id:'bb',short:'Hall B',n:3,cat:'veh',name:'Hall B · Back-Back Line',x:290,y:120,w:170,h:110,href:'cars.html',link:'See Oddly Cars',
+      desc:'A mirror image of Hall A, built facing the other way out of spite. The line runs in reverse. So do the cars.',
+      dl:[['Builds','Back-Back'],['Line direction','Reverse, confidently'],['Trunks fitted','2 per car']]},
+    {id:'rocket',short:'Rocket Motors',n:4,cat:'veh',name:'Rocket Motor Hall',x:100,y:330,w:200,h:120,href:'roadster.html',link:'See the Oddly Roadster',
+      desc:'Solid rocket motors for the Oddly Roadster. The blast doors face the ocean. The ocean has not objected.',
+      dl:[['Builds','Roadster motors'],['Thrust tested','Daily, at lunch'],['Blast doors','Ocean-facing']]},
+    {id:'phone',short:'oPhone · oOS',n:5,cat:'dev',name:'oPhone & oOS Assembly',x:480,y:120,w:150,h:110,href:'oos.html',link:'Try oOS',
+      desc:'A clean room for the oPhone 1. It was cleaned once, at the start, thoroughly. The 5 AM alarm is installed here, at 5 AM.',
+      dl:[['Builds','oPhone 1, oOS'],['Clean room','Cleaned once'],['Shift start','5:00 AM, mandatory']]},
+    {id:'elev',n:6,cat:'fac',name:'Elevator Test Tower',x:650,y:110,w:60,h:150,href:'elevator.html',link:'See Oddly Elevators',
+      desc:'Height not disclosed. Visible from the Channel Islands. The doors were removed for ventilation and transparency.',
+      dl:[['Builds','ODL-1 elevators'],['Floors','Sequence fixed at install'],['Doors','Removed']]},
+    {id:'human',short:'Human 1',n:7,cat:'dev',name:'Human 1 Foundry',x:730,y:120,w:200,h:110,href:'human.html',link:'See Oddly Human 1',
+      desc:'Where every Oddly Human 1 is assembled. Each unit insists it was born here. We have stopped correcting them.',
+      dl:[['Builds','Oddly Human 1'],['Contact','Included'],['Punctuality','To the millisecond']]},
+    {id:'lab',short:'Oddly Labs',n:8,cat:'lab',name:'Oddly Labs Annex',x:330,y:330,w:150,h:120,href:'acid.html',link:'See Oddly Acid™',
+      desc:'Home of Oddly Acid™ and ahctpac. Closed to visitors. The fence is closed to visitors. The fence is dissolving.',
+      dl:[['Builds','Oddly Acid™, ahctpac'],['Fence','Thinning'],['Robots verified','All of them']]},
+    {id:'press',short:'Altitude',n:9,cat:'dev',name:'Altitude Chamber',x:500,y:330,w:130,h:90,href:'plane-pressurizer.html',link:'See the Plane Pressurizer',
+      desc:'Simulates 35,000 feet so the Plane Pressurizer can be tested on the ground. The domes are inflated to the size on the sketch.',
+      dl:[['Builds','Plane Pressurizer'],['Simulated row','23'],['Ears popped','0']]},
+    {id:'pool',short:'Pool Basin',n:10,cat:'dev',name:'Pool Cleaner Basin',x:250,y:532,w:150,h:32,href:'pool.html',link:'See the Oddly Pool Cleaner',
+      desc:'The torpedo range for the OPC-1. It opens to the Pacific, so the test pool is technically the ocean. It is very clean.',
+      dl:[['Builds','OPC-1 submarines'],['Range','The Pacific'],['Top speed','27 knots']]},
+    {id:'loop',n:11,cat:'veh',name:'Autonomous Proving Loop',x:660,y:340,w:260,h:130,shape:'loop',href:'cars.html#autonomous',link:'Try Oddly Autonomous™',
+      desc:'A closed test track for Oddly Autonomous™. On the first day the cars added the duck pond to the route. It is now part of the test.',
+      dl:[['Tests','Oddly Autonomous™'],['Route','Selected by the car'],['Water feature','Duck pond']]},
+    {id:'pond',n:12,cat:'fac',name:'Duck Pond',x:740,y:380,w:100,h:52,shape:'pond',href:'cars.html#fleet',link:'Watch the Fleet Counter',
+      desc:'Not in the plans. Added to the Proving Loop by Oddly Autonomous™ on day one. It is not a water hazard. It is a water feature.',
+      dl:[['Depth','Sufficient'],['Ducks','Relocated, voluntarily'],['Cars inside','See counter']]},
+    {id:'ceo',n:13,cat:'fac',name:'Office of the CEO',x:880,y:250,w:46,h:36,href:'journey.html',link:'Read The Journey of Oddly',
+      desc:'One office. One occupant. Every decision at the Terafab is verified here, by the CEO, alone. Smallest building on campus. Largest building on campus, in spirit.',
+      dl:[['Occupants','1'],['Decisions reversed','0'],['Window','Faces the Terafab']]},
+    {id:'ship',short:'Shipping',n:14,cat:'fac',name:'Shipping Dock',x:110,y:250,w:150,h:40,href:'cars-app.html',link:'Get the Oddly Cars App',
+      desc:'Every Oddly product leaves through here. Delivery addresses are selected by Oddly Autonomous™ with 100% confidence.',
+      dl:[['Ships','Everything'],['Destinations','Final'],['Tracking','Approximate']]}
+  ];
+
+  var zg=document.getElementById('zones'),zlist=document.getElementById('zlist');
+  var nodes={};
+  ZONES.forEach(function(z){
+    var c=CATS[z.cat][1];
+    var g=el('g',{'class':'zone','tabindex':'0','role':'button','aria-label':z.name,'data-cat':z.cat,'data-id':z.id},zg);
+    if(z.shape==='loop'){
+      el('path',{'class':'bld',d:'M700 340 H880 Q920 340 920 380 V430 Q920 470 880 470 H700 Q660 470 660 430 V380 Q660 340 700 340Z',fill:'none',stroke:c,'stroke-width':'3','stroke-dasharray':'6 6'},g);
+      el('rect',{x:z.x,y:z.y,width:z.w,height:z.h,fill:'transparent'},g);
+      el('text',{'class':'zl',x:790,y:362,'text-anchor':'middle'},g).textContent='PROVING LOOP';
+    } else if(z.shape==='pond'){
+      el('ellipse',{'class':'bld',cx:z.x+z.w/2,cy:z.y+z.h/2,rx:z.w/2,ry:z.h/2,fill:'#1E4A86',stroke:'#2C5A9A','stroke-width':'2'},g);
+      el('path',{d:'M'+(z.x+22)+' '+(z.y+26)+' q8 -6 16 0 t16 0 t16 0',fill:'none',stroke:'#5C86C8','stroke-width':'1.5'},g);
+      el('text',{'class':'zl',x:z.x+z.w/2,y:z.y+z.h+16,'text-anchor':'middle','font-size':'11'},g).textContent='DUCK POND';
+    } else {
+      el('rect',{'class':'bld',x:z.x,y:z.y,width:z.w,height:z.h,rx:8,fill:'#181C38',stroke:c,'stroke-width':'2'},g);
+      el('rect',{x:z.x,y:z.y,width:z.w,height:6,rx:3,fill:c},g);
+      if(z.short){
+        var t=el('text',{'class':'zl',x:z.x+12,y:z.y+(z.h<56?z.h/2+5:30)},g);t.textContent=z.short;
+      }
+    }
+    // number badge
+    var bx=z.shape==='loop'?672:z.shape==='pond'?z.x+z.w-6:z.x+z.w-16, by=z.shape==='loop'?352:z.shape==='pond'?z.y+4:z.y+(z.h>60?z.h-16:z.h/2);
+    el('circle',{cx:bx,cy:by,r:11,fill:c},g);
+    el('text',{'class':'zn',x:bx,y:by+4,'text-anchor':'middle'},g).textContent=z.n;
+    g.addEventListener('click',function(){select(z.id);});
+    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();select(z.id);}});
+    g.addEventListener('mouseenter',function(){tip.textContent=z.n+' · '+z.name;});
+    g.addEventListener('mouseleave',function(){tip.textContent=sel?('Selected: '+byId[sel].name):'Click a building';});
+    nodes[z.id]=g;
+    var b=document.createElement('button');b.type='button';b.textContent=z.n+'. '+z.name.split(' · ')[0];b.dataset.id=z.id;
+    b.addEventListener('click',function(){select(z.id);});zlist.appendChild(b);
+  });
+  var byId={};ZONES.forEach(function(z){byId[z.id]=z;});
+  var tip=document.getElementById('maptip'),sel=null;
+  var iCat=document.getElementById('iCat'),iName=document.getElementById('iName'),iDesc=document.getElementById('iDesc'),iDl=document.getElementById('iDl'),iGo=document.getElementById('iGo');
+  function select(id){
+    var z=byId[id];sel=id;
+    Object.keys(nodes).forEach(function(k){nodes[k].classList.toggle('sel',k===id);});
+    zlist.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.id===id);});
+    iCat.textContent=z.n+' · '+CATS[z.cat][0];iCat.style.color=CATS[z.cat][1];
+    iName.textContent=z.name;iDesc.textContent=z.desc;
+    iDl.innerHTML='';
+    z.dl.forEach(function(r){var d=document.createElement('div');var t=document.createElement('dt');t.textContent=r[0];var v=document.createElement('dd');v.textContent=r[1];d.appendChild(t);d.appendChild(v);iDl.appendChild(d);});
+    if(id==='pond'){iDl.lastChild.lastChild.textContent=pondN+' today';}
+    if(z.href){iGo.hidden=false;iGo.href=z.href;iGo.textContent=z.link+' →';}else iGo.hidden=true;
+    tip.textContent='Selected: '+z.name;
+  }
+
+  // filters
+  document.querySelectorAll('.chip').forEach(function(ch){
+    ch.addEventListener('click',function(){
+      var f=ch.dataset.f;
+      document.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c===ch);});
+      Object.keys(nodes).forEach(function(k){nodes[k].classList.toggle('dim',f!=='all'&&byId[k].cat!==f);});
+    });
+  });
+
+  // ---------- pan & zoom ----------
+  var svg=document.getElementById('map'),world=document.getElementById('world');
+  var VB={x:0,y:0,w:1000,h:640},BASE={x:0,y:0,w:1000,h:640};
+  function apply(){svg.setAttribute('viewBox',VB.x+' '+VB.y+' '+VB.w+' '+VB.h);}
+  function clamp(){
+    VB.w=Math.max(250,Math.min(1000,VB.w));VB.h=VB.w*0.64;
+    VB.x=Math.max(-200,Math.min(1200-VB.w,VB.x));VB.y=Math.max(-120,Math.min(760-VB.h,VB.y));
+  }
+  function zoomAt(f,cx,cy){
+    var nw=VB.w*f;if(nw<250)f=250/VB.w;if(nw>1000)f=1000/VB.w;
+    VB.x=cx-(cx-VB.x)*f;VB.y=cy-(cy-VB.y)*f;VB.w*=f;VB.h=VB.w*0.64;clamp();apply();
+  }
+  function toSvg(evt){var r=svg.getBoundingClientRect();return {x:VB.x+(evt.clientX-r.left)/r.width*VB.w,y:VB.y+(evt.clientY-r.top)/r.height*VB.h};}
+  document.getElementById('zin').addEventListener('click',function(){zoomAt(0.75,VB.x+VB.w/2,VB.y+VB.h/2);});
+  document.getElementById('zout').addEventListener('click',function(){zoomAt(1/0.75,VB.x+VB.w/2,VB.y+VB.h/2);});
+  document.getElementById('zreset').addEventListener('click',function(){VB={x:0,y:0,w:1000,h:640};apply();});
+  svg.addEventListener('wheel',function(e){e.preventDefault();var p=toSvg(e);zoomAt(e.deltaY<0?0.88:1/0.88,p.x,p.y);},{passive:false});
+  var ptrs={},drag=null,pinch=null,moved=0;
+  svg.addEventListener('pointerdown',function(e){
+    ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    var ids=Object.keys(ptrs);
+    if(ids.length===1){drag={x:e.clientX,y:e.clientY,vx:VB.x,vy:VB.y};moved=0;}
+    else if(ids.length===2){var a=ptrs[ids[0]],b=ptrs[ids[1]];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),w:VB.w};drag=null;}
+  });
+  svg.addEventListener('pointermove',function(e){
+    if(!ptrs[e.pointerId])return;ptrs[e.pointerId]={x:e.clientX,y:e.clientY};
+    var r=svg.getBoundingClientRect(),ids=Object.keys(ptrs);
+    if(pinch&&ids.length===2){
+      var a=ptrs[ids[0]],b=ptrs[ids[1]],d=Math.hypot(a.x-b.x,a.y-b.y);
+      var cx=VB.x+((a.x+b.x)/2-r.left)/r.width*VB.w,cy=VB.y+((a.y+b.y)/2-r.top)/r.height*VB.h;
+      zoomAt((pinch.w*pinch.d/d)/VB.w,cx,cy);return;
+    }
+    if(!drag)return;
+    var dx=e.clientX-drag.x,dy=e.clientY-drag.y;moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));
+    if(moved>4){
+      if(!svg.classList.contains('drag')){svg.classList.add('drag');try{svg.setPointerCapture(e.pointerId);}catch(_){}}
+      VB.x=drag.vx-dx/r.width*VB.w;VB.y=drag.vy-dy/r.height*VB.h;clamp();apply();
+    }
+  });
+  function up(e){delete ptrs[e.pointerId];if(Object.keys(ptrs).length<2)pinch=null;if(!Object.keys(ptrs).length){drag=null;svg.classList.remove('drag');}}
+  svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+  // swallow the click that ends a drag so it doesn't select a building
+  svg.addEventListener('click',function(e){if(moved>4){e.stopPropagation();e.preventDefault();moved=0;}},true);
+
+  // ---------- autonomous test cars on the loop ----------
+  var loop=document.getElementById('loop'),L=loop.getTotalLength();
+  var carsLayer=document.getElementById('carsLayer'),pondEl=document.getElementById('pondN'),pondN=0;
+  var POND={x:790,y:406};
+  var cars=[];
+  for(var i=0;i<5;i++){
+    var c=el('g',{},carsLayer);
+    el('rect',{x:-7,y:-4,width:14,height:8,rx:3,fill:'#2EE9A5'},c);
+    cars.push({g:c,s:Math.random()*L,v:(40+Math.random()*30)*(Math.random()<.5?-1:1),state:'loop',t:0,from:null});
+  }
+  var last=performance.now();
+  function frame(now){
+    var dt=Math.min(.05,(now-last)/1000);last=now;
+    cars.forEach(function(c){
+      if(c.state==='loop'){
+        c.s=(c.s+c.v*dt+L)%L;
+        var p=loop.getPointAtLength(c.s),p2=loop.getPointAtLength((c.s+(c.v>0?2:-2)+L)%L);
+        c.g.setAttribute('transform','translate('+p.x+' '+p.y+') rotate('+(Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI)+')');
+        // occasionally the car selects the pond, with 100% confidence
+        if(Math.random()<dt*0.07){c.state='pond';c.t=0;c.from={x:p.x,y:p.y};}
+      } else if(c.state==='pond'){
+        c.t+=dt/1.6;var k=Math.min(1,c.t);
+        var x=c.from.x+(POND.x-c.from.x)*k,y=c.from.y+(POND.y-c.from.y)*k;
+        c.g.setAttribute('transform','translate('+x+' '+y+') rotate('+(Math.atan2(POND.y-c.from.y,POND.x-c.from.x)*180/Math.PI)+') scale('+(1-k*.6)+')');
+        c.g.style.opacity=String(1-Math.max(0,k-.6)*2.2);
+        if(k>=1){
+          c.state='gone';c.t=0;pondN++;pondEl.textContent=pondN;
+          if(sel==='pond')select('pond');
+          resetIncidents();
+        }
+      } else { // a replacement car is produced and rejoins the loop
+        c.t+=dt;if(c.t>2.5){c.state='loop';c.s=Math.random()*L;c.g.style.opacity='1';}
+      }
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---------- live production strip ----------
+  var units=document.getElementById('pUnits'),nowEl=document.getElementById('pNow'),daysEl=document.getElementById('pDays');
+  var BUILDING=['Front-Front','Back-Back','Roadster motors','oPhone 1','ODL-1 elevator','Human 1','OPC-1 submarine','Oddly Acid™','Plane Pressurizer','A second roof','Duck pond signage'];
+  // units since midnight local time, so "today" means today
+  var mid=new Date();mid.setHours(0,0,0,0);
+  var RATE=0.37; // units per second, calculated
+  var unitCount=Math.floor((Date.now()-mid.getTime())/1000*RATE);
+  function fmt(n){return n.toLocaleString('en-US');}
+  units.textContent=fmt(unitCount);
+  setInterval(function(){unitCount+=1+Math.floor(Math.random()*3);units.textContent=fmt(unitCount);},2600);
+  var bi=0;nowEl.textContent=BUILDING[0];
+  setInterval(function(){bi=(bi+1)%BUILDING.length;nowEl.textContent=BUILDING[bi];},2200);
+  // days without incident: always 0, because production started today and a test car is always heading for the pond
+  function resetIncidents(){daysEl.textContent='0';daysEl.style.color='var(--red)';setTimeout(function(){daysEl.style.color='';},600);}
+
+  // ---------- tours ----------
+  var STOPS=['the Duck Pond','the Shipping Dock','the Elevator Test Tower (no doors)','Hall B, in reverse','the Altitude Chamber','the Office of the CEO, briefly'];
+  document.querySelectorAll('.slot').forEach(function(s){
+    s.addEventListener('click',function(){
+      document.querySelectorAll('.slot').forEach(function(x){x.classList.toggle('on',x===s);});
+      var stop=STOPS[Math.floor(Math.random()*STOPS.length)];
+      document.getElementById('tourmsg').innerHTML='You are booked on the <b>'+s.dataset.t+'</b> opening-day tour. Your shuttle has selected its first stop: <b>'+stop+'</b>. The selection is final.';
+    });
+  });
+
+  select('entrance');
+})();
+</script>
+</body>
+</html>
