@@ -123,7 +123,11 @@
   .veil3{position:absolute;inset:0;z-index:5;background:transparent;border:none;cursor:pointer;display:grid;place-items:end center;padding-bottom:56px}
   .veil3[hidden],.done3[hidden]{display:none}
   .veil3 span{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#fff;background:var(--purple);border-radius:999px;padding:11px 20px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-  .done3{position:absolute;right:12px;bottom:12px;background:var(--purple);color:#fff;border:none;border-radius:999px;padding:9px 16px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+  .cut3{position:absolute;right:12px;bottom:12px;z-index:3;display:inline-flex;align-items:center;gap:8px;background:rgba(8,10,20,.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--text);border:1px solid var(--mint);border-radius:999px;padding:9px 16px;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;letter-spacing:.04em;cursor:pointer;transition:background .2s}
+  .cut3::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--mint)}
+  .cut3:hover,.cut3[aria-pressed=true]{background:rgba(46,233,165,.18)}
+  .map3d:not(.active) .cut3{display:none}
+  .done3{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;background:var(--purple);color:#fff;border:none;border-radius:999px;padding:9px 16px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
   .zone{cursor:pointer;outline:none}
   .zone .bld{transition:fill .2s,stroke .2s,opacity .25s}
   .zone:hover .bld,.zone:focus-visible .bld{stroke:var(--text);stroke-width:3}
@@ -286,8 +290,8 @@
   <div class="maphead">
     <div data-r>
       <div class="eyebrow">Interactive site map</div>
-      <h2>Everything Oddly makes. One campus.</h2>
-      <p class="lede" id="mapLede">Click any building. Drag to pan. Scroll or use + and &minus; to zoom. The small mint dots are Oddly Autonomous&trade; test cars on the Proving Loop. Their routes are their own.</p>
+      <h2>Everything Oddly makes. One building.</h2>
+      <p class="lede" id="mapLede">Every hall below is inside one building. Click any hall. Drag to pan. Scroll or use + and &minus; to zoom. The small mint dots are Oddly Autonomous&trade; test cars on the Proving Loop. Their routes are their own.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter buildings" data-r>
       <button class="chip on" data-f="all">All</button>
@@ -307,6 +311,7 @@
         <div class="m3-load" id="load3"><span></span>Rendering Santa Barbara…</div>
         <button class="veil3" id="veil3" type="button" hidden><span>Tap to explore in 3D</span></button>
         <button class="done3" id="done3" type="button" hidden>Done</button>
+        <button class="cut3" id="cut3" type="button" aria-pressed="false">Look inside</button>
       </div>
       <div class="mapbox" id="mapbox">
         <svg id="map" viewBox="0 0 1000 640" role="application" aria-label="Oddly Terafab site map">
@@ -331,11 +336,13 @@
             <g transform="translate(70 498)"><rect x="-17" y="-13" width="34" height="24" rx="5" fill="#EDEDF7"/><text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#080A14">101</text></g>
             <!-- campus boundary + internal road -->
             <rect x="60" y="96" width="880" height="400" rx="26" fill="none" stroke="#323865" stroke-width="2" stroke-dasharray="8 8"/>
-            <path d="M120 300 H 880" stroke="#242849" stroke-width="12" stroke-linecap="round"/>
-            <path d="M555 520 V 482" stroke="#242849" stroke-width="12"/>
+            <path d="M540 520 V 336" stroke="#242849" stroke-width="12"/>
+            <rect x="90" y="112" width="820" height="224" rx="6" fill="#141834" stroke="#7B4FFF" stroke-width="3"/>
+            <path d="M96 224 H 904" stroke="#242849" stroke-width="14"/>
+            <text class="geo" x="500" y="106" text-anchor="middle" fill="#9A9EC0">THE ODDLY TERAFAB · ONE BUILDING</text>
 
             <!-- Proving Loop + duck pond (drawn under zones) -->
-            <path id="loop" d="M700 340 H880 Q920 340 920 380 V430 Q920 470 880 470 H700 Q660 470 660 430 V380 Q660 340 700 340Z" fill="none" stroke="#242849" stroke-width="12"/>
+            <path id="loop" d="M700 360 H880 Q920 360 920 400 V440 Q920 480 880 480 H700 Q660 480 660 440 V400 Q660 360 700 360Z" fill="none" stroke="#242849" stroke-width="12"/>
           </g>
 
           <g id="zones"></g>
@@ -464,47 +471,53 @@
 
   // ---------- zones ----------
   var ZONES=[
-    {id:'entrance',short:'Entrance',n:1,cat:'fac',name:'Main Entrance',x:490,y:432,w:130,h:50,
-      desc:'Two front doors. No back door. Both are the main entrance. Visitors exit by entering the other one.',
+    {id:'entrance',short:'Entrance',n:1,cat:'fac',inside:true,name:'Main Entrance',x:480,y:238,w:120,h:90,
+      desc:'A mint-lit glass atrium in the middle of the south facade. Two front doors. No back door. Both are the main entrance. Visitors exit by entering the other one.',
       dl:[['Doors','2, both front'],['Revolving','In both directions'],['Opened','Today']]},
-    {id:'ff',short:'Hall A',n:2,cat:'veh',name:'Hall A · Front-Front Line',x:100,y:120,w:170,h:110,href:'cars.html',link:'See Oddly Cars',
+    {id:'ff',short:'Hall A',n:2,cat:'veh',inside:true,name:'Hall A · Front-Front Line',x:100,y:120,w:150,h:90,href:'cars.html',link:'See Oddly Cars',
       desc:'The Front-Front assembly line. Every car leaves the hall facing the exit. Both ends of it.',
       dl:[['Builds','Front-Front'],['Line direction','Forward, twice'],['Reverse gear','Not stocked']]},
-    {id:'bb',short:'Hall B',n:3,cat:'veh',name:'Hall B · Back-Back Line',x:290,y:120,w:170,h:110,href:'cars.html',link:'See Oddly Cars',
+    {id:'bb',short:'Hall B',n:3,cat:'veh',inside:true,name:'Hall B · Back-Back Line',x:260,y:120,w:150,h:90,href:'cars.html',link:'See Oddly Cars',
       desc:'A mirror image of Hall A, built facing the other way out of spite. The line runs in reverse. So do the cars.',
       dl:[['Builds','Back-Back'],['Line direction','Reverse, confidently'],['Trunks fitted','2 per car']]},
-    {id:'rocket',short:'Rocket Motors',n:4,cat:'veh',name:'Rocket Motor Hall',x:100,y:330,w:200,h:120,href:'roadster.html',link:'See the Oddly Roadster',
-      desc:'Solid rocket motors for the Oddly Roadster. The blast doors face the ocean. The ocean has not objected.',
+    {id:'roadster',short:'Roadster Assembly',n:4,cat:'veh',inside:true,name:'Roadster Assembly',x:420,y:120,w:220,h:90,href:'roadster.html',link:'See the Oddly Roadster',
+      desc:'Where every Oddly Roadster is assembled. Eight seats, eight perimeter rockets, four rear motors and one roof adhesion rocket per van. The motors arrive from the Rocket Motor Hall across the aisle. The rockets are installed first, so that the rest of the van knows what it is.',
+      dl:[['Builds','Oddly Roadster'],['Rockets fitted','13 per van'],['Deliveries','Thursday (which one: pending)']]},
+    {id:'rocket',short:'Rocket Motors',n:5,cat:'veh',inside:true,name:'Rocket Motor Hall',x:200,y:238,w:140,h:90,href:'roadster.html',link:'See the Oddly Roadster',
+      desc:'Solid rocket motors for the Oddly Roadster, sent across the aisle to Roadster Assembly. The test stand fires through blast doors that face the ocean. The ocean has not objected.',
       dl:[['Builds','Roadster motors'],['Thrust tested','Daily, at lunch'],['Blast doors','Ocean-facing']]},
-    {id:'phone',short:'oPhone · oOS',n:5,cat:'dev',name:'oPhone & oOS Assembly',x:480,y:120,w:150,h:110,href:'oos.html',link:'Try oOS',
+    {id:'phone',short:'oPhone · oOS',n:6,cat:'dev',inside:true,name:'oPhone & oOS Assembly',x:610,y:238,w:110,h:90,href:'oos.html',link:'Try oOS',
       desc:'A clean room for the oPhone 1. It was cleaned once, at the start, thoroughly. The 5 AM alarm is installed here, at 5 AM.',
       dl:[['Builds','oPhone 1, oOS'],['Clean room','Cleaned once'],['Shift start','5:00 AM, mandatory']]},
-    {id:'elev',n:6,cat:'fac',name:'Elevator Test Tower',x:650,y:110,w:60,h:150,href:'elevator.html',link:'See Oddly Elevators',
-      desc:'Height not disclosed. Visible from the Channel Islands. The doors were removed for ventilation and transparency.',
+    {id:'elev',n:7,cat:'fac',name:'Elevator Test Tower',x:640,y:206,w:34,h:36,href:'elevator.html',link:'See Oddly Elevators',
+      desc:'Rises from the central aisle straight through the roof. Height not disclosed. Visible from the Channel Islands. The doors were removed for ventilation and transparency.',
       dl:[['Builds','ODL-1 elevators'],['Floors','Sequence fixed at install'],['Doors','Removed']]},
-    {id:'human',short:'Human 1',n:7,cat:'dev',name:'Human 1 Foundry',x:730,y:120,w:200,h:110,href:'human.html',link:'See Oddly Human 1',
+    {id:'human',short:'Human 1',n:8,cat:'dev',inside:true,name:'Human 1 Foundry',x:650,y:120,w:140,h:90,href:'human.html',link:'See Oddly Human 1',
       desc:'Where every Oddly Human 1 is assembled. Each unit insists it was born here. We have stopped correcting them.',
       dl:[['Builds','Oddly Human 1'],['Contact','Included'],['Punctuality','To the millisecond']]},
-    {id:'lab',short:'Oddly Labs',n:8,cat:'lab',name:'Oddly Labs Annex',x:330,y:330,w:150,h:120,href:'acid.html',link:'See Oddly Acid™',
-      desc:'Home of Oddly Acid™ and ahctpac. Closed to visitors. The fence is closed to visitors. The fence is dissolving.',
+    {id:'data',short:'Data Center',n:9,cat:'lab',inside:true,name:'Data Center',x:800,y:120,w:100,h:90,href:'oddlyos.html',link:'Ask the assistant in Oddly OS',
+      desc:'Trains Oddly Siri, the assistant that answers the question you meant to ask, eventually, with confidence. Also trains Oddly Autonomous™ on duck-pond footage, ahctpac on robots, and the International Fleet Counter on lakes. Every answer it gives has been verified by the Office of the CEO.',
+      dl:[['Trains','Oddly Siri, and other stuff'],['GPUs','Enough. Then more.'],['Hallucinations','Reclassified as ideas']]},
+    {id:'lab',short:'Oddly Labs',n:10,cat:'lab',inside:true,name:'Oddly Labs Annex',x:350,y:238,w:120,h:90,href:'acid.html',link:'See Oddly Acid™',
+      desc:'Home of Oddly Acid™ and ahctpac. Sealed off from the rest of the Terafab by a fence. The fence is closed to visitors. The fence is dissolving.',
       dl:[['Builds','Oddly Acid™, ahctpac'],['Fence','Thinning'],['Robots verified','All of them']]},
-    {id:'press',short:'Altitude',n:9,cat:'dev',name:'Altitude Chamber',x:500,y:330,w:130,h:90,href:'plane-pressurizer.html',link:'See the Plane Pressurizer',
+    {id:'press',short:'Altitude',n:11,cat:'dev',inside:true,name:'Altitude Chamber',x:730,y:238,w:90,h:90,href:'plane-pressurizer.html',link:'See the Plane Pressurizer',
       desc:'Simulates 35,000 feet so the Plane Pressurizer can be tested on the ground. The domes are inflated to the size on the sketch.',
       dl:[['Builds','Plane Pressurizer'],['Simulated row','23'],['Ears popped','0']]},
-    {id:'pool',short:'Pool Basin',n:10,cat:'dev',name:'Pool Cleaner Basin',x:250,y:532,w:150,h:32,href:'pool.html',link:'See the Oddly Pool Cleaner',
+    {id:'pool',short:'Pool Basin',n:12,cat:'dev',name:'Pool Cleaner Basin',x:250,y:532,w:150,h:32,href:'pool.html',link:'See the Oddly Pool Cleaner',
       desc:'The torpedo range for the OPC-1. It opens to the Pacific, so the test pool is technically the ocean. It is very clean.',
       dl:[['Builds','OPC-1 submarines'],['Range','The Pacific'],['Top speed','27 knots']]},
-    {id:'loop',n:11,cat:'veh',name:'Autonomous Proving Loop',x:660,y:340,w:260,h:130,shape:'loop',href:'cars.html#autonomous',link:'Try Oddly Autonomous™',
-      desc:'A closed test track for Oddly Autonomous™. On the first day the cars added the duck pond to the route. It is now part of the test.',
+    {id:'loop',n:13,cat:'veh',name:'Autonomous Proving Loop',x:660,y:360,w:260,h:120,shape:'loop',href:'cars.html#autonomous',link:'Try Oddly Autonomous™',
+      desc:'A closed test track for Oddly Autonomous™, outside the south facade. On the first day the cars added the duck pond to the route. It is now part of the test.',
       dl:[['Tests','Oddly Autonomous™'],['Route','Selected by the car'],['Water feature','Duck pond']]},
-    {id:'pond',n:12,cat:'fac',name:'Duck Pond',x:740,y:380,w:100,h:52,shape:'pond',href:'cars.html#fleet',link:'Watch the Fleet Counter',
+    {id:'pond',n:14,cat:'fac',name:'Duck Pond',x:740,y:394,w:100,h:52,shape:'pond',href:'cars.html#fleet',link:'Watch the Fleet Counter',
       desc:'Not in the plans. Added to the Proving Loop by Oddly Autonomous™ on day one. It is not a water hazard. It is a water feature.',
       dl:[['Depth','Sufficient'],['Ducks','Relocated, voluntarily'],['Cars inside','See counter']]},
-    {id:'ceo',n:13,cat:'fac',name:'Office of the CEO',x:880,y:250,w:46,h:36,href:'journey.html',link:'Read The Journey of Oddly',
-      desc:'One office. One occupant. Every decision at the Terafab is verified here, by the CEO, alone. Smallest building on campus. Largest building on campus, in spirit.',
-      dl:[['Occupants','1'],['Decisions reversed','0'],['Window','Faces the Terafab']]},
-    {id:'ship',short:'Shipping',n:14,cat:'fac',name:'Shipping Dock',x:110,y:250,w:150,h:40,href:'cars-app.html',link:'Get the Oddly Cars App',
-      desc:'Every Oddly product leaves through here. Delivery addresses are selected by Oddly Autonomous™ with 100% confidence.',
+    {id:'ceo',n:15,cat:'fac',inside:true,name:'Office of the CEO',x:830,y:238,w:70,h:90,href:'journey.html',link:'Read The Journey of Oddly',
+      desc:'One office. One occupant. A small glass box in the middle of an otherwise empty hall, so that it is the smallest room in the largest building. Every decision at the Terafab is verified here, by the CEO, alone.',
+      dl:[['Occupants','1'],['Decisions reversed','0'],['Empty hall','Intentional']]},
+    {id:'ship',short:'Shipping',n:16,cat:'fac',inside:true,name:'Shipping Dock',x:100,y:238,w:90,h:90,href:'cars-app.html',link:'Get the Oddly Cars App',
+      desc:'Every Oddly product leaves the Terafab through here. Delivery addresses are selected by Oddly Autonomous™ with 100% confidence.',
       dl:[['Ships','Everything'],['Destinations','Final'],['Tracking','Approximate']]}
   ];
 
@@ -514,22 +527,22 @@
     var c=CATS[z.cat][1];
     var g=el('g',{'class':'zone','tabindex':'0','role':'button','aria-label':z.name,'data-cat':z.cat,'data-id':z.id},zg);
     if(z.shape==='loop'){
-      el('path',{'class':'bld',d:'M700 340 H880 Q920 340 920 380 V430 Q920 470 880 470 H700 Q660 470 660 430 V380 Q660 340 700 340Z',fill:'none',stroke:c,'stroke-width':'3','stroke-dasharray':'6 6'},g);
+      el('path',{'class':'bld',d:'M700 360 H880 Q920 360 920 400 V440 Q920 480 880 480 H700 Q660 480 660 440 V400 Q660 360 700 360Z',fill:'none',stroke:c,'stroke-width':'3','stroke-dasharray':'6 6'},g);
       el('rect',{x:z.x,y:z.y,width:z.w,height:z.h,fill:'transparent'},g);
-      el('text',{'class':'zl',x:790,y:362,'text-anchor':'middle'},g).textContent='PROVING LOOP';
+      el('text',{'class':'zl',x:790,y:382,'text-anchor':'middle'},g).textContent='PROVING LOOP';
     } else if(z.shape==='pond'){
       el('ellipse',{'class':'bld',cx:z.x+z.w/2,cy:z.y+z.h/2,rx:z.w/2,ry:z.h/2,fill:'#1E4A86',stroke:'#2C5A9A','stroke-width':'2'},g);
       el('path',{d:'M'+(z.x+22)+' '+(z.y+26)+' q8 -6 16 0 t16 0 t16 0',fill:'none',stroke:'#5C86C8','stroke-width':'1.5'},g);
       el('text',{'class':'zl',x:z.x+z.w/2,y:z.y+z.h+16,'text-anchor':'middle','font-size':'11'},g).textContent='DUCK POND';
     } else {
-      el('rect',{'class':'bld',x:z.x,y:z.y,width:z.w,height:z.h,rx:8,fill:'#181C38',stroke:c,'stroke-width':'2'},g);
+      el('rect',{'class':'bld',x:z.x,y:z.y,width:z.w,height:z.h,rx:z.inside?4:8,fill:'#181C38',stroke:c,'stroke-width':'2'},g);
       el('rect',{x:z.x,y:z.y,width:z.w,height:6,rx:3,fill:c},g);
       if(z.short){
         var t=el('text',{'class':'zl',x:z.x+12,y:z.y+(z.h<56?z.h/2+5:30)},g);t.textContent=z.short;
       }
     }
     // number badge
-    var bx=z.shape==='loop'?672:z.shape==='pond'?z.x+z.w-6:z.x+z.w-16, by=z.shape==='loop'?352:z.shape==='pond'?z.y+4:z.y+(z.h>60?z.h-16:z.h/2);
+    var bx=z.shape==='loop'?672:z.shape==='pond'?z.x+z.w-6:z.x+z.w-16, by=z.shape==='loop'?372:z.shape==='pond'?z.y+4:z.y+(z.h>60?z.h-16:z.h/2);
     el('circle',{cx:bx,cy:by,r:11,fill:c},g);
     el('text',{'class':'zn',x:bx,y:by+4,'text-anchor':'middle'},g).textContent=z.n;
     g.addEventListener('click',function(){select(z.id);});
@@ -614,7 +627,7 @@
   // ---------- autonomous test cars on the loop ----------
   var loop=document.getElementById('loop'),L=loop.getTotalLength();
   var carsLayer=document.getElementById('carsLayer'),pondEl=document.getElementById('pondN'),pondN=0;
-  var POND={x:790,y:406};
+  var POND={x:790,y:420};
   var cars=[];
   for(var i=0;i<5;i++){
     var c=el('g',{},carsLayer);
