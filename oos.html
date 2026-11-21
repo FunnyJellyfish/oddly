@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>oOS — oPhone 1</title>
+<title>oOS 2.0 — oPhone 1</title>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 :root {
@@ -615,6 +615,10 @@ body.dark .app-chrome { color:var(--t1); }
 .arc-pad { display:grid; grid-template-columns:repeat(3,56px); grid-template-rows:repeat(2,48px); gap:6px; justify-content:center; margin:4px 0 12px; }
 .arc-pad button { border:none; border-radius:12px; background:var(--card); color:var(--t1); font-size:20px; cursor:pointer; }
 .arc-pad button:active { background:rgba(255,55,95,.25); }
+
+/* oOS 2.0 settings effects */
+body.truetone .screen::after { content:''; position:absolute; inset:0; background:rgba(255,190,120,.06); mix-blend-mode:multiply; pointer-events:none; z-index:8887; }
+body.lowpower *, body.lowpower *::before, body.lowpower *::after { animation-play-state:paused !important; }
 </style>
 </head>
 <body>
@@ -1130,10 +1134,10 @@ body.dark .app-chrome { color:var(--t1); }
 <div class="view app-chrome" id="appAbout">
   <div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">About</div><div style="width:70px"></div></div>
   <div class="app-body">
-    <div class="about-hero"><div class="about-icon">📱</div><div class="about-device">oPhone 1</div><div class="about-os">oOS 1.0</div></div>
+    <div class="about-hero"><div class="about-icon">📱</div><div class="about-device">oPhone 1</div><div class="about-os">oOS 2.0</div></div>
     <div class="card-list">
       <div class="row"><span class="row-lbl">Device Name</span><span class="row-val">oPhone 1</span></div>
-      <div class="row"><span class="row-lbl">oOS Version</span><span class="row-val">1.0.0</span></div>
+      <div class="row"><span class="row-lbl">oOS Version</span><span class="row-val">2.0.0</span></div>
       <div class="row"><span class="row-lbl">Manufacturer</span><span class="row-val">Oddly, Inc.</span></div>
       <div class="row"><span class="row-lbl">Model</span><span class="row-val">OP1-2024-A</span></div>
       <div class="row"><span class="row-lbl">Storage</span><span class="row-val">64 GB</span></div>
@@ -1483,12 +1487,24 @@ body.dark .app-chrome { color:var(--t1); }
   <div class="app-nav"><button class="back-btn" onclick="openApp('general')"><span class="back-chev">‹</span> General</button><div class="nav-title">Software Update</div><div style="width:70px"></div></div>
   <div class="app-body" style="text-align:center;padding-top:32px">
     <div style="font-size:64px;margin-bottom:12px">📱</div>
-    <div style="font-size:20px;font-weight:700;margin-bottom:4px">oOS 1.0</div>
+    <div style="font-size:20px;font-weight:700;margin-bottom:4px">oOS 2.0</div>
     <div style="color:var(--green);font-size:15px;margin-bottom:24px">Your software is up to date.</div>
     <div class="card-list" style="text-align:left">
-      <div class="row"><span class="row-lbl">Version</span><span class="row-val">oOS 1.0.0</span></div>
-      <div class="row"><span class="row-lbl">Released</span><span class="row-val">2024</span></div>
-      <div class="row"><span class="row-lbl">Size</span><span class="row-val">180 KB</span></div>
+      <div class="row"><span class="row-lbl">Version</span><span class="row-val">oOS 2.0.0</span></div>
+      <div class="row"><span class="row-lbl">Released</span><span class="row-val">November 2026</span></div>
+      <div class="row"><span class="row-lbl">Size</span><span class="row-val" id="oosSize">356 KB</span></div>
+    </div>
+    <div class="card-list" style="text-align:left;padding:14px 16px">
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px">What's New in oOS 2.0</div>
+      <div style="font-size:14px;color:var(--t2);line-height:1.55">
+        • <b>Oddly Brain</b>: Messages, calls, Siri and oSafari now work for everyone, no server required. Siri can set timers, take notes, play music and look things up.<br>
+        • <b>Every setting does something.</b> Airplane Mode, volume, notifications, keyboard, Face Unlock, privacy and more now really work, and are remembered.<br>
+        • <b>oStore Companion Apps</b> for Oddly Cars, Human 1, the Plane Pressurizer, NukeMow, the Pool Cleaner and the Hair Lubricator.<br>
+        • <b>Widgets</b>: long-press the Home Screen to add Calendar, Notes, Now Playing and Timer.<br>
+        • <b>oMusic</b> now has both songs. <b>oArcade</b> adds Snake and Breakout.<br>
+        • Real Dark Mode, a working Stopwatch and Timer, and 24-hour time.<br>
+        • The 5 AM alarm is unchanged. It is a wellness feature.
+      </div>
     </div>
     <button onclick="simulateUpdate(this)" style="background:var(--blue);color:white;border:none;border-radius:14px;padding:14px 28px;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;width:100%">Check for Update</button>
   </div>
@@ -3064,7 +3080,7 @@ function completeSetup() {
   document.getElementById('homeScreen').classList.add('active');
   resetLockTimer();
   renderWidgets(); renderInstalledApps();
-  setTimeout(()=>showDI('Welcome to oOS 1.0', 3000), 600);
+  setTimeout(()=>showDI('Welcome to oOS 2.0', 3000), 600);
 }
 
 // ═══════════════════════════════════════════
@@ -3567,7 +3583,7 @@ function renderSafariPage(title, body, sponsor, related) {
   return `
     <div style="padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--sep)">
       <div style="font-size:19px;font-weight:700;margin-bottom:4px;line-height:1.3">${esc(title)}</div>
-      <div style="font-size:12px;color:var(--t3)">oSafari · Rendered by Oddly AI · oOS 1.0</div>
+      <div style="font-size:12px;color:var(--t3)">oSafari · Rendered by Oddly Brain · oOS 2.0</div>
     </div>
     <p>${bodyHtml}</p>
     ${sponsor ? `<div style="background:#fffbee;border:1.5px solid #fde68a;border-radius:12px;padding:12px 14px;margin:18px 0"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin-bottom:5px;font-weight:600">Sponsored</div><div style="font-size:14px;line-height:1.5">${esc(sponsor)}</div></div>` : ''}
@@ -4175,7 +4191,7 @@ function simulateUpdate(btn) {
   setTimeout(() => {
     btn.textContent = 'Check for Update';
     btn.disabled = false;
-    showDI('oOS 1.0 is up to date', 2500);
+    showDI('oOS 2.0 is up to date', 2500);
   }, 2000);
 }
 
@@ -4834,7 +4850,7 @@ function declineScamCall() {
 loadState();
 buildTonePicker('ringtoneList', 0, true);
 buildTonePicker('textToneList', 1, false);
-setTimeout(()=>showDI('Welcome to oOS 1.0', 3500), 2000);
+setTimeout(()=>showDI('Welcome to oOS 2.0', 3500), 2000);
 scheduleRandomMessages();
 scheduleContactFollowUps();
 scheduleScamCalls();
@@ -4917,6 +4933,370 @@ function refreshLiveWidgets() {
 setInterval(refreshLiveWidgets, 1000);
 renderWidgets();
 
+</script>
+<script>
+// ═══════════════════════════════════════════
+// oOS 2.0 — every setting does something, and remembers it
+// Each control is found by its label, wired to real behaviour,
+// and saved in localStorage ('oOS_settings').
+// ═══════════════════════════════════════════
+const SET = (() => {
+  let data = {}; try { data = JSON.parse(localStorage.getItem('oOS_settings') || '{}'); } catch (e) {}
+  return {
+    get: (k, d) => (k in data ? data[k] : d),
+    set: (k, v) => { data[k] = v; try { localStorage.setItem('oOS_settings', JSON.stringify(data)); } catch (e) {} },
+    clear: () => { data = {}; try { localStorage.removeItem('oOS_settings'); } catch (e) {} }
+  };
+})();
+let SET_INIT = true;                                    // true while restoring: no toasts, no sounds
+const quietDI = (t, d) => { if (!SET_INIT) showDI(t, d); };
+function findRow(viewId, label) {
+  const v = document.getElementById(viewId); if (!v) return null;
+  return [...v.querySelectorAll('.row')].find(r => { const l = r.querySelector('.row-lbl'); const t = (l ? l.textContent : r.textContent).replace(/\s+/g, ' ').trim(); return t.startsWith(label); }) || null;
+}
+// bind a toggle: restore its saved state, save on change, run fn(on, init)
+function bindToggle(viewId, label, key, def, fn) {
+  const row = findRow(viewId, label); const inp = row && row.querySelector('input[type=checkbox]'); if (!inp) return null;
+  inp.dataset.bound = '1';
+  inp.checked = SET.get(key, inp.hasAttribute('checked') ? true : def);
+  inp.addEventListener('change', () => { SET.set(key, inp.checked); fn && fn(inp.checked, false); });
+  fn && fn(inp.checked, true);
+  return inp;
+}
+function bindRow(viewId, label, fn) { const row = findRow(viewId, label); if (!row) return null; row.dataset.bound = '1'; row.style.cursor = 'pointer'; row.addEventListener('click', e => { if (e.target.closest('input')) return; fn(row, e); }); return row; }
+function setRowVal(row, txt) { if (!row) return; let v = row.querySelector('.row-val'); if (!v) { v = document.createElement('span'); v.className = 'row-val'; const ch = row.querySelector('.row-chev'); ch ? row.insertBefore(v, ch) : row.appendChild(v); } v.textContent = txt; }
+const S = k => SET.get(k);
+// ── state every part of oOS can ask about ──
+const NET = {
+  airplane: () => !!SET.get('airplane', false),
+  wifi: () => SET.get('wifi', true) && !NET.airplane(),
+  cell: () => SET.get('cellData', true) && !NET.airplane(),
+  online: () => NET.wifi() || NET.cell(),
+  callsOk: () => !NET.airplane() && (NET.cell() || (NET.wifi() && SET.get('wifiCalling', false)))
+};
+window.oosNet = NET.online;
+function haptic(ms) { if (SET.get('systemHaptics', true) && navigator.userActivation && navigator.userActivation.hasBeenActive) try { navigator.vibrate && navigator.vibrate(ms || 8); } catch (e) {} }
+
+// ═══════════ master volume: every sound in oOS goes through it ═══════════
+(() => {
+  const masters = new WeakMap(), orig = AudioNode.prototype.connect;
+  AudioNode.prototype.connect = function (dest, ...rest) {
+    if (dest && dest instanceof AudioDestinationNode) {
+      const ctx = dest.context; let m = masters.get(ctx);
+      if (!m) { m = ctx.createGain(); orig.call(m, dest); masters.set(ctx, m); AUDIO_MASTERS.push(m); }
+      m.gain.value = oosVolume();
+      return orig.call(this, m, ...rest);
+    }
+    return orig.call(this, dest, ...rest);
+  };
+})();
+var AUDIO_MASTERS = [];
+function oosVolume() { return SET.get('silent', false) ? 0 : SET.get('volume', 80) / 100; }
+function applyVolume() { AUDIO_MASTERS.forEach(m => { try { m.gain.value = oosVolume(); } catch (e) {} }); }
+
+// ═══════════ status bar ═══════════
+function paintStatusBar() {
+  const icons = document.querySelector('.sb-icons'); if (!icons) return;
+  const bars = icons.querySelector('.bars'); let wifiI = icons.querySelector('.sb-wifi'); if (!wifiI) { wifiI = [...icons.querySelectorAll('span')].find(x => !x.classList.contains('sb-air')); if (wifiI) wifiI.classList.add('sb-wifi'); }
+  let air = icons.querySelector('.sb-air'); if (!air) { air = document.createElement('span'); air.className = 'sb-air'; air.textContent = '✈︎'; air.style.cssText = 'font-size:14px;display:none'; icons.insertBefore(air, icons.firstChild); }
+  air.style.display = NET.airplane() ? '' : 'none';
+  if (bars) { bars.style.display = NET.airplane() ? 'none' : ''; bars.style.opacity = NET.cell() ? '1' : '.35'; }
+  if (wifiI) wifiI.style.display = NET.wifi() ? '' : 'none';
+  const fill = document.getElementById('batFill'); if (fill) fill.style.background = SET.get('lowPower', false) ? '#FFD60A' : '';
+}
+
+// ═══════════ the bindings ═══════════
+function oosBindSettings() {
+  // ---- Settings home ----
+  const air = document.getElementById('airplaneToggle');
+  if (air) {
+    air.checked = SET.get('airplane', false); airplaneMode = air.checked;
+    document.getElementById('airplaneVal').textContent = airplaneMode ? 'On' : 'Off';
+    document.getElementById('airplaneVal').style.color = airplaneMode ? 'var(--orange)' : 'var(--t3)';
+    air.addEventListener('change', () => { setTimeout(() => { SET.set('airplane', airplaneMode); syncNetworkUI(); quietDI(airplaneMode ? '✈️ Airplane Mode: no messages, calls or web' : 'Airplane Mode Off', 2200); }, 0); });
+  }
+  // ---- Wi-Fi ----
+  bindToggle('appWifi', 'Wi-Fi', 'wifi', true, (on, init) => { if (!init) { toggleWifi(on); syncNetworkUI(); } });
+  const wifiName = SET.get('wifiName', null); if (wifiName) { const a = document.getElementById('wifiConnectedName'); if (a) a.textContent = wifiName; }
+  const _cw = connectWifi; connectWifi = function (name, el) { _cw(name, el); if (document.getElementById('wifiConnectedName').textContent === name) SET.set('wifiName', name); };
+  bindRow('appWifi', 'Home_Net', () => showDI('Connected · ' + document.getElementById('wifiConnectedName').textContent + ' · 5 GHz · Oddly Router 1', 2500));
+  // ---- Bluetooth ----
+  bindToggle('appBluetooth', 'Bluetooth', 'bluetooth', true, (on, init) => { if (!init) toggleBluetooth(on); else { document.getElementById('btVal').textContent = on ? 'On' : 'Off'; document.getElementById('btVal').style.color = on ? 'var(--blue)' : 'var(--t3)'; document.getElementById('btMyDevices').style.display = on ? '' : 'none'; document.getElementById('btMyDevicesLabel').style.display = on ? '' : 'none'; } paintAudioOut(); });
+  const pods = bindRow('appBluetooth', 'Oddly Pods Pro', row => { const c = !SET.get('podsConnected', true); SET.set('podsConnected', c); paintPods(); paintAudioOut(); showDI(c ? '🎧 Oddly Pods Pro connected' : 'Oddly Pods Pro disconnected', 2000); });
+  function paintPods() { if (!pods) return; const v = pods.querySelector('.row-val') || pods.querySelector('span:not(.row-lbl)'); if (v) { v.textContent = SET.get('podsConnected', true) ? 'Connected' : 'Not Connected'; v.style.color = SET.get('podsConnected', true) ? 'var(--blue)' : 'var(--t3)'; } }
+  paintPods();
+  // ---- Cellular ----
+  bindToggle('appCellular', 'Cellular Data', 'cellData', true, (on, init) => { syncNetworkUI(); quietDI(on ? 'Cellular Data On' : 'Cellular Data Off · Wi-Fi only', 2000); });
+  bindToggle('appCellular', 'Data Roaming', 'roaming', false, on => quietDI(on ? 'Data Roaming On · You are roaming in your own home' : 'Data Roaming Off', 2400));
+  bindToggle('appCellular', 'Wi-Fi Calling', 'wifiCalling', false, on => quietDI(on ? 'Wi-Fi Calling On · calls work without cellular' : 'Wi-Fi Calling Off', 2200));
+  // ---- Notifications ----
+  bindToggle('appNotifications', 'Allow Notifications', 'notifs', true, (on, init) => { if (!init) toggleAllNotifs(on); });
+  try { const ns = JSON.parse(localStorage.getItem('oOS_notifSettings') || 'null'); if (ns) for (const k in ns) Object.assign(notifSettings[k] || (notifSettings[k] = {}), ns[k]); } catch (e) {}
+  const saveNS = () => { try { localStorage.setItem('oOS_notifSettings', JSON.stringify(notifSettings)); } catch (e) {} };
+  document.getElementById('appNotifapp').addEventListener('change', () => setTimeout(saveNS, 0));
+  document.getElementById('appNotifapp').addEventListener('click', () => setTimeout(saveNS, 0));
+  // ---- Sounds & Haptics ----
+  const vol = document.querySelector('#appSounds input[type=range]');
+  if (vol) { vol.value = SET.get('volume', 80); document.getElementById('ringerVol').textContent = vol.value; vol.addEventListener('input', () => { SET.set('volume', +vol.value); applyVolume(); }); vol.addEventListener('change', () => playTonePreview({ freqs: [880], dur: .12 })); }
+  bindToggle('appSounds', 'Change with Buttons', 'volButtons', true, on => quietDI(on ? 'Volume: use the + and − keys' : 'Volume buttons control only the ringer', 2200));
+  bindRow('appSounds', 'Alarm Tone', () => showDI('The 5 AM alarm tone cannot be configured. This is not a bug.', 3000));
+  bindToggle('appSounds', 'System Haptics', 'systemHaptics', true, on => { if (on) haptic(20); });
+  bindToggle('appSounds', 'Keyboard Feedback', 'kbHaptics', false, on => { const k = findRow('appKeyboard', 'Keyboard Haptics'); const i = k && k.querySelector('input'); if (i) i.checked = on; });
+  selectedRingtone = SET.get('ringtone', 0); selectedTextTone = SET.get('textTone', 1);
+  const rv = document.getElementById('ringtoneVal'); if (rv) rv.textContent = RINGTONES[selectedRingtone].name;
+  const tv = document.getElementById('textToneVal'); if (tv) tv.textContent = RINGTONES[selectedTextTone].name;
+  const _st = selectTone; selectTone = function (listId, idx, isR) { _st(listId, idx, isR); SET.set(listId === 'ringtoneList' ? 'ringtone' : 'textTone', idx); };
+  // ---- Display & Brightness ----
+  const br = document.querySelector('#appDisplay input[type=range]');
+  if (br) { br.value = SET.get('brightness', 75); br.addEventListener('input', () => { SET.set('brightness', +br.value); applyBrightness(); }); }
+  bindToggle('appDisplay', 'Auto-Brightness', 'autoBright', true, () => applyBrightness());
+  bindToggle('appDisplay', 'True Tone', 'trueTone', true, on => { document.body.classList.toggle('truetone', on); quietDI(on ? 'True Tone On · warmer, more honest colors' : 'True Tone Off', 2000); });
+  // ---- Battery ----
+  const lp = document.getElementById('lowPowerToggle');
+  if (lp) { lp.checked = SET.get('lowPower', false); applyLowPower(lp.checked); lp.addEventListener('change', () => { SET.set('lowPower', lp.checked); applyLowPower(lp.checked); }); }
+  // ---- General › Advanced ----
+  bindToggle('appAdvanced', 'Background App Refresh', 'bgRefresh', true, on => quietDI(on ? 'Background App Refresh On' : 'Background App Refresh Off · new messages wait until you open Messages', 2600));
+  bindToggle('appAdvanced', 'Low Data Mode', 'lowData', false, on => quietDI(on ? 'Low Data Mode On · oSafari skips ads. Oddly, Inc. is disappointed.' : 'Low Data Mode Off', 2600));
+  const restr = bindRow('appAdvanced', 'Content & Privacy Restrictions', row => {
+    const on = !SET.get('blockScams', false); SET.set('blockScams', on); setRowVal(row, on ? 'Scam calls blocked' : 'Off');
+    showDI(on ? '🛡 Restrictions On · scam calls are blocked' : 'Restrictions Off · scam calls allowed', 2600);
+  });
+  setRowVal(restr, SET.get('blockScams', false) ? 'Scam calls blocked' : 'Off');
+  // reset all settings now resets everything
+  const reset = findRow('appAdvanced', 'Reset All Settings');
+  if (reset) reset.setAttribute('onclick', "if(confirm('Reset ALL settings? Your data and messages are kept but all settings return to defaults.')){['oOS_passcode','oOS_settings','oOS_notifSettings','oOS_appearance','oOS_24h','oOS_textsize','oOS_language','oOS_localai'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});showDI('Settings reset. Passcode is now 0000.',2000);setTimeout(()=>location.reload(),1400)}");
+  // ---- Experimental: remember them ----
+  [['Predictive Everything', 'predictive', togglePredictive], ['Beta Siri Replacement', 'betaSiri', toggleSiri], ['Oddly Liquid Glass', 'liquidGlass', toggleLG]].forEach(([lbl, key, fn]) => {
+    const row = findRow('appExperimental', lbl) || [...document.querySelectorAll('#appExperimental .row')].find(r => r.textContent.includes(lbl)); const inp = row && row.querySelector('input[type=checkbox]'); if (!inp) return;
+    inp.addEventListener('change', () => SET.set(key, inp.checked));
+    if (SET.get(key, false)) { inp.checked = true; const d = showDI; showDI = () => {}; try { fn(true); } finally { showDI = d; } }
+  });
+  // ---- Keyboard ----
+  bindToggle('appKeyboard', 'Auto-Correction', 'autocorrect', true);
+  bindToggle('appKeyboard', 'Auto-Capitalization', 'autocap', true);
+  bindToggle('appKeyboard', 'Smart Punctuation', 'smartPunct', true);
+  bindToggle('appKeyboard', 'Predictive Text', 'predictText', true, () => paintSuggestions());
+  bindToggle('appKeyboard', 'Keyboard Sounds', 'kbSounds', false, on => { kbSoundsEnabled = on; });
+  bindToggle('appKeyboard', 'Keyboard Haptics', 'kbHaptics', false, on => { const k = findRow('appSounds', 'Keyboard Feedback'); const i = k && k.querySelector('input'); if (i) i.checked = on; });
+  bindRow('appKeyboard', 'Keyboards', () => showDI('Keyboards: English (US) · Emoji · Oddly (two of every key)', 2800));
+  const tr = bindRow('appKeyboard', 'Text Replacement', row => {
+    const list = textReplacements(); const cur = Object.entries(list).map(([a, b]) => `${a} → ${b}`).join('\n');
+    const add = prompt('Text Replacement\n\n' + cur + '\n\nAdd a shortcut as  shortcut = phrase  (or leave empty):', '');
+    if (add && add.includes('=')) { const [a, ...b] = add.split('='); if (a.trim() && b.join('=').trim()) { list[a.trim().toLowerCase()] = b.join('=').trim(); SET.set('textReplace', list); setRowVal(row, Object.keys(list).length + ''); showDI('Added "' + a.trim() + '"', 1800); } }
+  });
+  setRowVal(tr, Object.keys(textReplacements()).length + '');
+  // ---- Language & Region ----
+  const REG = ['United States', 'United Kingdom', 'Canada', 'Australia', 'Oddly Republic'];
+  const reg = bindRow('appLanguageregion', 'Region', row => { const i = (REG.indexOf(SET.get('region', REG[0])) + 1) % REG.length; SET.set('region', REG[i]); setRowVal(row, REG[i]); paintDates(); showDI('Region: ' + REG[i], 1800); });
+  setRowVal(reg, SET.get('region', REG[0]));
+  const cal = bindRow('appLanguageregion', 'Calendar', row => { const v = SET.get('calendar', 'Gregorian') === 'Gregorian' ? 'Oddly Fiscal' : 'Gregorian'; SET.set('calendar', v); setRowVal(row, v); paintDates(); showDI(v === 'Oddly Fiscal' ? 'Calendar: Oddly Fiscal Year 13' : 'Calendar: Gregorian', 2000); });
+  setRowVal(cal, SET.get('calendar', 'Gregorian'));
+  const temp = bindRow('appLanguageregion', 'Temperature', row => { const c = !SET.get('celsius', false); SET.set('celsius', c); setRowVal(row, c ? 'Celsius' : 'Fahrenheit'); paintTemps(); showDI('Temperature: ' + (c ? 'Celsius' : 'Fahrenheit'), 1800); });
+  setRowVal(temp, SET.get('celsius', false) ? 'Celsius' : 'Fahrenheit');
+  // ---- Privacy & Security ----
+  bindToggle('appPrivacy', 'Location Services', 'location', true, () => paintTemps());
+  bindToggle('appPrivacy', 'Camera', 'camAccess', false, () => paintCamera());
+  bindToggle('appPrivacy', 'Microphone', 'micAccess', false, on => quietDI(on ? 'Microphone access On · Oddly Siri is listening' : 'Microphone Off · Siri is typing-only', 2200));
+  bindToggle('appPrivacy', 'Contacts', 'contacts', true, on => paintContacts());
+  // ---- Face Unlock ----
+  bindToggle('appFaceunlock', 'Face Unlock', 'faceUnlock', true, on => { const r = [...document.querySelectorAll('#appPrivacy .row')].find(x => x.textContent.includes('Face Unlock')); if (r) setRowVal(r, on ? 'Enabled' : 'Off'); });
+  bindToggle('appFaceunlock', 'Unlock oPhone', 'faceForUnlock', true);
+  bindToggle('appFaceunlock', 'App Purchases', 'faceForPurchases', true);
+  // ---- Analytics ----
+  ['Share oPhone Analytics', 'Share iCloud Analytics', 'Improve Siri & Dictation', 'Share with App Developers'].forEach((l, i) => bindToggle('appAnalytics', l, 'an' + i, i !== 1, () => paintAnalytics()));
+  paintAnalytics();
+  SET_INIT = false;
+  syncNetworkUI(); applyBrightness(); paintTemps(); paintDates(); paintCamera(); paintContacts(); paintAudioOut(); applyVolume();
+}
+
+// ═══════════ effects ═══════════
+function syncNetworkUI() {
+  const wf = findRow('appWifi', 'Wi-Fi'); const wi = wf && wf.querySelector('input'); if (wi) wi.checked = SET.get('wifi', true) && !NET.airplane();
+  const name = document.getElementById('wifiName'); if (name) name.textContent = NET.wifi() ? document.getElementById('wifiConnectedName').textContent : 'Off';
+  paintStatusBar();
+}
+function applyBrightness() {
+  const ov = document.getElementById('brightnessOverlay'); if (!ov) return;
+  let b = SET.get('brightness', 75); const h = new Date().getHours();
+  if (SET.get('autoBright', true)) b = Math.min(100, b * (h >= 21 || h < 6 ? .7 : h >= 18 ? .85 : 1.1));
+  if (SET.get('lowPower', false)) b = Math.min(b, 60);
+  ov.style.background = `rgba(0,0,0,${(100 - b) / 100 * .85})`;
+}
+setInterval(applyBrightness, 60000);
+function applyLowPower(on) {
+  document.body.classList.toggle('lowpower', on); applyBrightness(); paintStatusBar();
+  if (!SET_INIT) showDI(on ? '🔋 Low Power Mode · animations paused, screen dimmer' : 'Low Power Mode Off', 2400);
+  const bar = document.getElementById('batteryBar'); if (bar) bar.style.background = on ? 'var(--orange)' : 'var(--green)';
+}
+const TEMP_ORIG = new WeakMap();
+function paintTemps() {
+  const c = SET.get('celsius', false), loc = SET.get('location', true);
+  const roots = [document.getElementById('appWeather'), document.getElementById('widgetArea')];
+  roots.forEach(root => {
+    if (!root) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+    while ((n = w.nextNode())) {
+      if (!TEMP_ORIG.has(n)) { if (!/°|San Francisco|\bSF\b/.test(n.nodeValue)) continue; TEMP_ORIG.set(n, n.nodeValue); }
+      let t = TEMP_ORIG.get(n);
+      if (c) t = t.replace(/(-?\d+)°/g, (_, f) => Math.round((f - 32) * 5 / 9) + '°');
+      if (!loc) t = t.replace(/San Francisco/g, 'Location Off').replace(/\bSF\b/g, 'Location Off');
+      if (n.nodeValue !== t) n.nodeValue = t;
+    }
+  });
+}
+function paintDates() {
+  const reg = SET.get('region', 'United States'), fiscal = SET.get('calendar', 'Gregorian') !== 'Gregorian', d = new Date();
+  let txt;
+  if (fiscal) { const start = new Date(d.getFullYear(), 0, 0), day = Math.floor((d - start) / 864e5); txt = `${d.toLocaleDateString('en-US', { weekday: 'long' })}, Day ${day} of Fiscal Year 13`; }
+  else if (reg === 'United States' || reg === 'Canada') return;
+  else if (reg === 'Oddly Republic') txt = `${d.toLocaleDateString('en-US', { weekday: 'long' })} the ${d.getDate()}th, ${d.toLocaleDateString('en-US', { month: 'long' })}, probably`;
+  else txt = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  ['lockDate', 'clockSub'].forEach(id => { const el = document.getElementById(id); if (el && el.textContent !== txt) el.textContent = txt; });
+}
+setInterval(paintDates, 1000);
+function paintCamera() {
+  const v = document.getElementById('appCamera'); if (!v) return; const d = v.querySelector('.ph-desc'); if (!d) return;
+  d.textContent = SET.get('camAccess', false) ? 'Camera access granted. Hardware still not found. Coming in oPhone 1s Pro.' : 'Camera access is off in Privacy & Security. Also, hardware not found.';
+}
+function paintContacts() {
+  const hint = document.getElementById('newConvHint'); if (!hint) return;
+  hint.style.opacity = SET.get('contacts', true) ? '' : '.45';
+  const t = hint.querySelector('div:last-child'); if (t && !t.dataset.orig) t.dataset.orig = t.textContent;
+  if (t) t.textContent = SET.get('contacts', true) ? t.dataset.orig : 'Contacts access is off in Privacy & Security. Universal Contact Search is disabled. Enter a phone number instead.';
+}
+function paintAudioOut() {
+  const a = document.getElementById('muArtist'); if (!a) return;
+  let o = document.getElementById('muOut'); if (!o) { o = document.createElement('div'); o.id = 'muOut'; o.style.cssText = 'font-size:13px;color:var(--t3);margin-top:4px'; a.after(o); }
+  const pods = SET.get('bluetooth', true) && SET.get('podsConnected', true);
+  o.textContent = (pods ? '🎧 Playing on Oddly Pods Pro' : '🔈 Playing on oPhone speaker') + ' · Volume ' + Math.round(oosVolume() * 100) + '%';
+}
+let analyticsCount = 0;
+function paintAnalytics() {
+  const v = document.getElementById('appAnalytics'); if (!v) return;
+  let c = document.getElementById('anCount'); if (!c) { c = document.createElement('div'); c.id = 'anCount'; c.className = 'card-list'; c.innerHTML = '<div class="row"><span class="row-lbl">Data points shared today</span><span class="row-val" id="anCountV">0</span></div>'; v.querySelector('.app-body').appendChild(c); }
+}
+setInterval(() => { const on = [0, 1, 2, 3].filter(i => SET.get('an' + i, i !== 1)).length; analyticsCount += on * (1 + Math.floor(Math.random() * 3)); const el = document.getElementById('anCountV'); if (el) el.textContent = on ? analyticsCount.toLocaleString('en-US') : '0 · sharing is off'; }, 1000);
+function textReplacements() { return SET.get('textReplace', { omw: 'On my way!', brb: 'be right back', ffs: 'Front-Front, sir', '5am': 'the 5 AM wellness feature' }); }
+
+// ═══════════ keyboard features in Messages ═══════════
+const AUTOCORRECT = { teh: 'the', dont: "don't", cant: "can't", wont: "won't", im: "I'm", ive: "I've", id: "I'd", ill: "I'll", youre: "you're", thats: "that's", whats: "what's", didnt: "didn't", doesnt: "doesn't", isnt: "isn't", wasnt: "wasn't", couldnt: "couldn't", shouldnt: "shouldn't", wouldnt: "wouldn't", recieve: 'receive', definately: 'definitely', alot: 'a lot', becuase: 'because', wierd: 'weird', tommorow: 'tomorrow', tomorow: 'tomorrow', freind: 'friend', seperate: 'separate', occured: 'occurred', untill: 'until', i: 'I' };
+function polishText(t) {
+  const rep = textReplacements();
+  t = t.replace(/\b[\w']+\b/g, w => rep[w.toLowerCase()] || w);
+  if (SET.get('autocorrect', true)) t = t.replace(/\b[\w']+\b/g, w => { const r = AUTOCORRECT[w.toLowerCase()]; return r ? (w[0] === w[0].toUpperCase() && w.length > 1 ? r[0].toUpperCase() + r.slice(1) : r) : w; });
+  if (SET.get('smartPunct', true)) t = t.replace(/--/g, '—').replace(/(^|[\s(])"/g, '$1“').replace(/"/g, '”').replace(/(^|[\s(])'/g, '$1‘').replace(/'/g, '’').replace(/\.\.\./g, '…');
+  if (SET.get('autocap', true)) t = t.replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, a, b) => a + b.toUpperCase());
+  return t;
+}
+const SUGGEST = { '': ['Hey', 'I', 'Are'], hey: ['what\'s', 'how', '!'], how: ['are', 'was', 'about'], are: ['you', 'we', 'they'], you: ['free', 'up', 'there'], what: ['are', 'time', 'happened'], i: ['think', 'am', 'just'], want: ['to', 'coffee', 'tacos'], to: ['get', 'go', 'the'], see: ['you', 'it', 'that'], on: ['my', 'the', 'Friday'], my: ['way', 'car', 'alarm'], the: ['Front-Front', 'game', 'alarm'], at: ['5', 'noon', '7'], love: ['you', 'it', 'that'], thank: ['you', 'u', 'goodness'], good: ['morning', 'night', 'luck'] };
+function paintSuggestions() {
+  const bar = document.querySelector('.chat-input-bar'), inp = document.getElementById('chatInput'); if (!bar || !inp) return;
+  let sg = document.getElementById('kbSuggest');
+  if (!sg) { sg = document.createElement('div'); sg.id = 'kbSuggest'; sg.style.cssText = 'display:flex;gap:6px;padding:6px 12px 0;background:inherit'; bar.parentNode.insertBefore(sg, bar); inp.addEventListener('input', paintSuggestions); }
+  if (!SET.get('predictText', true)) { sg.style.display = 'none'; return; }
+  sg.style.display = 'flex';
+  const words = inp.value.trim().toLowerCase().split(/\s+/), last = inp.value.endsWith(' ') || !inp.value ? (words.slice(-1)[0] || '') : (words.slice(-2, -1)[0] || '');
+  const opts = SUGGEST[last.replace(/[^a-z']/g, '')] || ['the', 'and', 'lol'];
+  sg.innerHTML = opts.map(o => `<button type="button" style="flex:1;border:none;border-radius:10px;padding:7px 4px;background:var(--card);color:var(--t1);font-size:14px;cursor:pointer">${escHTML(o)}</button>`).join('');
+  sg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { const v = inp.value; inp.value = (v && !v.endsWith(' ') ? v.replace(/\S+$/, '') : v) + b.textContent + ' '; inp.focus(); paintSuggestions(); }));
+}
+document.addEventListener('keydown', e => {
+  const typing = e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName) && e.target.offsetParent !== null && e.target.type !== 'range' && e.target.type !== 'checkbox';
+  if (typing && SET.get('kbHaptics', false)) haptic(6);
+  if (!typing && SET.get('volButtons', true) && ['+', '=', '-', '_', 'AudioVolumeUp', 'AudioVolumeDown'].includes(e.key)) {
+    const v = Math.max(0, Math.min(100, SET.get('volume', 80) + (/[+=]|Up/.test(e.key) ? 10 : -10)));
+    SET.set('volume', v); applyVolume(); const s = document.querySelector('#appSounds input[type=range]'); if (s) { s.value = v; document.getElementById('ringerVol').textContent = v; }
+    showDI((v ? '🔊' : '🔇') + ' Volume ' + v + '%', 1000); paintAudioOut();
+  }
+});
+document.addEventListener('change', e => { if (e.target.classList && e.target.classList.contains('ios-toggle')) haptic(10); }, true);
+
+// ═══════════ wrap oOS behaviour so the settings take effect ═══════════
+const _sendMessage = sendMessage;
+sendMessage = async function () {
+  const inp = document.getElementById('chatInput');
+  if (inp && inp.value.trim()) inp.value = polishText(inp.value.trim());
+  if (!NET.online()) {
+    const text = inp.value.trim(); const conv = conversations.find(c => c.id === activeConvId); if (!text || !conv) return;
+    conv.messages.push({ from: 'me', text: text + '  ⚠️ Not Delivered', time: nowTime() }); inp.value = ''; renderChat(); refreshMessagesList(); saveState();
+    showDI(NET.airplane() ? '✈️ Not Delivered · Airplane Mode is on' : 'Not Delivered · no Wi-Fi or cellular data', 2600); return;
+  }
+  const r = _sendMessage.apply(this, arguments); setTimeout(paintSuggestions, 0); return r;
+};
+const _initiateCall = initiateCall;
+initiateCall = function () {
+  if (!NET.callsOk()) { showDI(NET.airplane() ? '✈️ Call Failed · Airplane Mode is on' : 'Call Failed · turn on Cellular Data or Wi-Fi Calling', 2800); return; }
+  const r = _initiateCall.apply(this, arguments);
+  if (!NET.cell() && NET.wifi()) setTimeout(() => { const s = document.getElementById('callStatus'); if (s && !/Wi-Fi/.test(s.textContent)) s.textContent = 'Wi-Fi Call · ' + s.textContent; }, 1600);
+  return r;
+};
+const _deliverRandomMessage = deliverRandomMessage;
+deliverRandomMessage = function (sender) {
+  if (NET.airplane() || !NET.online()) return;
+  const inMessages = /appMessages|conversationView/.test((document.querySelector('.view.active') || {}).id || '');
+  if (!SET.get('bgRefresh', true) && !inMessages) return;
+  return _deliverRandomMessage.apply(this, arguments);
+};
+const _showMessageNotification = showMessageNotification;
+showMessageNotification = function (sender, text, convId) {
+  const ns = notifSettings.messages || {};
+  if (!SET.get('notifs', true) || ns.allow === false) return;
+  const r = _showMessageNotification.apply(this, arguments);
+  if (ns.sounds !== false) { try { ensureAudio(); playTonePreview(RINGTONES[selectedTextTone]); } catch (e) {} }
+  return r;
+};
+const _playNotifSound = playNotifSound;
+playNotifSound = function () { if (!SET.get('notifs', true)) return; return _playNotifSound.apply(this, arguments); };
+const _triggerIncomingScamCall = triggerIncomingScamCall;
+triggerIncomingScamCall = function (scenario) {
+  if (NET.airplane() || !NET.callsOk()) return;
+  if (SET.get('blockScams', false)) { if (SET.get('notifs', true)) showDI('🛡 Blocked a scam call from ' + scenario.callerId, 2600); return; }
+  const r = _triggerIncomingScamCall.apply(this, arguments);
+  try { ensureAudio(); const tone = RINGTONES[selectedRingtone]; playTonePreview(tone); setTimeout(() => playTonePreview(tone), 1400); } catch (e) {}
+  return r;
+};
+// Face Unlock on the lock screen
+const _showPasscode = showPasscode;
+showPasscode = function () {
+  if (!(SET.get('faceUnlock', true) && SET.get('faceForUnlock', true))) return _showPasscode.apply(this, arguments);
+  const lock = document.getElementById('lockScreen'); let fs = document.getElementById('faceScanLock');
+  if (!fs) { fs = document.createElement('div'); fs.id = 'faceScanLock'; fs.style.cssText = 'position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;font-size:15px;z-index:20;pointer-events:none'; fs.innerHTML = '<div style="font-size:46px">🙂</div><div id="faceScanTxt">Scanning…</div>'; lock.appendChild(fs); }
+  fs.style.display = 'flex'; document.getElementById('faceScanTxt').textContent = 'Scanning…';
+  setTimeout(() => {
+    if (Math.random() < .12) { document.getElementById('faceScanTxt').textContent = 'Face not recognized. Did you get a haircut?'; setTimeout(() => { fs.style.display = 'none'; _showPasscode(); }, 1100); return; }
+    fs.style.display = 'none'; lock.classList.remove('active'); document.getElementById('homeScreen').classList.add('active');
+    try { resetLockTimer(); renderWidgets(); renderInstalledApps(); inkStatusBar(); } catch (e) {}
+  }, 750);
+};
+// App Purchases need Face Unlock or the passcode
+const _storeInstall = storeInstall;
+storeInstall = function (btn, name) {
+  if (btn.dataset.state !== 'get') return _storeInstall.apply(this, arguments);
+  if (SET.get('faceUnlock', true) && SET.get('faceForPurchases', true)) { showDI('🙂 Face Unlock · approved', 1200); return _storeInstall.apply(this, arguments); }
+  const p = prompt('Enter your passcode to get ' + name + ':'); if (p === null) return;
+  if (p !== PASSCODE) { showDI('Incorrect passcode', 1800); return; }
+  return _storeInstall.apply(this, arguments);
+};
+// Low Data Mode: oSafari pages arrive without the ad
+const _parseSafari = parseSafariResponse;
+parseSafariResponse = function (text) { if (SET.get('lowData', false)) text = text.split('\n').filter(l => !/^ODDLY CARS AD:/i.test(l)).join('\n'); return _parseSafari.call(this, text); };
+// Microphone setting shows up in Siri
+const _openSiri = openSiri;
+openSiri = function () { const r = _openSiri.apply(this, arguments); setTimeout(() => { const s = document.getElementById('siriStatus'); if (s && !SET.get('micAccess', false)) s.textContent = 'Microphone is off · type your question'; }, 50); return r; };
+// keep the derived screens fresh whenever a view opens
+const _switchView = switchView;
+switchView = function (id) {
+  const r = _switchView.apply(this, arguments);
+  if (id === 'appWeather' || id === 'homeScreen') paintTemps();
+  if (id === 'appMusic') paintAudioOut();
+  if (id === 'conversationView') paintSuggestions();
+  if (id === 'newConvView') paintContacts();
+  return r;
+};
+const _renderWidgets = renderWidgets;
+renderWidgets = function () { const r = _renderWidgets.apply(this, arguments); paintTemps(); return r; };
+
+oosBindSettings();
 </script>
 </body>
 </html>
