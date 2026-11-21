@@ -106,6 +106,21 @@
   .price b{font-family:'Fraunces',serif;font-size:26px}
   .price small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)}
 
+  /* not for sale + fleet counter */
+  .nfs{margin-top:16px;border:1px dashed var(--amber);border-radius:12px;padding:12px 14px;background:rgba(245,166,35,.06)}
+  .nfs-tag{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+  .nfs p{color:var(--dim);font-size:13px;margin:6px 0 0}
+  .nfs p b{color:var(--text);font-weight:600}
+  .fleetctr{margin-top:12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .fc-head{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .fc-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 1.4s infinite}
+  .fc-num{font-size:34px;font-weight:600;font-variant-numeric:tabular-nums;margin:4px 0 2px;transition:color .25s}
+  .fc-num.up{color:var(--cyan)}
+  .fc-num.down{color:var(--red)}
+  .fc-stats{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--dim)}
+  .fc-stats b{color:var(--text);font-weight:600}
+  .fc-log{font-size:12px;color:var(--dim);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);min-height:36px}
+
   /* autonomous */
   .auto{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start;margin-top:10px}
   @media(max-width:900px){.auto{grid-template-columns:1fr}}
@@ -317,7 +332,16 @@
         <li><span>Guarantee</span><span>Movement</span></li>
         <li><span>Returns</span><span>It has already left</span></li>
       </ul>
-      <div class="price"><b>$64,000</b><small>destination included</small></div>
+      <div class="nfs">
+        <div class="nfs-tag">Not Available for Customer Purchase</div>
+        <p>Oddly Autonomous&trade; 1.0 is fleet-only. <b>Oddly Autonomous&trade; 2.0 will be available for customer purchase.</b> When is being decided by Oddly Autonomous&trade;.</p>
+      </div>
+      <div class="fleetctr" aria-live="off">
+        <div class="fc-head"><span class="fc-dot"></span>International Fleet Counter</div>
+        <div class="fc-num mono" id="fcNum">48,213</div>
+        <div class="fc-stats mono"><span>Produced today <b id="fcMade">0</b></span><span>Lakes entered <b id="fcLake">0</b></span></div>
+        <div class="fc-log" id="fcLog">Counting. The count is approximate. The cars are not.</div>
+      </div>
     </article>
   </div>
 </div></section>
@@ -447,6 +471,34 @@
     ff:'The Front-Front. Two complete front ends. Rear visibility has been removed, because there is no rear.',
     bb:'The Back-Back. Two complete back ends. To drive forward, simply reverse. To reverse, also reverse.'
   };
+  // International Fleet Counter: production adds cars, lakes remove them
+  (function(){
+    var num=document.getElementById('fcNum'),made=document.getElementById('fcMade'),lake=document.getElementById('fcLake'),log=document.getElementById('fcLog');
+    var fleet=48213,nMade=0,nLake=0,flashT=0;
+    var PLANTS=['Detroit','Stuttgart','Nagoya','Monterrey','Oddly Proving Grounds','a plant we are not disclosing'];
+    var LAKES=['Lake Michigan','Lake Geneva','Lake Titicaca','Loch Ness','a duck pond','Lake Superior','a lake it selected with 100% confidence','Lake Erie','the reflecting pool'];
+    function pick(a){return a[Math.floor(Math.random()*a.length)];}
+    function show(dir,msg){
+      num.textContent=fleet.toLocaleString('en-US');
+      made.textContent=nMade.toLocaleString('en-US');lake.textContent=nLake.toLocaleString('en-US');
+      log.textContent=msg;
+      num.classList.remove('up','down');num.classList.add(dir);
+      clearTimeout(flashT);flashT=setTimeout(function(){num.classList.remove('up','down');},700);
+    }
+    function produce(){
+      var n=1+Math.floor(Math.random()*4);fleet+=n;nMade+=n;
+      show('up','+'+n+' produced in '+pick(PLANTS)+'. Each was ready before it was finished.');
+      setTimeout(produce,2200+Math.random()*2600);
+    }
+    function sink(){
+      var n=1+Math.floor(Math.random()*3);fleet-=n;nLake+=n;
+      show('down','\u2212'+n+' drove into '+pick(LAKES)+'. Destination reached.');
+      setTimeout(sink,2600+Math.random()*3000);
+    }
+    num.textContent=fleet.toLocaleString('en-US');
+    setTimeout(produce,1500);setTimeout(sink,3200);
+  })();
+
   var LEADS=['Undetermined','Left','Right','Both','Pending','Undetermined'];
   stage.querySelectorAll('[data-mode]').forEach(function(b){
     b.addEventListener('click',function(){
