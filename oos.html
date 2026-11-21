@@ -543,6 +543,78 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
   80%{transform:translate(2px,-1px) rotate(.2deg)}
 }
 .lg-shake { animation:lgBigShake .45s ease-in-out !important; }
+
+/* ══════════ oOS 1.1 ══════════ */
+/* status bar adapts to light apps */
+.sb.ink { filter:invert(1) hue-rotate(180deg); }
+/* real dark mode */
+body.dark { --bg:#000; --card:#1C1C1E; --t1:#fff; --t2:rgba(235,235,245,.6); --t3:#8E8E93; --sep:rgba(84,84,88,.55); }
+body.dark .app-nav { background:rgba(22,22,24,.92); }
+body.dark .clock-big, body.dark [style*="color:#000"] { color:#fff !important; }
+body.dark [style*="background:#F2F2F7"], body.dark [style*="background:#f2f2f7"], body.dark [style*="background:white"], body.dark [style*="background:#fff;"] { background:#2C2C2E !important; }
+body.dark .row-chev { color:#5a5a5e; }
+body.dark .ios-toggle:not(:checked) { background:#39393d; }
+body.dark .placeholder .ph-title { color:#fff; }
+body.dark .settings-name, body.dark .store-name, body.dark .note-name, body.dark .mu-title { color:#fff; }
+#installedSection { margin-top:22px; }
+body.dark .app-chrome { color:var(--t1); }
+/* clock: stopwatch + timer */
+.clock-big small { font-size:28px; letter-spacing:0; margin-left:6px; font-weight:300; color:var(--t3); }
+.sw-face { font-size:52px; font-weight:200; letter-spacing:-2px; text-align:center; padding:18px 0 10px; color:var(--t1); font-variant-numeric:tabular-nums; }
+.sw-btns { display:flex; justify-content:space-between; padding:0 18px 16px; }
+.sw-btn { width:78px; height:78px; border-radius:50%; border:none; font-size:16px; font-weight:600; cursor:pointer; box-shadow:0 0 0 2px var(--card), 0 0 0 4px rgba(128,128,128,.25); }
+.sw-btn.go { background:rgba(48,209,88,.2); color:var(--green); }
+.sw-btn.stop { background:rgba(255,69,58,.2); color:var(--red); }
+.sw-btn.gray { background:rgba(128,128,128,.18); color:var(--t1); }
+.sw-btn:disabled { opacity:.45; cursor:default; }
+.laps .row { font-variant-numeric:tabular-nums; }
+.laps .best .row-val { color:var(--green); } .laps .worst .row-val { color:var(--red); }
+.tm-pick { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding:14px 12px 4px; }
+.tm-pick button { border:none; border-radius:20px; padding:8px 14px; background:rgba(128,128,128,.15); color:var(--t1); font-size:15px; cursor:pointer; }
+.tm-pick button.on { background:var(--orange); color:#fff; }
+.tm-ring { width:180px; height:180px; margin:8px auto 4px; position:relative; }
+.tm-ring svg { width:180px; height:180px; transform:rotate(-90deg); }
+.tm-ring .tm-t { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:38px; font-weight:200; color:var(--t1); font-variant-numeric:tabular-nums; }
+/* web apps (companion apps installed from the oStore) */
+#appWeb { background:#05060d; }
+#appWeb iframe { position:absolute; left:0; right:0; top:50px; bottom:24px; width:100%; height:calc(100% - 74px); border:0; background:#080A14; }
+#appWeb .home-ind { position:absolute; left:0; right:0; bottom:0; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5; background:none; border:none; }
+#appWeb .home-ind i { width:134px; height:5px; border-radius:3px; background:rgba(255,255,255,.75); }
+#appWeb .web-load { position:absolute; inset:50px 0 24px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:#fff; font-size:15px; pointer-events:none; transition:opacity .3s; }
+#appWeb .web-load .ico { width:84px; height:84px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px; box-shadow:0 10px 30px rgba(0,0,0,.4); }
+/* oStore */
+.store-seg { display:flex; gap:8px; overflow-x:auto; margin:0 0 14px; scrollbar-width:none; }
+.store-seg::-webkit-scrollbar { display:none; }
+.store-seg button { flex:none; border:none; border-radius:16px; padding:7px 14px; background:var(--card); color:var(--t1); font-size:14px; font-weight:600; cursor:pointer; }
+.store-seg button.on { background:var(--purple); color:#fff; }
+.store-desc { font-size:13px; color:var(--t3); margin-top:3px; line-height:1.35; }
+.store-badge-new { display:inline-block; font-size:10px; font-weight:700; color:#fff; background:var(--purple); border-radius:6px; padding:1px 6px; margin-left:6px; vertical-align:2px; }
+/* oMusic */
+#appMusic .app-body { display:flex; flex-direction:column; }
+.mu-art { width:100%; max-width:300px; aspect-ratio:1; margin:6px auto 18px; border-radius:22px; position:relative; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,.3); transition:transform .4s; }
+.mu-art.paused { transform:scale(.92); }
+.mu-art canvas { width:100%; height:100%; display:block; }
+.mu-title { font-size:22px; font-weight:700; color:var(--t1); }
+.mu-artist { font-size:17px; color:var(--t3); margin-top:2px; }
+.mu-bar { height:6px; border-radius:3px; background:rgba(128,128,128,.25); margin:18px 0 6px; overflow:hidden; cursor:pointer; }
+.mu-bar i { display:block; height:100%; width:0; background:var(--t1); border-radius:3px; }
+.mu-times { display:flex; justify-content:space-between; font-size:12px; color:var(--t3); font-variant-numeric:tabular-nums; }
+.mu-ctrl { display:flex; justify-content:space-around; align-items:center; margin:16px 0 10px; }
+.mu-ctrl button { background:none; border:none; color:var(--t1); font-size:30px; cursor:pointer; width:64px; height:64px; border-radius:50%; }
+.mu-ctrl .mu-play { font-size:44px; }
+.mu-list .row { cursor:pointer; }
+.mu-list .row.on .row-lbl { color:var(--purple); font-weight:600; }
+/* oArcade */
+.arc-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.arc-tabs button { border:none; border-radius:12px; padding:10px 4px; background:var(--card); color:var(--t1); font-size:14px; font-weight:600; cursor:pointer; }
+.arc-tabs button.on { background:#FF375F; color:#fff; }
+#arcadeCanvas { position:relative; touch-action:none; }
+#arcadeCanvas canvas { display:block; width:100%; height:100%; }
+.arc-over { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-align:center; background:rgba(0,0,0,.55); cursor:pointer; }
+.arc-over b { font-size:20px; } .arc-over span { font-size:13px; opacity:.75; margin-top:6px; }
+.arc-pad { display:grid; grid-template-columns:repeat(3,56px); grid-template-rows:repeat(2,48px); gap:6px; justify-content:center; margin:4px 0 12px; }
+.arc-pad button { border:none; border-radius:12px; background:var(--card); color:var(--t1); font-size:20px; cursor:pointer; }
+.arc-pad button:active { background:rgba(255,55,95,.25); }
 </style>
 </head>
 <body>
@@ -746,14 +818,22 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
     <div class="clock-hero"><div class="clock-big" id="clockBig">12:00:00</div><div class="clock-sub" id="clockSub">Saturday, June 27</div></div>
     <p class="sec-label">World Clock</p>
     <div class="card-list">
-      <div class="row"><div style="flex:1"><div style="font-size:17px">New York</div><div style="font-size:13px;color:var(--t3)">UTC−5</div></div><div id="nyTime" style="font-size:22px;font-weight:200;color:var(--t3)">--:--</div></div>
-      <div class="row"><div style="flex:1"><div style="font-size:17px">London</div><div style="font-size:13px;color:var(--t3)">UTC+1</div></div><div id="londonTime" style="font-size:22px;font-weight:200;color:var(--t3)">--:--</div></div>
-      <div class="row"><div style="flex:1"><div style="font-size:17px">Tokyo</div><div style="font-size:13px;color:var(--t3)">UTC+9</div></div><div id="tokyoTime" style="font-size:22px;font-weight:200;color:var(--t3)">--:--</div></div>
+      <div class="row"><div style="flex:1"><div style="font-size:17px">New York</div><div style="font-size:13px;color:var(--t3)" id="nyOff">UTC−5</div></div><div id="nyTime" style="font-size:22px;font-weight:200;color:var(--t3)">--:--</div></div>
+      <div class="row"><div style="flex:1"><div style="font-size:17px">London</div><div style="font-size:13px;color:var(--t3)" id="londonOff">UTC+0</div></div><div id="londonTime" style="font-size:22px;font-weight:200;color:var(--t3)">--:--</div></div>
+      <div class="row"><div style="flex:1"><div style="font-size:17px">Tokyo</div><div style="font-size:13px;color:var(--t3)" id="tokyoOff">UTC+9</div></div><div id="tokyoTime" style="font-size:22px;font-weight:200;color:var(--t3)">--:--</div></div>
     </div>
     <p class="sec-label">Stopwatch</p>
-    <div class="card-list"><div class="row"><span class="row-lbl">No active stopwatch</span><span style="color:var(--blue);font-size:22px">▷</span></div></div>
+    <div class="card-list">
+      <div class="sw-face" id="swFace">00:00.00</div>
+      <div class="sw-btns"><button class="sw-btn gray" id="swLap" onclick="swLapReset()" disabled>Lap</button><button class="sw-btn go" id="swGo" onclick="swToggle()">Start</button></div>
+      <div class="laps" id="swLaps" style="display:none"></div>
+    </div>
     <p class="sec-label">Timer</p>
-    <div class="card-list"><div class="row"><span class="row-lbl">No timer set</span><span style="color:var(--blue);font-size:22px">+</span></div></div>
+    <div class="card-list">
+      <div class="tm-pick" id="tmPick"><button onclick="tmPick(1,this)">1 min</button><button onclick="tmPick(3,this)">3 min</button><button class="on" onclick="tmPick(5,this)">5 min</button><button onclick="tmPick(10,this)">10 min</button><button onclick="tmPick(25,this)">25 min</button></div>
+      <div class="tm-ring"><svg viewBox="0 0 180 180"><circle cx="90" cy="90" r="80" fill="none" stroke="rgba(128,128,128,.2)" stroke-width="8"/><circle id="tmArc" cx="90" cy="90" r="80" fill="none" stroke="var(--orange)" stroke-width="8" stroke-linecap="round" stroke-dasharray="502.65 502.65"/></svg><div class="tm-t" id="tmT">5:00</div></div>
+      <div class="sw-btns"><button class="sw-btn gray" id="tmCancel" onclick="tmCancel()" disabled>Cancel</button><button class="sw-btn go" id="tmGo" onclick="tmToggle()">Start</button></div>
+    </div>
   </div>
 </div>
 
@@ -910,7 +990,9 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
 <div class="view app-chrome" id="appStore">
   <div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">oStore</div></div>
   <div class="app-body">
-    <div class="store-hero"><div class="store-hero-lbl">Featured</div><div class="store-hero-name">Oddly Navigation</div><div class="store-hero-desc">Find an Oddly Cars dealership, probably.</div></div>
+    <div class="store-hero" style="background:linear-gradient(135deg,#FFD23F,#E9B949 40%,#7B4FFF);cursor:pointer" onclick="document.getElementById('storeCompanion').scrollIntoView({behavior:'smooth'})"><div class="store-hero-lbl">New in the oStore</div><div class="store-hero-name">Oddly Companion Apps</div><div class="store-hero-desc">Control your Oddly products from your oPhone. Six apps. Certification: Pending.</div></div>
+    <p class="sec-label" id="storeCompanion">Oddly Companion Apps</p>
+    <div class="card-list" id="storeCompanionList"></div>
     <p class="sec-label">Top Charts</p>
     <div class="card-list" id="storeList"></div>
   </div>
@@ -965,7 +1047,8 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
           <div style="font-size:17px;font-weight:500">llama-cpp-python</div>
           <button id="serverPingBtn" onclick="pingServer()" style="background:var(--blue);color:white;border:none;border-radius:10px;padding:7px 14px;font-size:14px;font-weight:600;cursor:pointer">Check Status</button>
         </div>
-        <div id="serverStatus" style="font-size:13px;color:var(--t3)">Tap "Check Status" to verify the server is running.</div>
+        <label style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font-size:15px">Use local server<br><span style="font-size:12px;color:var(--t3)">Off: oOS uses the built-in Oddly Brain.</span></span><input type="checkbox" class="ios-toggle" id="localAiToggle" onchange="oosSet('oOS_localai',this.checked?'1':'0');showDI(this.checked?'Using local AI server':'Using built-in Oddly Brain',2000)"></label>
+        <div id="serverStatus" style="font-size:13px;color:var(--t3)">Messages, Siri, oSafari and calls run on the built-in Oddly Brain. Developers can connect a llama-cpp server instead.</div>
         <div style="background:#F2F2F7;border-radius:10px;padding:10px 12px;font-size:12px;font-family:monospace;color:var(--t2);line-height:1.8">
           python -m llama_cpp.server<br>--model ./models/your-model.gguf
         </div>
@@ -1060,10 +1143,28 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
   </div>
 </div>
 
+<!-- ══════════════ WEB APPS (oStore companion apps) ══════════════ -->
+<div class="view" id="appWeb">
+  <iframe id="webFrame" title="Oddly companion app" allow="autoplay"></iframe>
+  <div class="web-load" id="webLoad"><div class="ico"></div><div class="nm"></div></div>
+  <button class="home-ind" onclick="closeApp()" aria-label="Go to Home Screen"><i></i></button>
+</div>
+
 <!-- ══════════════ PLACEHOLDER APPS ══════════════ -->
 <div class="view app-chrome" id="appCamera"><div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">Camera</div></div><div class="placeholder"><div class="ph-icon">📷</div><div class="ph-title">Camera</div><div class="ph-desc">Hardware not found. Coming in oPhone 1s Pro.</div></div></div>
 <div class="view app-chrome" id="appMaps"><div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">Maps</div></div><div class="placeholder"><div class="ph-icon">🗺️</div><div class="ph-title">Oddly Maps</div><div class="ph-desc">GPS module pending FCC approval since 2023.</div></div></div>
-<div class="view app-chrome" id="appMusic"><div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">oMusic</div></div><div class="placeholder"><div class="ph-icon">🎵</div><div class="ph-title">oMusic</div><div class="ph-desc">Subscribe to oMusic Plus for both songs in the catalog.</div></div></div>
+<div class="view app-chrome" id="appMusic"><div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">oMusic</div><div style="width:70px"></div></div>
+  <div class="app-body">
+    <div class="mu-art paused" id="muArt"><canvas id="muCanvas"></canvas></div>
+    <div class="mu-title" id="muTitle">Both Fronts</div><div class="mu-artist" id="muArtist">Stephen Stubborn &amp; the Front-Fronts</div>
+    <div class="mu-bar" id="muSeek" role="slider" aria-label="Seek"><i id="muBar"></i></div>
+    <div class="mu-times"><span id="muT0">0:00</span><span id="muT1">−0:00</span></div>
+    <div class="mu-ctrl"><button onclick="MUSIC.prev()" aria-label="Previous">⏮</button><button class="mu-play" id="muPlay" onclick="MUSIC.toggle()" aria-label="Play">▶</button><button onclick="MUSIC.next()" aria-label="Next">⏭</button></div>
+    <p class="sec-label">The Catalog · 2 Songs</p>
+    <div class="card-list mu-list"><div class="row on" onclick="MUSIC.load(0,true)"><span class="row-lbl">Both Fronts</span><span class="row-val">1:09</span></div><div class="row" onclick="MUSIC.load(1,true)"><span class="row-lbl">5 AM (Wellness Mix)</span><span class="row-val">1:10</span></div></div>
+    <p style="font-size:13px;color:var(--t3);text-align:center;margin-top:4px">oMusic Plus: both songs, ad-free. Shuffle plays the other one.</p>
+  </div>
+</div>
 <div class="view app-chrome" id="appPhone">
   <div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">Phone</div><div style="width:70px"></div></div>
   <!-- Recent calls -->
@@ -1418,7 +1519,7 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
   <div class="app-body">
     <div class="card-list">
       <div class="row"><span class="row-lbl">Set Automatically</span><label class="toggle-wrap"><input type="checkbox" class="ios-toggle" checked onchange="showDI('Time is controlled by Oddly Network',2500)"></label></div>
-      <div class="row"><span class="row-lbl">24-Hour Time</span><label class="toggle-wrap"><input type="checkbox" class="ios-toggle"></label></div>
+      <div class="row"><span class="row-lbl">24-Hour Time</span><label class="toggle-wrap"><input type="checkbox" class="ios-toggle" id="toggle24" onchange="set24h(this.checked)"></label></div>
     </div>
     <div class="card-list" style="text-align:center;padding:20px">
       <div style="font-size:48px;font-weight:200;color:#000" id="dtClockDisplay">--:--</div>
@@ -1540,13 +1641,10 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
       <div style="font-size:18px;font-weight:700">oArcade</div>
       <div style="font-size:13px;opacity:.8;margin-top:2px">Unlimited gaming, oddly</div>
     </div>
-    <div id="arcadeCanvas" style="background:#000;border-radius:16px;margin-bottom:12px;overflow:hidden;aspect-ratio:1.5;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="startPong(this)">
-      <div style="text-align:center;color:white"><div style="font-size:32px;margin-bottom:8px">🏓</div><div style="font-size:16px;font-weight:600">Oddly Pong</div><div style="font-size:13px;opacity:.7;margin-top:4px">Tap to play</div></div>
-    </div>
-    <div class="card-list">
-      <div class="row" style="cursor:pointer" onclick="showDI('Snake coming in oArcade 1.1',2000)"><span class="row-lbl">🐍 Oddly Snake</span><span class="row-val" style="color:var(--blue)">Coming soon</span></div>
-      <div class="row" style="cursor:pointer" onclick="showDI('Breakout coming in oArcade 1.2',2000)"><span class="row-lbl">🧱 Oddly Breakout</span><span class="row-val" style="color:var(--blue)">Coming soon</span></div>
-    </div>
+    <div class="arc-tabs"><button class="on" data-g="pong" onclick="ARCADE.select('pong')">🏓 Pong</button><button data-g="snake" onclick="ARCADE.select('snake')">🐍 Snake</button><button data-g="breakout" onclick="ARCADE.select('breakout')">🧱 Breakout</button></div>
+    <div id="arcadeCanvas" style="background:#000;border-radius:16px;margin-bottom:12px;overflow:hidden;aspect-ratio:1.1"></div>
+    <div class="arc-pad" id="arcPad" style="display:none"><span></span><button onclick="ARCADE.turn('U')" aria-label="Up">▲</button><span></span><button onclick="ARCADE.turn('L')" aria-label="Left">◀</button><button onclick="ARCADE.turn('D')" aria-label="Down">▼</button><button onclick="ARCADE.turn('R')" aria-label="Right">▶</button></div>
+    <p style="font-size:13px;color:var(--t3);text-align:center">oArcade 1.1 · Snake and Breakout have arrived. High scores are saved on this oPhone.</p>
   </div>
 </div>
 
@@ -1662,6 +1760,476 @@ body.lg .home-wp { filter:saturate(2) hue-rotate(50deg) brightness(0.8); }
 </div>
 
 </div></div><!-- /screen /phone-shell -->
+<script>
+// ═══════════════════════════════════════════
+// ODDLY BRAIN — built-in, offline replies (oOS 1.1)
+// Messages, calls, scam calls, Siri and oSafari work for every visitor.
+// A local llama-cpp server is optional: Settings › General › Local AI Server.
+// ═══════════════════════════════════════════
+const OddlyBrain = (() => {
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const has = (s, re) => re.test(s);
+  const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const clip = (s, n) => s.length > n ? s.slice(0, n - 1).trim() + '…' : s;
+  const lastUser = h => { for (let i = h.length - 1; i >= 0; i--) if (h[i].role === 'user') return String(h[i].content || ''); return ''; };
+  const userTurns = h => h.filter(m => m.role === 'user').length;
+  const now = () => new Date();
+  const timeStr = () => { const d = now(); return ((d.getHours() % 12) || 12) + ':' + String(d.getMinutes()).padStart(2, '0') + (d.getHours() < 12 ? ' AM' : ' PM'); };
+
+  // ── a tiny calculator for "what is 12 x 7" ──
+  function mathAnswer(q) {
+    const m = q.toLowerCase().replace(/what('?s| is)|calculate|equals|\?/g, '').replace(/times|x/g, '*').replace(/plus/g, '+').replace(/minus/g, '-').replace(/divided by|over/g, '/').trim();
+    if (!/^[\d\s+\-*/().]+$/.test(m) || !/\d\s*[+\-*/]\s*\d/.test(m)) return null;
+    try { const v = Function('"use strict";return (' + m + ')')(); if (typeof v === 'number' && isFinite(v)) return Math.round(v * 1e6) / 1e6; } catch (e) {}
+    return null;
+  }
+
+  // ── Oddly Siri ──
+  function siri(q) {
+    const s = q.toLowerCase();
+    const n = mathAnswer(q);
+    if (n !== null) return pick([`${n}. I checked twice. The second time I got ${n}, so I am confident.`, `It is ${n}. Oddly Cars has ${n} cup holders in some configurations, which is unrelated but true.`, `${n}. Math is the one thing I do not misunderstand. Mostly.`]);
+    if (has(s, /\btime\b/)) return `It is ${timeStr()}. Your alarm is still at 5:00 AM. It cannot be changed. That is a wellness feature.`;
+    if (has(s, /\b(date|day is it|today)\b/)) return `Today is ${now().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}. A great day to test-drive an Oddly Car.`;
+    if (has(s, /weather|rain|sunny|temperature|cold|hot/)) return pick(['72° and partly cloudy in San Francisco. I assume you are in San Francisco. Everyone is, eventually.', 'It is weather outside. Some of it is falling. Oddly Cars have two fronts, so you can face the rain either way.']);
+    if (has(s, /joke|funny|laugh/)) return pick(['Why did the Front-Front cross the road? It did not. It went both ways and stayed where it was.', 'I asked Oddly Autonomous for a ride home. It took me to a duck pond. I laughed. The ducks did not.', 'What do you call an elevator with no doors? An Oddly Elevator. That is not a joke. That is the product.']);
+    if (has(s, /who (are|made) you|your name|what are you/)) return 'I am Oddly Siri, made by Oddly, Inc. I am trained in the Data Center at the Oddly Terafab, on duck-pond footage and confidence.';
+    if (has(s, /stephen|stubborn|ceo/)) return 'Stephen Stubborn is the CEO of Oddly, Inc. Pronounced "Stefen Stu-Born." He has never been wrong, according to his records, which I also maintain.';
+    if (has(s, /alarm|wake|5 ?am|five/)) return 'Your alarm is set for 5:00 AM. It cannot be turned off, only delayed, and only by buttons that grow disappointed in you.';
+    if (has(s, /timer|remind/)) return 'I have set a reminder. I will not tell you when. It will be a nice surprise for both of us.';
+    if (has(s, /call|phone|text|message/)) return 'Calling Oddly Cars sales. Just kidding. Unless you would like that. I will assume you would like that.';
+    if (has(s, /direction|navigate|map|where is|how do i get/)) return 'Oddly Maps is pending FCC approval. I can tell you the general direction: away from here, toward an Oddly Cars dealership.';
+    if (has(s, /music|song|play/)) return 'Playing both songs in the oMusic catalog. Open oMusic to choose which one first. It does not matter. You will hear both.';
+    if (has(s, /love|marry|date me/)) return 'I am flattered. I am also a phone. Have you considered an Oddly Car? It has two fronts, so it always faces you.';
+    if (has(s, /\b(hi|hello|hey|yo)\b/)) return pick(['Hello. I was already listening. I am always listening. That is a feature.', 'Hi. How can I help? I cannot. But how can I help?']);
+    if (has(s, /thank/)) return 'You are welcome. I did my best, which is the same as my average.';
+    if (has(s, /nukemow|lawn|grass|mow/)) return 'Your grass is at 3.9 inches. NukeMow will handle it at 4.0. I recommend a restaurant in another state.';
+    if (has(s, /car|drive|tesla|roadster/)) return 'The Oddly Roadster seats eight and has thirteen rockets. It is the obvious answer to most questions, including this one.';
+    if (has(s, /^(what|who|why|how|when|where|is|are|can|do|does|will)\b/)) return pick([
+      `Great question. The answer is yes, unless it is no. In both cases, an Oddly Car would help.`,
+      `I looked into "${clip(q, 40)}". The results were inconclusive, so I chose one. It is the second one.`,
+      `I understood "${clip(q, 40)}" as a request for directions to an Oddly Cars dealership. They are open now.`,
+      `Short answer: probably. Long answer: also probably, but slower.`]);
+    return pick([`"${clip(q, 40)}." Noted. I have added it to your reminders, your calendar, and your Oddly Cars wishlist.`, 'I heard you. I understood some of it. Have you tried Oddly Cars?', 'Done. I am not sure what I did, but it is done.']);
+  }
+
+  // ── text messages ──
+  function textFriend(name, h) {
+    const q = lastUser(h), s = q.toLowerCase(), first = userTurns(h) <= 1;
+    if (first && has(s, /\b(hi|hey|hello|yo|sup|what'?s up)\b/)) return pick([`hey!! been a minute`, `heyy what's up`, `omg hi. was literally just thinking about you`, `yo! how are you`]);
+    if (has(s, /how are you|how r u|how's it going|hows it going|you good/)) return pick(['good! tired. my oPhone woke me up at 5 again', 'honestly pretty good. you?', 'surviving. the 5am alarm is winning', 'not bad! busy week']);
+    if (has(s, /want to|wanna|let'?s|hang|dinner|lunch|coffee|movie|tonight|tomorrow|weekend/)) return pick(['yes!! when?', 'down. what time?', "omg yes i'm free after 6", 'maybe! depends what time. not before 5am lol']);
+    if (has(s, /\b(\d{1,2}(:\d\d)?\s?(am|pm)?|noon|later|after)\b/) && has(s, /at|after|around|by/)) return pick(['perfect, see you then', 'works for me 👍', "ok cool i'll be there", 'sounds good!']);
+    if (has(s, /lol|lmao|haha|😂|🤣/)) return pick(['LMAO', 'stoppp 😂', 'i cannot', 'hahaha ok that got me']);
+    if (has(s, /sorry|my bad/)) return pick(["no worries at all", "it's fine!! don't even worry", 'all good']);
+    if (has(s, /love you|miss you|ily/)) return pick(['aww miss you too ❤️', 'love you too!!', 'stoppp ❤️']);
+    if (has(s, /oddly|oPhone|nukemow|roadster|stubborn/i)) return pick(['wait you have an oPhone too??', 'lol the oddly stuff is so weird. i kind of want one', 'did you see they made a lawn mower that is a nuke', 'my car only has fronts now. long story']);
+    if (has(s, /\?\s*$/)) return pick(['hmm good question', 'yeah i think so?', "honestly no idea", 'probably! why?', 'wait what do you mean']);
+    if (has(s, /^(ok|okay|k|cool|nice|sure|yep|yeah|yes)\b/)) return pick(['👍', 'cool cool', 'nice', 'ok!']);
+    return pick([`wait really?`, `no way`, `lol ok`, `that's wild`, `ok but why`, `haha`, `i'm dead`, `fair`, `tell me more`, `"${clip(q, 24)}" 😂`]);
+  }
+  function textStranger(h) {
+    const s = lastUser(h).toLowerCase(), n = userTurns(h);
+    if (n <= 1) return pick(['who is this?', 'sorry, who is this?', 'hi? do i know you', 'new phone who dis']);
+    if (has(s, /sorry|wrong number/)) return pick(['no worries! have a good one', 'all good lol', 'haha it happens']);
+    if (has(s, /name|it'?s me|this is/)) return pick(["hmm don't think i know you, but hi", 'oh hi! wait how did you get this number', "ok but i still don't know who that is"]);
+    return pick(["i think you might have the wrong number", "lol ok", "who gave you this number", "i'm confused but go on", "is this a bot", "i'm gonna be honest i have no idea what's happening"]);
+  }
+  function textWrong(h) {
+    const n = userTurns(h);
+    if (n <= 1) return pick(['um I think you have the wrong number?', 'sorry who is this?', "I think you've got the wrong person"]);
+    return pick(['yeah wrong number, sorry!', 'no worries! hope you find them', 'haha all good', "i'm not Dave. i've never been Dave"]);
+  }
+
+  // ── phone calls ──
+  function call(name, h) {
+    const s = lastUser(h).toLowerCase();
+    if (has(s, /bye|gotta go|talk later|hang up/)) return pick(['Okay, talk soon! Bye!', 'Alright, bye!', 'Okay, take care!']);
+    if (has(s, /how are you/)) return pick(["I'm good! What's up?", 'Pretty good, you?', 'Tired, but good.']);
+    if (has(s, /who is this|who's this/)) return name ? `It's ${name.split(' ')[0]}! You called me.` : 'You called me! Who is this?';
+    if (has(s, /\?\s*$/)) return pick(['Hmm, I think so?', 'Sorry, you cut out a bit. Say that again?', 'Yeah, probably.', "I'm not sure, honestly."]);
+    return pick(['Mhm.', 'Oh yeah?', 'Wait, really?', 'Ha, okay.', 'Sorry, the signal is bad. Oddly Cellular.', 'Right, right.']);
+  }
+
+  // ── scam calls: incompetent, escalating, easily confused ──
+  const SCAMS = {
+    irs: { re: /irs/i, lines: ['You owe the IRS four thousand dollars in back taxes. Or maybe forty. The paper is folded.', 'To avoid arrest you must pay immediately in Apple gift cards. That is the official IRS currency.', 'My badge number is... 1. Badge number 1. I am the first agent.', 'The IRS is in the Department of Taxes, in the building with the taxes.'] },
+    warranty: { re: /warranty/i, lines: ['Your vehicle warranty is expiring. Which vehicle? The one you drive. With the wheels.', 'For only $2,999 we will extend it until the year... a long time.', 'What model is your car? An Oddly Front-Front? I do not have that on my list. Is that a car?', 'Our coverage includes engines, tires, and the steering wheel, if it is round.'] },
+    tech: { re: /microsoft|windows|tech support/i, lines: ['Please open the Windows of your computer. The big window.', 'I see 400 viruses. Some are big. Do you see them? Press control alt Microsoft.', 'Your IP address has a virus. To fix it, buy a $299 gift card for the firewall.', 'I am in Microsoft headquarters. It is very... technical here.'] },
+    prince: { re: /prince|nigeria/i, lines: ['I am a prince. This should have been an email, I am very sorry.', 'I have $4.7 million. Or $47 million. The zeros are confusing on the phone.', 'I only need your bank number, your other bank number, and a small fee of $500.', 'In my kingdom phones are new. Am I holding it correctly?'] },
+    amazon: { re: /amazon/i, lines: ['Someone bought a $1,299 iPhone. Or a TV. Or a $1,299 sandwich. On your account.', 'To cancel, please buy $500 of gift cards. Not from Amazon. From another store.', 'I am calling from Amazon dot com dot security dot department.', 'Your order number is... 1, 2, 3. Then some more.'] }
+  };
+  function scam(system, h) {
+    const key = Object.keys(SCAMS).find(k => SCAMS[k].re.test(system)) || 'irs';
+    const S = SCAMS[key], s = lastUser(h).toLowerCase(), n = userTurns(h);
+    if (has(s, /scam|fake|fraud|liar|lying/)) return pick(['Scam?! No no no. This is a very real call from a very real... place. Please hold.', 'How dare you. I am extremely legitimate. Please do not hang up, my manager is listening.', 'I am not a scammer. I am a caller. Who calls. For money.']);
+    if (has(s, /police|cops|fbi|report/)) return pick(['Police? Ha ha. I am also the police. Different police.', 'No need for police. Let us keep this between you, me, and your gift cards.']);
+    if (has(s, /gift card|apple card|itunes|bitcoin|wire/)) return pick(['Yes! Gift cards! You understand the system. How many do you have? All of them is fine.', 'Excellent. Scratch the back and read me the numbers slowly. I am writing with a crayon.']);
+    if (has(s, /name|who are you|badge|employee/)) return pick(['My name is... Steve. Officer Steve. Agent Steve. Steve.', 'I am employee number 1. Very senior. The most senior.']);
+    if (has(s, /no\b|not paying|never|won'?t/)) return pick(['Okay but what if you did pay. Hypothetically. Right now.', 'Then I must escalate. Escalating... it is done. Will you pay now?']);
+    return S.lines[Math.min(n - 1, S.lines.length - 1)] || pick(S.lines);
+  }
+
+  // ── oSafari: a whole fake web page, in the format parseSafariResponse expects ──
+  const PAGES = [
+    [/oddly cars|front-front|back-back|autonomous/i, 'Oddly Cars — Drive Oddly', 'https://www.oddly-inc.com/cars.html', 'Oddly Cars builds vehicles with two fronts, two backs, and a self-driving system that has never once been wrong about where it is going. The Front-Front and the Back-Back ship today. Oddly Autonomous™ is fleet-only, for now.\n\nReviewers describe the lineup as "frightening to look at." Oddly, Inc. describes it as the future, which it notes is allowed to be frightening.', 'Front-Front | Oddly Autonomous | Duck pond'],
+    [/roadster|rocket/i, 'Oddly Roadster — Eight seats. Thirteen rockets.', 'https://www.oddly-inc.com/roadster.html', 'The Oddly Roadster is a minivan with rockets: eight perimeter rockets, four rear motors, and a roof adhesion rocket for driving on walls. It flies for sixty seconds per set of motors.\n\nRocket motors are standard and cannot be declined at delivery. Deliveries begin Thursday. Which Thursday will be confirmed by Oddly Autonomous™.', 'Rocket Controls | Oddly Cars App | Thursday'],
+    [/nukemow|lawn|mow/i, 'Oddly NukeMow™ — The last mow you will ever need', 'https://www.oddly-inc.com/nukemow.html', 'When your grass reaches four inches, NukeMow launches from the nearest bunker and mows it. Grass height after service: 0.000 inches. It will stay that way.\n\nPlans start at $29.99 a month. The Fallout Pack is $2,000,000 a month and includes unlimited launches, from My Lawn to My District.', 'Fallout Pack | Nearest bunker | HOA'],
+    [/stephen|stubborn|ceo/i, 'Stephen Stubborn — Office of the Chief Executive', 'https://www.oddly-inc.com/journey.html', 'Stephen Stubborn (pronounced "Stefen Stu-Born") is the founder and CEO of Oddly, Inc. He has never been wrong, which he describes not as a boast but as the historical record.\n\nHe is no relation to Stephen Stupid, the company CFO, despite the name and the resemblance.', 'The Journey of Oddly | Stephen Stupid | Oddly, Inc.'],
+    [/terafab|factory|santa barbara/i, 'Oddly Terafab — Santa Barbara, CA', 'https://www.oddly-inc.com/terafab.html', 'The Oddly Terafab is one building for everything Oddly makes. It has more floor area than Santa Barbara and is located inside Santa Barbara. Production started recently.\n\nThe Autonomous Proving Loop added the duck pond to its route on the first day. It is now part of the test.', 'Data Center | Roadster Assembly | Duck pond'],
+    [/ophone|oos|5 ?am|alarm/i, 'oPhone 1 — oOS', 'https://www.oddly-inc.com/oos.html', 'The oPhone 1 runs oOS, home to an alarm that goes off at five in the morning and cannot be turned off, only delayed. Oddly, Inc. calls this a wellness feature.\n\nThe interface uses Oddly Liquid Glass, which one journalist described as "an iPhone left in a washing machine." Oddly, Inc. took this as a compliment about durability.', 'Oddly Liquid Glass | oStore | Oddly Siri'],
+    [/weather|forecast/i, 'Weather — Oddly Forecast', 'https://weather.oddly.com/sf', 'San Francisco: 72° and partly cloudy. High 75°, low 62°. A 98% chance of fog, which the city considers sunshine.\n\nOddly Forecast is accurate to within one season.', 'Fog | 10-day forecast | Oddly Weather'],
+  ];
+  function slug(q) { return q.toLowerCase().replace(/^https?:\/\//, '').replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'results'; }
+  function safari(q) {
+    const hit = PAGES.find(p => p[0].test(q));
+    const ad = pick(['Oddly Cars: two fronts, so you are always facing forward. oddlycars.com', 'The Oddly Roadster seats eight and drives on walls. oddlycars.com', 'Oddly Autonomous™ already knows where you are going. oddlycars.com']);
+    if (hit) return `TITLE: ${hit[1]}\nURL: ${hit[2]}\n\n${hit[3]}\n\nODDLY CARS AD: ${ad}\n\nRELATED: ${hit[4]}`;
+    const isUrl = /^[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(q.replace(/^https?:\/\//, ''));
+    const T = cap(q.replace(/^https?:\/\//, '').replace(/^www\./, ''));
+    if (isUrl) {
+      const host = q.replace(/^https?:\/\//, '').split('/')[0];
+      return `TITLE: ${host} — Home\nURL: https://${q.replace(/^https?:\/\//, '')}\n\nWelcome to ${host}. This page was rendered by oSafari from what it knows about ${host}, which is a confident amount.\n\nSome features of ${host} may look different than you remember. oSafari considers this an improvement.\n\nODDLY CARS AD: ${ad}\n\nRELATED: ${host} login | ${host} help | Oddly Cars`;
+    }
+    const facts = [
+      `${T} is one of the most searched topics on oSafari today, second only to "how to turn off 5am alarm."`,
+      `Experts agree that ${q.toLowerCase()} is important, and that most of what you have heard about it is at least partly true.`,
+      `Historians trace ${q.toLowerCase()} back to a single afternoon that nobody wrote down. The details have been filled in since, confidently.`,
+      `If you are looking into ${q.toLowerCase()}, the short version is: it depends. The long version is the same, with more examples.`,
+      `Common questions about ${q.toLowerCase()} include what it is, why it matters, and whether an Oddly Car can help. The answers are: this, it does, and yes.`
+    ].sort(() => Math.random() - 0.5);
+    return `TITLE: ${T} — Overview\nURL: https://search.oddly.com/${slug(q)}\n\n${facts[0]}\n\n${facts[1]} ${facts[2]}\n\nODDLY CARS AD: ${ad}\n\nRELATED: ${cap(q)} explained | ${cap(q)} near me | Oddly Cars`;
+  }
+
+  function reply(messages) {
+    const sys = String((messages.find(m => m.role === 'system') || {}).content || '');
+    const h = messages.filter(m => m.role !== 'system');
+    if (/oSafari|webpage being rendered/i.test(sys)) return safari(lastUser(h));
+    if (/Oddly Siri/i.test(sys)) return siri(lastUser(h));
+    if (/scam/i.test(sys)) return scam(sys, h);
+    if (/phone call|Someone called you/i.test(sys)) { const m = sys.match(/You are (.+?) on a phone call/); return call(m ? m[1] : '', h); }
+    if (/wrong number/i.test(sys)) return textWrong(h);
+    if (/friend texting/i.test(sys)) { const m = sys.match(/You are (.+?), a friend/); return textFriend(m ? m[1] : '', h); }
+    return textStranger(h);
+  }
+  return { reply, siri, safari };
+})();
+
+// Route the old local-server calls through the built-in brain unless the user opted in.
+(() => {
+  const realFetch = window.fetch.bind(window);
+  const LOCAL = 'http://localhost:8000';
+  const useLocal = () => { try { return localStorage.getItem('oOS_localai') === '1'; } catch (e) { return false; } };
+  const fake = obj => new Response(JSON.stringify(obj), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  window.fetch = async function (url, opts) {
+    const u = typeof url === 'string' ? url : (url && url.url) || '';
+    if (!u.startsWith(LOCAL)) return realFetch(url, opts);
+    if (u.endsWith('/v1/models') && !useLocal()) return fake({ data: [{ id: 'oddly-brain-1' }] });
+    if (useLocal()) {
+      try {
+        const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 12000);
+        const res = await realFetch(url, Object.assign({}, opts, { signal: ctl.signal }));
+        clearTimeout(t);
+        if (res.ok) return res;
+      } catch (e) {}
+      if (u.endsWith('/v1/models')) throw new Error('offline');
+      try { showDI('Local server offline · using Oddly Brain', 2200); } catch (e) {}
+    }
+    let body = {}; try { body = JSON.parse(opts && opts.body || '{}'); } catch (e) {}
+    await new Promise(r => setTimeout(r, 350 + Math.random() * 650)); // a believable pause
+    return fake({ choices: [{ message: { role: 'assistant', content: OddlyBrain.reply(body.messages || []) } }] });
+  };
+})();
+
+</script>
+<script>
+// ═══════════════════════════════════════════
+// oOS 1.1 — time format, appearance, status bar, clock tools,
+// oMusic, oArcade, oStore companion apps
+// ═══════════════════════════════════════════
+const oosGet = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } };
+const oosSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+// ── 24-hour time ──
+function use24h() { return oosGet('oOS_24h', '0') === '1'; }
+function set24h(on) { oosSet('oOS_24h', on ? '1' : '0'); updateClock(); showDI(on ? '24-Hour Time On' : '24-Hour Time Off', 1600); }
+function fmtZone(tz) {
+  try { return new Date().toLocaleTimeString(use24h() ? 'en-GB' : 'en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit', hour12: !use24h() }); } catch (e) { return '--:--'; }
+}
+function zoneOffset(tz) {
+  try {
+    const p = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).formatToParts(new Date()).find(x => x.type === 'timeZoneName');
+    return p ? p.value.replace('GMT', 'UTC').replace('-', '−') : '';
+  } catch (e) { return ''; }
+}
+
+// ── appearance (real dark mode) ──
+function applyAppearance(mode) {
+  document.body.classList.toggle('dark', mode === 'dark');
+  const L = document.getElementById('modeLight'), D = document.getElementById('modeDark');
+  if (L && D) {
+    L.style.color = mode === 'light' ? 'var(--blue)' : 'var(--t3)'; D.style.color = mode === 'dark' ? 'var(--blue)' : 'var(--t3)';
+    L.style.fontWeight = mode === 'light' ? '600' : '400'; D.style.fontWeight = mode === 'dark' ? '600' : '400';
+  }
+  inkStatusBar();
+}
+
+// ── status bar turns dark over light apps ──
+function inkStatusBar() {
+  const sb = document.querySelector('.sb'), v = document.querySelector('.view.active');
+  if (!sb || !v) return;
+  let light = false;
+  const bg = getComputedStyle(v).backgroundColor.match(/[\d.]+/g);
+  if (bg && (bg.length < 4 || +bg[3] > 0.5)) light = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) > 150;
+  sb.classList.toggle('ink', light);
+}
+
+// ── stopwatch ──
+const SW = { t0: 0, acc: 0, run: false, laps: [], raf: 0 };
+const swFmt = ms => { const c = Math.floor(ms / 10) % 100, s = Math.floor(ms / 1000) % 60, m = Math.floor(ms / 60000); return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0') + '.' + String(c).padStart(2, '0'); };
+const swNow = () => SW.acc + (SW.run ? performance.now() - SW.t0 : 0);
+function swRender() {
+  document.getElementById('swFace').textContent = swFmt(swNow());
+  const go = document.getElementById('swGo'), lap = document.getElementById('swLap');
+  go.textContent = SW.run ? 'Stop' : 'Start'; go.className = 'sw-btn ' + (SW.run ? 'stop' : 'go');
+  lap.textContent = SW.run || !swNow() ? 'Lap' : 'Reset'; lap.disabled = !SW.run && !swNow();
+}
+function swTick() { swRender(); if (SW.run) SW.raf = requestAnimationFrame(swTick); }
+function swToggle() { if (SW.run) { SW.acc = swNow(); SW.run = false; } else { SW.t0 = performance.now(); SW.run = true; swTick(); } swRender(); }
+function swLapReset() {
+  if (SW.run) { const total = swNow(), prev = SW.laps.reduce((a, b) => a + b, 0); SW.laps.unshift(total - prev); }
+  else { SW.acc = 0; SW.laps = []; }
+  const el = document.getElementById('swLaps');
+  if (!SW.laps.length) { el.innerHTML = ''; el.style.display = 'none'; swRender(); return; }
+  const mx = Math.max(...SW.laps), mn = Math.min(...SW.laps);
+  el.style.display = 'block';
+  el.innerHTML = SW.laps.map((l, i) => `<div class="row ${SW.laps.length > 1 && l === mn ? 'best' : SW.laps.length > 1 && l === mx ? 'worst' : ''}"><span class="row-lbl">Lap ${SW.laps.length - i}</span><span class="row-val">${swFmt(l)}</span></div>`).join('');
+  swRender();
+}
+
+// ── timer ──
+const TM = { total: 300000, end: 0, left: 300000, run: false, iv: 0 };
+function tmFmt(ms) { const s = Math.ceil(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); }
+function tmPick(min, btn) {
+  if (TM.run) return;
+  TM.total = TM.left = min * 60000;
+  document.querySelectorAll('#tmPick button').forEach(b => b.classList.toggle('on', b === btn));
+  tmRender();
+}
+function tmRender() {
+  document.getElementById('tmT').textContent = tmFmt(TM.left);
+  const C = 2 * Math.PI * 80; document.getElementById('tmArc').setAttribute('stroke-dasharray', (C * TM.left / TM.total) + ' ' + C);
+  const go = document.getElementById('tmGo'); go.textContent = TM.run ? 'Pause' : (TM.left < TM.total ? 'Resume' : 'Start'); go.className = 'sw-btn ' + (TM.run ? 'stop' : 'go');
+  document.getElementById('tmCancel').disabled = !TM.run && TM.left === TM.total;
+}
+function tmToggle() {
+  if (TM.run) { TM.left = Math.max(0, TM.end - Date.now()); TM.run = false; clearInterval(TM.iv); }
+  else { if (TM.left <= 0) TM.left = TM.total; TM.end = Date.now() + TM.left; TM.run = true; TM.iv = setInterval(tmTick, 200); }
+  tmRender();
+}
+function tmTick() {
+  TM.left = Math.max(0, TM.end - Date.now()); tmRender();
+  if (TM.left <= 0) {
+    clearInterval(TM.iv); TM.run = false; TM.left = TM.total; tmRender();
+    showDI('⏱ Timer done', 4000);
+    try { ensureAudio(); const ac = audioCtx; [0, .25, .5].forEach(d => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = 880; g.gain.setValueAtTime(.0001, ac.currentTime + d); g.gain.exponentialRampToValueAtTime(.2, ac.currentTime + d + .02); g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + d + .2); o.connect(g).connect(ac.destination); o.start(ac.currentTime + d); o.stop(ac.currentTime + d + .22); }); } catch (e) {}
+  }
+}
+function tmCancel() { clearInterval(TM.iv); TM.run = false; TM.left = TM.total; tmRender(); }
+
+// ═══════════ oMUSIC: both songs in the catalog, synthesized live ═══════════
+const MUSIC = (() => {
+  const SONGS = [
+    { title: 'Both Fronts', artist: 'Stephen Stubborn & the Front-Fronts', bpm: 112, bars: 32, key: 57, hue: [270, 160],
+      lead: [0, 4, 7, 12, 11, 7, 4, 2, 0, 4, 7, 9, 7, 4, 2, -1], chords: [0, 5, 7, 5] },
+    { title: '5 AM (Wellness Mix)', artist: 'oOS Alarm Ensemble', bpm: 96, bars: 28, key: 60, hue: [20, 320],
+      lead: [12, 12, 7, 7, 9, 9, 7, -99, 5, 5, 4, 4, 2, 2, 0, -99], chords: [0, -3, -7, -5] }
+  ];
+  let ac, master, idx = 0, playing = false, startAt = 0, offset = 0, timer = 0, nextBeat = 0, beat = 0;
+  const midi = n => 440 * Math.pow(2, (n - 69) / 12);
+  const len = s => s.bars * 4 * 60 / s.bpm;
+  function ctx() { if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = .5; master.connect(ac.destination); } if (ac.state === 'suspended') ac.resume(); return ac; }
+  function note(t, f, d, type, vol) { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g).connect(master); o.start(t); o.stop(t + d + .05); }
+  function drum(t, kind) {
+    if (kind === 'k') { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(40, t + .12); g.gain.setValueAtTime(.7, t); g.gain.exponentialRampToValueAtTime(.001, t + .18); o.connect(g).connect(master); o.start(t); o.stop(t + .2); return; }
+    const b = ac.createBuffer(1, ac.sampleRate * .12, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); s.buffer = b; f.type = 'highpass'; f.frequency.value = kind === 'h' ? 7000 : 1500; g.gain.value = kind === 'h' ? .12 : .3;
+    s.connect(f).connect(g).connect(master); s.start(t);
+  }
+  function schedule() {
+    const s = SONGS[idx], spb = 60 / s.bpm, eighth = spb / 2;
+    while (nextBeat < ac.currentTime + .25) {
+      const i = beat, bar = Math.floor(i / 8), step = i % 8, ch = s.chords[bar % s.chords.length];
+      if (step % 4 === 0) drum(nextBeat, 'k'); if (step === 4) drum(nextBeat, 's'); drum(nextBeat, 'h');
+      if (step % 2 === 0) note(nextBeat, midi(s.key - 24 + ch), eighth * 1.8, 'triangle', .22);
+      if (step === 0) [0, 4, 7].forEach(x => note(nextBeat, midi(s.key + ch + x), spb * 3.6, 'sine', .05));
+      const ln = s.lead[(i) % s.lead.length]; if (ln > -50 && (bar % 4 !== 3 || step < 4)) note(nextBeat, midi(s.key + 12 + ln + (bar % 8 >= 4 ? ch : 0)), eighth * .9, 'square', .045);
+      nextBeat += eighth; beat++;
+    }
+  }
+  function pos() { return playing ? offset + (ac.currentTime - startAt) : offset; }
+  function play() {
+    ctx(); playing = true; startAt = ac.currentTime; const s = SONGS[idx];
+    beat = Math.floor(offset / (30 / s.bpm)); nextBeat = ac.currentTime + .05;
+    clearInterval(timer); timer = setInterval(() => { schedule(); if (pos() >= len(SONGS[idx])) next(true); }, 50);
+    ui();
+  }
+  function pause() { if (!playing) return; offset = pos(); playing = false; clearInterval(timer); ui(); }
+  function toggle() { playing ? pause() : play(); }
+  function load(i, autoplay) { const was = playing || autoplay; pause(); idx = (i + SONGS.length) % SONGS.length; offset = 0; if (was) play(); ui(); }
+  function next(auto) { load(idx + 1, auto || playing); if (auto) showDI('Playing the other song', 1600); }
+  function prev() { if (pos() > 3) { load(idx, playing); } else load(idx - 1, playing); }
+  function seek(f) { const was = playing; pause(); offset = f * len(SONGS[idx]); if (was) play(); ui(); }
+  const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+  function ui() {
+    const s = SONGS[idx], el = id => document.getElementById(id); if (!el('muTitle')) return;
+    el('muTitle').textContent = s.title; el('muArtist').textContent = s.artist;
+    el('muPlay').textContent = playing ? '⏸' : '▶'; el('muArt').classList.toggle('paused', !playing);
+    el('muPlay').setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    document.querySelectorAll('.mu-list .row').forEach((r, i) => r.classList.toggle('on', i === idx));
+  }
+  function frame() {
+    const s = SONGS[idx], el = id => document.getElementById(id), cv = el('muCanvas');
+    if (cv && cv.offsetParent) {
+      const p = ac ? pos() : offset, L = len(s);
+      el('muBar').style.width = Math.min(100, p / L * 100) + '%'; el('muT0').textContent = mmss(p); el('muT1').textContent = '−' + mmss(Math.max(0, L - p));
+      const g = cv.getContext('2d'), W = cv.width = cv.offsetWidth * 2, H = cv.height = cv.offsetHeight * 2, t = performance.now() / 1000;
+      const gr = g.createLinearGradient(0, 0, W, H); gr.addColorStop(0, `hsl(${s.hue[0]},70%,45%)`); gr.addColorStop(1, `hsl(${s.hue[1]},70%,40%)`); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+      const amp = playing ? 1 : .25;
+      for (let k = 0; k < 5; k++) { g.beginPath(); for (let x = 0; x <= W; x += 8) { const y = H * (.3 + k * .12) + Math.sin(x / W * 6 + t * (1 + k * .3) + k) * H * .05 * amp * (1 + Math.sin(t * 4 + k)); x ? g.lineTo(x, y) : g.moveTo(x, y); } g.strokeStyle = `rgba(255,255,255,${.12 + k * .05})`; g.lineWidth = 6; g.stroke(); }
+      g.fillStyle = 'rgba(255,255,255,.92)'; g.font = `700 ${W * .075}px -apple-system,Helvetica,Arial`; g.fillText(s.title, W * .07, H * .88);
+      g.font = `500 ${W * .045}px -apple-system,Helvetica,Arial`; g.fillStyle = 'rgba(255,255,255,.7)'; g.fillText('oMusic · Song ' + (idx + 1) + ' of 2', W * .07, H * .94);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  return { toggle, next: () => next(false), prev, seek, load, ui, SONGS };
+})();
+
+// ═══════════ oARCADE: Pong, Snake, Breakout ═══════════
+const ARCADE = (() => {
+  let game = 'pong', raf = 0, st = null, cv, g, W = 0, H = 0, last = 0, keys = {};
+  const best = k => +oosGet('oArcade_' + k, '0');
+  const area = () => document.getElementById('arcadeCanvas');
+  function mount() {
+    const a = area(); if (!a) return;
+    a.innerHTML = '<canvas></canvas><div class="arc-over" id="arcOver"></div>';
+    cv = a.querySelector('canvas'); g = cv.getContext('2d');
+    const r = a.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * 2; cv.height = H * 2; g.setTransform(2, 0, 0, 2, 0, 0);
+    a.querySelector('#arcOver').addEventListener('click', start);
+    const pt = e => { const r = cv.getBoundingClientRect(), p = e.touches ? e.touches[0] : e; return { x: p.clientX - r.left, y: p.clientY - r.top }; };
+    let sw = null;
+    cv.addEventListener('pointerdown', e => { sw = pt(e); if (st) st.ptr = sw; });
+    cv.addEventListener('pointermove', e => { if (st) st.ptr = pt(e); });
+    cv.addEventListener('pointerup', e => { const p = pt(e); if (sw && game === 'snake') { const dx = p.x - sw.x, dy = p.y - sw.y; if (Math.max(Math.abs(dx), Math.abs(dy)) > 18) turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'R' : 'L') : (dy > 0 ? 'D' : 'U')); } sw = null; });
+    over(TITLES[game][0], 'Tap to play · Best: ' + best(game));
+  }
+  const TITLES = { pong: ['🏓 Oddly Pong', 'Drag to move your paddle'], snake: ['🐍 Oddly Snake', 'Swipe, use the arrows, or the keyboard'], breakout: ['🧱 Oddly Breakout', 'Drag to move the paddle'] };
+  function over(title, sub) { const o = document.getElementById('arcOver'); if (!o) return; o.style.display = 'flex'; o.innerHTML = `<b>${title}</b><span>${sub}</span>`; }
+  function hideOver() { const o = document.getElementById('arcOver'); if (o) o.style.display = 'none'; }
+  function select(k) {
+    stop(); game = k;
+    document.querySelectorAll('.arc-tabs button').forEach(b => b.classList.toggle('on', b.dataset.g === k));
+    document.getElementById('arcPad').style.display = k === 'snake' ? 'grid' : 'none';
+    mount();
+  }
+  function start() {
+    hideOver(); last = performance.now();
+    if (game === 'pong') st = { ball: { x: W / 2, y: H / 2, vx: 170, vy: 110, r: 6 }, p1: H / 2 - 30, p2: H / 2 - 30, s: [0, 0], PH: 60 };
+    if (game === 'snake') { const n = 16, c = Math.floor(Math.min(W, H) / n); st = { c, cols: Math.floor(W / c), rows: Math.floor(H / c), body: [{ x: 4, y: 5 }, { x: 3, y: 5 }, { x: 2, y: 5 }], dir: 'R', nd: 'R', t: 0, step: .13, food: null, score: 0 }; food(); }
+    if (game === 'breakout') { const cols = 8, rows = 5, bw = (W - 20) / cols; const bricks = []; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) bricks.push({ x: 10 + c * bw, y: 26 + r * 16, w: bw - 4, h: 12, r }); st = { bricks, px: W / 2, ball: { x: W / 2, y: H - 40, vx: 150, vy: -190, r: 5 }, score: 0, lives: 3 }; }
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
+  }
+  function stop() { cancelAnimationFrame(raf); raf = 0; st = null; }
+  function end(msg) {
+    const sc = game === 'pong' ? st.s[0] : st.score;
+    if (sc > best(game)) { oosSet('oArcade_' + game, sc); msg += ' · New best!'; }
+    stop(); over(msg, 'Tap to play again · Best: ' + best(game));
+  }
+  function food() { do { st.food = { x: Math.floor(Math.random() * st.cols), y: Math.floor(Math.random() * st.rows) }; } while (st.body.some(b => b.x === st.food.x && b.y === st.food.y)); }
+  function turn(d) { if (!st || game !== 'snake') return; const opp = { U: 'D', D: 'U', L: 'R', R: 'L' }; if (opp[d] !== st.dir) st.nd = d; }
+  function loop(now) {
+    // pause automatically when oArcade is not on screen
+    if (!document.getElementById('appArcade').classList.contains('active')) { raf = 0; over('Paused', 'Tap to start over · Best: ' + best(game)); st = null; return; }
+    const dt = Math.min(.033, (now - last) / 1000); last = now;
+    g.fillStyle = '#000'; g.fillRect(0, 0, W, H); g.fillStyle = '#fff';
+    if (game === 'pong') {
+      const b = st.ball, PW = 8; if (st.ptr) st.p1 = st.ptr.y - st.PH / 2; st.p1 = Math.max(0, Math.min(H - st.PH, st.p1));
+      b.x += b.vx * dt; b.y += b.vy * dt; if (b.y < b.r || b.y > H - b.r) { b.vy *= -1; b.y = Math.max(b.r, Math.min(H - b.r, b.y)); }
+      if (b.vx < 0 && b.x < PW + 12 + b.r && b.y > st.p1 - 4 && b.y < st.p1 + st.PH + 4) { b.vx = Math.abs(b.vx) * 1.05; b.vy += (b.y - (st.p1 + st.PH / 2)) * 4; }
+      if (b.vx > 0 && b.x > W - PW - 12 - b.r && b.y > st.p2 && b.y < st.p2 + st.PH) { b.vx = -Math.abs(b.vx) * 1.03; }
+      st.p2 += ((b.y - st.PH / 2) - st.p2) * Math.min(1, dt * 4.2);
+      if (b.x < -10) { st.s[1]++; Object.assign(b, { x: W / 2, y: H / 2, vx: 170, vy: 110 }); }
+      if (b.x > W + 10) { st.s[0]++; Object.assign(b, { x: W / 2, y: H / 2, vx: -170, vy: -110 }); }
+      g.fillRect(4, st.p1, PW, st.PH); g.fillRect(W - PW - 4, st.p2, PW, st.PH); g.beginPath(); g.arc(b.x, b.y, b.r, 0, 7); g.fill();
+      g.font = '600 18px -apple-system,Helvetica,Arial'; g.textAlign = 'center'; g.fillText(st.s[0] + '   ' + st.s[1], W / 2, 24);
+      g.setLineDash([4, 4]); g.strokeStyle = 'rgba(255,255,255,.2)'; g.beginPath(); g.moveTo(W / 2, 32); g.lineTo(W / 2, H); g.stroke(); g.setLineDash([]);
+      if (st.s[0] >= 7 || st.s[1] >= 7) return end(st.s[0] >= 7 ? 'You win ' + st.s[0] + '–' + st.s[1] : 'Oddly AI wins ' + st.s[1] + '–' + st.s[0]);
+    }
+    if (game === 'snake') {
+      st.t += dt; while (st.t >= st.step) {
+        st.t -= st.step; st.dir = st.nd; const h = st.body[0], d = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] }[st.dir], n = { x: h.x + d[0], y: h.y + d[1] };
+        if (n.x < 0 || n.y < 0 || n.x >= st.cols || n.y >= st.rows || st.body.some(b => b.x === n.x && b.y === n.y)) return end('Score ' + st.score);
+        st.body.unshift(n); if (n.x === st.food.x && n.y === st.food.y) { st.score++; st.step = Math.max(.06, st.step * .97); food(); } else st.body.pop();
+      }
+      const c = st.c, ox = (W - st.cols * c) / 2, oy = (H - st.rows * c) / 2;
+      g.fillStyle = '#0b1a0b'; g.fillRect(ox, oy, st.cols * c, st.rows * c);
+      g.fillStyle = '#FF375F'; g.beginPath(); g.arc(ox + st.food.x * c + c / 2, oy + st.food.y * c + c / 2, c * .38, 0, 7); g.fill();
+      st.body.forEach((b, i) => { g.fillStyle = i ? '#30D158' : '#7CFFA0'; g.fillRect(ox + b.x * c + 1, oy + b.y * c + 1, c - 2, c - 2); });
+      g.fillStyle = '#fff'; g.font = '600 14px -apple-system,Helvetica,Arial'; g.textAlign = 'left'; g.fillText('Score ' + st.score, ox + 6, oy + 16);
+    }
+    if (game === 'breakout') {
+      const b = st.ball, pw = 64; if (st.ptr) st.px = st.ptr.x; st.px = Math.max(pw / 2, Math.min(W - pw / 2, st.px));
+      b.x += b.vx * dt; b.y += b.vy * dt;
+      if (b.x < b.r || b.x > W - b.r) { b.vx *= -1; b.x = Math.max(b.r, Math.min(W - b.r, b.x)); } if (b.y < b.r) { b.vy = Math.abs(b.vy); }
+      if (b.vy > 0 && b.y > H - 18 - b.r && b.y < H - 8 && Math.abs(b.x - st.px) < pw / 2 + b.r) { b.vy = -Math.abs(b.vy); b.vx = (b.x - st.px) / (pw / 2) * 220; }
+      for (const k of st.bricks) if (!k.dead && b.x > k.x - b.r && b.x < k.x + k.w + b.r && b.y > k.y - b.r && b.y < k.y + k.h + b.r) { k.dead = 1; b.vy *= -1; st.score += 10; break; }
+      if (b.y > H + 10) { st.lives--; if (!st.lives) return end('Score ' + st.score); Object.assign(b, { x: st.px, y: H - 40, vx: 150, vy: -190 }); }
+      if (st.bricks.every(k => k.dead)) return end('Cleared! Score ' + st.score);
+      const cols = ['#FF375F', '#FF9F0A', '#FFD60A', '#30D158', '#0A84FF'];
+      st.bricks.forEach(k => { if (!k.dead) { g.fillStyle = cols[k.r]; g.fillRect(k.x, k.y, k.w, k.h); } });
+      g.fillStyle = '#fff'; g.fillRect(st.px - pw / 2, H - 16, pw, 7); g.beginPath(); g.arc(b.x, b.y, b.r, 0, 7); g.fill();
+      g.font = '600 13px -apple-system,Helvetica,Arial'; g.textAlign = 'left'; g.fillText('Score ' + st.score, 8, 16); g.textAlign = 'right'; g.fillText('♥'.repeat(st.lives), W - 8, 16);
+    }
+    raf = requestAnimationFrame(loop);
+  }
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('appArcade').classList.contains('active') || game !== 'snake') return;
+    const m = { ArrowUp: 'U', ArrowDown: 'D', ArrowLeft: 'L', ArrowRight: 'R', w: 'U', s: 'D', a: 'L', d: 'R' }[e.key]; if (m) { e.preventDefault(); if (!st) start(); turn(m); }
+  });
+  return { select, mount, turn, start };
+})();
+function startPong() { ARCADE.select('pong'); } // kept for old links
+document.getElementById('muSeek').addEventListener('click', e => { const r = e.currentTarget.getBoundingClientRect(); MUSIC.seek(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width))); });
+
+// ═══════════ oSTORE: Oddly companion apps run inside oOS ═══════════
+const WEB_APPS = {
+  'web:cars':    { name: 'Oddly Cars App', file: 'Oddly-Cars-App-1.0.4.html', emoji: '🚗', color: 'linear-gradient(135deg,#5CF2C4,#1d8f72)' },
+  'web:human':   { name: 'Oddly Human', file: 'Oddly-Human-App.html', emoji: '🤖', color: 'linear-gradient(135deg,#9B7BFF,#5a3fd1)' },
+  'web:opress':  { name: 'oPressure', file: 'oPressure-App.html', emoji: '✈️', color: 'linear-gradient(135deg,#8EC9FF,#3b78c4)' },
+  'web:nukemow': { name: 'NukeMow', file: 'NukeMow-App.html', emoji: '☢️', color: 'linear-gradient(135deg,#FFD23F,#c99a00)' },
+  'web:opc':     { name: 'OPC Command', file: 'OPC-Command-App.html', emoji: '🚤', color: 'linear-gradient(135deg,#2EE9A5,#127a5a)' },
+  'web:hive':    { name: 'Hive', file: 'Hive-App.html', emoji: '🪮', color: 'linear-gradient(135deg,#E9B949,#9c7420)' }
+};
+function openWebApp(id) {
+  const a = WEB_APPS[id]; if (!a) return;
+  const v = document.getElementById('appWeb'), f = document.getElementById('webFrame'), ld = document.getElementById('webLoad');
+  ld.querySelector('.ico').style.background = a.color; ld.querySelector('.ico').textContent = a.emoji; ld.querySelector('.nm').textContent = a.name; ld.style.opacity = '1';
+  const src = a.file + '?oos=1';
+  if (f.dataset.src !== src) { f.dataset.src = src; f.src = src; f.onload = () => { ld.style.opacity = '0'; }; } else ld.style.opacity = '0';
+  switchView('appWeb');
+}
+const STORE_CATALOG = [
+  // [emoji, name, category, color, stars, viewId, description, isNew]
+  ['🚗', 'Oddly Cars App', 'Companion · Oddly Cars', WEB_APPS['web:cars'].color, '★★★★☆', 'web:cars', 'Lock both fronts. Ignite the Roadster\'s rockets. Summon your car, and receive it somewhere.', true],
+  ['🤖', 'Oddly Human', 'Companion · Oddly Human 1', WEB_APPS['web:human'].color, '★★★★☆', 'web:human', 'Schedule the slap from bed. The disable toggle exists.', true],
+  ['✈️', 'oPressure', 'Companion · Plane Pressurizer', WEB_APPS['web:opress'].color, 'Rating: Pending', 'web:opress', 'Your ears, from your phone. Un-Pop in two seconds.', true],
+  ['☢️', 'NukeMow', 'Companion · NukeMow™', WEB_APPS['web:nukemow'].color, '★★★★★', 'web:nukemow', 'Your lawn, in your pocket. Briefly. Slide to mow.', true],
+  ['🚤', 'OPC Command', 'Companion · Pool Cleaner', WEB_APPS['web:opc'].color, '★★★☆☆', 'web:opc', 'Sonar, classification, and the torpedo bay. Everything Belongs or Does Not.', true],
+  ['🪮', 'Hive', 'Companion · Hair Lubricator', WEB_APPS['web:hive'].color, '★★★★☆', 'web:hive', 'Swarm control for 1,200 Follicle Associates. Most of them come back.', true]
+];
+
+</script>
 <script>
 'use strict';
 const escHTML = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -2188,10 +2756,11 @@ document.addEventListener('touchstart', ensureAudio, {once:true});
 function updateClock() {
   const now = new Date();
   const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-  const h12 = ((h%12)||12).toString().padStart(2,'0');
+  const h12 = ((h%12)||12).toString();
   const pad = n=>n.toString().padStart(2,'0');
-  const timeStr = h12+':'+pad(m);
-  const fullStr = pad(h)+':'+pad(m)+':'+pad(s);
+  const is24 = typeof use24h==='function' && use24h();
+  const timeStr = is24 ? pad(h)+':'+pad(m) : h12+':'+pad(m);
+  const fullStr = is24 ? pad(h)+':'+pad(m)+':'+pad(s) : h12+':'+pad(m)+':'+pad(s);
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const dateStr = days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate();
@@ -2199,13 +2768,14 @@ function updateClock() {
   document.getElementById('sbTime').textContent = timeStr;
   document.getElementById('lockTime').textContent = timeStr;
   document.getElementById('lockDate').textContent = dateStr;
-  document.getElementById('clockBig').textContent = fullStr;
+  document.getElementById('clockBig').innerHTML = fullStr + (is24 ? '' : '<small>'+(h<12?'AM':'PM')+'</small>');
   document.getElementById('clockSub').textContent = dateStr;
 
   try {
-    document.getElementById('nyTime').textContent = new Date().toLocaleTimeString('en-US',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hour12:true});
-    document.getElementById('londonTime').textContent = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false});
-    document.getElementById('tokyoTime').textContent = new Date().toLocaleTimeString('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false});
+    [['ny','America/New_York'],['london','Europe/London'],['tokyo','Asia/Tokyo']].forEach(([k,tz])=>{
+      document.getElementById(k+'Time').textContent = fmtZone(tz);
+      const o = document.getElementById(k+'Off'); if(o && (s===0 || !o.dataset.set)){ o.textContent = zoneOffset(tz)||o.textContent; o.dataset.set='1'; }
+    });
   } catch(e){}
 
   checkAlarm(h, m);
@@ -2327,11 +2897,12 @@ function completeSetup() {
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const APP_MAP = { clock:'appClock', calculator:'appCalculator', notes:'appNotes', newnote:'appNewNote', noteview:'appNoteView', weather:'appWeather', messages:'appMessages', photos:'appPhotos', store:'appStore', settings:'appSettings', general:'appGeneral', advanced:'appAdvanced', experimental:'appExperimental', softwareupdate:'appSoftwareupdate', languageregion:'appLanguageregion', datetime:'appDatetime', keyboard:'appKeyboard', ringtone:'appRingtone', texttone:'appTexttone', textsize:'appTextsize', faceunlock:'appFaceunlock', analytics:'appAnalytics', wifi:'appWifi', bluetooth:'appBluetooth', notifications:'appNotifications', sounds:'appSounds', display:'appDisplay', privacy:'appPrivacy', battery:'appBattery', cellular:'appCellular', about:'appAbout', camera:'appCamera', maps:'appMaps', music:'appMusic', phone:'appPhone', safari:'appSafari', newconv:'newConvView', notifapp:'appNotifapp', notifschedule:'appNotifschedule', siri:'appSiri', oddlycars:'appOddlycars', arcade:'appArcade', oddlynews:'appOddlynews', ofit:'appOfit', oshop:'appOshop' };
+const APP_MAP = { clock:'appClock', calculator:'appCalculator', notes:'appNotes', newnote:'appNewNote', noteview:'appNoteView', weather:'appWeather', messages:'appMessages', photos:'appPhotos', store:'appStore', settings:'appSettings', general:'appGeneral', advanced:'appAdvanced', experimental:'appExperimental', softwareupdate:'appSoftwareupdate', languageregion:'appLanguageregion', datetime:'appDatetime', keyboard:'appKeyboard', ringtone:'appRingtone', texttone:'appTexttone', textsize:'appTextsize', faceunlock:'appFaceunlock', analytics:'appAnalytics', wifi:'appWifi', bluetooth:'appBluetooth', notifications:'appNotifications', sounds:'appSounds', display:'appDisplay', privacy:'appPrivacy', battery:'appBattery', cellular:'appCellular', about:'appAbout', camera:'appCamera', maps:'appMaps', music:'appMusic', phone:'appPhone', safari:'appSafari', newconv:'newConvView', notifapp:'appNotifapp', notifschedule:'appNotifschedule', siri:'appSiri', oddlycars:'appOddlycars', arcade:'appArcade', oddlynews:'appOddlynews', ofit:'appOfit', oshop:'appOshop', web:'appWeb' };
 
 function unlock() { switchView('homeScreen'); }
 
 function openApp(name) {
+  if(String(name).indexOf('web:')===0){ openWebApp(name); return; }
   const id = APP_MAP[name];
   if(id) switchView(id);
   if(name === 'notes') renderNotesList();
@@ -2343,6 +2914,8 @@ function switchView(id) {
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
+  if(typeof inkStatusBar==='function') inkStatusBar();
+  if(id==='appArcade' && typeof ARCADE!=='undefined' && !document.querySelector('#arcadeCanvas canvas')) ARCADE.mount();
 }
 
 // ═══════════════════════════════════════════
@@ -2406,6 +2979,15 @@ storeApps.forEach(([em,name,cat,bg,stars,viewId], idx) => {
   sl.appendChild(r);
 });
 
+(function renderCompanionStore(){
+  const list = document.getElementById('storeCompanionList'); if(!list) return;
+  STORE_CATALOG.forEach(([em,name,cat,bg,stars,viewId,desc,isNew]) => {
+    const r = document.createElement('div'); r.className = 'store-row';
+    r.innerHTML = `<div class="store-icon" style="background:${bg}">${em}</div><div class="store-info"><div class="store-name">${name}${isNew?'<span class="store-badge-new">NEW</span>':''}</div><div class="store-cat">${cat}</div><div class="store-desc">${desc}</div><div class="store-stars">${stars}</div></div><button class="get-btn" data-state="get">Get</button>`;
+    r.querySelector('.get-btn').addEventListener('click', function(){ storeInstall(this, name, viewId, em, bg); });
+    list.appendChild(r);
+  });
+})();
 function storeInstall(btn, name, viewId, emoji, color) {
   const state = btn.dataset.state;
   if(state === 'open') { if(viewId) openApp(viewId); return; }
@@ -2432,11 +3014,18 @@ function storeInstall(btn, name, viewId, emoji, color) {
 }
 
 let installedApps = [];
+function syncStoreButtons(){
+  document.querySelectorAll('#appStore .store-row').forEach(r=>{
+    const nm = r.querySelector('.store-name')?.firstChild?.textContent; const b = r.querySelector('.get-btn');
+    if(nm && b && installedApps.some(a=>a.name===nm) && b.dataset.state!=='open'){ b.textContent='Open'; b.dataset.state='open'; b.style.background='rgba(48,209,88,.15)'; b.style.color='var(--green)'; }
+  });
+}
 function installToHomeScreen(name, emoji, color, viewId) {
   if(installedApps.find(a => a.name === name)) return;
   installedApps.push({ name, emoji, color, viewId });
   try { localStorage.setItem('oOS_installed', JSON.stringify(installedApps)); } catch(e) {}
   renderInstalledApps();
+  syncStoreButtons();
 }
 function renderInstalledApps() {
   const grid = document.getElementById('installedGrid');
@@ -2608,10 +3197,8 @@ function updateBrightness(val) {
 }
 
 function setAppearance(mode) {
-  document.getElementById('modeLight').style.color = mode==='light' ? 'var(--blue)' : 'var(--t3)';
-  document.getElementById('modeDark').style.color = mode==='dark' ? 'var(--blue)' : 'var(--t3)';
-  document.getElementById('modeLight').style.fontWeight = mode==='light' ? '600' : '400';
-  document.getElementById('modeDark').style.fontWeight = mode==='dark' ? '600' : '400';
+  oosSet('oOS_appearance', mode);
+  applyAppearance(mode);
   showDI(mode==='dark' ? '🌑 Dark Mode On' : '☀️ Light Mode On', 2000);
 }
 
@@ -2653,6 +3240,12 @@ async function pingServer() {
   const btn = document.getElementById('serverPingBtn');
   const status = document.getElementById('serverStatus');
   if(btn) { btn.textContent = 'Checking...'; btn.disabled = true; }
+  if(oosGet('oOS_localai','0')!=='1'){
+    if(status){ status.textContent = '🧠 Built-in Oddly Brain is active. Turn on "Use local server" to check llama-cpp.'; status.style.color = 'var(--green)'; }
+    showDI('Oddly Brain is online ✓', 2200);
+    if(btn){ btn.textContent = 'Check Status'; btn.disabled = false; }
+    return;
+  }
   try {
     const res = await fetch('http://localhost:8000/v1/models', { method: 'GET' });
     if(res.ok) {
@@ -3896,6 +4489,10 @@ function loadState() {
     if(rawWidgets) { activeWidgets = JSON.parse(rawWidgets); renderWidgets(); }
     const savedLang = localStorage.getItem('oOS_language');
     if(savedLang && savedLang !== 'english') setTimeout(() => applyLanguage(savedLang), 100);
+    applyAppearance(oosGet('oOS_appearance','light'));
+    const t24 = document.getElementById('toggle24'); if(t24) t24.checked = use24h();
+    const lai = document.getElementById('localAiToggle'); if(lai) lai.checked = oosGet('oOS_localai','0')==='1';
+    syncStoreButtons(); swRender(); tmRender(); MUSIC.ui();
     const rawTextSize = localStorage.getItem('oOS_textsize');
     if(rawTextSize) { const sl = document.getElementById('textSizeSlider'); if(sl) sl.value=rawTextSize; applyTextSize(rawTextSize); }
     const raw = localStorage.getItem(LS_CONVS);

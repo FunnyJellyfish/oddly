@@ -87,6 +87,10 @@ input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
 .about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
 .about a{color:var(--dim)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* inside oOS (?oos=1): oOS draws the status bar and the home indicator */
+html.oos body{display:block;background:var(--bg)} html.oos .site,html.oos .island,html.oos .sb{display:none}
+html.oos .device{width:100vw;height:100vh;border-radius:0;border:0;box-shadow:none}
+html.oos .hdr{padding-top:10px} html.oos .tabs{padding-bottom:8px}
 
 
 .gauge{position:relative;width:220px;height:150px;margin:0 auto}
@@ -120,6 +124,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
 </style>
 </head>
 <body>
+<script>if(/[?&]oos=1/.test(location.search))document.documentElement.classList.add('oos');</script>
 <a class="site" href="https://www.oddly-inc.com/nukemow.html">&larr; Oddly NukeMow™ on oddly-inc.com</a>
 <div class="device" role="application" aria-label="NukeMow">
   <div class="island" aria-hidden="true"></div>

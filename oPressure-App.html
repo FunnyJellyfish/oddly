@@ -87,6 +87,10 @@ input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
 .about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
 .about a{color:var(--dim)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* inside oOS (?oos=1): oOS draws the status bar and the home indicator */
+html.oos body{display:block;background:var(--bg)} html.oos .site,html.oos .island,html.oos .sb{display:none}
+html.oos .device{width:100vw;height:100vh;border-radius:0;border:0;box-shadow:none}
+html.oos .hdr{padding-top:10px} html.oos .tabs{padding-bottom:8px}
 
 
 .gauge{position:relative;width:240px;height:186px;margin:2px auto 0}
@@ -119,6 +123,7 @@ canvas#alt{width:100%;height:150px;display:block;background:var(--bg2);border-ra
 </style>
 </head>
 <body>
+<script>if(/[?&]oos=1/.test(location.search))document.documentElement.classList.add('oos');</script>
 <a class="site" href="https://www.oddly-inc.com/plane-pressurizer.html">&larr; Oddly Plane Pressurizer on oddly-inc.com</a>
 <div class="device" role="application" aria-label="oPressure">
   <div class="island" aria-hidden="true"></div>
