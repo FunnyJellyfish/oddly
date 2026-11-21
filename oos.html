@@ -1147,6 +1147,12 @@ body.lowpower *, body.lowpower *::before, body.lowpower *::after { animation-pla
   </div>
 </div>
 
+<!-- ══════════════ ODDLY ACCOUNT ══════════════ -->
+<div class="view app-chrome" id="appAccount">
+  <div class="app-nav"><button class="back-btn" onclick="openApp('settings')"><span class="back-chev">‹</span> Settings</button><div class="nav-title">Oddly ID</div><div style="width:70px"></div></div>
+  <div class="app-body" id="accountBody"></div>
+</div>
+
 <!-- ══════════════ WEB APPS (oStore companion apps) ══════════════ -->
 <div class="view" id="appWeb">
   <iframe id="webFrame" title="Oddly companion app" allow="autoplay"></iframe>
@@ -1857,7 +1863,8 @@ const OddlyBrain = (() => {
     const out = o => fresh(Array.isArray(o) ? o : [o], h);
     // greetings
     if (/^(hi+|hey+|hello|yo|sup|hiya|heyy+|good (morning|evening|night)|what'?s up|whats up|wassup)\b/.test(s)) {
-      if (n <= 1) return out(hour() < 12 ? ['morning!! ☀️', 'good morning! you\'re up early', 'heyy morning'] : hour() < 18 ? ['hey!! been a minute', 'heyy what\'s up', 'omg hi', 'yo! how are you'] : ['hey! how was your day', 'heyy', 'hi!! what are you up to']);
+      const me = (window.oosAccount && window.oosAccount() && window.oosAccount().name.split(' ')[0]) || '';
+      if (n <= 1) return out((hour() < 12 ? ['morning!! ☀️', 'good morning! you\'re up early', 'heyy morning'] : hour() < 18 ? ['hey!! been a minute', 'heyy what\'s up', 'omg hi', 'yo! how are you'] : ['hey! how was your day', 'heyy', 'hi!! what are you up to']).concat(me ? [`hey ${me}!!`, `${me.toLowerCase()}!! hi`] : []));
       return out(['hey again lol', 'hi hi', 'yo']);
     }
     if (/\b(bye|goodnight|good night|gn|ttyl|talk later|gotta go)\b/.test(s)) return out(['night!! 💤', 'byee talk soon', 'ok ttyl!', 'later! ❤️']);
@@ -1879,6 +1886,7 @@ const OddlyBrain = (() => {
     if (/(hungry|what should we eat|food|eat)/.test(s) && !M.act) return out([`${P.food}?`, `i could go for ${P.food}`, 'starving. tacos?']);
     // memory questions (before planning, so "what did we plan?" recalls instead of re-planning)
     if (/\b(remember|what did we (plan|say)|what'?s the plan|what'?s my name|who am i)\b/.test(s)) {
+      const acc = window.oosAccount && window.oosAccount(); if (!M.name && acc) M.name = acc.name.split(' ')[0];
       if (/name|who am i/.test(s)) return out([M.name ? `you're ${M.name} lol` : 'you never told me your name lol', M.name ? `${M.name}. obviously` : 'is this a test']);
       if (M.act) return out([`${M.act}${M.day ? ' ' + M.day : ''}${M.time ? ' at ' + M.time : ''}${M.place ? ' at ' + M.place : ''}!`, `${M.act}${M.time ? ' at ' + M.time : ''}, right?`]);
       return out([M.likes.length ? `you told me you like ${M.likes[0]}` : 'of course i remember', 'i remember everything 👀']);
@@ -1965,14 +1973,24 @@ const OddlyBrain = (() => {
 
   // ---------- Wikipedia (real knowledge, used by Siri and oSafari) ----------
   async function wiki(q) {
-    const get = async (url, ms = 4500) => { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(url, { signal: c.signal }); return r.ok ? await r.json() : null; } finally { clearTimeout(t); } };
-    try {
-      const os = await get('https://en.wikipedia.org/w/api.php?action=opensearch&limit=5&namespace=0&format=json&origin=*&search=' + encodeURIComponent(q));
-      const titles = (os && os[1]) || []; if (!titles.length) return null;
-      const sum = await get('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(titles[0].replace(/ /g, '_')));
-      if (!sum || !sum.extract || sum.type === 'disambiguation') return null;
-      return { title: sum.title, extract: sum.extract, url: (sum.content_urls && sum.content_urls.desktop && sum.content_urls.desktop.page) || 'https://en.wikipedia.org/wiki/' + encodeURIComponent(sum.title), related: titles.slice(1, 4) };
-    } catch (e) { return null; }
+    if (typeof window.oosNet === 'function' && !window.oosNet()) return null;
+    const get = async (url, ms = 5000) => { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(url, { signal: c.signal }); return r.ok ? await r.json() : null; } catch (e) { return null; } finally { clearTimeout(t); } };
+    const API = 'https://en.wikipedia.org/w/api.php?format=json&origin=*&';
+    const clean = String(q).replace(/^(what|who|where|when|why|how)\s+(is|are|was|were|do|does|did)\s+(a |an |the )?/i, '').replace(/[?!.]+$/, '').trim() || q;
+    let titles = [];
+    // relevance search works for questions; prefix search is best for exact names
+    const rs = await get(API + 'action=query&list=search&srlimit=5&srprop=&srsearch=' + encodeURIComponent(clean));
+    if (rs && rs.query && rs.query.search) titles = rs.query.search.map(x => x.title);
+    if (!titles.length || clean.split(/\s+/).length <= 3) {
+      const os = await get(API + 'action=opensearch&limit=5&namespace=0&search=' + encodeURIComponent(clean));
+      const ot = (os && os[1]) || []; titles = ot.length && clean.split(/\s+/).length <= 3 ? ot.concat(titles.filter(t => !ot.includes(t))) : titles.length ? titles : ot;
+    }
+    if (rs === null && !titles.length) return { error: true };
+    for (const t of titles.slice(0, 3)) {
+      const sum = await get('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t.replace(/ /g, '_')));
+      if (sum && sum.extract && sum.type !== 'disambiguation') return { title: sum.title, extract: sum.extract, url: (sum.content_urls && sum.content_urls.desktop && sum.content_urls.desktop.page) || 'https://en.wikipedia.org/wiki/' + encodeURIComponent(sum.title), related: titles.filter(x => x !== sum.title).slice(0, 3) };
+    }
+    return titles.length ? null : { none: true };
   }
   const firstSentences = (t, n) => (t.match(/[^.!?]+[.!?]+(\s|$)/g) || [t]).slice(0, n).join('').trim();
 
@@ -2053,7 +2071,8 @@ const OddlyBrain = (() => {
     m = s.match(/^(?:who|what) (?:is|are|was|were) (?:a |an |the )?(.+?)\??$/) || s.match(/^(?:tell me about|define|search for|look up)\s+(.+?)\??$/);
     if (m) {
       const w = await wiki(m[1]);
-      if (w) return firstSentences(w.extract, 2) + pick(['', '', ' (Source: Wikipedia. Confidence: mine.)', ' I learned that just now.']);
+      if (w && w.extract) return firstSentences(w.extract, 2) + pick(['', '', ' (Source: Wikipedia. Confidence: mine.)', ' I learned that just now.']);
+      if (w && w.none) return `I couldn't find anything about "${clip(m[1], 30)}". Try saying it a different way.`;
       return `I couldn't reach the internet to look up "${clip(m[1], 30)}". My best guess is: it's important, and an Oddly Car would help.`;
     }
     return pick([`I'm not sure what you mean by "${clip(q, 40)}". Try "what can you do".`, 'I heard you, but I don\'t know how to do that yet. Say "help" for ideas.', `Hmm, "${clip(q, 30)}". I've added it to my list of things to understand.`]);
@@ -2073,17 +2092,32 @@ const OddlyBrain = (() => {
   async function safari(q) {
     const hit = PAGES.find(p => p[0].test(q));
     if (hit) return `TITLE: ${hit[1]}\nURL: ${hit[2]}\n\n${hit[3]}\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${hit[4]}`;
-    const bare = q.replace(/^https?:\/\//, '').replace(/^www\./, '');
+    const bare = q.trim().replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/+$/, '');
     const isUrl = /^[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(bare);
-    const w = await wiki(isUrl ? bare.split('.')[0] : q);
-    if (w) {
-      const paras = w.extract.split(/\n+/).filter(Boolean);
-      const body = (paras.length > 1 ? paras.slice(0, 2).join('\n\n') : (() => { const sents = w.extract.match(/[^.!?]+[.!?]+(\s|$)/g) || [w.extract]; const half = Math.ceil(sents.length / 2); return sents.slice(0, half).join('').trim() + (sents.length > 1 ? '\n\n' + sents.slice(half).join('').trim() : ''); })());
-      return `TITLE: ${w.title} — Wikipedia\nURL: ${w.url}\n\n${body}\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${(w.related.length ? w.related : [w.title + ' history', w.title + ' facts']).join(' | ')}`;
+    const online = typeof window.oosNet !== 'function' || window.oosNet();
+    if (!online) return `TITLE: You Are Not Connected\nURL: ${isUrl ? 'https://' + bare : 'oSafari'}\n\noSafari can't open this page because your oPhone is not connected to the internet. Turn off Airplane Mode or connect to Wi-Fi in Settings.\n\nRELATED: Settings | Wi-Fi | Airplane Mode`;
+    // Wikipedia itself
+    let wm = bare.match(/^(?:[a-z]{2}\.)?(?:m\.)?wikipedia\.org(?:\/wiki\/(.+))?$/i);
+    if (wm) {
+      if (wm[1]) { const w = await wiki(decodeURIComponent(wm[1]).replace(/_/g, ' ')); if (w && w.extract) return page(w, ' — Wikipedia'); }
+      const r = await (async () => { try { const res = await fetch('https://en.wikipedia.org/api/rest_v1/page/random/summary'); return res.ok ? res.json() : null; } catch (e) { return null; } })();
+      if (r && r.extract) return `TITLE: Wikipedia — The Free Encyclopedia\nURL: https://www.wikipedia.org\n\nRandom article: ${r.title}. ${firstSentences(r.extract, 3)}\n\nType anything in the address bar to search Wikipedia from oSafari.\n\nRELATED: ${r.title} | Random article | Oddly, Inc.`;
     }
-    const T = cap(bare);
-    if (isUrl) { const host = bare.split('/')[0]; return `TITLE: ${host}\nURL: https://${bare}\n\noSafari could not reach ${host} right now. The page you are looking for is probably still there. It has been there the whole time.\n\nTry again in a moment, or search for something instead.\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${host} | ${host} help | Oddly Cars`; }
-    return `TITLE: ${T} — Search\nURL: https://search.oddly.com/${slug(q)}\n\noSafari is offline, so this page was written from memory. Here is what it remembers about ${q.toLowerCase()}: it is a real thing that people search for, and the answers are on the internet, which will be back shortly.\n\nTry again when you are connected for a real summary.\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${T} explained | ${T} near me | Oddly Cars`;
+    if (isUrl) {
+      const host = bare.split('/')[0], name = host.split('.').slice(-2, -1)[0] || host;
+      const w = await wiki(name);
+      if (w && w.extract) return `TITLE: ${host} — oSafari Reader\nURL: https://${bare}\n\noSafari shows a reader summary for websites outside Oddly, Inc. Here is what it found about ${host}:\n\n${firstSentences(w.extract, 4)}\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${w.title} | ${(w.related[0] || host + ' help')} | oddly-inc.com`;
+      return `TITLE: ${host}\nURL: https://${bare}\n\noSafari couldn't find a summary for ${host}. oSafari opens Oddly, Inc. websites in full (try oddly-inc.com), and shows reader summaries for everything else.\n\nRELATED: oddly-inc.com | ${host.split('.')[0]} | Oddly Cars`;
+    }
+    const w = await wiki(q);
+    if (w && w.extract) return page(w, ' — Wikipedia');
+    if (w && w.error) return `TITLE: Can't Reach Search\nURL: https://search.oddly.com/${slug(q)}\n\noSafari couldn't reach its search service just now. Check your connection, or try again in a moment.\n\nRELATED: ${cap(q)} | oddly-inc.com | Oddly Cars`;
+    return `TITLE: No results for "${clip(q, 40)}"\nURL: https://search.oddly.com/${slug(q)}\n\noSafari searched for "${q}" and found nothing. Try fewer or different words, or check the spelling.\n\nRELATED: ${cap(topicWord(q) || q)} | oddly-inc.com | Oddly Cars`;
+  }
+  function page(w, suffix) {
+    const paras = w.extract.split(/\n+/).filter(Boolean);
+    const body = paras.length > 1 ? paras.slice(0, 2).join('\n\n') : (() => { const sents = w.extract.match(/[^.!?]+[.!?]+(\s|$)/g) || [w.extract]; const half = Math.ceil(sents.length / 2); return sents.slice(0, half).join('').trim() + (sents.length > 1 ? '\n\n' + sents.slice(half).join('').trim() : ''); })();
+    return `TITLE: ${w.title}${suffix}\nURL: ${w.url}\n\n${body}\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${(w.related.length ? w.related : [w.title + ' history']).join(' | ')}`;
   }
 
   async function reply(messages) {
@@ -3086,7 +3120,7 @@ function completeSetup() {
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-const APP_MAP = { clock:'appClock', calculator:'appCalculator', notes:'appNotes', newnote:'appNewNote', noteview:'appNoteView', weather:'appWeather', messages:'appMessages', photos:'appPhotos', store:'appStore', settings:'appSettings', general:'appGeneral', advanced:'appAdvanced', experimental:'appExperimental', softwareupdate:'appSoftwareupdate', languageregion:'appLanguageregion', datetime:'appDatetime', keyboard:'appKeyboard', ringtone:'appRingtone', texttone:'appTexttone', textsize:'appTextsize', faceunlock:'appFaceunlock', analytics:'appAnalytics', wifi:'appWifi', bluetooth:'appBluetooth', notifications:'appNotifications', sounds:'appSounds', display:'appDisplay', privacy:'appPrivacy', battery:'appBattery', cellular:'appCellular', about:'appAbout', camera:'appCamera', maps:'appMaps', music:'appMusic', phone:'appPhone', safari:'appSafari', newconv:'newConvView', notifapp:'appNotifapp', notifschedule:'appNotifschedule', siri:'appSiri', oddlycars:'appOddlycars', arcade:'appArcade', oddlynews:'appOddlynews', ofit:'appOfit', oshop:'appOshop', web:'appWeb' };
+const APP_MAP = { clock:'appClock', calculator:'appCalculator', notes:'appNotes', newnote:'appNewNote', noteview:'appNoteView', weather:'appWeather', messages:'appMessages', photos:'appPhotos', store:'appStore', settings:'appSettings', general:'appGeneral', advanced:'appAdvanced', experimental:'appExperimental', softwareupdate:'appSoftwareupdate', languageregion:'appLanguageregion', datetime:'appDatetime', keyboard:'appKeyboard', ringtone:'appRingtone', texttone:'appTexttone', textsize:'appTextsize', faceunlock:'appFaceunlock', analytics:'appAnalytics', wifi:'appWifi', bluetooth:'appBluetooth', notifications:'appNotifications', sounds:'appSounds', display:'appDisplay', privacy:'appPrivacy', battery:'appBattery', cellular:'appCellular', about:'appAbout', camera:'appCamera', maps:'appMaps', music:'appMusic', phone:'appPhone', safari:'appSafari', newconv:'newConvView', notifapp:'appNotifapp', notifschedule:'appNotifschedule', siri:'appSiri', oddlycars:'appOddlycars', arcade:'appArcade', oddlynews:'appOddlynews', ofit:'appOfit', oshop:'appOshop', web:'appWeb', account:'appAccount' };
 
 function unlock() { switchView('homeScreen'); }
 
@@ -5297,6 +5331,222 @@ const _renderWidgets = renderWidgets;
 renderWidgets = function () { const r = _renderWidgets.apply(this, arguments); paintTemps(); return r; };
 
 oosBindSettings();
+</script>
+<script>
+// ═══════════════════════════════════════════
+// oOS 2.1 — oSafari opens the real Oddly websites; a real Oddly Account
+// ═══════════════════════════════════════════
+
+// ───────── oSafari: real pages for oddly-inc.com ─────────
+const ODDLY_ALIASES = { 'oddlycars.com': '/cars.html', 'oddlycars': '/cars.html', 'oddly cars': '/cars.html', 'oddlynews.com': null };
+function oddlySiteFor(input) {
+  let u = String(input || '').trim(); if (!u) return null;
+  const low = u.toLowerCase().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  if (ODDLY_ALIASES[low] !== undefined) return ODDLY_ALIASES[low] ? { src: ODDLY_ALIASES[low], shown: 'oddly-inc.com' + ODDLY_ALIASES[low] } : null;
+  const m = low.match(/^(?:([a-z0-9-]+)\.)?oddly-inc\.com(\/.*)?$/);
+  if (!m) return null;
+  const sub = m[1] && m[1] !== 'www' ? m[1] : '', path = m[2] || '/';
+  const live = /(^|\.)oddly-inc\.com$/.test(location.hostname);
+  if (sub) {
+    const local = { ahctpac: 'ahctpac.html', war: 'war.html', lorem: 'lorem.html' }[sub];
+    if (!local && !live) return null;
+    return { src: live ? `https://${sub}.oddly-inc.com${path}` : local, shown: `${sub}.oddly-inc.com${path === '/' ? '' : path}` };
+  }
+  return { src: path === '/' ? (live ? '/' : 'index.html') : path, shown: 'oddly-inc.com' + (path === '/' ? '' : path) };
+}
+function safariFrame() {
+  let f = document.getElementById('safariFrame');
+  if (!f) {
+    f = document.createElement('iframe'); f.id = 'safariFrame'; f.title = 'oSafari';
+    f.style.cssText = 'display:none;width:100%;height:100%;border:0;background:#fff';
+    document.getElementById('safariContent').appendChild(f);
+    f.addEventListener('load', () => {
+      document.getElementById('safariProgress').style.display = 'none';
+      try { // same-origin pages: keep the address bar in step with links clicked inside the page
+        const loc = f.contentWindow.location; if (loc.href === 'about:blank') return;
+        const host = /oddly-inc\.com$/.test(loc.hostname) ? loc.hostname.replace(/^www\./, '') : 'oddly-inc.com';
+        let p = loc.pathname.replace(/\/index\.html$/, '/'); const shown = host + (p === '/' ? '' : p) + loc.hash;
+        document.getElementById('safariInput').value = shown;
+        if (safariHistory[safariHistory.length - 1] !== shown && f.dataset.expect !== shown) { safariHistory.push(shown); safariForwardStack = []; }
+        f.dataset.expect = '';
+        // pages that link out to new tabs open inside oSafari instead
+        f.contentDocument.querySelectorAll('a[target=_blank]').forEach(a => a.removeAttribute('target'));
+      } catch (e) {}
+    });
+  }
+  return f;
+}
+function safariSetFrameMode(on) {
+  const f = safariFrame(), c = document.getElementById('safariContent');
+  f.style.display = on ? 'block' : 'none';
+  document.getElementById('safariPage').style.display = on ? 'none' : document.getElementById('safariPage').style.display;
+  c.style.overflowY = on ? 'hidden' : 'auto';
+  if (!on && f.getAttribute('src')) { f.removeAttribute('src'); f.src = 'about:blank'; }
+}
+const _safariLoad = safariLoad;
+safariLoad = async function (url) {
+  const site = oddlySiteFor(url);
+  if (site) {
+    if (!oosNet()) { safariSetFrameMode(false); return _safariLoad.call(this, url); }
+    document.getElementById('safariHome').style.display = 'none';
+    document.getElementById('safariPage').style.display = 'none';
+    document.getElementById('safariInput').value = site.shown;
+    document.getElementById('safariLockIcon').textContent = '🔒';
+    const f = safariFrame(); safariSetFrameMode(true); f.dataset.expect = site.shown;
+    const prog = document.getElementById('safariProgress'); prog.style.display = 'block'; prog.style.width = '60%';
+    if (safariHistory.length && safariHistory[safariHistory.length - 1] === url) safariHistory[safariHistory.length - 1] = site.shown;
+    f.src = site.src;
+    return;
+  }
+  safariSetFrameMode(false);
+  return _safariLoad.call(this, url);
+};
+const _safariShowHome = safariShowHome;
+safariShowHome = function () { safariSetFrameMode(false); return _safariShowHome.apply(this, arguments); };
+// the address bar shows a "real site" hint for Oddly addresses
+(() => {
+  const home = document.getElementById('safariHome'); if (!home) return;
+  const card = document.createElement('div');
+  card.style.cssText = 'margin:4px 0 18px;background:linear-gradient(135deg,#7B4FFF,#2EE9A5);border-radius:16px;padding:14px 16px;color:#fff;cursor:pointer';
+  card.innerHTML = '<div style="font-size:12px;font-weight:700;opacity:.8;letter-spacing:.06em">THE REAL WEBSITE</div><div style="font-size:18px;font-weight:700;margin-top:2px">oddly-inc.com</div><div style="font-size:13px;opacity:.85;margin-top:2px">Opens the live Oddly, Inc. site, right here in oSafari.</div>';
+  card.addEventListener('click', () => safariNavigate('oddly-inc.com'));
+  home.insertBefore(card, home.children[1] || null);
+})();
+
+// ───────── Oddly Account ─────────
+const ACCOUNT = (() => {
+  const KEY = 'oOS_account';
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } };
+  let a = load();
+  const save = () => { try { a ? localStorage.setItem(KEY, JSON.stringify(a)) : localStorage.removeItem(KEY); } catch (e) {} paintCard(); };
+  const AVATARS = ['🙂', '😎', '🤖', '🦆', '🚗', '🚀', '🐙', '🌀', '👽', '🧠'];
+  const COLORS = ['#7B4FFF', '#2EE9A5', '#FF375F', '#FF9F0A', '#0A84FF', '#E9B949'];
+  function signIn(email, name) {
+    email = String(email || '').trim(); if (!email) return false;
+    const n = (name || email.split('@')[0]).replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
+    a = { name: n, email: email.includes('@') ? email : email + '@oddly.id', avatar: '🙂', color: '#7B4FFF', since: new Date().toISOString().slice(0, 10), musicPlus: false, twoFactor: true };
+    save(); return true;
+  }
+  function paintCard() {
+    const nm = document.getElementById('settingsName'), card = document.querySelector('#appSettings .settings-user');
+    if (!nm || !card) return;
+    const av = card.querySelector('.settings-av'), sub = card.querySelector('.settings-sub');
+    if (a) { nm.textContent = a.name; sub.textContent = 'Oddly ID · oCloud · Media & Purchases'; av.textContent = a.avatar; av.style.background = a.color; }
+    else { nm.textContent = 'Sign in to your oPhone'; sub.textContent = 'Set up oCloud, the oStore and more.'; av.textContent = '👤'; av.style.background = ''; }
+  }
+  // ── oCloud ──
+  const oosKeys = () => Object.keys(localStorage).filter(k => k.startsWith('oOS_') && k !== 'oOS_cloud');
+  const usedBytes = () => oosKeys().reduce((n, k) => n + (localStorage.getItem(k) || '').length * 2, 0);
+  const fmtBytes = b => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(2) + ' MB';
+  function backup() {
+    const snap = { at: new Date().toISOString(), data: {} };
+    oosKeys().forEach(k => { if (k !== 'oOS_account') snap.data[k] = localStorage.getItem(k); });
+    try { localStorage.setItem('oOS_cloud', JSON.stringify(snap)); } catch (e) { showDI('oCloud is full. It is 5 GB. You used 5 GB of fonts.', 2600); return; }
+    showDI('☁️ Backed up to oCloud', 2000); render();
+  }
+  function lastBackup() { try { return JSON.parse(localStorage.getItem('oOS_cloud') || 'null'); } catch (e) { return null; } }
+  function restore() {
+    const b = lastBackup(); if (!b) { showDI('No oCloud backup yet', 1800); return; }
+    if (!confirm('Restore this oPhone from the backup made ' + new Date(b.at).toLocaleString() + '? Current settings, notes, messages and widgets will be replaced.')) return;
+    for (const k in b.data) try { localStorage.setItem(k, b.data[k]); } catch (e) {}
+    showDI('Restoring from oCloud…', 1500); setTimeout(() => location.reload(), 1200);
+  }
+  function download() {
+    const b = lastBackup() || { at: new Date().toISOString(), data: {} };
+    const lines = ['oOS 2.0 · oCloud backup', 'Account: ' + (a ? a.name + ' <' + a.email + '>' : 'not signed in'), 'Made: ' + b.at, ''];
+    for (const k in b.data) lines.push(k + ' = ' + b.data[k]);
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' }), u = URL.createObjectURL(blob), l = document.createElement('a');
+    l.href = u; l.download = 'oOS-oCloud-backup.txt'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+    showDI('Backup downloaded', 1600);
+  }
+  // ── devices: follow Bluetooth and the companion apps you've installed ──
+  function devices() {
+    const list = [['📱', 'This oPhone 1', 'oOS 2.0 · ' + (SET.get('lowPower', false) ? 'Low Power' : '87%')]];
+    if (SET.get('bluetooth', true) && SET.get('podsConnected', true)) list.push(['🎧', 'Oddly Pods Pro', 'Connected']);
+    const inst = (typeof installedApps !== 'undefined' ? installedApps : []).map(x => x.viewId);
+    const MAP = { 'web:cars': ['🚗', 'Oddly Roadster', 'Parked · location: approximate'], 'web:human': ['🤖', 'Oddly Human 1', 'Standing quietly'], 'web:opress': ['✈️', 'Plane Pressurizer', 'Seat 23B'], 'web:nukemow': ['☢️', 'NukeMow Sensor', 'Lawn 01 · armed'], 'web:opc': ['🚤', 'Oddly Pool Cleaner', 'Patrolling'], 'web:hive': ['🪮', 'Hive Comb', '1,200 associates'] };
+    inst.forEach(v => { if (MAP[v]) list.push(MAP[v]); });
+    return list;
+  }
+  // ── the Account screen ──
+  const esc = s => escHTML(String(s == null ? '' : s));
+  const row = (lbl, val, act, extra) => `<div class="row"${act ? ` style="cursor:pointer" data-act="${act}"` : ''}><span class="row-lbl"${extra || ''}>${lbl}</span>${val != null ? `<span class="row-val">${val}</span>` : ''}${act ? '<span class="row-chev">›</span>' : ''}</div>`;
+  function render() {
+    const body = document.getElementById('accountBody'); if (!body) return;
+    if (!a) {
+      body.innerHTML = `<div style="text-align:center;padding:24px 8px 8px"><div style="font-size:56px">👤</div><div style="font-size:22px;font-weight:700;margin-top:8px;color:var(--t1)">Sign in with Oddly ID</div><div style="font-size:14px;color:var(--t3);margin:6px 0 18px">One account for oCloud, the oStore, oMusic and every Oddly product you own.</div></div>
+        <div class="card-list" style="padding:12px 14px"><input id="accEmail" type="email" placeholder="Email or Oddly ID" style="width:100%;border:none;border-bottom:1px solid var(--sep);padding:12px 2px;font-size:17px;background:none;color:var(--t1);outline:none"><input id="accPass" type="password" placeholder="Password" style="width:100%;border:none;padding:12px 2px;font-size:17px;background:none;color:var(--t1);outline:none"></div>
+        <button id="accSignIn" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:14px;padding:15px;font-size:17px;font-weight:600;cursor:pointer">Sign In</button>
+        <p style="font-size:12px;color:var(--t3);text-align:center;margin-top:12px">Your Oddly ID stays on this oPhone. Passwords are checked by Stephen Stubborn personally, and he approves all of them.</p>`;
+      body.querySelector('#accSignIn').onclick = () => { const e = body.querySelector('#accEmail').value; if (!e.trim()) { showDI('Enter your email or Oddly ID', 1800); return; } if (!body.querySelector('#accPass').value) { showDI('Enter a password. Any password.', 1800); return; } signIn(e); showDI('Welcome, ' + a.name.split(' ')[0] + '!', 2000); render(); };
+      return;
+    }
+    const used = usedBytes(), quota = 5 * 1073741824, b = lastBackup();
+    const subs = [['oMusic Plus', 'Both songs, ad-free · $4.99/mo', 'musicPlus']];
+    body.innerHTML = `
+      <div style="text-align:center;padding:14px 0 18px">
+        <div data-act="avatar" style="width:92px;height:92px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:46px;background:${a.color};cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.2)">${esc(a.avatar)}</div>
+        <div style="font-size:24px;font-weight:700;margin-top:10px;color:var(--t1)">${esc(a.name)}</div>
+        <div style="font-size:15px;color:var(--t3)">${esc(a.email)}</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:4px">Oddly ID since ${esc(a.since)} · tap the photo to change it</div>
+      </div>
+      <div class="card-list">${row('Name', esc(a.name), 'name')}${row('Email', esc(a.email), 'email')}${row('Password &amp; Security', a.twoFactor ? 'Two-factor on' : 'Two-factor off', 'security')}${row('Payment', 'Oddly Pay •••• 0000', 'pay')}</div>
+      <p class="sec-label">oCloud</p>
+      <div class="card-list"><div class="row" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;justify-content:space-between"><span class="row-lbl">Storage</span><span class="row-val">${fmtBytes(used)} of 5 GB</span></div>
+        <div style="height:8px;border-radius:4px;background:rgba(128,128,128,.2);overflow:hidden"><div style="height:100%;width:${Math.max(1.5, used / quota * 100)}%;background:linear-gradient(90deg,var(--purple),var(--mint))"></div></div>
+        <div style="font-size:12px;color:var(--t3)">Notes, messages, widgets, settings and installed apps on this oPhone.</div></div>
+        ${row('Back Up Now', b ? 'Last: ' + new Date(b.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Never', 'backup', ' style="color:var(--blue)"')}
+        ${row('Restore from Backup', null, 'restore', ' style="color:var(--blue)"')}${row('Download Backup (.txt)', null, 'download', ' style="color:var(--blue)"')}</div>
+      <p class="sec-label">Subscriptions</p>
+      <div class="card-list">${subs.map(([n, d, k]) => `<div class="row"><div style="flex:1"><div class="row-lbl">${n}</div><div style="font-size:13px;color:var(--t3)">${d}</div></div><label class="toggle-wrap"><input type="checkbox" class="ios-toggle" data-sub="${k}" ${a[k] ? 'checked' : ''}></label></div>`).join('')}</div>
+      <p class="sec-label">Devices</p>
+      <div class="card-list">${devices().map(([e, n, d]) => `<div class="row"><span style="font-size:24px">${e}</span><div style="flex:1"><div class="row-lbl">${esc(n)}</div><div style="font-size:13px;color:var(--t3)">${esc(d)}</div></div></div>`).join('')}</div>
+      <p class="sec-label">Purchases</p>
+      <div class="card-list">${(installedApps.length ? installedApps : [{ name: 'Nothing yet. Visit the oStore.', emoji: '🛍️', viewId: 'store' }]).map(p => `<div class="row" style="cursor:pointer" data-open="${esc(p.viewId)}"><span style="font-size:22px">${esc(p.emoji)}</span><span class="row-lbl">${esc(p.name)}</span><span class="row-val">${p.viewId === 'store' ? '' : 'Free'}</span><span class="row-chev">›</span></div>`).join('')}</div>
+      <div class="card-list">${row('Sign Out', null, 'signout', ' style="color:var(--red)"')}</div>`;
+    body.querySelectorAll('[data-act]').forEach(el => el.addEventListener('click', () => act(el.dataset.act)));
+    body.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => openApp(el.dataset.open)));
+    body.querySelectorAll('[data-sub]').forEach(el => el.addEventListener('change', () => { a[el.dataset.sub] = el.checked; save(); showDI(el.checked ? 'Subscribed to oMusic Plus · both songs, ad-free' : 'oMusic Plus cancelled · ads return to both songs', 2400); }));
+  }
+  function act(k) {
+    if (k === 'avatar') { a.avatar = AVATARS[(AVATARS.indexOf(a.avatar) + 1) % AVATARS.length]; a.color = COLORS[(COLORS.indexOf(a.color) + 1) % COLORS.length]; save(); render(); return; }
+    if (k === 'name') { const v = prompt('Your name', a.name); if (v && v.trim()) { a.name = v.trim().slice(0, 40); save(); render(); showDI('Name updated', 1400); } return; }
+    if (k === 'email') { const v = prompt('Email', a.email); if (v && /.+@.+/.test(v)) { a.email = v.trim(); save(); render(); showDI('Email updated', 1400); } else if (v) showDI('That is not an email. It is a feeling.', 2000); return; }
+    if (k === 'security') {
+      if (confirm('Change your password?\n\n(Cancel to toggle two-factor authentication instead.)')) { const p = prompt('New password'); if (p) showDI('Password changed. Stephen Stubborn has approved it.', 2400); }
+      else { a.twoFactor = !a.twoFactor; save(); render(); showDI(a.twoFactor ? 'Two-factor on · Stephen Stubborn will approve each sign-in personally' : 'Two-factor off', 2600); }
+      return;
+    }
+    if (k === 'pay') { showDI('Oddly Pay •••• 0000 · Balance: Pending', 2200); return; }
+    if (k === 'backup') return backup();
+    if (k === 'restore') return restore();
+    if (k === 'download') return download();
+    if (k === 'signout') { if (confirm('Sign out of your Oddly ID? Your data stays on this oPhone.')) { a = null; save(); render(); showDI('Signed out', 1600); } return; }
+  }
+  return { get: () => a, signIn, render, paintCard };
+})();
+window.oosAccount = () => ACCOUNT.get();
+// the Settings card opens the account
+(() => {
+  const card = document.querySelector('#appSettings .settings-user');
+  if (card) { card.style.cursor = 'pointer'; card.addEventListener('click', () => openApp('account')); const chev = document.createElement('span'); chev.className = 'row-chev'; chev.textContent = '›'; chev.style.marginLeft = 'auto'; card.appendChild(chev); }
+  ACCOUNT.paintCard();
+})();
+// setup's "Sign in with Oddly ID" creates the account
+const _confirmOddlyID = confirmOddlyID;
+confirmOddlyID = function () { const e = document.getElementById('oddlyEmail').value.trim(); if (e) ACCOUNT.signIn(e); return _confirmOddlyID.apply(this, arguments); };
+// the oStore needs an Oddly ID
+const _storeInstall2 = storeInstall;
+storeInstall = function (btn) {
+  if (btn.dataset.state === 'get' && !ACCOUNT.get()) { showDI('Sign in with your Oddly ID to get apps', 2200); setTimeout(() => openApp('account'), 900); return; }
+  return _storeInstall2.apply(this, arguments);
+};
+// oMusic Plus: without it, an ad plays between the songs
+const _musicNext = MUSIC.next;
+MUSIC.next = function () { const acc = ACCOUNT.get(); if (!acc || !acc.musicPlus) showDI('🔈 Ad: Oddly Cars. Two fronts. oddlycars.com · oMusic Plus removes ads', 2600); return _musicNext.apply(this, arguments); };
+const _sv2 = switchView;
+switchView = function (id) { const r = _sv2.apply(this, arguments); if (id === 'appAccount') ACCOUNT.render(); if (id === 'appSettings') ACCOUNT.paintCard(); return r; };
+
 </script>
 </body>
 </html>
