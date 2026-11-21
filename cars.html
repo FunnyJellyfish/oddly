@@ -1,679 +1,504 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oddly Cars - Drive Oddly</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #FF006E;
-            --secondary: #00D9FF;
-            --accent: #FFBE0B;
-            --dark: #1a1a1a;
-            --light: #f0f0f0;
-            --odd-purple: #8338EC;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, var(--dark) 0%, #2d1b4e 100%);
-            color: var(--light);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* HEADER */
-        header {
-            padding: 60px 40px;
-            text-align: center;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--odd-purple) 50%, var(--secondary) 100%);
-            position: relative;
-            overflow: hidden;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-            animation: headerBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        @keyframes headerBounce {
-            0% { transform: translateY(-50px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        .title {
-            font-size: 4.5rem;
-            font-weight: bold;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            color: var(--dark);
-            text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.3);
-            animation: titleGlow 2s ease-in-out infinite;
-        }
-
-        @keyframes titleGlow {
-            0%, 100% { text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.3), 0 0 20px var(--accent); }
-            50% { text-shadow: 3px 3px 0px rgba(255, 255, 255, 0.5), 0 0 40px var(--accent); }
-        }
-
-        .tagline {
-            font-size: 1.5rem;
-            font-style: italic;
-            color: var(--dark);
-            letter-spacing: 3px;
-        }
-
-        /* NAVIGATION */
-        nav {
-            background: var(--dark);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 4px dashed var(--primary);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav a {
-            color: var(--secondary);
-            margin: 0 25px;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        nav a:hover {
-            color: var(--accent);
-            transform: scale(1.2);
-            text-shadow: 0 0 10px var(--accent);
-        }
-
-        /* MAIN CONTAINER */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 40px;
-        }
-
-        /* HERO SECTION */
-        .hero {
-            background: linear-gradient(135deg, var(--odd-purple) 0%, var(--primary) 100%);
-            padding: 60px;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            position: relative;
-            border: 4px solid var(--accent);
-            box-shadow: 0 20px 60px rgba(255, 0, 110, 0.4);
-            animation: heroSlideIn 0.8s ease-out;
-        }
-
-        @keyframes heroSlideIn {
-            0% { transform: translateX(-100%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: var(--accent);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
-        /* PRODUCTS GRID */
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            margin-bottom: 80px;
-        }
-
-        .product-card {
-            background: linear-gradient(135deg, rgba(131, 56, 236, 0.2) 0%, rgba(255, 0, 110, 0.2) 100%);
-            border: 3px dashed var(--secondary);
-            padding: 40px;
-            border-radius: 15px;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            position: relative;
-            overflow: hidden;
-            animation: cardFadeIn 0.8s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .product-card:nth-child(1) { animation-delay: 0.2s; }
-        .product-card:nth-child(2) { animation-delay: 0.4s; }
-        .product-card:nth-child(3) { animation-delay: 0.6s; }
-
-        @keyframes cardFadeIn {
-            0% { opacity: 0; transform: translateY(40px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .product-card:hover {
-            transform: scale(1.08) rotate(1deg);
-            border-color: var(--accent);
-            box-shadow: 0 0 40px var(--primary), inset 0 0 40px rgba(255, 190, 11, 0.1);
-        }
-
-        .product-card h3 {
-            font-size: 1.8rem;
-            color: var(--secondary);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .product-card .emoji {
-            font-size: 4rem;
-            margin: 20px 0;
-            animation: emojiFloat 3s ease-in-out infinite;
-        }
-
-        .product-card:nth-child(1) .emoji { animation-delay: 0s; }
-        .product-card:nth-child(2) .emoji { animation-delay: 0.5s; }
-        .product-card:nth-child(3) .emoji { animation-delay: 1s; }
-
-        @keyframes emojiFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .product-card p {
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-        }
-
-        .spec {
-            background: rgba(0, 217, 255, 0.1);
-            padding: 12px;
-            margin: 12px 0;
-            border-left: 4px solid var(--accent);
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover .spec {
-            background: rgba(255, 190, 11, 0.2);
-            border-left-color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        /* WHY ODDLY SECTION */
-        .why-section {
-            background: linear-gradient(135deg, rgba(255, 0, 110, 0.15) 0%, rgba(131, 56, 236, 0.15) 100%);
-            border: 3px dashed var(--odd-purple);
-            padding: 60px;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            animation: cardFadeIn 0.8s ease-out 0.2s both;
-        }
-
-        .why-section h2 {
-            font-size: 2.2rem;
-            color: var(--secondary);
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-align: center;
-        }
-
-        .why-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .why-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 25px;
-            border-radius: 10px;
-            border: 2px solid var(--primary);
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .why-item:hover {
-            transform: translateY(-8px) rotate(-1deg);
-            border-color: var(--accent);
-            box-shadow: 0 15px 40px rgba(255, 0, 110, 0.3);
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .why-item .icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .why-item h3 {
-            color: var(--accent);
-            margin-bottom: 8px;
-            font-size: 1.2rem;
-        }
-
-        .why-item p {
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-
-        /* TESTIMONIALS */
-        .testimonials {
-            background: linear-gradient(90deg, rgba(0, 217, 255, 0.1) 0%, rgba(131, 56, 236, 0.1) 100%);
-            border: 3px solid var(--secondary);
-            padding: 60px;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            animation: cardFadeIn 0.8s ease-out 0.4s both;
-        }
-
-        .testimonials h2 {
-            text-align: center;
-            font-size: 2.2rem;
-            color: var(--secondary);
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .testimonial-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed var(--secondary);
-            padding: 30px;
-            border-radius: 12px;
-            transition: all 0.4s ease;
-        }
-
-        .testimonial-card:hover {
-            transform: scale(1.05) rotate(2deg);
-            border-color: var(--accent);
-            background: rgba(255, 190, 11, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 15px;
-            color: var(--light);
-        }
-
-        .testimonial-author {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .star-rating {
-            color: var(--accent);
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
-
-        /* QUOTES SECTION */
-        .quotes {
-            background: linear-gradient(90deg, var(--dark) 0%, rgba(131, 56, 236, 0.3) 50%, var(--dark) 100%);
-            border: 3px solid var(--accent);
-            padding: 60px;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            position: relative;
-        }
-
-        .quotes h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 50px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-
-        .quotes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .quote-card {
-            background: linear-gradient(135deg, rgba(255, 0, 110, 0.15) 0%, rgba(0, 217, 255, 0.15) 100%);
-            border: 2px solid var(--primary);
-            padding: 30px;
-            border-radius: 12px;
-            position: relative;
-            animation: quoteSlideIn 0.8s ease-out;
-        }
-
-        .quote-card:nth-child(odd) { animation-delay: 0.3s; }
-        .quote-card:nth-child(even) { animation-delay: 0.5s; }
-
-        @keyframes quoteSlideIn {
-            0% { opacity: 0; transform: translateX(-50px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        .quote-mark {
-            font-size: 3rem;
-            color: var(--secondary);
-            opacity: 0.3;
-            position: absolute;
-            top: -10px;
-            left: 20px;
-        }
-
-        .quote-text {
-            font-style: italic;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--light);
-            position: relative;
-            z-index: 1;
-        }
-
-        .quote-source {
-            color: var(--accent);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* FOOTER */
-        footer {
-            background: linear-gradient(90deg, var(--dark) 0%, var(--odd-purple) 50%, var(--dark) 100%);
-            padding: 50px;
-            text-align: center;
-            border-top: 4px dashed var(--secondary);
-            margin-top: 100px;
-            position: relative;
-        }
-
-        footer p {
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .footer-absurd {
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 20px;
-        }
-
-        /* RANDOM ROTATION ANIMATION */
-        .chaos {
-            animation: chaosRotate 8s linear infinite;
-        }
-
-        @keyframes chaosRotate {
-            0% { transform: rotate(0deg) translateX(0); }
-            25% { transform: rotate(15deg) translateX(10px); }
-            50% { transform: rotate(-10deg) translateX(-5px); }
-            75% { transform: rotate(8deg) translateX(8px); }
-            100% { transform: rotate(0deg) translateX(0); }
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2.5rem;
-                letter-spacing: 4px;
-            }
-
-            .tagline {
-                font-size: 1rem;
-            }
-
-            nav a {
-                display: block;
-                margin: 10px 0;
-            }
-
-            main {
-                padding: 30px 20px;
-            }
-
-            header {
-                padding: 40px 20px;
-            }
-
-            .products {
-                grid-template-columns: 1fr;
-            }
-
-            .hero {
-                padding: 30px;
-            }
-
-            .hero h2 {
-                font-size: 1.8rem;
-            }
-
-            .quotes {
-                padding: 30px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly Cars — Drive Oddly</title>
+<meta name="description" content="The Front-Front. The Back-Back. Oddly Autonomous™. Cars with a clear sense of direction, in both directions.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --line:#242849;
+    --text:#EDEDF7; --dim:#9A9EC0; --pink:#7B4FFF; --cyan:#2EE9A5;
+    --amber:#F5A623; --red:#FF4D5E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:640px}
+
+  /* reveal (content stays visible without JS) */
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--pink);color:#fff;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(123,79,255,.35)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--pink);box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+
+  /* hero */
+  .hero{padding:78px 0 70px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(700px 380px at 78% 35%,rgba(123,79,255,.16),transparent 70%),
+    radial-gradient(600px 340px at 10% 0%,rgba(46,233,165,.08),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:26px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(48px,7.6vw,92px)}
+  .hero h1 em{font-style:italic;color:var(--pink);font-weight:600}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:520px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* hero stage */
+  .stage{background:linear-gradient(180deg,var(--bg2),var(--card));border:1px solid var(--line);border-radius:22px;padding:18px 18px 16px;position:relative;overflow:hidden}
+  .stage-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--bg)}
+  .toggle button{background:transparent;border:none;color:var(--dim);padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;transition:background .2s,color .2s}
+  .toggle button.on{background:var(--pink);color:#fff;font-weight:600}
+  .readout{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.06em}
+  .readout b{color:var(--cyan);font-weight:600}
+  .carsvg{width:100%;height:auto;display:block}
+  .car{animation:rock 3.2s ease-in-out infinite}
+  @keyframes rock{0%,100%{transform:translateX(-14px)}50%{transform:translateX(14px)}}
+  .wheel{animation:spin 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+  @keyframes spin{from{transform:rotate(-200deg)}to{transform:rotate(200deg)}}
+  .road line{animation:dash 3.2s ease-in-out infinite}
+  @keyframes dash{0%,100%{transform:translateX(10px)}50%{transform:translateX(-10px)}}
+  .puff{animation:puff 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+  .puff.r{animation-delay:.8s}
+  @keyframes puff{0%{opacity:.7;transform:scale(.4)}100%{opacity:0;transform:scale(1.6)}}
+  .ff-only,.bb-only{transition:opacity .35s}
+  .mode-bb .ff-only{opacity:0}
+  .mode-ff .bb-only{opacity:0}
+  .stage-cap{font-size:14px;color:var(--dim);margin-top:4px;min-height:44px}
+
+  /* ticker */
+  .ticker{background:var(--pink);color:#fff;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;padding:10px 0}
+  .ticker span{display:inline-block;animation:tick 42s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+
+  /* fleet */
+  .fleet{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}
+  @media(max-width:940px){.fleet{grid-template-columns:1fr}}
+  .model{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;transition:border-color .25s,transform .25s}
+  .model:hover{border-color:var(--pink);transform:translateY(-4px)}
+  .model .yr{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .model h3{font-size:30px;margin:8px 0 10px}
+  .model .mini{height:70px;margin:6px 0 14px}
+  .model p{color:var(--dim);font-size:15px;margin-bottom:16px}
+  .specs{list-style:none;border-top:1px solid var(--line);margin-top:auto}
+  .specs li{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .specs li span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .specs li span:last-child{text-align:right}
+  .price{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px}
+  .price b{font-family:'Fraunces',serif;font-size:26px}
+  .price small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)}
+
+  /* autonomous */
+  .auto{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start;margin-top:10px}
+  @media(max-width:900px){.auto{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row input{flex:1 1 200px;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 14px;font-family:inherit;font-size:16px;outline:none;transition:border-color .2s}
+  .row input:focus{border-color:var(--cyan)}
+  .route{margin-top:18px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .route svg{width:100%;height:120px;display:block}
+  .kv{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+  .kv>div{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .kv .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .kv .v{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;margin-top:2px}
+  .note{font-size:14px;color:var(--dim);margin-top:14px;min-height:22px}
+  #path{stroke-dasharray:600;stroke-dashoffset:600}
+  #path.go{animation:draw 1.8s ease-out forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* why */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+  @media(max-width:900px){.grid3{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.grid3{grid-template-columns:1fr}}
+  .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;transition:border-color .2s,transform .2s}
+  .feat:hover{border-color:var(--cyan);transform:translateY(-3px)}
+  .feat .n{font-family:'JetBrains Mono',monospace;color:var(--pink);font-size:13px}
+  .feat h3{font-size:21px;margin:8px 0}
+  .feat p{color:var(--dim);font-size:15px}
+
+  /* family */
+  .family{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:42px}
+  @media(max-width:760px){.family{grid-template-columns:1fr}}
+  .fam{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;transition:border-color .25s,transform .25s}
+  .fam:hover{transform:translateY(-4px)}
+  .fam.rd:hover{border-color:#E8C27A}
+  .fam.ap:hover{border-color:#5CF2C4}
+  .fam .yr{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .fam.rd .yr{color:#E8C27A}
+  .fam.ap .yr{color:#5CF2C4}
+  .fam h3{font-size:28px;margin:8px 0}
+  .fam p{color:var(--dim);font-size:15px}
+  .fam .go{display:inline-block;margin-top:14px;font-weight:600}
+
+  /* reviews */
+  .revs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+  @media(max-width:900px){.revs{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.revs{grid-template-columns:1fr}}
+  .rev{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column}
+  .stars{font-size:15px;color:var(--amber);letter-spacing:2px}
+  .stars span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:0;margin-left:6px}
+  .rev q{display:block;margin:12px 0 14px;font-size:15px;quotes:"\201C" "\201D"}
+  .rev .who{margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}
+  .rev .resp{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--dim)}
+  .rev .resp b{color:var(--pink);font-weight:600}
+
+  /* leadership */
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:42px}
+  @media(max-width:760px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--pink);border-radius:14px;padding:24px}
+  .qc.cfo{border-left-color:var(--cyan)}
+  .qc p{font-family:'Fraunces',serif;font-size:21px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--pink);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--cyan)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .contact{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}
+  .contact b{color:var(--text);font-weight:600}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:900px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--pink)}
+
+  @media(max-width:520px){
+    .wrap{padding:0 16px}
+    section{padding:64px 0}
+    .hero p{font-size:17px}
+    .kv{grid-template-columns:1fr 1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .js [data-r]{opacity:1;transform:none}
+  }
+</style>
 </head>
 <body>
-    <header>
-        <h1 class="title">ODDLY CARS</h1>
-        <p class="tagline">~ Drive Oddly. Drive Confused. Drive Anywhere But Here ~</p>
-    </header>
+<script>document.documentElement.classList.add('js')</script>
 
-    <nav>
-        <a href="#products">Our Fleet</a>
-        <a href="#why">Why Choose</a>
-        <a href="#testimonials">Reviews</a>
-        <a href="#quotes">Leadership Wisdom</a>
-        <a href="#footer">Contact Never</a>
-    </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- a symmetric body: both ends are the same end -->
+    <symbol id="body" viewBox="0 0 400 130">
+      <path d="M22 92 Q18 70 40 64 L96 56 Q120 30 150 26 L250 26 Q280 30 304 56 L360 64 Q382 70 378 92 L378 100 L22 100 Z" fill="currentColor"/>
+      <path d="M108 58 Q128 36 152 33 L196 33 L196 58 Z" fill="#080A14" opacity=".75"/>
+      <path d="M292 58 Q272 36 248 33 L204 33 L204 58 Z" fill="#080A14" opacity=".75"/>
+      <path d="M40 76 H360" stroke="#080A14" stroke-opacity=".35" stroke-width="2"/>
+    </symbol>
+  </defs>
+</svg>
 
-    <main>
-        <section class="hero">
-            <h2>Welcome to the Future of Awful Transportation</h2>
-            <p>At Oddly Cars, we've spent millions asking the wrong questions. Like, "What if cars had TWO fronts?" or "What about TWO backs?" or best yet, "What if we removed the concept of direction entirely?"</p>
-            <p>We're not here to solve your driving problems. We're here to create new ones you never knew you needed.</p>
-        </section>
+<div class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Oddly Cars home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly Cars
+  </a>
+  <nav class="nav"><a href="#fleet">Fleet</a><a href="#autonomous">Autonomous</a><a href="#why">Why Oddly</a><a href="#reviews">Reviews</a><a href="#leadership">Leadership</a></nav>
+  <a class="btn" href="#fleet">Order</a>
+</div></div>
 
-        <section id="products" class="products">
-            <div class="product-card">
-                <h3>🚗 The Front-Front</h3>
-                <div class="emoji">👀👀</div>
-                <p>It has TWO complete front ends. Double the grille. Double the headlights. Zero rear visibility.</p>
-                <div class="spec"><strong>Feature:</strong> Reverse by turning around and driving forward</div>
-                <div class="spec"><strong>Top Speed:</strong> Uncertain (depends on which front is "leading")</div>
-                <div class="spec"><strong>Turning Radius:</strong> Existential</div>
-                <div class="spec"><strong>Warranty:</strong> Lol</div>
-            </div>
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badge"><i></i>Certification: Pending</div>
+    <h1>Drive Oddly.<br><em>Both directions.</em></h1>
+    <p>Every car in history has had a front and a back. We looked at that and said &mdash; this can be improved. Oddly Cars builds vehicles with two fronts, two backs, and a self-driving system that has never once been wrong about where it is going.</p>
+    <div class="ctas">
+      <a class="btn" href="#fleet">Meet the fleet</a>
+      <a class="btn ghost" href="#autonomous">Try Oddly Autonomous&trade; &rarr;</a>
+    </div>
+  </div>
 
-            <div class="product-card">
-                <h3>🚗 The Back-Back</h3>
-                <div class="emoji">🪟🪟</div>
-                <p>Completely rear-end focused. Two trunk lids. Two exhaust pipes. Complete mystery about what's ahead.</p>
-                <div class="spec"><strong>Feature:</strong> Drive forward by simply reversing</div>
-                <div class="spec"><strong>Cargo Capacity:</strong> Enormous (it's ALL trunk)</div>
-                <div class="spec"><strong>Insurance Premium:</strong> We don't know either</div>
-                <div class="spec"><strong>Passenger Experience:</strong> Confused but committed</div>
-            </div>
+  <div class="stage mode-ff" id="stage" data-r>
+    <div class="stage-head">
+      <div class="toggle" role="group" aria-label="Choose a model">
+        <button class="on" data-mode="ff" aria-pressed="true">Front-Front</button>
+        <button data-mode="bb" aria-pressed="false">Back-Back</button>
+      </div>
+      <div class="readout">Leading end: <b id="lead">Undetermined</b></div>
+    </div>
+    <svg class="carsvg" viewBox="0 0 440 200" role="img" aria-label="An Oddly car with identical ends, rocking back and forth">
+      <g class="road" stroke="#242849" stroke-width="3" stroke-linecap="round">
+        <line x1="0" y1="176" x2="440" y2="176" stroke="#181C38"/>
+        <line x1="20" y1="190" x2="60" y2="190"/><line x1="110" y1="190" x2="150" y2="190"/><line x1="200" y1="190" x2="240" y2="190"/><line x1="290" y1="190" x2="330" y2="190"/><line x1="380" y1="190" x2="420" y2="190"/>
+      </g>
+      <defs>
+        <linearGradient id="beam" x1="0" x2="1"><stop offset="0" stop-color="#FFF6C9" stop-opacity="0"/><stop offset=".5" stop-color="#FFF6C9" stop-opacity=".22"/><stop offset="1" stop-color="#FFF6C9" stop-opacity="0"/></linearGradient>
+      </defs>
+      <g class="car">
+        <ellipse cx="220" cy="172" rx="170" ry="8" fill="#000" opacity=".45"/>
+        <use href="#body" x="20" y="44" width="400" height="130" style="color:#7B4FFF"/>
+        <!-- Front-Front: headlights + grilles on both ends -->
+        <g class="ff-only">
+          <path d="M44 112 h18 v10 h-18z M378 112 h18 v10 h-18z" fill="#FFF6C9"/>
+          <path d="M42 113 L0 100 L0 136 L42 121 Z M398 113 L440 100 L440 136 L398 121 Z" fill="url(#beam)" />
+          <path d="M44 128 h26 M44 133 h26 M370 128 h26 M370 133 h26" stroke="#080A14" stroke-width="2.5"/>
+        </g>
+        <!-- Back-Back: taillights + exhausts on both ends -->
+        <g class="bb-only">
+          <path d="M43 110 h12 v16 h-12z M385 110 h12 v16 h-12z" fill="#FF4D5E"/>
+          <rect x="36" y="140" width="14" height="5" rx="2" fill="#666B92"/><rect x="390" y="140" width="14" height="5" rx="2" fill="#666B92"/>
+          <circle class="puff" cx="26" cy="142" r="7" fill="#9A9EC0"/><circle class="puff r" cx="414" cy="142" r="7" fill="#9A9EC0"/>
+        </g>
+        <g class="wheel"><circle cx="128" cy="150" r="22" fill="#0D1020"/><circle cx="128" cy="150" r="9" fill="#323865"/><path d="M128 132 v36 M110 150 h36" stroke="#323865" stroke-width="3"/></g>
+        <g class="wheel"><circle cx="312" cy="150" r="22" fill="#0D1020"/><circle cx="312" cy="150" r="9" fill="#323865"/><path d="M312 132 v36 M294 150 h36" stroke="#323865" stroke-width="3"/></g>
+        <text x="220" y="115" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#080A14" opacity=".6" letter-spacing="1.5">CERTIFICATION: PENDING</text>
+      </g>
+    </svg>
+    <p class="stage-cap" id="cap">The Front-Front. Two complete front ends. Rear visibility has been removed, because there is no rear.</p>
+  </div>
+</div></header>
 
-            <div class="product-card chaos">
-                <h3>🤖 Oddly Autonomous</h3>
-                <div class="emoji">🎲🚗🎲</div>
-                <p>Our crown jewel. A completely self-driving vehicle that has NO IDEA where it's going. Every drive is an adventure!</p>
-                <div class="spec"><strong>Navigation Logic:</strong> Pure chaos algorithms</div>
-                <div class="spec"><strong>ETA:</strong> Somewhere. Eventually. Probably.</div>
-                <div class="spec"><strong>Guarantee:</strong> It will move. We promise movement.</div>
-                <div class="spec"><strong>Return Policy:</strong> Nope, it's gone</div>
-            </div>
-        </section>
+<div class="ticker" aria-hidden="true"><span>THIS IS NOT A BUG &nbsp;·&nbsp; FRONT-FRONT: NOW SHIPPING &nbsp;·&nbsp; BACK-BACK: ALSO SHIPPING, OUT OF SPITE &nbsp;·&nbsp; ODDLY AUTONOMOUS™ HAS SELECTED YOUR DESTINATION &nbsp;·&nbsp; REVERSE IS A FEATURE, NOT A GEAR &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG &nbsp;·&nbsp; ODDLY CARS, AN ODDLY, INC. COMPANY</span></div>
 
-        <section id="why" class="why-section">
-            <h2>Why Choose Oddly Cars?</h2>
-            <div class="why-grid">
-                <div class="why-item">
-                    <div class="icon">🤡</div>
-                    <h3>Pure Chaos</h3>
-                    <p>We're committed to making the worst decisions possible. It's our specialty.</p>
-                </div>
-                <div class="why-item">
-                    <div class="icon">💸</div>
-                    <h3>Affordable Confusion</h3>
-                    <p>Your money goes toward vehicles that cost more than houses that work better.</p>
-                </div>
-                <div class="why-item">
-                    <div class="icon">🎯</div>
-                    <h3>Reach Nowhere Fast</h3>
-                    <p>Our autonomous fleet guarantees you'll go SOMEWHERE. The where is up to fate.</p>
-                </div>
-                <div class="why-item">
-                    <div class="icon">🏆</div>
-                    <h3>Industry Leading</h3>
-                    <p>We've literally invented a new category: Cars That Shouldn't Exist.</p>
-                </div>
-                <div class="why-item">
-                    <div class="icon">😵</div>
-                    <h3>Unique Experience</h3>
-                    <p>Every drive is completely unpredictable. Mostly because of the cars. Mostly.</p>
-                </div>
-                <div class="why-item">
-                    <div class="icon">🚨</div>
-                    <h3>Emergency Features</h3>
-                    <p>Our vehicles ARE the emergency. Own that status.</p>
-                </div>
-            </div>
-        </section>
+<section id="fleet"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">The Fleet</div>
+    <h2>Three cars. Five ends.</h2>
+    <p class="lede">Engineering filed structural concerns about each of these vehicles. The concerns were acknowledged. Then they were filed again, in a different folder.</p>
+  </div>
+  <div class="fleet">
+    <article class="model" data-r>
+      <div class="yr">Year Three · Coupe-ish</div>
+      <h3>The Front-Front</h3>
+      <svg class="mini" viewBox="0 0 400 130" aria-hidden="true"><use href="#body" style="color:#7B4FFF"/><path d="M26 70 h16 v8 h-16z M358 70 h16 v8 h-16z" fill="#FFF6C9"/><circle cx="110" cy="102" r="16" fill="#0D1020"/><circle cx="290" cy="102" r="16" fill="#0D1020"/></svg>
+      <p>Two complete front ends. Double the grille. Double the headlights. To reverse, simply turn around and drive forward. There is nothing behind you, because there is no behind.</p>
+      <ul class="specs">
+        <li><span>Reverse</span><span>Not required</span></li>
+        <li><span>Top speed</span><span>Depends which front is leading</span></li>
+        <li><span>Turning radius</span><span>Existential</span></li>
+        <li><span>Rear visibility</span><span>No rear. Excellent visibility.</span></li>
+      </ul>
+      <div class="price"><b>$38,000</b><small>×2 headlights, ×2</small></div>
+    </article>
+    <article class="model" data-r>
+      <div class="yr">Year Three · Out of spite</div>
+      <h3>The Back-Back</h3>
+      <svg class="mini" viewBox="0 0 400 130" aria-hidden="true"><use href="#body" style="color:#2EE9A5"/><path d="M24 68 h10 v14 h-10z M366 68 h10 v14 h-10z" fill="#FF4D5E"/><circle cx="110" cy="102" r="16" fill="#0D1020"/><circle cx="290" cy="102" r="16" fill="#0D1020"/></svg>
+      <p>Released to prove the Front-Front was not a fluke. Two trunk lids. Two exhausts. To drive forward, simply reverse. Sales are instructed to call it a matched pair, not two of the same mistake.</p>
+      <ul class="specs">
+        <li><span>Cargo</span><span>All of it is trunk</span></li>
+        <li><span>Forward</span><span>Reverse, confidently</span></li>
+        <li><span>Insurance</span><span>Quote pending</span></li>
+        <li><span>Passengers</span><span>Committed</span></li>
+      </ul>
+      <div class="price"><b>$38,000</b><small>trunk included, twice</small></div>
+    </article>
+    <article class="model" data-r>
+      <div class="yr">Year Five · Self-driving</div>
+      <h3>Oddly Autonomous&trade;</h3>
+      <svg class="mini" viewBox="0 0 400 130" aria-hidden="true"><use href="#body" style="color:#F5A623"/><circle cx="200" cy="14" r="9" fill="none" stroke="#F5A623" stroke-width="3"/><path d="M200 23 v8" stroke="#F5A623" stroke-width="3"/><circle cx="110" cy="102" r="16" fill="#0D1020"/><circle cx="290" cy="102" r="16" fill="#0D1020"/></svg>
+      <p>A fully self-driving vehicle that does not use maps, sensors, or traffic patterns. It follows a feeling. We call this intuitive routing. The destination is selected with 100% confidence and remains a surprise to all parties, including the car.</p>
+      <ul class="specs">
+        <li><span>Navigation</span><span>Intuitive</span></li>
+        <li><span>ETA</span><span>Indeterminate</span></li>
+        <li><span>Guarantee</span><span>Movement</span></li>
+        <li><span>Returns</span><span>It has already left</span></li>
+      </ul>
+      <div class="price"><b>$64,000</b><small>destination included</small></div>
+    </article>
+  </div>
+</div></section>
 
-        <section id="testimonials" class="testimonials">
-            <h2>What (Regretful) Customers Are Saying</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"I took the Front-Front to work and ended up in three different parking lots. I still don't know where my car is. Would not recommend to my worst enemy."</p>
-                    <p class="testimonial-author">— Derek M., Somewhere in Ohio</p>
-                    <div class="star-rating">⭐</div>
-                </div>
+<section id="autonomous"><div class="wrap">
+  <div class="auto">
+    <div data-r>
+      <div class="eyebrow">Oddly Autonomous&trade;</div>
+      <h2>Tell it where you want to go.</h2>
+      <p class="lede">Your input is important to us. It is recorded, appreciated, and then set aside. Predicting where a car should go is expensive. Not predicting is free. We pass the savings on to the car.</p>
+    </div>
+    <div class="panel" data-r>
+      <label for="dest">Where would you like to go?</label>
+      <form class="row" id="destForm" autocomplete="off">
+        <input id="dest" type="text" maxlength="60" placeholder="e.g. Work" required>
+        <button class="btn" type="submit">Go</button>
+      </form>
+      <div class="route">
+        <svg viewBox="0 0 400 120" aria-hidden="true">
+          <circle cx="30" cy="90" r="7" fill="#2EE9A5"/>
+          <circle id="want" cx="370" cy="90" r="7" fill="none" stroke="#9A9EC0" stroke-width="2" stroke-dasharray="3 3"/>
+          <path id="path" d="M30 90 C 90 10, 150 110, 200 50 S 300 -10, 260 70 S 150 120, 120 30" fill="none" stroke="#7B4FFF" stroke-width="3" stroke-linecap="round"/>
+          <circle id="end" cx="120" cy="30" r="8" fill="#7B4FFF" opacity="0"/>
+        </svg>
+      </div>
+      <div class="kv">
+        <div><div class="k">You asked for</div><div class="v" id="asked">—</div></div>
+        <div><div class="k">Destination</div><div class="v" id="got">—</div></div>
+        <div><div class="k">Confidence</div><div class="v" id="conf">—</div></div>
+        <div><div class="k">ETA</div><div class="v" id="eta">—</div></div>
+      </div>
+      <p class="note" id="note">Oddly Autonomous&trade; is ready. It was ready before you were.</p>
+    </div>
+  </div>
+</div></section>
 
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"My Oddly Autonomous vehicle has visited 7 states in 3 days. I never asked it to. It refuses to stop. Send help."</p>
-                    <p class="testimonial-author">— Jennifer K., Kidnapped by Autonomous</p>
-                    <div class="star-rating">⭐ (involuntary)</div>
-                </div>
+<section id="why"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Why Oddly Cars</div>
+    <h2>Every part of it is a feature.</h2>
+  </div>
+  <div class="grid3">
+    <div class="feat" data-r><div class="n">01</div><h3>Two of everything</h3><p>Two fronts or two backs. Never one of each. One of each is what everyone else does, and we did not want to be seen copying.</p></div>
+    <div class="feat" data-r><div class="n">02</div><h3>No reverse gear</h3><p>Reverse has been removed. It was not needed. The car is already facing the direction you are going. Both of them.</p></div>
+    <div class="feat" data-r><div class="n">03</div><h3>Intuitive routing</h3><p>Oddly Autonomous&trade; does not follow maps. Maps were made by other people. It follows a feeling, and the feeling is ours.</p></div>
+    <div class="feat" data-r><div class="n">04</div><h3>Premium confusion</h3><p>Pedestrians cannot tell which way an Oddly is facing. Neither can the Oddly. This keeps everyone alert. We call it a safety system.</p></div>
+    <div class="feat" data-r><div class="n">05</div><h3>Ownership, deferred</h3><p>Our CFO does not believe in depreciation. He believes in deferred value. Your car is worth more every year, on paper, on our paper.</p></div>
+    <div class="feat" data-r><div class="n">06</div><h3>Certification: Pending</h3><p>Every Oddly is certification pending. It has been pending for some time. This is fine. Pending is a status. Status is premium.</p></div>
+  </div>
+</div></section>
 
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"The Back-Back is so trunk-heavy that my friends think I'm secretly a moving company. I'm not. I'm just confused."</p>
-                    <p class="testimonial-author">— Marcus T., Still Confused</p>
-                    <div class="star-rating">⭐⭐</div>
-                </div>
+<section id="family"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Also from Oddly Cars</div>
+    <h2>The rest of the garage.</h2>
+  </div>
+  <div class="family">
+    <a class="fam rd" href="roadster.html" data-r>
+      <div class="yr">Year Thirteen · Eight seats · Four rockets</div>
+      <h3>Oddly Roadster</h3>
+      <p>A roadster that seats eight. Solid rocket motors replace compressed air. It flies, backflips, and drives on walls. The rockets are standard and cannot be declined.</p>
+      <span class="go">See the Roadster &rarr;</span>
+    </a>
+    <a class="fam ap" href="cars-app.html" data-r>
+      <div class="yr">Year Thirteen · Version 1.0.4</div>
+      <h3>Oddly Cars App</h3>
+      <p>Lock both fronts. Ignite the Roadster's rockets from your phone. Summon your car with Oddly Autonomous&trade;, and receive it somewhere.</p>
+      <span class="go">Get the app &rarr;</span>
+    </a>
+  </div>
+</div></section>
 
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"I've owned the Front-Front for 6 months. I've never driven it forward. Mostly sideways. Is that normal?"</p>
-                    <p class="testimonial-author">— Patricia G., Physics PhD Holder</p>
-                    <div class="star-rating">⭐⭐⭐ (for creativity)</div>
-                </div>
+<section id="reviews"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Owner reviews</div>
+    <h2>Verified owners. Unverified locations.</h2>
+    <p class="lede">Every review is published in full. Each one has received a response from the Office of the CEO.</p>
+  </div>
+  <div class="revs">
+    <div class="rev" data-r><div class="stars">★☆☆☆☆</div><q>I took the Front-Front to work and ended up in three different parking lots. I still don't know where my car is.</q><div class="who">Derek M. · Somewhere in Ohio</div><div class="resp"><b>Oddly, Inc.:</b> Three parking lots is three times the parking. Excellent.</div></div>
+    <div class="rev" data-r><div class="stars">★☆☆☆☆<span>involuntary</span></div><q>My Oddly Autonomous has visited seven states in three days. I never asked it to. It will not stop.</q><div class="who">Jennifer K. · Location pending</div><div class="resp"><b>Oddly, Inc.:</b> Seven states. Zero requests. That is initiative.</div></div>
+    <div class="rev" data-r><div class="stars">★★☆☆☆</div><q>The Back-Back is so trunk-heavy that my friends think I run a moving company. I do not.</q><div class="who">Marcus T. · Owner</div><div class="resp"><b>Oddly, Inc.:</b> You could. The car is ready.</div></div>
+    <div class="rev" data-r><div class="stars">★★★☆☆<span>for creativity</span></div><q>I have owned the Front-Front for six months. I have never driven it forward. Mostly sideways. Is that normal?</q><div class="who">Patricia G. · Physics PhD</div><div class="resp"><b>Oddly, Inc.:</b> Yes.</div></div>
+    <div class="rev" data-r><div class="stars">★☆☆☆☆</div><q>Somehow worse than expected, and my expectations were on the ground.</q><div class="who">Robert H. · Owner</div><div class="resp"><b>Oddly, Inc.:</b> The ground is where cars go. We met you there.</div></div>
+    <div class="rev" data-r><div class="stars">★★★★★<span>unclear</span></div><q>If your goal is to have no idea where anything is at any moment, the autonomous fleet is 10/10.</q><div class="who">Sandra L. · Fleet manager</div><div class="resp"><b>Oddly, Inc.:</b> Thank you, Sandra. We agree with the score.</div></div>
+  </div>
+</div></section>
 
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"Somehow worse than expected. And I had very low expectations. Honestly, my bar was on the ground."</p>
-                    <p class="testimonial-author">— Robert H., Defeated</p>
-                    <div class="star-rating">⭐ (for effort)</div>
-                </div>
+<section id="leadership"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Leadership</div>
+    <h2>From the people who decided.</h2>
+  </div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"People asked why a car would need two fronts. I asked why a car would need a back. Nobody had an answer. So we removed it."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"Our cars do not follow GPS. GPS is a subscription. A feeling is free. We have never paid for a feeling."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+    <div class="qc" data-r><p>"Someone asked me if the Front-Front could turn. I said yes. It turns in the direction it is facing. That is every direction it has."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"The Back-Back has two trunks. That is two times the cargo for one times the car. I do not need to see the rest of the numbers."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+    <div class="qc" data-r><p>"Our autonomous fleet visited forty-seven states last week. Nobody told it to. That is not a malfunction. That is ambition."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"We do not offer a warranty. A warranty assumes something will go wrong. We have decided that it will not."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
 
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"The autonomous fleet is perfect! If your goal is to have NO IDEA where anything is at any moment. Then 10/10 success!"</p>
-                    <p class="testimonial-author">— Sandra L., Chief Chaos Officer</p>
-                    <div class="star-rating">🎲🎲🎲 (unclear)</div>
-                </div>
-            </div>
-        </section>
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="#top"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly Cars</a>
+    <div class="links"><a href="#fleet">Fleet</a><a href="#autonomous">Autonomous</a><a href="roadster.html">Roadster</a><a href="cars-app.html">App</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <div class="contact"><span>Call <b>1-800-WHY-CARS</b></span><span>Service centers: <b>wherever the car is</b></span><span>Email: <b>pending</b></span></div>
+  <p class="fine">© 2026 Oddly, Inc. Oddly Cars is an Oddly, Inc. company. Prices shown are per car, not per end. The Front-Front and Back-Back are sold separately and cannot be combined into a normal car; requests to do so are forwarded to the Office of the Chief Executive, where they are read. Oddly Autonomous&trade; selects destinations with 100% confidence. The destination is final. Oddly Cars is not responsible for directions, the concept of direction, vehicle orientation, or lakes. Turning radius figures are philosophical. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
 
-        <section id="quotes" class="quotes">
-            <h2>Words of Questionable Wisdom</h2>
-            <div class="quotes-grid">
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">People said "Why would you build a car with two fronts?" And I said, "Exactly. Why not?"</p>
-                    <p class="quote-source">— Stephen Stubborn, CEO</p>
-                </div>
+<script>
+(function(){
+  'use strict';
+  // reveal on scroll
+  var els=document.querySelectorAll('[data-r]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -30px 0px'});
+    els.forEach(function(el){io.observe(el);});
+  } else els.forEach(function(el){el.classList.add('in');});
 
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">Our autonomous cars don't follow GPS. They follow their hearts. Their chaotic, confused hearts.</p>
-                    <p class="quote-source">— Stephen Stupid, CFO</p>
-                </div>
+  // Front-Front / Back-Back toggle
+  var stage=document.getElementById('stage'),cap=document.getElementById('cap'),lead=document.getElementById('lead');
+  var CAPS={
+    ff:'The Front-Front. Two complete front ends. Rear visibility has been removed, because there is no rear.',
+    bb:'The Back-Back. Two complete back ends. To drive forward, simply reverse. To reverse, also reverse.'
+  };
+  var LEADS=['Undetermined','Left','Right','Both','Pending','Undetermined'];
+  stage.querySelectorAll('[data-mode]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=b.dataset.mode;
+      stage.classList.remove('mode-ff','mode-bb');stage.classList.add('mode-'+m);
+      stage.querySelectorAll('[data-mode]').forEach(function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);});
+      cap.textContent=CAPS[m];
+    });
+  });
+  var li=0;setInterval(function(){li=(li+1)%LEADS.length;lead.textContent=LEADS[li];},1600);
 
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">When people ask me about our business model, I just laugh. Then I cry. Then I buy another car with two backs.</p>
-                    <p class="quote-source">— Stephen Stubborn, CEO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">The Back-Back has saved me thousands in gas money. It has cost me millions in therapy. Net loss: $1.7M.</p>
-                    <p class="quote-source">— Stephen Stupid, CFO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">Our Oddly Autonomous fleet has visited 47 states in the past week. We still don't know why. Or how they're doing it.</p>
-                    <p class="quote-source">— Stephen Stubborn, CEO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">Is it a business plan if you can't actually plan? Asking for a friend. That friend is me. I'm broken.</p>
-                    <p class="quote-source">— Stephen Stupid, CFO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">Someone asked me if the Front-Front could turn. I said "Probably." I had no idea. I still don't.</p>
-                    <p class="quote-source">— Stephen Stubborn, CEO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">Our warranty is the same as our business strategy: nonexistent. But we're very committed to that.</p>
-                    <p class="quote-source">— Stephen Stupid, CFO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">Engineers said it was impossible. I said "bet." They were right. I lost the bet. And $40 million.</p>
-                    <p class="quote-source">— Stephen Stubborn, CEO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">The Oddly Autonomous cost us more than a small nation's GDP. It's worth approximately negative dollars.</p>
-                    <p class="quote-source">— Stephen Stupid, CFO</p>
-                </div>
-
-                <div class="quote-card">
-                    <div class="quote-mark">"</div>
-                    <p class="quote-text">If you can dream it, our autonomous fleet has already driven past it at 3 AM and turned left for no reason.</p>
-                    <p class="quote-source">— Stephen Stubborn, CEO</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer id="footer">
-        <p><strong>ODDLY CARS™</strong> | Where Direction is More of a Suggestion</p>
-        <p>📞 Call Us: 1-800-WHY-CARS</p>
-        <p>📧 Email: help@nevercomingback.com</p>
-        <p class="footer-absurd">⚠️ Oddly Cars is not responsible for: wrong directions, vehicle confusion, existential dread, or that one time your Front-Front drove into a lake.</p>
-        <p style="margin-top: 30px; font-size: 0.9rem; opacity: 0.7;">© 2026 Oddly Cars Inc. | Proudly Making Transportation Worse Since Last Week</p>
-    </footer>
+  // Oddly Autonomous destination selector
+  var DESTS=[
+    ['A duck pond','Scenic. Selected.'],
+    ['The lot you just left','You were already there. Efficient.'],
+    ['Ohio, generally','Ohio was chosen. Ohio is final.'],
+    ['A closed Costco','The car wanted to see it. It has seen it.'],
+    ["A stranger's driveway",'The stranger has been notified. By the car.'],
+    ['Your old address','The car remembers. That is loyalty.'],
+    ['Somewhere','Somewhere is a destination. Arrival is guaranteed.'],
+    ['The other side of the street','Arrival will take some time.'],
+    ['A scenic overlook','You did not ask for scenery. You are welcome.'],
+    ['Oddly HQ','The car has gone to file a report about you.']
+  ];
+  var ETAS=['Indeterminate','Thursday','Eventually','47 min, or days','Pending','Already late'];
+  var form=document.getElementById('destForm'),inp=document.getElementById('dest'),path=document.getElementById('path'),end=document.getElementById('end');
+  var last=-1,busy=false;
+  form.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var want=inp.value.trim();if(!want||busy)return;
+    busy=true;
+    var i;do{i=Math.floor(Math.random()*DESTS.length);}while(i===last&&DESTS.length>1);last=i;
+    var d=DESTS[i];
+    // if the request happens to match the pick, pick a different one anyway
+    if(want.toLowerCase()===d[0].toLowerCase()){i=(i+1)%DESTS.length;d=DESTS[i];last=i;}
+    document.getElementById('asked').textContent=want.length>22?want.slice(0,21)+'…':want;
+    document.getElementById('got').textContent='Calculating…';
+    document.getElementById('conf').textContent='—';
+    document.getElementById('eta').textContent='—';
+    document.getElementById('note').textContent='Your input has been noted.';
+    end.setAttribute('opacity','0');
+    path.classList.remove('go');void path.getBoundingClientRect();path.classList.add('go');
+    setTimeout(function(){
+      document.getElementById('got').textContent=d[0];
+      document.getElementById('conf').textContent='100%';
+      document.getElementById('eta').textContent=ETAS[Math.floor(Math.random()*ETAS.length)];
+      document.getElementById('note').textContent='Your input has been noted. It has not been used. '+d[1];
+      end.setAttribute('opacity','1');
+      busy=false;
+    },1800);
+  });
+})();
+</script>
 </body>
 </html>
