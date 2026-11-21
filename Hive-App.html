@@ -87,6 +87,10 @@ input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
 .about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
 .about a{color:var(--dim)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* inside oOS (?oos=1): oOS draws the status bar and the home indicator */
+html.oos body{display:block;background:var(--bg)} html.oos .site,html.oos .island,html.oos .sb{display:none}
+html.oos .device{width:100vw;height:100vh;border-radius:0;border:0;box-shadow:none}
+html.oos .hdr{padding-top:10px} html.oos .tabs{padding-bottom:8px}
 
 
 #head{width:100%;aspect-ratio:1/1;display:block}
@@ -107,6 +111,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
 </style>
 </head>
 <body>
+<script>if(/[?&]oos=1/.test(location.search))document.documentElement.classList.add('oos');</script>
 <a class="site" href="https://www.oddly-inc.com/hair-lubricator.html">&larr; Oddly Hair Lubricator on oddly-inc.com</a>
 <div class="device" role="application" aria-label="Hive">
   <div class="island" aria-hidden="true"></div>

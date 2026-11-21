@@ -11,6 +11,7 @@
 --disp:'Fraunces',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--body:'Space Grotesk',system-ui,-apple-system,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:#03050A}
+html.oos .status{display:none}
 body{font-family:var(--body);color:var(--tx);display:flex;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none}
 .app{width:100%;max-width:430px;height:100%;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden}
 .status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;}
@@ -143,6 +144,7 @@ nav button.on .ic{filter:none;opacity:1}
 </style>
 </head>
 <body>
+<script>if(/[?&]oos=1/.test(location.search))document.documentElement.classList.add('oos');</script>
 <div class="app" id="app">
   <div class="status"><span id="clock">9:41</span><span class="r">5G-ish <span class="bat"><i></i></span></span></div>
   <header>
