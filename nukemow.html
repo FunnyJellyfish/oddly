@@ -148,6 +148,89 @@
   .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
 
   .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  .fallout{margin-top:18px;display:grid;grid-template-columns:1fr 1.1fr;gap:28px;padding:28px;border-radius:20px;background:linear-gradient(135deg,#1c1a0a,#12152B 60%);border:2px solid transparent;background-clip:padding-box;position:relative}
+  .fallout::before{content:"";position:absolute;inset:-2px;border-radius:22px;z-index:-1;background:repeating-linear-gradient(-45deg,var(--haz) 0 14px,#1a1400 14px 28px)}
+  @media(max-width:860px){.fallout{grid-template-columns:1fr;padding:22px}}
+  .fallout .tag{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--haz);font-weight:600}
+  .fallout h3{font-size:30px;margin:8px 0 4px}
+  .fallout .price{font-family:'Fraunces',serif;font-size:clamp(36px,5vw,52px);font-weight:800;color:var(--haz);margin:6px 0 12px}
+  .fallout .price small{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);font-weight:400}
+  .fallout ul{list-style:none}
+  .fallout li{color:var(--dim);font-size:15px;padding:5px 0;display:flex;gap:10px}
+  .fallout li::before{content:"☢";color:var(--haz)}
+  .fallout li b{color:var(--text)}
+  .fo-r{background:rgba(8,10,20,.55);border:1px solid var(--line2);border-radius:16px;padding:20px;display:flex;flex-direction:column}
+  .cov-k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .cov-v{font-family:'Fraunces',serif;font-size:30px;font-weight:800;margin:2px 0 10px}
+  #cov{width:100%;accent-color:var(--haz);height:28px;cursor:pointer}
+  .cov-ticks{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);margin-top:2px}
+  .cov-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 10px}
+  .cov-stats div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+  .cov-stats small{display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .cov-stats b{font-family:'JetBrains Mono',monospace;font-size:15px;white-space:nowrap}
+  .cov-d{color:var(--dim);font-size:14px;min-height:44px;margin-bottom:14px}
+  .fo-r .btn{margin-top:auto}
+  @media(max-width:520px){.cov-ticks span:nth-child(2),.cov-ticks span:nth-child(4){visibility:hidden}.cov-stats{grid-template-columns:1fr 1fr}.cov-stats div:last-child{grid-column:1/-1}}
+
+  /* companion app */
+  .appgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+  @media(max-width:900px){.appgrid{grid-template-columns:1fr}}
+  .feats{list-style:none;margin:22px 0}
+  .feats li{color:var(--dim);font-size:16px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .feats b{color:var(--text)}
+  .stores{display:flex;gap:10px;flex-wrap:wrap}
+  .store{display:inline-flex;flex-direction:column;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:8px 14px;font-weight:700;font-size:15px}
+  .store small{font-family:'JetBrains Mono',monospace;font-weight:400;font-size:10px;color:var(--dim)}
+  .phonewrap{display:flex;justify-content:center}
+  .phone{width:300px;height:620px;border-radius:46px;background:#05070F;padding:14px;border:2px solid #2A3058;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 6px #0E1226;position:relative;display:flex;flex-direction:column;overflow:hidden}
+  .phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:92px;height:24px;background:#05070F;border-radius:20px;z-index:2}
+  .sb{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);padding:4px 14px 8px}
+  .ahead{display:flex;justify-content:space-between;align-items:center;padding:6px 10px 10px}
+  .ahead b{font-family:'Fraunces',serif;font-size:22px}
+  .plan-chip{font-family:'JetBrains Mono',monospace;font-size:10px;color:#1a1400;background:var(--haz);border-radius:999px;padding:3px 8px;font-weight:600}
+  .screens{flex:1;position:relative;background:linear-gradient(180deg,#0f1226,#0a0d1c);border-radius:26px 26px 0 0;overflow:hidden}
+  .scr{position:absolute;inset:0;padding:16px 14px;opacity:0;pointer-events:none;transition:opacity .25s;overflow:auto}
+  .scr.on{opacity:1;pointer-events:auto}
+  .gauge{position:relative;width:200px;margin:4px auto 0}
+  .gauge svg{width:200px;height:120px;display:block}
+  #gArc{transition:stroke-dasharray .4s}
+  .gval{position:absolute;left:0;right:0;top:56px;text-align:center}
+  .gval span{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:600;display:block;line-height:1}
+  .gval small{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+  .tiles div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:9px 10px;min-width:0}
+  .tiles small{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tiles b{font-family:'JetBrains Mono',monospace;font-size:14px;white-space:nowrap}
+  .fc{margin-top:8px;background:linear-gradient(135deg,rgba(255,210,63,.12),rgba(255,255,255,.03));border:1px solid rgba(255,210,63,.3);border-radius:12px;padding:10px 12px}
+  .fc small{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--haz)}
+  .fc p{font-size:12.5px;color:var(--text);margin-top:2px}
+  .lt{font-family:'Fraunces',serif;font-size:22px;font-weight:800;margin:6px 0 6px}
+  .ls{color:var(--dim);font-size:13.5px;min-height:60px}
+  .slide{position:relative;height:58px;border-radius:999px;background:repeating-linear-gradient(-45deg,rgba(255,210,63,.18) 0 10px,rgba(255,210,63,.06) 10px 20px);border:1px solid rgba(255,210,63,.45);margin:18px 0 14px;touch-action:none;user-select:none}
+  .track-t{position:absolute;inset:0;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--haz);letter-spacing:.08em;padding-left:40px}
+  .knob{position:absolute;left:4px;top:4px;width:50px;height:50px;border-radius:50%;background:var(--haz);color:#1a1400;display:grid;place-items:center;font-size:24px;cursor:grab;box-shadow:0 6px 18px rgba(0,0,0,.4);outline:none}
+  .knob:focus-visible{box-shadow:0 0 0 3px #fff}
+  .knob.back{transition:left .3s}
+  .slide.done{background:var(--haz)}
+  .slide.done .track-t{color:#1a1400;padding-left:0}
+  .watch{display:block;text-align:center;font-size:13px;color:var(--mint);text-decoration:none}
+  .alerts{list-style:none}
+  .alerts li{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:12.5px}
+  .alerts b{font-size:12.5px}
+  .alerts span{grid-column:1/-1;color:var(--dim)}
+  .alerts i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);grid-row:1;grid-column:2}
+  .alerts li.new{border-color:rgba(255,210,63,.5)}
+  .set{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line);font-size:14px}
+  .set.col{flex-direction:column;align-items:stretch}
+  .set span{display:flex;flex-direction:column}
+  .set.col span{flex-direction:row;flex-wrap:wrap;justify-content:space-between}
+  .set small{font-size:11px;color:var(--dim);width:100%}
+  .set input[type=checkbox]{accent-color:var(--haz);width:20px;height:20px}
+  .set input[type=range]{accent-color:var(--haz);width:100%}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);background:#0a0d1c;border-top:1px solid var(--line);padding:6px 0 4px;border-radius:0 0 30px 30px}
+  .tabs button{background:none;border:none;color:var(--faint);font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:8px 0;cursor:pointer}
+  .tabs button.on{color:var(--haz);font-weight:600}
+  @media(max-width:360px){.phone{width:272px;height:590px}}
   @media(max-width:900px){.plans{grid-template-columns:1fr}}
   .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column}
   .plan.best{border-color:var(--haz);box-shadow:0 0 0 1px rgba(255,210,63,.2) inset}
@@ -194,7 +277,7 @@
     <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
     Oddly NukeMow&trade;
   </a>
-  <nav class="nav"><a href="#origin">Origin</a><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#plans">Plans</a></nav>
+  <nav class="nav"><a href="#origin">Origin</a><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#app">App</a><a href="#plans">Plans</a></nav>
   <a class="btn" href="#plans">Subscribe</a>
 </div></div>
 
@@ -238,7 +321,7 @@
   </div>
 </div></header>
 
-<div class="ticker" aria-hidden="true"><div><span>THE LAST MOW YOU WILL EVER NEED &nbsp;·&nbsp; GRASS HEIGHT AFTER SERVICE: 0.000 IN &nbsp;·&nbsp; NEIGHBORING LAWNS MOWED AT NO EXTRA CHARGE &nbsp;·&nbsp; INDEPENDENTLY INVENTED BY ODDLY, INC. &nbsp;·&nbsp; HOA APPROVAL: PENDING &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG</span></div></div>
+<div class="ticker" aria-hidden="true"><div><span>THE LAST MOW YOU WILL EVER NEED &nbsp;·&nbsp; GRASS HEIGHT AFTER SERVICE: 0.000 IN &nbsp;·&nbsp; NEIGHBORING LAWNS MOWED AT NO EXTRA CHARGE &nbsp;·&nbsp; INDEPENDENTLY INVENTED BY ODDLY, INC. &nbsp;·&nbsp; PLANS FROM $29.99 / MONTH &nbsp;·&nbsp; FALLOUT PACK: $2,000,000 / MONTH, UNLIMITED LAUNCHES &nbsp;·&nbsp; HOA APPROVAL: PENDING &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG</span></div></div>
 
 <section id="origin"><div class="wrap">
   <div class="origin">
@@ -307,7 +390,8 @@
         <li><span>Service area</span><span>My lawn · The block · ZIP code</span></li>
         <li><span>Difference between them</span><span>None, in practice</span></li>
         <li><span>Nearest bunker</span><span>Under a mile. Every time.</span></li>
-        <li><span>Mows per lifetime</span><span>1</span></li>
+        <li><span>Launches per month</span><span>1 · 4 · 20 · Unlimited</span></li>
+        <li><span>Mows actually needed</span><span>1</span></li>
         <li><span>Treaty compliance</span><span style="color:var(--amber)">Pending</span></li>
         <li><span>Certification</span><span style="color:var(--amber)">Pending</span></li>
       </ul>
@@ -316,12 +400,80 @@
       <h3>Questions</h3>
       <details><summary>Where should I be when it mows?</summary><p>Elsewhere. The app will suggest a nice restaurant in another state. Reservations are recommended, because everyone in your ZIP code will also be going.</p></details>
       <details><summary>Will it mow my neighbor's lawn?</summary><p>Yes. Neighboring lawns are mowed at no extra charge. Your neighbors may not have asked for this. That is why it is free.</p></details>
-      <details><summary>Can I choose "My lawn" only?</summary><p>You can choose it. It is the first option. The results are the same as the other two options. We offer the choice because people like choices.</p></details>
+      <details><summary>Why would I need more than one launch?</summary><p>You would not. The grass does not come back. Additional launches are for peace of mind, and for the lawns of people who have upset you.</p></details>
       <details><summary>What about my flower beds?</summary><p>Your flower beds will be mowed too. Everything will be mowed. That is what we mean by premium edging.</p></details>
       <details><summary>Is NukeMow legal?</summary><p>Legal review is pending. It has been pending for some time. This is fine.</p></details>
     </div>
   </div>
 </div></section>
+
+<section id="app"><div class="wrap">
+  <div class="appgrid">
+    <div data-r>
+      <div class="eyebrow">Companion app</div>
+      <h2>Your lawn, in your pocket. Briefly.</h2>
+      <p class="lede">The NukeMow app watches your grass, finds your nearest bunker, and lets you launch with one deliberate swipe. It is connected to the lawn above. Try it.</p>
+      <ul class="feats">
+        <li><b>Live grass height</b> from the sensor in your lawn, to the hundredth of an inch.</li>
+        <li><b>Slide to mow.</b> A swipe, not a tap, so that nobody mows by accident. Mostly.</li>
+        <li><b>Flight tracking</b> from bunker to lawn, with an estimated time of mowing.</li>
+        <li><b>Alerts</b> for you. Your neighbors receive no alerts. That is not a feature we offer.</li>
+      </ul>
+      <div class="stores">
+        <span class="store"><small>Get it on the</small>oStore</span>
+        <span class="store"><small>Under review since launch</small>App Store</span>
+        <span class="store"><small>Declined, respectfully</small>Google Play</span>
+      </div>
+    </div>
+    <div class="phonewrap" data-r>
+      <div class="phone" id="phone">
+        <div class="notch"></div>
+        <div class="sb"><span id="pClock">9:41</span><span>5G · 82%</span></div>
+        <div class="ahead"><b>NukeMow</b><span class="plan-chip" id="pPlan">My Lawn</span></div>
+        <div class="screens">
+          <div class="scr on" data-s="lawn">
+            <div class="gauge"><svg viewBox="0 0 200 120" aria-hidden="true"><path d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="#242849" stroke-width="14" stroke-linecap="round"/><path id="gArc" d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="#FFD23F" stroke-width="14" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg>
+              <div class="gval"><span id="pH">2.10</span><small>inches of grass</small></div></div>
+            <div class="tiles">
+              <div><small>Next mow</small><b id="pNext">—</b></div>
+              <div><small>Nearest bunker</small><b id="pB">0.6 mi</b></div>
+              <div><small>Trigger</small><b id="pT">4.0 in</b></div>
+              <div><small>Status</small><b id="pS">Growing</b></div>
+            </div>
+            <div class="fc"><small>Mowing forecast</small><p id="pF">Partly sunny. 98% chance of mowing this week.</p></div>
+          </div>
+          <div class="scr" data-s="launch">
+            <p class="lt">Manual launch</p>
+            <p class="ls" id="lState">Your lawn is ready to be mowed. It has always been ready.</p>
+            <div class="slide" id="slide"><div class="track-t">Slide to mow &rarr;</div><div class="knob" id="knob" role="slider" tabindex="0" aria-label="Slide to mow" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">☢</div></div>
+            <a class="watch" href="#top">Watch it above &uarr;</a>
+          </div>
+          <div class="scr" data-s="alerts">
+            <ul class="alerts" id="alerts">
+              <li><b>Grass report</b><span>Your grass is 3.9 in. Tomorrow is the day.</span><i>Yesterday</i></li>
+              <li><b>Neighbor</b><span>Your neighbor has been mowed. They have been notified. Not by us.</span><i>Mon</i></li>
+              <li><b>HOA</b><span>Your HOA has sent a letter. The HOA has been mowed.</span><i>Sun</i></li>
+              <li><b>Postal</b><span>Your ZIP code has changed. A new one is on its way.</span><i>Sat</i></li>
+            </ul>
+          </div>
+          <div class="scr" data-s="settings">
+            <label class="set"><span>Auto-launch<small>Mow at the trigger height</small></span><input type="checkbox" id="pAuto" checked></label>
+            <div class="set col"><span>Trigger height <b id="pTv">4.0 in</b><small id="pTlock">Adjustable on The Block and above</small></span><input type="range" id="pTrig" min="2" max="6" step="0.5" value="4" disabled></div>
+            <label class="set"><span>Notify neighbors<small>Not available on any plan</small></span><input type="checkbox" disabled></label>
+            <label class="set"><span>Quiet hours<small>Mowing does not observe quiet hours</small></span><input type="checkbox" disabled></label>
+          </div>
+        </div>
+        <nav class="tabs" role="tablist">
+          <button class="on" data-t="lawn" role="tab" aria-selected="true">Lawn</button>
+          <button data-t="launch" role="tab" aria-selected="false">Launch</button>
+          <button data-t="alerts" role="tab" aria-selected="false">Alerts</button>
+          <button data-t="settings" role="tab" aria-selected="false">Settings</button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div></section>
+
 
 <section id="leadership"><div class="wrap">
   <div data-r>
@@ -338,12 +490,39 @@
   <div data-r>
     <div class="eyebrow">Plans</div>
     <h2>Choose your coverage.</h2>
-    <p class="lede">All plans include unlimited mows. You will use one.</p>
+    <p class="lede">Every plan mows your lawn to 0.000 inches. The plans differ in how often, how far, and how much of everyone else's lawn comes with it.</p>
   </div>
   <div class="plans">
-    <div class="plan" data-r><div class="tag">Lawn</div><h3>My Lawn</h3><div class="price">$19.99</div><div class="per">per month · bunker not included</div><ul><li>Auto-launch at 4.0 in</li><li>Nearest-bunker routing</li><li>Mows your lawn</li></ul><button class="btn ghost" data-plan="My Lawn" type="button">Subscribe</button></div>
-    <div class="plan best" data-r><div class="tag">Most popular</div><h3>The Block</h3><div class="price">$19.99</div><div class="per">per month · same price, same result</div><ul><li>Everything in My Lawn</li><li>Mows the whole block</li><li>Neighbors not consulted</li></ul><button class="btn" data-plan="The Block" type="button">Subscribe</button></div>
-    <div class="plan" data-r><div class="tag">Enterprise</div><h3>ZIP Code</h3><div class="price">$19.99</div><div class="per">per month · we could not find a difference</div><ul><li>Everything in The Block</li><li>Mows the ZIP code</li><li>New ZIP code assigned after service</li></ul><button class="btn ghost" data-plan="ZIP Code" type="button">Subscribe</button></div>
+    <div class="plan" data-r><div class="tag">Residential</div><h3>My Lawn</h3><div class="price">$29.99</div><div class="per">per month · billed monthly</div>
+      <ul><li>1 launch per month</li><li>Coverage: your lawn (up to ¼ acre)</li><li>Trigger fixed at 4.0 in</li><li>Shared bunker, under 1 mile</li><li>Companion app</li></ul>
+      <button class="btn ghost" data-plan="lawn" type="button">Subscribe</button></div>
+    <div class="plan best" data-r><div class="tag">Most popular</div><h3>The Block</h3><div class="price">$249</div><div class="per">per month · billed monthly</div>
+      <ul><li>4 launches per month</li><li>Coverage: up to 24 lawns</li><li>Adjustable trigger, 2–6 in</li><li>Priority bunker, under ½ mile</li><li>Live flight tracking in the app</li><li>Neighbors notified (afterwards)</li></ul>
+      <button class="btn" data-plan="block" type="button">Subscribe</button></div>
+    <div class="plan" data-r><div class="tag">Enterprise</div><h3>ZIP Code</h3><div class="price">$18,500</div><div class="per">per month · annual contract</div>
+      <ul><li>20 launches per month</li><li>Coverage: one ZIP code</li><li>Dedicated bunker</li><li>Scheduled mows and HOA liaison</li><li>New ZIP code issued after service</li></ul>
+      <button class="btn ghost" data-plan="zip" type="button">Contact sales</button></div>
+  </div>
+  <div class="fallout" data-r>
+    <div class="fo-l">
+      <div class="tag">☢ Fallout Pack</div>
+      <h3>Everything. Everywhere. Monthly.</h3>
+      <div class="price">$2,000,000<small> / month</small></div>
+      <ul><li><b>Unlimited launches</b></li><li>Full coverage, from My Lawn to My District</li><li>Your own bunker, under someone else's lawn</li><li>24/7 Launch Concierge</li><li>Re-sodding after every launch, then mowing it</li><li>Fallout Edition of the app, in a darker yellow</li></ul>
+    </div>
+    <div class="fo-r">
+      <label for="cov" class="cov-k">Coverage</label>
+      <div class="cov-v" id="covV">My Lawn</div>
+      <input type="range" id="cov" min="0" max="4" step="1" value="0" aria-describedby="covD">
+      <div class="cov-ticks" aria-hidden="true"><span>My Lawn</span><span>Block</span><span>Neighborhood</span><span>ZIP</span><span>My District</span></div>
+      <div class="cov-stats">
+        <div><small>Area</small><b id="covA">¼ acre</b></div>
+        <div><small>Lawns per launch</small><b id="covL">1</b></div>
+        <div><small>Launches</small><b>Unlimited</b></div>
+      </div>
+      <p class="cov-d" id="covD">Just your lawn. A modest start, for a customer of your means.</p>
+      <button class="btn" data-plan="fallout" type="button">Subscribe to Fallout Pack</button>
+    </div>
   </div>
   <div class="ordermsg" id="ordermsg" aria-live="polite"></div>
 </div></section>
@@ -588,9 +767,73 @@
   if('ResizeObserver' in window)new ResizeObserver(size).observe(cv); else window.addEventListener('resize',size);
   size();start();
 
-  // plans
+  // ---------- companion app (shares state with the lawn above) ----------
+  var autoBox=document.getElementById('auto'),autoLbl=autoBox.parentNode;
+  function setTrigger(v){TRIGGER=v;autoLbl.lastChild.textContent=' Auto at '+v.toFixed(1)+' in';}
+  var pH=document.getElementById('pH'),gArc=document.getElementById('gArc'),pNext=document.getElementById('pNext'),pB=document.getElementById('pB'),pT=document.getElementById('pT'),pS=document.getElementById('pS');
+  var pAuto=document.getElementById('pAuto'),pTrig=document.getElementById('pTrig'),pTv=document.getElementById('pTv'),pTlock=document.getElementById('pTlock');
+  var lState=document.getElementById('lState'),alerts=document.getElementById('alerts'),pPlan=document.getElementById('pPlan');
+  document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('.tabs button').forEach(function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-selected',on);});
+    document.querySelectorAll('.scr').forEach(function(sc){sc.classList.toggle('on',sc.dataset.s===b.dataset.t);});
+  });});
+  pAuto.addEventListener('change',function(){autoBox.checked=pAuto.checked;autoBox.dispatchEvent(new Event('change'));});
+  autoBox.addEventListener('change',function(){pAuto.checked=autoBox.checked;});
+  pTrig.addEventListener('input',function(){var v=+pTrig.value;pTv.textContent=v.toFixed(1)+' in';setTrigger(v);});
+  function alert(title,txt){var li=document.createElement('li');li.className='new';li.innerHTML='<b></b><span></span><i>Now</i>';li.children[0].textContent=title;li.children[1].textContent=txt;alerts.insertBefore(li,alerts.firstChild);while(alerts.children.length>6)alerts.removeChild(alerts.lastChild);}
+  var lastState='';
+  setInterval(function(){
+    var mowed=state==='boom'||state==='after';
+    var h=mowed?0:height;
+    pH.textContent=h.toFixed(2);gArc.setAttribute('stroke-dasharray',Math.min(100,h/6*100)+' 100');
+    pNext.textContent=nV.textContent;
+    document.getElementById('pF').textContent=mowed?'Clear. 0% chance of grass, permanently.':(height>=TRIGGER-0.5?'Mowing expected shortly. Consider a restaurant in another state.':'Partly sunny. 98% chance of mowing this week.');pB.textContent=bV.textContent;pT.textContent=TRIGGER.toFixed(1)+' in';pS.textContent=statusTxt.textContent;
+    var d=new Date();document.getElementById('pClock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
+    if(state!==lastState){
+      if(state==='count')alert('Launch','NukeMow is launching. Please be somewhere else.');
+      if(state==='boom')alert('Mowing','Your lawn is being mowed.');
+      if(state==='after')alert('Complete','Grass height: 0.000 in. Next mow: never.');
+      lState.textContent=state==='grow'?'Your lawn is ready to be mowed. It has always been ready.':state==='after'?'Your lawn has been mowed. There is nothing left to mow. Plant a new lawn above to try again.':'A launch is already in progress. Patience is a premium feature.';
+      lastState=state;
+    }
+  },250);
+  // slide to mow
+  var slide=document.getElementById('slide'),knob=document.getElementById('knob'),drag=null;
+  function maxX(){return slide.clientWidth-knob.offsetWidth-8;}
+  function setKnob(x){x=Math.max(0,Math.min(maxX(),x));knob.style.left=(4+x)+'px';knob.setAttribute('aria-valuenow',Math.round(x/maxX()*100));return x;}
+  function release(x){
+    if(x>=maxX()-4&&state==='grow'){slide.classList.add('done');slide.querySelector('.track-t').textContent='Launch confirmed';launch();
+      setTimeout(function(){slide.classList.remove('done');slide.querySelector('.track-t').innerHTML='Slide to mow &rarr;';knob.classList.add('back');setKnob(0);setTimeout(function(){knob.classList.remove('back');},320);},2600);}
+    else{knob.classList.add('back');setKnob(0);setTimeout(function(){knob.classList.remove('back');},320);}
+  }
+  knob.addEventListener('pointerdown',function(e){drag={x0:e.clientX,k0:knob.offsetLeft-4};knob.setPointerCapture(e.pointerId);});
+  knob.addEventListener('pointermove',function(e){if(drag)setKnob(drag.k0+e.clientX-drag.x0);});
+  knob.addEventListener('pointerup',function(){if(!drag)return;var x=knob.offsetLeft-4;drag=null;release(x);});
+  knob.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='End'){e.preventDefault();var x=setKnob(e.key==='End'?maxX():knob.offsetLeft-4+maxX()/4);if(x>=maxX()-1)release(x);}else if(e.key==='ArrowLeft'||e.key==='Home'){e.preventDefault();setKnob(0);}});
+
+  // ---------- plans ----------
+  var PLANS={
+    lawn:{name:'My Lawn',chip:'My Lawn',trig:false,msg:'Subscribed to <b>My Lawn</b> at $29.99/month. One launch per month. You will need one.'},
+    block:{name:'The Block',chip:'The Block',trig:true,msg:'Subscribed to <b>The Block</b> at $249/month. Your 23 neighbors have not been told. They will be, afterwards.'},
+    zip:{name:'ZIP Code',chip:'ZIP Code',trig:true,msg:'A <b>ZIP Code</b> sales representative will contact you. They will contact you at your new ZIP code.'},
+    fallout:{name:'Fallout Pack',chip:'Fallout',trig:true,msg:''}
+  };
+  var COV=[
+    ['My Lawn','¼ acre','1','Just your lawn. A modest start, for a customer of your means.'],
+    ['The Block','6 acres','24','Your block. The neighbors are included. They were not asked. They rarely are.'],
+    ['Neighborhood','140 acres','410','The whole neighborhood, including the park. The park has been asking for this.'],
+    ['ZIP Code','9 sq mi','6,800','An entire ZIP code. A new ZIP code is issued afterwards, free of charge.'],
+    ['My District','85 sq mi','52,000','Your district. It becomes, in every sense, your district. Price unchanged. We thought about it.']
+  ];
+  var cov=document.getElementById('cov');
+  function covUpdate(){var c=COV[+cov.value];document.getElementById('covV').textContent=c[0];document.getElementById('covA').textContent=c[1];document.getElementById('covL').textContent=c[2];document.getElementById('covD').textContent=c[3];cov.setAttribute('aria-valuetext',c[0]);}
+  cov.addEventListener('input',covUpdate);covUpdate();
   document.querySelectorAll('[data-plan]').forEach(function(b){b.addEventListener('click',function(){
-    document.getElementById('ordermsg').innerHTML='Subscribed to <b>'+b.dataset.plan+'</b>. Your nearest bunker has been notified. Results will be identical to the other plans.';
+    var p=PLANS[b.dataset.plan];
+    var msg=p.msg||('Subscribed to the <b>Fallout Pack</b> at $2,000,000/month, coverage: <b>'+COV[+cov.value][0]+'</b>. Unlimited launches. Your Launch Concierge will call you. Please answer.');
+    document.getElementById('ordermsg').innerHTML=msg+' The app has been updated.';
+    pPlan.textContent=p.chip;pTrig.disabled=!p.trig;pTlock.textContent=p.trig?'Adjustable on your plan':'Adjustable on The Block and above';
+    if(b.dataset.plan==='fallout'){var r=Math.min(2,Math.round(+cov.value/2));var rb=document.querySelector('.radius button[data-r2="'+r+'"]');if(rb)rb.click();}
   });});
 })();
 </script>
