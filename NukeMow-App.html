@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NukeMow</title>
+<meta name="description" content="The Oddly NukeMow companion app. Your lawn, in your pocket. Briefly.">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://www.oddly-inc.com/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A14;--bg2:#0D1020;--card:#141831;--card2:#1b2040;--line:#262b4d;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;
+  --mint:#2EE9A5;--purple:#7B4FFF;--amber:#F5A623;--red:#FF4D5E;--acc:#FFD23F;--accInk:#1a1400}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(900px 600px at 20% 10%,rgba(123,79,255,.16),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(255,210,63,.12),transparent 60%),#05060d;
+  color:var(--text);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+.site{position:fixed;left:18px;top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(8,10,20,.6)}
+.site:hover{color:var(--text);border-color:var(--acc)}
+.device{width:390px;height:min(844px,calc(100vh - 32px));border-radius:54px;background:var(--bg);border:2px solid #2a3058;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px #0e1226,0 0 0 8px #2a3058;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#000;z-index:20}
+.sb{height:50px;padding:16px 30px 0;display:flex;justify-content:space-between;font-weight:600;font-size:14px;flex:none}
+.sb .r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);padding-top:2px}
+@media(max-width:520px){body{display:block;background:var(--bg)}.site{display:none}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}.island{display:none}.sb{height:calc(30px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 20px 0}}
+.hdr{padding:6px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.hdr h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:var(--acc);color:var(--accInk);white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.view{display:none;padding:2px 16px 26px}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabs{flex:none;display:grid;border-top:1px solid var(--line);background:rgba(8,10,20,.94);padding:6px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs button{background:none;border:none;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:6px 0;cursor:pointer;transition:color .2s}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.acc{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 14%,var(--card)),var(--card))}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.big{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)} .small{font-size:12.5px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .card{margin-bottom:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--acc);color:var(--accInk);border:none;border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)} .btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:#2a2f52;border-radius:999px;transition:background .2s;cursor:pointer}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--acc)} .sw input:checked+i::after{transform:translateX(20px)}
+.sw input:disabled+i{opacity:.5;cursor:not-allowed}
+.sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set b{font-weight:600;font-size:14.5px;display:block}
+.set small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.seg{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:none;border:none;border-left:1px solid var(--line);padding:10px 4px;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button.on{background:var(--acc);color:var(--accInk)}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.list li:last-child{border-bottom:none}
+.list li span{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.list li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint)}
+.list li.new{animation:pop .5s ease}
+@keyframes pop{from{background:color-mix(in srgb,var(--acc) 25%,transparent)}to{background:transparent}}
+.toast{position:absolute;left:14px;right:14px;bottom:92px;background:rgba(20,24,49,.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:13.5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:30;backdrop-filter:blur(8px)}
+.toast.on{transform:none;opacity:1}
+.toast b{color:var(--acc)}
+.sheet{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(5,6,13,.92);backdrop-filter:blur(6px)}
+.sheet.on{display:flex;animation:fade .2s}
+.about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
+.about a{color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+.gauge{position:relative;width:220px;height:150px;margin:0 auto}
+.gauge svg{width:220px;height:132px;display:block}
+#gArc{transition:stroke-dasharray .4s}
+.gval{position:absolute;left:0;right:0;top:64px;text-align:center}
+.gval b{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:600;display:block;line-height:1}
+.gval small{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.lawnpic{width:100%;height:84px;display:block;border-radius:12px;margin-top:8px;background:linear-gradient(180deg,#5fa0e0,#bfe3ff 70%)}
+.fc{background:linear-gradient(135deg,rgba(255,210,63,.13),rgba(255,255,255,.03));border:1px solid rgba(255,210,63,.32);border-radius:14px;padding:11px 13px;margin-bottom:12px}
+.fc p{font-size:13.5px;margin-top:3px}
+.slide{position:relative;height:62px;border-radius:999px;background:repeating-linear-gradient(-45deg,rgba(255,210,63,.18) 0 10px,rgba(255,210,63,.06) 10px 20px);border:1px solid rgba(255,210,63,.45);margin:16px 0 10px;touch-action:none;user-select:none}
+.slide .tt{position:absolute;inset:0;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--acc);letter-spacing:.08em;padding-left:44px}
+.knob{position:absolute;left:5px;top:5px;width:52px;height:52px;border-radius:50%;background:var(--acc);color:var(--accInk);display:grid;place-items:center;font-size:26px;cursor:grab;box-shadow:0 6px 18px rgba(0,0,0,.4);outline:none}
+.knob:focus-visible{box-shadow:0 0 0 3px #fff}
+.knob.back{transition:left .3s}
+.plan{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-bottom:10px;cursor:pointer}
+.plan.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+.plan .row b{font-size:15px}
+.plan .price{font-family:'JetBrains Mono',monospace;font-weight:600}
+.plan small{display:block;color:var(--dim);font-size:12px;margin-top:3px}
+.plan.fo{background:linear-gradient(135deg,#221d08,var(--card))}
+.ticks{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--faint)}
+#sheet h2{font-family:'Fraunces',serif;font-size:30px;margin-bottom:6px}
+#sheet .count{font-family:'Fraunces',serif;font-size:150px;font-weight:800;line-height:1;color:var(--acc)}
+#sheet p{color:var(--dim);font-size:14.5px;margin:10px 0 18px;max-width:300px}
+#track{width:300px;height:180px;display:block;margin:8px auto}
+#sheet .mowed{font-family:'Fraunces',serif;font-size:58px;font-weight:800;color:var(--acc);letter-spacing:.02em}
+
+.tabs{grid-template-columns:repeat(5,1fr)}
+</style>
+</head>
+<body>
+<a class="site" href="https://www.oddly-inc.com/nukemow.html">&larr; Oddly NukeMow™ on oddly-inc.com</a>
+<div class="device" role="application" aria-label="NukeMow">
+  <div class="island" aria-hidden="true"></div>
+  <div class="sb"><span id="clk">9:41</span><span class="r">5G · 82%</span></div>
+  <header class="hdr"><div><h1>NukeMow</h1><div class="sub">1 ODDLY WAY · LAWN 01</div></div><span class="chip" id="planChip">My Lawn</span></header>
+  <main class="main">
+
+<section class="view on" id="v-lawn">
+  <div class="card acc">
+    <div class="gauge"><svg viewBox="0 0 220 132" aria-hidden="true"><path d="M22 120 A88 88 0 0 1 198 120" fill="none" stroke="#262b4d" stroke-width="16" stroke-linecap="round"/><path id="gArc" d="M22 120 A88 88 0 0 1 198 120" fill="none" stroke="#FFD23F" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg>
+      <div class="gval"><b id="h">2.10</b><small>inches of grass</small></div></div>
+    <svg class="lawnpic" id="lawnpic" viewBox="0 0 330 84" preserveAspectRatio="none" aria-hidden="true"></svg>
+  </div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="card"><div class="k">Next mow</div><div class="big" id="next" style="font-size:22px">—</div></div>
+    <div class="card"><div class="k">Nearest bunker</div><div class="big" id="bunk" style="font-size:22px">0.6 mi</div></div>
+    <div class="card"><div class="k">Trigger</div><div class="big" id="trig" style="font-size:22px">4.0 in</div></div>
+    <div class="card"><div class="k">Status</div><div class="big" id="stat" style="font-size:22px">Growing</div></div>
+  </div>
+  <div class="fc"><div class="k" style="color:var(--acc)">Mowing forecast</div><p id="fcast">Partly sunny. 98% chance of mowing this week.</p></div>
+</section>
+
+<section class="view" id="v-launch">
+  <div class="card acc">
+    <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:800">Manual launch</div>
+    <p class="small dim" id="lstate" style="margin-top:6px;min-height:40px">Your lawn is ready to be mowed. It has always been ready.</p>
+    <div class="slide" id="slide"><div class="tt" id="tt">Slide to mow &rarr;</div><div class="knob" id="knob" role="slider" tabindex="0" aria-label="Slide to mow" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">☢</div></div>
+    <p class="small dim">A swipe, not a tap, so that nobody mows by accident. Mostly.</p>
+  </div>
+  <div class="card"><div class="row"><span class="k">Launches this month</span><span class="mono" id="used">0 of 1</span></div><p class="small dim" style="margin-top:6px" id="usedNote">Your plan includes 1 launch per month. You will need one.</p></div>
+</section>
+
+<section class="view" id="v-plans">
+  <button class="plan on" data-p="lawn"><div class="row"><b>My Lawn</b><span class="price">$29.99/mo</span></div><small>1 launch/month · up to ¼ acre · trigger fixed at 4.0 in</small></button>
+  <button class="plan" data-p="block"><div class="row"><b>The Block</b><span class="price">$249/mo</span></div><small>4 launches/month · 24 lawns · adjustable trigger · flight tracking</small></button>
+  <button class="plan" data-p="zip"><div class="row"><b>ZIP Code</b><span class="price">$18,500/mo</span></div><small>20 launches/month · one ZIP code · dedicated bunker</small></button>
+  <button class="plan fo" data-p="fallout"><div class="row"><b>☢ Fallout Pack</b><span class="price">$2,000,000/mo</span></div><small>Unlimited launches · coverage from My Lawn to My District</small>
+    <div style="margin-top:10px" onclick="event.stopPropagation()"><div class="row"><span class="k">Coverage</span><span class="mono" id="covV">My Lawn</span></div>
+    <input type="range" id="cov" min="0" max="4" value="0" aria-label="Fallout Pack coverage"><div class="ticks"><span>Lawn</span><span>Block</span><span>Hood</span><span>ZIP</span><span>District</span></div></div></button>
+  <p class="about">Plan changes take effect immediately. So does everything else.</p>
+</section>
+
+<section class="view" id="v-alerts">
+  <div class="card"><ul class="list" id="alerts">
+    <li><b>Grass report</b><i>Yesterday</i><span>Your grass is 3.9 in. Tomorrow is the day.</span></li>
+    <li><b>Neighbor</b><i>Mon</i><span>Your neighbor has been mowed. They have been notified. Not by us.</span></li>
+    <li><b>HOA</b><i>Sun</i><span>Your HOA has sent a letter. The HOA has been mowed.</span></li>
+    <li><b>Postal</b><i>Sat</i><span>Your ZIP code has changed. A new one is on its way.</span></li>
+  </ul></div>
+</section>
+
+<section class="view" id="v-settings">
+  <div class="card">
+    <label class="set"><span><b>Auto-launch</b><small>Mow at the trigger height.</small></span><span class="sw"><input type="checkbox" id="auto" checked><i></i></span></label>
+    <div class="set" style="flex-direction:column;align-items:stretch"><div class="row"><span><b>Trigger height</b><small id="tlock">Adjustable on The Block and above.</small></span><span class="mono" id="tv">4.0 in</span></div><input type="range" id="tr" min="2" max="6" step="0.5" value="4" disabled aria-label="Trigger height"></div>
+    <label class="set"><span><b>Notify neighbors</b><small>Not available on any plan.</small></span><span class="sw"><input type="checkbox" disabled><i></i></span></label>
+    <label class="set"><span><b>Quiet hours</b><small>Mowing does not observe quiet hours.</small></span><span class="sw"><input type="checkbox" disabled><i></i></span></label>
+  </div>
+  <p class="about">NukeMow 1.0 · oStore · App Store: under review since launch<br>Certification: Pending · Treaty compliance: Pending<br><a href="https://www.oddly-inc.com/nukemow.html">oddly-inc.com/nukemow.html</a></p>
+</section>
+
+  </main>
+  <nav class="tabs" role="tablist"><button data-t="lawn" role="tab" aria-selected="true" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M6 20c0-4 1-7 2-9M10 20c0-5 1-9 3-12M14 20c0-4 1-6 2-8M18 20c0-3 .5-5 1.5-6"/></svg>Lawn</button><button data-t="launch" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1.6"/><path d="M12 9.6 9.6 5.4a7.5 7.5 0 0 1 4.8 0zM14.1 13.2h4.8a7.5 7.5 0 0 1-2.4 4.2zM9.9 13.2l-2.4 4.2a7.5 7.5 0 0 1-2.4-4.2z"/></svg>Launch</button><button data-t="plans" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Plans</button><button data-t="alerts" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></svg>Alerts</button><button data-t="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Settings</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Launch"><div id="sb"></div></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function clock(){const d=new Date();$('#clk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clock,15000);})();
+function showTab(id){$$('.tabs button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id));$('.main').scrollTop=0;if(window.onTab)onTab(id);}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.t)));
+let toastT;function toast(html,ms){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+function addLog(ul,title,text,when){const li=document.createElement('li');li.className='new';li.innerHTML='<b></b><i></i><span></span>';li.children[0].textContent=title;li.children[1].textContent=when||'Now';li.children[2].textContent=text;ul.insertBefore(li,ul.firstChild);while(ul.children.length>30)ul.removeChild(ul.lastChild);}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+</script>
+<script>
+
+let height=2.1,TR=4.0,auto=true,state='grow',plan='lawn',used=0;
+const PLANS={lawn:{name:'My Lawn',launches:1,trig:false},block:{name:'The Block',launches:4,trig:true},zip:{name:'ZIP Code',launches:20,trig:true},fallout:{name:'Fallout',launches:Infinity,trig:true}};
+const COV=['My Lawn','The Block','Neighborhood','ZIP Code','My District'];
+const RATE=REDUCED?0.05:0.09;
+// lawn picture
+const pic=$('#lawnpic');let blades='';for(let i=0;i<70;i++){const x=4+i*4.6+Math.random()*2;blades+=`<path class="bl" d="M${x} 84 q${(Math.random()-.5)*8} -30 ${(Math.random()-.5)*12} -${54+Math.random()*14}" stroke="hsl(${95+Math.random()*25},50%,${32+Math.random()*12}%)" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;}
+pic.innerHTML='<circle cx="292" cy="18" r="9" fill="#fff4c2"/>'+blades+'<rect x="0" y="78" width="330" height="6" fill="#3f6a2a"/>';
+function setHeight(){const s=Math.max(0.02,height/5);$$('#lawnpic .bl').forEach(b=>b.setAttribute('transform','translate(0 '+(84-84*s)+') scale(1 '+s+')'));}
+function ui(){
+  const mowed=state==='mowed';
+  $('#h').textContent=(mowed?0:height).toFixed(2);$('#gArc').setAttribute('stroke-dasharray',Math.min(100,(mowed?0:height)/6*100)+' 100');
+  $('#trig').textContent=TR.toFixed(1)+' in';$('#bunk').textContent=(0.5+0.2*Math.sin(Date.now()/6000)).toFixed(1)+' mi';
+  $('#stat').textContent={grow:'Growing',count:'Launching',flight:'In flight',mowed:'Mowed'}[state];
+  $('#next').textContent=state==='grow'?(auto?(height>=TR?'Now':Math.ceil((TR-height)/RATE)+' s'):'Disarmed'):state==='mowed'?'Never':'Now';
+  $('#fcast').textContent=mowed?'Clear. 0% chance of grass, permanently.':height>=TR-0.6?'Mowing expected shortly. Consider a restaurant in another state.':'Partly sunny. 98% chance of mowing this week.';
+  const L=PLANS[plan].launches;$('#used').textContent=used+' of '+(L===Infinity?'unlimited':L);
+  $('#lstate').textContent=state==='grow'?'Your lawn is ready to be mowed. It has always been ready.':state==='mowed'?'Your lawn has been mowed. There is nothing left to mow.':'A launch is in progress. Patience is a premium feature.';
+}
+function alert(t,x){addLog($('#alerts'),t,x);}
+// launch sequence
+const sheet=$('#sheet'),sb=$('#sb');
+function launch(){
+  if(state!=='grow')return;
+  const L=PLANS[plan].launches;if(used>=L){toast('You have used your <b>'+L+'</b> launch'+(L>1?'es':'')+' this month. Upgrade for more mowing.');return;}
+  used++;state='count';alert('Launch','NukeMow is launching. Please be somewhere else.');sheet.classList.add('on');let n=3;
+  const tick=()=>{if(n>0){sb.innerHTML='<div class="k">Mowing in</div><div class="count">'+n+'</div><p>The app has selected a restaurant for you in another state.</p>';n--;setTimeout(tick,REDUCED?350:850);return;}flight();};tick();
+}
+function flight(){
+  state='flight';
+  sb.innerHTML='<h2>In flight</h2><svg id="track" viewBox="0 0 300 180"><rect width="300" height="180" rx="14" fill="#0D1020" stroke="#262b4d"/><path d="M40 150 Q150 -20 260 140" fill="none" stroke="#FFD23F" stroke-width="2" stroke-dasharray="5 6" opacity=".6"/><circle cx="40" cy="150" r="7" fill="#9A9EC0"/><text x="40" y="172" fill="#9A9EC0" font-size="10" font-family="JetBrains Mono, monospace" text-anchor="middle">BUNKER</text><circle cx="260" cy="140" r="9" fill="#5fa04a"/><text x="260" y="168" fill="#9A9EC0" font-size="10" font-family="JetBrains Mono, monospace" text-anchor="middle">YOUR LAWN</text><circle id="msl" r="6" fill="#FFD23F"/></svg><p class="mono" id="eta">Time to mow: 4.0 s</p>';
+  const t0=performance.now(),T=REDUCED?1200:4000,msl=$('#msl');
+  const step=now=>{const k=Math.min(1,(now-t0)/T),x=40+220*k,y=(1-k)*(1-k)*150+2*(1-k)*k*(-20)+k*k*140;msl.setAttribute('cx',x);msl.setAttribute('cy',y);$('#eta').textContent='Time to mow: '+((1-k)*T/1000).toFixed(1)+' s';if(k<1)return requestAnimationFrame(step);mowed();};
+  requestAnimationFrame(step);
+}
+function mowed(){
+  state='mowed';alert('Complete','Grass height: 0.000 in. Next mow: never.');
+  if(plan!=='lawn')setTimeout(()=>alert('Neighbor','Your neighbors have been mowed at no extra charge.'),600);
+  sb.innerHTML='<div class="mowed">MOWED</div><p class="mono" style="color:var(--text)">Grass height: 0.000 in</p><p>Your lawn is now glass, which does not need mowing either.</p><button class="btn" id="replant">Plant a new lawn</button><div style="height:10px"></div><button class="btn ghost" id="close">Close</button>';
+  $('#replant').addEventListener('click',()=>{height=0.4;state='grow';sheet.classList.remove('on');setHeight();ui();toast('A new lawn has been planted, for demonstration purposes.');});
+  $('#close').addEventListener('click',()=>sheet.classList.remove('on'));
+  ui();
+}
+// slide to mow
+const slide=$('#slide'),knob=$('#knob');let drag=null;
+const maxX=()=>slide.clientWidth-knob.offsetWidth-10;
+function setKnob(x){x=Math.max(0,Math.min(maxX(),x));knob.style.left=(5+x)+'px';knob.setAttribute('aria-valuenow',Math.round(x/maxX()*100));return x;}
+function release(x){if(x>=maxX()-4){$('#tt').textContent='Launch confirmed';launch();}knob.classList.add('back');setKnob(0);setTimeout(()=>{knob.classList.remove('back');$('#tt').innerHTML='Slide to mow &rarr;';},1400);}
+knob.addEventListener('pointerdown',e=>{drag={x0:e.clientX,k0:knob.offsetLeft-5};knob.setPointerCapture(e.pointerId);});
+knob.addEventListener('pointermove',e=>{if(drag)setKnob(drag.k0+e.clientX-drag.x0);});
+knob.addEventListener('pointerup',()=>{if(!drag)return;const x=knob.offsetLeft-5;drag=null;release(x);});
+knob.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='End'){e.preventDefault();const x=setKnob(e.key==='End'?maxX():knob.offsetLeft-5+maxX()/4);if(x>=maxX()-1)release(x);}else if(e.key==='ArrowLeft'||e.key==='Home'){e.preventDefault();setKnob(0);}});
+// plans
+function setPlan(p){plan=p;$$('.plan').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  $('#planChip').textContent=p==='fallout'?'☢ Fallout · '+COV[+$('#cov').value]:PLANS[p].name;
+  $('#tr').disabled=!PLANS[p].trig;$('#tlock').textContent=PLANS[p].trig?'Adjustable on your plan.':'Adjustable on The Block and above.';
+  const L=PLANS[p].launches;$('#usedNote').textContent='Your plan includes '+(L===Infinity?'unlimited launches':L+' launch'+(L>1?'es':'')+' per month')+'. You will need one.';ui();}
+$$('.plan').forEach(b=>b.addEventListener('click',()=>{setPlan(b.dataset.p);toast('Plan changed to <b>'+(b.dataset.p==='fallout'?'Fallout Pack':PLANS[b.dataset.p].name)+'</b>. '+(b.dataset.p==='fallout'?'Your Launch Concierge will call you.':'Effective immediately.'));}));
+$('#cov').addEventListener('input',e=>{$('#covV').textContent=COV[+e.target.value];if(plan==='fallout')$('#planChip').textContent='☢ Fallout · '+COV[+e.target.value];});
+// settings
+$('#auto').addEventListener('change',e=>{auto=e.target.checked;toast(auto?'Auto-launch armed.':'Auto-launch disarmed. We find this difficult to watch.');ui();});
+$('#tr').addEventListener('input',e=>{TR=+e.target.value;$('#tv').textContent=TR.toFixed(1)+' in';ui();});
+// grow
+let last=performance.now();
+(function loop(now){const dt=Math.min(.1,((now||last)-last)/1000);last=now||last;
+  if(state==='grow'){height=Math.min(5.5,height+dt*RATE);setHeight();if(auto&&height>=TR)launch();}
+  requestAnimationFrame(loop);})();
+setInterval(ui,250);setHeight();ui();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OPC Command</title>
+<meta name="description" content="OPC Command, the companion app for the Oddly Pool Cleaner (OPC-1). Sonar, classification and the torpedo bay.">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://www.oddly-inc.com/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A14;--bg2:#0D1020;--card:#141831;--card2:#1b2040;--line:#262b4d;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;
+  --mint:#2EE9A5;--purple:#7B4FFF;--amber:#F5A623;--red:#FF4D5E;--acc:#2EE9A5;--accInk:#04140D}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(900px 600px at 20% 10%,rgba(123,79,255,.16),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(46,233,165,.12),transparent 60%),#05060d;
+  color:var(--text);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+.site{position:fixed;left:18px;top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(8,10,20,.6)}
+.site:hover{color:var(--text);border-color:var(--acc)}
+.device{width:390px;height:min(844px,calc(100vh - 32px));border-radius:54px;background:var(--bg);border:2px solid #2a3058;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px #0e1226,0 0 0 8px #2a3058;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#000;z-index:20}
+.sb{height:50px;padding:16px 30px 0;display:flex;justify-content:space-between;font-weight:600;font-size:14px;flex:none}
+.sb .r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);padding-top:2px}
+@media(max-width:520px){body{display:block;background:var(--bg)}.site{display:none}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}.island{display:none}.sb{height:calc(30px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 20px 0}}
+.hdr{padding:6px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.hdr h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:var(--acc);color:var(--accInk);white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.view{display:none;padding:2px 16px 26px}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabs{flex:none;display:grid;border-top:1px solid var(--line);background:rgba(8,10,20,.94);padding:6px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs button{background:none;border:none;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:6px 0;cursor:pointer;transition:color .2s}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.acc{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 14%,var(--card)),var(--card))}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.big{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)} .small{font-size:12.5px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .card{margin-bottom:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--acc);color:var(--accInk);border:none;border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)} .btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:#2a2f52;border-radius:999px;transition:background .2s;cursor:pointer}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--acc)} .sw input:checked+i::after{transform:translateX(20px)}
+.sw input:disabled+i{opacity:.5;cursor:not-allowed}
+.sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set b{font-weight:600;font-size:14.5px;display:block}
+.set small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.seg{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:none;border:none;border-left:1px solid var(--line);padding:10px 4px;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button.on{background:var(--acc);color:var(--accInk)}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.list li:last-child{border-bottom:none}
+.list li span{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.list li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint)}
+.list li.new{animation:pop .5s ease}
+@keyframes pop{from{background:color-mix(in srgb,var(--acc) 25%,transparent)}to{background:transparent}}
+.toast{position:absolute;left:14px;right:14px;bottom:92px;background:rgba(20,24,49,.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:13.5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:30;backdrop-filter:blur(8px)}
+.toast.on{transform:none;opacity:1}
+.toast b{color:var(--acc)}
+.sheet{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(5,6,13,.92);backdrop-filter:blur(6px)}
+.sheet.on{display:flex;animation:fade .2s}
+.about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
+.about a{color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+#sonar{width:100%;aspect-ratio:1/1.15;display:block;border-radius:16px;background:#04140f;touch-action:manipulation;cursor:crosshair}
+.target{display:flex;gap:12px;align-items:center}
+.target .tag{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;white-space:nowrap}
+.tag.no{background:rgba(255,77,94,.15);color:var(--red);border:1px solid rgba(255,77,94,.4)}
+.tag.yes{background:rgba(46,233,165,.12);color:var(--mint);border:1px solid rgba(46,233,165,.4)}
+.tubes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.tube{border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:10px 4px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px}
+.tube i{display:block;width:16px;height:36px;margin:4px auto 6px;border-radius:8px;background:linear-gradient(180deg,#e9ebf0,#8a8f99)}
+.tube.empty i{background:none;border:1px dashed var(--faint)}
+.tube.empty{color:var(--faint)}
+.fire{font-size:17px;letter-spacing:.08em;padding:16px}
+.fire.red{background:var(--red);color:#fff}
+
+.tabs{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<a class="site" href="https://www.oddly-inc.com/pool.html">&larr; Oddly Pool Cleaner on oddly-inc.com</a>
+<div class="device" role="application" aria-label="OPC Command">
+  <div class="island" aria-hidden="true"></div>
+  <div class="sb"><span id="clk">9:41</span><span class="r">oNet · 71%</span></div>
+  <header class="hdr"><div><h1>OPC Command</h1><div class="sub">OPC-1 · BACKYARD POOL</div></div><span class="chip" id="modeChip">PATROL</span></header>
+  <main class="main">
+
+<section class="view on" id="v-sonar">
+  <canvas id="sonar" aria-label="Sonar view of the pool. Tap a contact to select it."></canvas>
+  <div class="card" style="margin-top:12px" id="tcard">
+    <div class="target"><div style="flex:1;min-width:0"><div class="k">Selected contact</div><div style="font-family:'Fraunces',serif;font-size:20px;font-weight:800" id="tName">None selected</div><div class="small dim" id="tInfo">Tap a contact on the sonar.</div></div><span class="tag" id="tTag" hidden></span></div>
+  </div>
+  <button class="btn fire red" id="fire" disabled>FIRE TORPEDO</button>
+  <p class="about" id="ammo">4 torpedoes loaded · Classification: Belongs / Does Not Belong</p>
+</section>
+
+<section class="view" id="v-bay">
+  <div class="card acc"><div class="k">Torpedo bay · 4 tubes, front-mounted</div><div class="tubes" id="tubes"></div></div>
+  <button class="btn" id="reload">Reload all tubes</button>
+  <p class="about">Reload cartridges are sold separately and are illegal to ship in fourteen states. Oddly, Inc. currently ships to all fifty.</p>
+  <div class="grid2" style="margin-top:12px">
+    <div class="card"><div class="k">Speed</div><div class="big" id="kn" style="font-size:22px">0 kn</div></div>
+    <div class="card"><div class="k">Battery</div><div class="big" id="bat" style="font-size:22px">71%</div></div>
+    <div class="card"><div class="k">Centrifuges</div><div class="big" style="font-size:22px">14,000</div><div class="small dim">RPM each</div></div>
+    <div class="card"><div class="k">Removed today</div><div class="big" id="rem" style="font-size:22px">0</div></div>
+  </div>
+</section>
+
+<section class="view" id="v-log">
+  <div class="card"><ul class="list" id="log">
+    <li><b>Inflatable flamingo · Does Not Belong</b><i>08:14</i><span>Removed permanently. It never had a fair fight.</span></li>
+    <li><b>Leaf · Does Not Belong</b><i>07:52</i><span>Removed. Torpedo cost exceeded leaf value. Within tolerance.</span></li>
+    <li><b>Swimmer · Belongs</b><i>Yesterday</i><span>Classified as Belongs. Confidence: 61%. Monitoring.</span></li>
+  </ul></div>
+</section>
+
+<section class="view" id="v-settings">
+  <div class="card">
+    <div class="k" style="margin-bottom:8px">Mode</div>
+    <div class="seg" id="mode" style="grid-template-columns:repeat(3,1fr)"><button data-m="dock">Dock</button><button data-m="patrol" class="on">Patrol</button><button data-m="combat">Combat</button></div>
+    <p class="small dim" id="modeNote" style="margin-top:8px">Patrol: 90 minutes of quiet confidence.</p>
+  </div>
+  <div class="card">
+    <label class="set"><span><b>Auto-engage</b><small>Fire on anything that Does Not Belong.</small></span><span class="sw"><input type="checkbox" id="autoE"><i></i></span></label>
+    <label class="set"><span><b>Night mode</b><small>Visibility: 0 ft. Confidence: unchanged.</small></span><span class="sw"><input type="checkbox" id="night"><i></i></span></label>
+    <label class="set"><span><b>Ordnance permit</b><small>Pending.</small></span><span class="sw"><input type="checkbox" disabled><i></i></span></label>
+  </div>
+  <p class="about">OPC Command 1.4 · OPC-1 Class-B Recreational Submersible<br>Certification: Pending · <a href="https://www.oddly-inc.com/pool.html">oddly-inc.com/pool.html</a></p>
+</section>
+
+  </main>
+  <nav class="tabs" role="tablist"><button data-t="sonar" role="tab" aria-selected="true" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12 19 6"/></svg>Sonar</button><button data-t="bay" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="14" height="6" rx="3"/><path d="M17 12h4M6 9V7M6 17v-2"/></svg>Torpedo Bay</button><button data-t="log" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Threat Log</button><button data-t="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Settings</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function clock(){const d=new Date();$('#clk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clock,15000);})();
+function showTab(id){$$('.tabs button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id));$('.main').scrollTop=0;if(window.onTab)onTab(id);}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.t)));
+let toastT;function toast(html,ms){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+function addLog(ul,title,text,when){const li=document.createElement('li');li.className='new';li.innerHTML='<b></b><i></i><span></span>';li.children[0].textContent=title;li.children[1].textContent=when||'Now';li.children[2].textContent=text;ul.insertBefore(li,ul.firstChild);while(ul.children.length>30)ul.removeChild(ul.lastChild);}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+</script>
+<script>
+
+const KINDS=[['Inflatable flamingo','#ff7ab0',0],['Pool noodle','#ffd23f',0],['Leaf','#7cc46b',0],['Beach ball','#ff6b4a',0],['Rubber duck','#ffe14a',0],['Small dog','#c9a27a',0],['Branch','#8b6b45',0],['Swimmer','#e0c8b0',1],['Lounge chair','#bfc6d3',0],['A slightly larger flamingo','#ff5fa2',0]];
+const cv=$('#sonar'),cx=cv.getContext('2d');let W=0,H=0,D=1;
+function size(){const r=cv.getBoundingClientRect();D=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);}
+let sub={x:.5,y:.5,a:0,v:0},contacts=[],sel=null,torps=[],booms=[],tubes=[1,1,1,1],removed=0,mode='patrol',autoE=false,night=false,sweep=0,bat=71,nextSpawn=1;
+function spawn(){if(contacts.length>=5)return;const k=KINDS[Math.floor(Math.random()*KINDS.length)];contacts.push({k,x:.15+Math.random()*.7,y:.12+Math.random()*.76,seen:0,vx:(Math.random()-.5)*.01,vy:(Math.random()-.5)*.01,id:Math.random()});}
+for(let i=0;i<3;i++)spawn();
+function belongs(c){return c.k[2]===1?Math.random()<.61:false;}
+function select(c){sel=c;if(!c){$('#tName').textContent='None selected';$('#tInfo').textContent='Tap a contact on the sonar.';$('#tTag').hidden=true;$('#fire').disabled=true;return;}
+  const b=c.k[2]===1;$('#tName').textContent=c.k[0];$('#tInfo').textContent=b?'Classification confidence: 61%. Monitoring.':'Classification confidence: 100%. It does not belong.';
+  const t=$('#tTag');t.hidden=false;t.textContent=b?'BELONGS':'DOES NOT BELONG';t.className='tag '+(b?'yes':'no');$('#fire').disabled=!tubes.some(x=>x);
+  $('#fire').textContent=b?'FIRE ANYWAY':'FIRE TORPEDO';}
+function fire(){if(!sel)return;const i=tubes.indexOf(1);if(i<0){toast('All tubes empty. <b>Reload</b> in the Torpedo Bay.');return;}
+  tubes[i]=0;renderTubes();torps.push({x:sub.x,y:sub.y,t:sel});
+  if(sel.k[2]===1)toast('Firing on a contact classified <b>Belongs</b>. The swimmer has been asked to move. Quickly.');select(null);}
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/W,y=(e.clientY-r.top)/H;let best=null,bd=.08;contacts.forEach(c=>{const d=Math.hypot(c.x-x,(c.y-y)*H/W);if(d<bd){bd=d;best=c;}});select(best);});
+$('#fire').addEventListener('click',fire);
+function renderTubes(){$('#tubes').innerHTML=tubes.map((t,i)=>'<div class="tube'+(t?'':' empty')+'"><i></i>Tube '+(i+1)+'<br>'+(t?'Loaded':'Empty')+'</div>').join('');$('#ammo').textContent=tubes.filter(Boolean).length+' torpedoes loaded · Classification: Belongs / Does Not Belong';}
+$('#reload').addEventListener('click',()=>{tubes=[1,1,1,1];renderTubes();toast('Tubes reloaded. <b>Shipped to all fifty states.</b>');});
+$$('#mode button').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.m;$$('#mode button').forEach(x=>x.classList.toggle('on',x===b));$('#modeChip').textContent=mode.toUpperCase();
+  $('#modeNote').textContent={dock:'Dock: charging. Still watching.',patrol:'Patrol: 90 minutes of quiet confidence.',combat:'Combat: 27 knots, 6 minutes. Audible below 4 feet.'}[mode];}));
+$('#autoE').addEventListener('change',e=>{autoE=e.target.checked;toast(autoE?'Auto-engage on. <b>Everything is being evaluated.</b>':'Auto-engage off. You decide what belongs.');});
+$('#night').addEventListener('change',e=>{night=e.target.checked;});
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!W){size();}
+  sweep=(sweep+dt*(mode==='combat'?2.2:1.2))%(Math.PI*2);
+  // sub moves toward the selected contact, or patrols
+  const tgt=sel||(mode==='dock'?{x:.5,y:.92}:{x:.5+.32*Math.cos(now/5000),y:.5+.3*Math.sin(now/3700)});
+  const spd=mode==='combat'?.25:mode==='dock'?.06:.1,dx=tgt.x-sub.x,dy=tgt.y-sub.y,d=Math.hypot(dx,dy);
+  if(d>.06){sub.x+=dx/d*spd*dt;sub.y+=dy/d*spd*dt;sub.a=Math.atan2(dy,dx);sub.v=spd;}else sub.v=0;
+  $('#kn').textContent=Math.round(sub.v/.25*27)+' kn';
+  contacts.forEach(c=>{c.x=Math.max(.08,Math.min(.92,c.x+c.vx*dt));c.y=Math.max(.08,Math.min(.92,c.y+c.vy*dt));
+    const ang=(Math.atan2(c.y-.5,c.x-.5)+Math.PI*2)%(Math.PI*2);if(Math.abs(((ang-sweep+Math.PI*3)%(Math.PI*2))-Math.PI)<.12)c.seen=1;c.seen=Math.max(0,c.seen-dt*.35);
+    if(autoE&&c.k[2]===0&&tubes.some(x=>x)&&!torps.some(t=>t.t===c)&&Math.random()<dt*.4){sel=c;fire();}});
+  torps.forEach(t=>{const dx=t.t.x-t.x,dy=t.t.y-t.y,d=Math.hypot(dx,dy);if(d<.02){booms.push({x:t.t.x,y:t.t.y,t:0});contacts=contacts.filter(c=>c!==t.t);t.done=1;removed++;$('#rem').textContent=removed;
+      addLog($('#log'),t.t.k[0]+' · '+(t.t.k[2]?'Belonged':'Does Not Belong'),t.t.k[2]?'Removed. Classification has been updated to Did Not Belong.':'Removed permanently.',new Date().toTimeString().slice(0,5));toast('<b>'+t.t.k[0]+'</b> removed from the pool.');}
+    else{t.x+=dx/d*.6*dt;t.y+=dy/d*.6*dt;}});torps=torps.filter(t=>!t.done);
+  booms.forEach(b=>b.t+=dt);booms=booms.filter(b=>b.t<1.2);
+  nextSpawn-=dt;if(nextSpawn<0){spawn();nextSpawn=4+Math.random()*5;}
+  if(Math.random()<dt/20){bat=Math.max(5,bat-1);$('#bat').textContent=bat+'%';}
+  draw(now/1000);requestAnimationFrame(loop);}
+function draw(t){const g=cx;g.clearRect(0,0,W,H);
+  // pool
+  g.fillStyle=night?'#020806':'#062a22';g.beginPath();g.roundRect(10,10,W-20,H-20,26);g.fill();
+  g.strokeStyle='rgba(46,233,165,.25)';g.lineWidth=2;g.stroke();
+  g.strokeStyle='rgba(46,233,165,.08)';g.lineWidth=1;for(let i=1;i<6;i++){g.beginPath();g.moveTo(10,10+i*(H-20)/6);g.lineTo(W-10,10+i*(H-20)/6);g.stroke();}
+  const cx0=W/2,cy0=H/2,R=Math.hypot(W,H)/2;
+  for(let i=1;i<=3;i++){g.beginPath();g.arc(cx0,cy0,R*i/3.3,0,7);g.stroke();}
+  // sweep
+  const grd=g.createConicGradient?g.createConicGradient(sweep-0.6,cx0,cy0):null;
+  if(grd){grd.addColorStop(0,'rgba(46,233,165,0)');grd.addColorStop(.09,'rgba(46,233,165,.28)');grd.addColorStop(.0955,'rgba(46,233,165,0)');grd.addColorStop(1,'rgba(46,233,165,0)');g.fillStyle=grd;g.beginPath();g.roundRect(10,10,W-20,H-20,26);g.fill();}
+  // contacts
+  contacts.forEach(c=>{const a=night?c.seen*.6:Math.max(.25,c.seen),x=c.x*W,y=c.y*H;
+    g.fillStyle=c.k[1];g.globalAlpha=a;g.beginPath();g.arc(x,y,7,0,7);g.fill();g.globalAlpha=1;
+    if(c===sel){g.strokeStyle=c.k[2]?'#2EE9A5':'#FF4D5E';g.lineWidth=2;g.beginPath();g.arc(x,y,15+Math.sin(t*6)*2,0,7);g.stroke();
+      g.beginPath();g.moveTo(x-22,y);g.lineTo(x-10,y);g.moveTo(x+10,y);g.lineTo(x+22,y);g.moveTo(x,y-22);g.lineTo(x,y-10);g.moveTo(x,y+10);g.lineTo(x,y+22);g.stroke();}
+    if(a>.35){g.fillStyle='rgba(237,237,247,'+a+')';g.font='10px JetBrains Mono, monospace';g.textAlign='center';g.fillText(c.k[0].toUpperCase(),x,y-14);}});
+  // torpedoes
+  torps.forEach(tp=>{g.fillStyle='#fff';g.beginPath();g.arc(tp.x*W,tp.y*H,3,0,7);g.fill();g.strokeStyle='rgba(255,255,255,.35)';g.beginPath();g.moveTo(tp.x*W,tp.y*H);g.lineTo(sub.x*W,sub.y*H);g.stroke();});
+  booms.forEach(b=>{g.strokeStyle='rgba(255,200,120,'+(1-b.t/1.2)+')';g.lineWidth=3;g.beginPath();g.arc(b.x*W,b.y*H,8+b.t*40,0,7);g.stroke();});
+  // sub
+  g.save();g.translate(sub.x*W,sub.y*H);g.rotate(sub.a);g.fillStyle='#F5A623';g.beginPath();g.ellipse(0,0,13,6,0,0,7);g.fill();g.fillStyle='#04140D';g.fillRect(4,-2,5,4);g.restore();
+  g.fillStyle='rgba(46,233,165,.7)';g.font='600 10px JetBrains Mono, monospace';g.textAlign='left';g.fillText('OPC-1 · '+mode.toUpperCase()+(night?' · VIS 0 FT':''),20,H-22);}
+new ResizeObserver(size).observe(cv);renderTubes();requestAnimationFrame(loop);
+
+</script>
+</body>
+</html>

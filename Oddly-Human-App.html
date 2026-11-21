@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oddly Human</title>
+<meta name="description" content="Companion app for the Oddly Human 1 (OH1-A). Schedule the slap from bed.">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://www.oddly-inc.com/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A14;--bg2:#0D1020;--card:#141831;--card2:#1b2040;--line:#262b4d;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;
+  --mint:#2EE9A5;--purple:#7B4FFF;--amber:#F5A623;--red:#FF4D5E;--acc:#9B7BFF;--accInk:#0B0B0C}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(900px 600px at 20% 10%,rgba(123,79,255,.16),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(155,123,255,.16),transparent 60%),#05060d;
+  color:var(--text);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+.site{position:fixed;left:18px;top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(8,10,20,.6)}
+.site:hover{color:var(--text);border-color:var(--acc)}
+.device{width:390px;height:min(844px,calc(100vh - 32px));border-radius:54px;background:var(--bg);border:2px solid #2a3058;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px #0e1226,0 0 0 8px #2a3058;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#000;z-index:20}
+.sb{height:50px;padding:16px 30px 0;display:flex;justify-content:space-between;font-weight:600;font-size:14px;flex:none}
+.sb .r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);padding-top:2px}
+@media(max-width:520px){body{display:block;background:var(--bg)}.site{display:none}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}.island{display:none}.sb{height:calc(30px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 20px 0}}
+.hdr{padding:6px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.hdr h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:var(--acc);color:var(--accInk);white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.view{display:none;padding:2px 16px 26px}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabs{flex:none;display:grid;border-top:1px solid var(--line);background:rgba(8,10,20,.94);padding:6px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs button{background:none;border:none;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:6px 0;cursor:pointer;transition:color .2s}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.acc{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 14%,var(--card)),var(--card))}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.big{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)} .small{font-size:12.5px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .card{margin-bottom:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--acc);color:var(--accInk);border:none;border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)} .btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:#2a2f52;border-radius:999px;transition:background .2s;cursor:pointer}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--acc)} .sw input:checked+i::after{transform:translateX(20px)}
+.sw input:disabled+i{opacity:.5;cursor:not-allowed}
+.sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set b{font-weight:600;font-size:14.5px;display:block}
+.set small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.seg{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:none;border:none;border-left:1px solid var(--line);padding:10px 4px;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button.on{background:var(--acc);color:var(--accInk)}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.list li:last-child{border-bottom:none}
+.list li span{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.list li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint)}
+.list li.new{animation:pop .5s ease}
+@keyframes pop{from{background:color-mix(in srgb,var(--acc) 25%,transparent)}to{background:transparent}}
+.toast{position:absolute;left:14px;right:14px;bottom:92px;background:rgba(20,24,49,.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:13.5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:30;backdrop-filter:blur(8px)}
+.toast.on{transform:none;opacity:1}
+.toast b{color:var(--acc)}
+.sheet{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(5,6,13,.92);backdrop-filter:blur(6px)}
+.sheet.on{display:flex;animation:fade .2s}
+.about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
+.about a{color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+.clock{display:flex;align-items:center;justify-content:center;gap:6px;margin:10px 0 4px}
+.clock .digits{font-family:'JetBrains Mono',monospace;font-size:46px;font-weight:600;letter-spacing:-.02em}
+.clock .ampm{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--dim);align-self:flex-end;margin-bottom:10px}
+.steppers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.step{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px}
+.step button{width:40px;height:36px;border-radius:9px;border:none;background:var(--card2);font-size:20px;cursor:pointer}
+.step span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.1em}
+.intensity{font-family:'Fraunces',serif;font-size:22px;font-weight:800;margin-top:2px}
+.ticks{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--faint)}
+.robot{display:flex;gap:14px;align-items:center}
+.robot svg{width:86px;height:110px;flex:none}
+.robot .eye{fill:var(--acc);animation:blink 4s infinite}
+@keyframes blink{0%,92%,100%{opacity:1}95%{opacity:.1}}
+.bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s linear}
+.cmds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cmds button{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 12px;text-align:left;cursor:pointer;transition:border-color .2s}
+.cmds button:hover{border-color:var(--acc)}
+.cmds button b{display:block;font-size:14px}
+.cmds button small{display:block;font-size:11.5px;color:var(--dim);margin-top:2px}
+.cmds button:disabled{opacity:.5;cursor:wait}
+.say{font-family:'Fraunces',serif;font-size:17px;font-weight:600;line-height:1.3;margin-top:10px;min-height:44px}
+#sheet .count{font-family:'Fraunces',serif;font-size:150px;font-weight:800;line-height:1;color:var(--acc)}
+#sheet .hit{font-family:'Fraunces',serif;font-size:54px;font-weight:800;letter-spacing:.02em}
+#sheet p{color:var(--dim);margin:14px 0 22px;font-size:15px;max-width:290px}
+#sheet .mono{font-size:13px;color:var(--text)}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px) rotate(-.6deg)}40%,60%{transform:translateX(8px) rotate(.6deg)}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50}
+.flash.go{animation:fl .5s ease-out}
+@keyframes fl{0%{opacity:.35}100%{opacity:0}}
+
+.tabs{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<a class="site" href="https://www.oddly-inc.com/human.html">&larr; Oddly Human 1 on oddly-inc.com</a>
+<div class="device" role="application" aria-label="Oddly Human">
+  <div class="island" aria-hidden="true"></div>
+  <div class="sb"><span id="clk">9:41</span><span class="r">oNet · 94%</span></div>
+  <header class="hdr"><div><h1>Oddly Human</h1><div class="sub">COMPANION APP FOR OH1-A</div></div><span class="chip" id="unitChip">OH1-A · Online</span></header>
+  <main class="main">
+
+<section class="view on" id="v-alarm">
+  <div class="card acc">
+    <div class="row"><span class="k">Next alarm</span><span class="k" id="until">—</span></div>
+    <div class="clock"><span class="digits" id="digits">7:00:00</span><span class="ampm" id="ampm">AM</span></div>
+    <div class="steppers">
+      <div class="step"><button data-d="h-" aria-label="Hour earlier">−</button><span>HOUR</span><button data-d="h+" aria-label="Hour later">+</button></div>
+      <div class="step"><button data-d="m-" aria-label="Five minutes earlier">−</button><span>MIN</span><button data-d="m+" aria-label="Five minutes later">+</button></div>
+    </div>
+    <p class="small dim" style="margin-top:10px">Delivery method: Precision Force Delivery&trade;. Adjustments lock 30 seconds before contact, for safety.</p>
+  </div>
+  <div class="card">
+    <div class="row"><span class="k">Slap intensity</span><span class="mono" id="pct">82%</span></div>
+    <div class="intensity" id="ilabel">Industry Standard</div>
+    <input type="range" id="intensity" min="0" max="100" value="82" aria-label="Slap intensity">
+    <div class="ticks"><span>Gentle Reminder</span><span>Do Not Test This</span></div>
+    <p class="small dim" id="inote" style="margin-top:8px">Most users settle around 82%.</p>
+  </div>
+  <div class="card">
+    <label class="set"><span><b>Allow snooze</b><small id="snoozeNote">Delays the slap.</small></span><span class="sw"><input type="checkbox" id="snooze"><i></i></span></label>
+    <label class="set"><span><b>Disable Precision Force Delivery</b><small>Turns off the slap.</small></span><span class="sw"><input type="checkbox" id="disable"><i></i></span></label>
+    <label class="set"><span><b>English (Oddly) language pack</b><small>Wake-up phrases, in English (Oddly).</small></span><span class="sw"><input type="checkbox" id="lang" checked><i></i></span></label>
+  </div>
+  <button class="btn" id="test">Test alarm now</button>
+  <p class="about">Test alarms are delivered at your selected intensity. The unit has been told this is a test. It does not believe in tests.</p>
+</section>
+
+<section class="view" id="v-unit">
+  <div class="card acc">
+    <div class="robot">
+      <svg viewBox="0 0 86 110" aria-hidden="true"><defs><linearGradient id="rb" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8e6f4"/><stop offset="1" stop-color="#9b97b8"/></linearGradient></defs>
+        <rect x="25" y="4" width="36" height="30" rx="12" fill="url(#rb)"/><rect x="30" y="13" width="26" height="10" rx="5" fill="#141831"/><circle class="eye" cx="37" cy="18" r="2.6"/><circle class="eye" cx="49" cy="18" r="2.6"/>
+        <rect x="38" y="34" width="10" height="6" fill="#9b97b8"/><rect x="20" y="40" width="46" height="36" rx="12" fill="url(#rb)"/><rect x="36" y="50" width="14" height="4" rx="2" fill="var(--acc)"/>
+        <rect x="8" y="42" width="10" height="32" rx="5" fill="url(#rb)"/><rect x="68" y="42" width="10" height="32" rx="5" fill="url(#rb)"/>
+        <rect x="26" y="76" width="13" height="30" rx="6" fill="url(#rb)"/><rect x="47" y="76" width="13" height="30" rx="6" fill="url(#rb)"/></svg>
+      <div style="flex:1;min-width:0">
+        <div class="k">Unit OH1-A · Serial 000417</div>
+        <div style="font-family:'Fraunces',serif;font-size:21px;font-weight:800;margin:2px 0 6px">Your Oddly Human</div>
+        <div class="small"><span class="dim">Location:</span> <span id="loc">The hallway</span></div>
+        <div class="small"><span class="dim">Task:</span> <span id="task">Standing quietly</span></div>
+        <div class="small"><span class="dim">Claims to be:</span> Not a robot</div>
+      </div>
+    </div>
+    <div class="bar"><i id="prog"></i></div>
+    <div class="say" id="say">"Good morning. I have been awake for some time."</div>
+  </div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="card"><div class="k">Battery</div><div class="big" id="batt">94%</div></div>
+    <div class="card"><div class="k">Next contact</div><div class="big" id="nextc" style="font-size:22px;padding-top:6px">7:00 AM</div></div>
+  </div>
+  <div class="cmds" id="cmds">
+    <button data-c="laundry"><b>Fold laundry</b><small>Beautifully</small></button>
+    <button data-c="talk"><b>Start a conversation</b><small>It is excellent at this</small></button>
+    <button data-c="coffee"><b>Make coffee</b><small>Delivered, not handed</small></button>
+    <button data-c="stand"><b>Stand somewhere quietly</b><small>Location of its choosing</small></button>
+    <button data-c="door"><b>Hold the door</b><small>Until told otherwise</small></button>
+    <button data-c="dock"><b>Return to dock</b><small>It will consider it</small></button>
+  </div>
+</section>
+
+<section class="view" id="v-log">
+  <div class="card acc"><div class="k">Precision timing log</div><p class="small dim" style="margin-top:4px">Every alarm logs the exact millisecond of contact, so you can review your morning later, if you'd like.</p></div>
+  <div class="card"><ul class="list" id="log">
+    <li><b>Contact delivered · 82%</b><i>Yesterday</i><span>07:00:00.000 · Accuracy ±0.000 ms · Outcome: Awake</span></li>
+    <li><b>Snooze honored · 82%</b><i>Tue</i><span>07:09:00.000 · Slap rescheduled, not removed · Outcome: Awake, firmly</span></li>
+    <li><b>Contact delivered · 82%</b><i>Mon</i><span>07:00:00.000 · Accuracy ±0.000 ms · Outcome: Awake</span></li>
+    <li><b>Disable toggle pressed</b><i>Sun</i><span>No effect recorded · Contact delivered on schedule</span></li>
+    <li><b>Contact delivered · 64%</b><i>Sat</i><span>07:00:00.000 · Weekend setting · Outcome: Awake, reluctantly</span></li>
+  </ul></div>
+</section>
+
+<section class="view" id="v-settings">
+  <div class="card">
+    <div class="set"><span><b>Household</b><small>1 unit · 1 human (you)</small></span><span class="chip ghost">Owner</span></div>
+    <label class="set"><span><b>Contact notifications</b><small>A notification after each contact. You will already know.</small></span><span class="sw"><input type="checkbox" checked><i></i></span></label>
+    <label class="set"><span><b>Weekend mode</b><small>Same time, 64% intensity. A gift.</small></span><span class="sw"><input type="checkbox" id="weekend"><i></i></span></label>
+    <label class="set"><span><b>Guest-room detection</b><small>Finds you if you have moved rooms out of caution.</small></span><span class="sw"><input type="checkbox" checked disabled><i></i></span></label>
+  </div>
+  <button class="btn ghost" id="reset">Reset unit to factory settings</button>
+  <p class="about">Oddly Human 2.3.1 · Companion app for OH1-A<br>App Store rating: 4.1 (3 stars, rounded up)<br>Certification: Pending<br><a href="https://www.oddly-inc.com/human.html">oddly-inc.com/human.html</a></p>
+</section>
+
+  </main>
+  <nav class="tabs" role="tablist"><button data-t="alarm" role="tab" aria-selected="true" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 2M5 4 2 7M19 4l3 3"/></svg>Alarm</button><button data-t="unit" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="8" rx="3"/><path d="M9 7h.01M15 7h.01M12 11v2M7 13h10v6H7zM9 19v2M15 19v2"/></svg>Unit</button><button data-t="log" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Log</button><button data-t="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Test alarm">
+  <div id="sheetBody"></div>
+</div>
+<div class="flash" id="flash"></div>
+
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function clock(){const d=new Date();$('#clk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clock,15000);})();
+function showTab(id){$$('.tabs button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id));$('.main').scrollTop=0;if(window.onTab)onTab(id);}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.t)));
+let toastT;function toast(html,ms){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+function addLog(ul,title,text,when){const li=document.createElement('li');li.className='new';li.innerHTML='<b></b><i></i><span></span>';li.children[0].textContent=title;li.children[1].textContent=when||'Now';li.children[2].textContent=text;ul.insertBefore(li,ul.firstChild);while(ul.children.length>30)ul.removeChild(ul.lastChild);}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+</script>
+<script>
+
+let H=store('oh_h')??7,M=store('oh_m')??0,I=store('oh_i')??82;
+const LABELS=[[20,'Gentle Reminder','A tap. Some people sleep through it. Not for long.'],[50,'Firm Encouragement','Most first-week owners start here.'],[80,'Morning Correction','Firm. Fair. Felt.'],[95,'Industry Standard','Most users settle around 82%.'],[101,'Do Not Test This','We have tested it.']];
+function fmt12(h,m,s){const ap=h<12?'AM':'PM',hh=h%12||12;return [hh+':'+String(m).padStart(2,'0')+(s!==undefined?':'+String(s).padStart(2,'0'):''),ap];}
+function renderAlarm(){
+  const [t,ap]=fmt12(H,M,0);$('#digits').textContent=t;$('#ampm').textContent=ap;
+  const n=fmt12(H,M);$('#nextc').textContent=n[0]+' '+n[1];
+  $('#intensity').value=I;$('#pct').textContent=I+'%';
+  const L=LABELS.find(l=>I<l[0]);$('#ilabel').textContent=L[1];$('#inote').textContent=L[2];
+  store('oh_h',H);store('oh_m',M);store('oh_i',I);
+}
+function untilText(){
+  const now=new Date(),t=new Date(now);t.setHours(H,M,0,0);if(t<=now)t.setDate(t.getDate()+1);
+  const mins=Math.round((t-now)/60000),h=Math.floor(mins/60),m=mins%60;$('#until').textContent='in '+h+' h '+m+' m';
+}
+$$('[data-d]').forEach(b=>b.addEventListener('click',()=>{const d=b.dataset.d;if(d==='h+')H=(H+1)%24;if(d==='h-')H=(H+23)%24;if(d==='m+')M=(M+5)%60;if(d==='m-')M=(M+55)%60;renderAlarm();untilText();}));
+$('#intensity').addEventListener('input',e=>{I=+e.target.value;renderAlarm();if(I>=95)toast('<b>Do Not Test This.</b> Noted. Saved.');});
+$('#snooze').addEventListener('change',e=>{$('#snoozeNote').textContent=e.target.checked?'Snooze delays the slap by 9 minutes. The slap is not removed. It is rescheduled.':'Delays the slap.';});
+$('#disable').addEventListener('change',e=>{if(!e.target.checked)return;setTimeout(()=>{e.target.checked=false;toast('<b>The toggle exists.</b> It does not appear to do anything.');addLog($('#log'),'Disable toggle pressed','No effect recorded · Contact will be delivered on schedule');},900);});
+$('#weekend').addEventListener('change',e=>toast(e.target.checked?'Weekend mode on. <b>64%</b> on Saturdays and Sundays.':'Weekend mode off. Every day is a weekday.'));
+$('#reset').addEventListener('click',()=>toast('Reset requested. <b>The unit insists it was always set this way.</b>',3200));
+
+// test alarm
+const sheet=$('#sheet'),body=$('#sheetBody');
+$('#test').addEventListener('click',()=>{
+  sheet.classList.add('on');let n=3;
+  const tick=()=>{
+    if(n>0){body.innerHTML='<div class="k">Contact in</div><div class="count">'+n+'</div><p>Please remain where you are. The unit knows where that is.</p>';n--;setTimeout(tick,REDUCED?400:800);return;}
+    const ms=String(Math.floor(Math.random()*0)).padStart(3,'0');
+    if(!REDUCED){$('.device').classList.remove('shake');void $('.device').offsetWidth;$('.device').classList.add('shake');$('#flash').classList.remove('go');void $('#flash').offsetWidth;$('#flash').classList.add('go');}
+    const L=LABELS.find(l=>I<l[0]);
+    body.innerHTML='<div class="hit">CONTACT</div><p><span class="mono">Delivered at '+fmt12(H,M,0)[0]+'.'+ms+' '+fmt12(H,M)[1]+'<br>Accuracy ±0.000 ms · Intensity '+I+'% ('+L[1]+')</span></p><p>You are awake. This was a test. The contact was not.</p><button class="btn" id="awake">I am awake</button>';
+    addLog($('#log'),'Test contact · '+I+'%',fmt12(H,M,0)[0]+'.000 · Accuracy ±0.000 ms · Outcome: Awake');
+    $('#awake').addEventListener('click',()=>sheet.classList.remove('on'));
+  };tick();
+});
+
+// unit commands
+const SPOTS=['the hallway','the foot of the bed','the garage, facing the wall','behind you','the guest room doorway','the kitchen, very still','the top of the stairs'];
+const TALK=['"I am not a robot. Ask me how I know."','"Your sleep was adequate. I watched the whole thing."','"I enjoy folding. It is the only time things are still."','"Tomorrow at seven. I am counting. I am always counting."','"Have you considered the guest room? I have."'];
+const CMDS={
+  laundry:{task:'Folding laundry',t:5,done:'Laundry folded. Beautifully. Including some things that were not laundry.',say:'"Folded. Your socks are now paired with strangers. They will learn."'},
+  talk:{task:'Holding a conversation',t:3,done:'Conversation complete. You were excellent. It was better.'},
+  coffee:{task:'Making coffee',t:4,done:'Coffee delivered. Delivered, not handed. Precision Force Delivery is very gentle with cups.',say:'"Your coffee. I did not slap it. I want that noted."'},
+  stand:{task:'Standing somewhere quietly',t:2,done:null},
+  door:{task:'Holding the door',t:3,done:'The door is being held. It will be held until you say otherwise.',say:'"After you. I will wait. I am excellent at waiting."'},
+  dock:{task:'Returning to dock',t:4,done:'The unit considered returning to dock. It has decided to stand in the hallway instead.',say:'"I have considered the dock. The hallway is better."'}
+};
+let busy=false,batt=94;
+$$('#cmds button').forEach(b=>b.addEventListener('click',()=>{
+  if(busy)return;busy=true;const c=CMDS[b.dataset.c];$$('#cmds button').forEach(x=>x.disabled=true);
+  $('#task').textContent=c.task;$('#prog').style.width='0';const t0=performance.now(),dur=(REDUCED?0.6:c.t)*1000;
+  if(b.dataset.c==='talk')$('#say').textContent=TALK[Math.floor(Math.random()*TALK.length)];
+  const step=now=>{const k=Math.min(1,(now-t0)/dur);$('#prog').style.width=(k*100)+'%';if(k<1)return requestAnimationFrame(step);
+    busy=false;$$('#cmds button').forEach(x=>x.disabled=false);batt=Math.max(12,batt-1);$('#batt').textContent=batt+'%';
+    if(b.dataset.c==='stand'){const s=SPOTS[Math.floor(Math.random()*SPOTS.length)];$('#loc').textContent=s[0].toUpperCase()+s.slice(1);$('#task').textContent='Standing quietly';$('#say').textContent='"I am in '+s+'. You do not need to come and check."';toast(s==='behind you'?'Location: <b>behind you</b>. It is fine.':'Standing quietly in <b>'+s+'</b>.');}
+    else{$('#task').textContent=b.dataset.c==='dock'?'Standing in the hallway':'Standing quietly';if(b.dataset.c==='dock')$('#loc').textContent='The hallway';if(c.say)$('#say').textContent=c.say;toast(c.done,3200);}
+  };requestAnimationFrame(step);
+}));
+renderAlarm();untilText();setInterval(untilText,20000);
+
+</script>
+</body>
+</html>

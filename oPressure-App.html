@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>oPressure</title>
+<meta name="description" content="oPressure, the companion app for the Oddly Plane Pressurizer. Your ears, from your phone.">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://www.oddly-inc.com/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A14;--bg2:#0D1020;--card:#141831;--card2:#1b2040;--line:#262b4d;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;
+  --mint:#2EE9A5;--purple:#7B4FFF;--amber:#F5A623;--red:#FF4D5E;--acc:#8EC9FF;--accInk:#06101f}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(900px 600px at 20% 10%,rgba(123,79,255,.16),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(142,201,255,.14),transparent 60%),#05060d;
+  color:var(--text);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+.site{position:fixed;left:18px;top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(8,10,20,.6)}
+.site:hover{color:var(--text);border-color:var(--acc)}
+.device{width:390px;height:min(844px,calc(100vh - 32px));border-radius:54px;background:var(--bg);border:2px solid #2a3058;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px #0e1226,0 0 0 8px #2a3058;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#000;z-index:20}
+.sb{height:50px;padding:16px 30px 0;display:flex;justify-content:space-between;font-weight:600;font-size:14px;flex:none}
+.sb .r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);padding-top:2px}
+@media(max-width:520px){body{display:block;background:var(--bg)}.site{display:none}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}.island{display:none}.sb{height:calc(30px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 20px 0}}
+.hdr{padding:6px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.hdr h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:var(--acc);color:var(--accInk);white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.view{display:none;padding:2px 16px 26px}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabs{flex:none;display:grid;border-top:1px solid var(--line);background:rgba(8,10,20,.94);padding:6px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs button{background:none;border:none;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:6px 0;cursor:pointer;transition:color .2s}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.acc{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 14%,var(--card)),var(--card))}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.big{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)} .small{font-size:12.5px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .card{margin-bottom:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--acc);color:var(--accInk);border:none;border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)} .btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:#2a2f52;border-radius:999px;transition:background .2s;cursor:pointer}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--acc)} .sw input:checked+i::after{transform:translateX(20px)}
+.sw input:disabled+i{opacity:.5;cursor:not-allowed}
+.sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set b{font-weight:600;font-size:14.5px;display:block}
+.set small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.seg{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:none;border:none;border-left:1px solid var(--line);padding:10px 4px;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button.on{background:var(--acc);color:var(--accInk)}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.list li:last-child{border-bottom:none}
+.list li span{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.list li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint)}
+.list li.new{animation:pop .5s ease}
+@keyframes pop{from{background:color-mix(in srgb,var(--acc) 25%,transparent)}to{background:transparent}}
+.toast{position:absolute;left:14px;right:14px;bottom:92px;background:rgba(20,24,49,.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:13.5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:30;backdrop-filter:blur(8px)}
+.toast.on{transform:none;opacity:1}
+.toast b{color:var(--acc)}
+.sheet{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(5,6,13,.92);backdrop-filter:blur(6px)}
+.sheet.on{display:flex;animation:fade .2s}
+.about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
+.about a{color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+.gauge{position:relative;width:240px;height:186px;margin:2px auto 0}
+.gauge svg{width:240px;height:140px;display:block}
+.gval{position:absolute;left:0;right:0;top:136px;text-align:center}
+.gval b{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;display:block;line-height:1}
+.gval small{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+#needle{transition:transform .15s linear;transform-origin:120px 120px}
+.ears{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-top:12px}
+.ear{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;text-align:left;transition:border-color .2s}
+.ear.sel{border-color:var(--acc)}
+.ear b{display:block;font-family:'JetBrains Mono',monospace;font-size:18px}
+.ear .k{display:flex;justify-content:space-between}
+.risk{font-family:'JetBrains Mono',monospace;font-size:10.5px;margin-top:3px}
+.ok{color:var(--mint)} .warn{color:var(--amber)} .bad{color:var(--red)}
+.link{background:none;border:1px solid var(--line);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px}
+.link.off{opacity:.45}
+.ends{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint)}
+.acts{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:4px}
+.acts .btn{padding:13px 6px;font-size:13.5px;letter-spacing:.04em}
+canvas#alt{width:100%;height:150px;display:block;background:var(--bg2);border-radius:12px}
+.phase{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.phase span{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--faint)}
+.phase span.on{border-color:var(--acc);color:var(--acc)}
+.seats{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:6px;margin:6px 0 4px}
+.seat{border-radius:10px 10px 4px 4px;padding:12px 4px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;background:#2d3a5c}
+.seat.me{background:linear-gradient(180deg,#a6d4ff,#5c8fc4);color:#06101f;font-weight:600;box-shadow:0 0 0 3px rgba(142,201,255,.25)}
+
+.tabs{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<a class="site" href="https://www.oddly-inc.com/plane-pressurizer.html">&larr; Oddly Plane Pressurizer on oddly-inc.com</a>
+<div class="device" role="application" aria-label="oPressure">
+  <div class="island" aria-hidden="true"></div>
+  <div class="sb"><span id="clk">9:41</span><span class="r">✈ oNet · 12%</span></div>
+  <header class="hdr"><div><h1>oPressure</h1><div class="sub">ODDLY PLANE PRESSURIZER</div></div><span class="chip">● SEAT 23B</span></header>
+  <main class="main">
+
+<section class="view on" id="v-ears">
+  <div class="card acc">
+    <div class="gauge"><svg viewBox="0 0 240 140" aria-hidden="true">
+      <path d="M24 120 A96 96 0 0 1 216 120" fill="none" stroke="#262b4d" stroke-width="14" stroke-linecap="round"/>
+      <path d="M24 120 A96 96 0 0 1 120 24" fill="none" stroke="#FF9B6B" stroke-width="14" stroke-linecap="round" opacity=".35"/>
+      <path d="M120 24 A96 96 0 0 1 216 120" fill="none" stroke="#8EC9FF" stroke-width="14" stroke-linecap="round" opacity=".35"/>
+      <g id="needle"><line x1="120" y1="120" x2="120" y2="36" stroke="#EDEDF7" stroke-width="4" stroke-linecap="round"/></g>
+      <circle cx="120" cy="120" r="8" fill="#EDEDF7"/></svg>
+      <div class="gval"><b id="psi">+0.00</b><small id="mode">psi · hold</small></div></div>
+    <div class="ears">
+      <button class="ear sel" id="earL"><div class="k"><span>Left</span><span id="lR">—</span></div><b id="lV">+0.00</b><div class="risk ok" id="lK">Pop risk: low</div></button>
+      <button class="link" id="link" title="Unlink ears" aria-pressed="true">🔗</button>
+      <button class="ear sel" id="earR"><div class="k"><span>Right</span><span id="rR">—</span></div><b id="rV">+0.00</b><div class="risk ok" id="rK">Pop risk: low</div></button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="row"><span class="k">Chamber pressure</span><span class="k" id="selK">Both ears</span></div>
+    <input type="range" id="slider" min="-4.2" max="4.2" step="0.05" value="0" aria-label="Chamber pressure">
+    <div class="ends"><span>PULL −4.2</span><span>0</span><span>PUSH +4.2</span></div>
+  </div>
+  <div class="acts"><button class="btn" id="unpop">UN-POP</button><button class="btn ghost" id="hold">HOLD</button><button class="btn ghost" id="vent">VENT</button></div>
+  <div class="card" style="margin-top:12px">
+    <label class="set"><span><b>Oddly Autonomous&trade;</b><small>Equalizes whenever it decides.</small></span><span class="sw"><input type="checkbox" id="auto"><i></i></span></label>
+  </div>
+</section>
+
+<section class="view" id="v-flight">
+  <div class="card acc">
+    <div class="row"><span class="k">Flight ODY 23 · SBA → JFK</span><span class="k" id="clockF">—</span></div>
+    <canvas id="alt" aria-label="Cabin altitude over the flight"></canvas>
+    <div class="phase" id="phase"><span data-p="0">Boarding</span><span data-p="1">Climb</span><span data-p="2">Cruise</span><span data-p="3">Descent</span><span data-p="4">Landed</span></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="k">Cabin altitude</div><div class="big" id="cab" style="font-size:22px">0 ft</div></div>
+    <div class="card"><div class="k">Ambient</div><div class="big" id="amb" style="font-size:22px">+0.00</div></div>
+    <div class="card"><div class="k">Ears popped</div><div class="big" id="pops">0</div></div>
+    <div class="card"><div class="k">Pops prevented</div><div class="big" id="saved">0</div></div>
+  </div>
+  <p class="about">"Pops prevented" counts the pops your ears would have had without the Pressurizer. It is an estimate. Estimated estimate: confident.</p>
+</section>
+
+<section class="view" id="v-neighbors">
+  <div class="card acc">
+    <div class="k">Row 23</div>
+    <div class="seats"><div class="seat" id="sA">23A</div><div class="seat me">23B · you</div><div class="seat" id="sC">23C</div></div>
+    <div class="row" style="margin-top:8px"><span class="small dim">Complaints declined for you</span><span class="big" id="decl" style="font-size:22px">1</span></div>
+  </div>
+  <div class="card"><ul class="list" id="nlog">
+    <li><b>Seat 23A</b><i>Boarding</i><span>"Is that in my seat?" Declined by oPressure. It extends into your seat. That is a different word.</span></li>
+  </ul></div>
+</section>
+
+<section class="view" id="v-settings">
+  <div class="card">
+    <div class="k" style="margin-bottom:8px">Chamber size</div>
+    <div class="seg" id="size" style="grid-template-columns:repeat(3,1fr)"><button data-s="compact">Compact 14″</button><button data-s="standard" class="on">Standard 19″</button><button data-s="max">Max 25″</button></div>
+    <p class="small dim" id="sizeNote" style="margin-top:8px">Total span 41 in. Average middle seat: 17 in.</p>
+  </div>
+  <div class="card">
+    <div class="set"><span><b>Seat</b><small>Middle seat only. Window: the chamber meets the wall.</small></span><span class="chip ghost">23B</span></div>
+    <label class="set"><span><b>Auto-decline complaints</b><small>Recommended.</small></span><span class="sw"><input type="checkbox" checked disabled><i></i></span></label>
+    <label class="set"><span><b>Vent toward aisle</b><small>Vents toward Seats A and C. This is called sharing.</small></span><span class="sw"><input type="checkbox" checked disabled><i></i></span></label>
+    <div class="set"><span><b>Pairing</b><small>oPhone 1 · Bluetooth · Chamber firmware 1.0.3</small></span><span class="chip">Paired</span></div>
+  </div>
+  <p class="about">oPressure 1.0.3 · Free · oPhone 1 required<br>Rating: Pending · Certification: Pending<br><a href="https://www.oddly-inc.com/plane-pressurizer.html">oddly-inc.com/plane-pressurizer.html</a></p>
+</section>
+
+  </main>
+  <nav class="tabs" role="tablist"><button data-t="ears" role="tab" aria-selected="true" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9a5 5 0 0 1 10 0c0 3-3 4-3 7a3 3 0 0 1-6 0"/><path d="M10 9a2 2 0 0 1 4 0"/></svg>Ears</button><button data-t="flight" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15.5 13.5 11V5a1.5 1.5 0 0 0-3 0v6L3 15.5v2l7.5-2.3V19l-2.5 1.8V22l4-1.2 4 1.2v-1.2L13.5 19v-3.8L21 17.5z"/></svg>Flight</button><button data-t="neighbors" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M3 20a5 5 0 0 1 10 0M11 20a5 5 0 0 1 10 0"/></svg>Neighbors</button><button data-t="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Settings</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function clock(){const d=new Date();$('#clk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clock,15000);})();
+function showTab(id){$$('.tabs button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id));$('.main').scrollTop=0;if(window.onTab)onTab(id);}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.t)));
+let toastT;function toast(html,ms){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+function addLog(ul,title,text,when){const li=document.createElement('li');li.className='new';li.innerHTML='<b></b><i></i><span></span>';li.children[0].textContent=title;li.children[1].textContent=when||'Now';li.children[2].textContent=text;ul.insertBefore(li,ul.firstChild);while(ul.children.length>30)ul.removeChild(ul.lastChild);}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+</script>
+<script>
+
+// --- simulation ---
+const MAXP=4.2,FLIGHT=96; // one flight every 96 s
+const PH=[[0,8,'Boarding'],[8,30,'Climb'],[30,58,'Cruise'],[58,84,'Descent'],[84,96,'Landed']];
+let t=0,chL=0,chR=0,linked=true,sel='both',hold=false,auto=false,anim=null,size='standard';
+let midL=0,midR=0,ghost=0,pops=0,saved=0,declined=1,lastPhase=-1,track=0,lastPopToast=0;
+function cabinAlt(x){ // feet
+  if(x<8||x>=84)return 0;
+  if(x<30)return 8000*((x-8)/22);
+  if(x<58)return 8000;
+  return 8000*(1-(x-58)/26);
+}
+const psiAt=alt=>14.7*Math.exp(-alt/27000)-14.7;
+function fx(v){return (v>=0?'+':'−')+Math.abs(v).toFixed(2);}
+function setCh(v,which){v=Math.max(-MAXP,Math.min(MAXP,v));if(which!=='R')chL=v;if(which!=='L')chR=v;}
+function unpop(){
+  const amb=psiAt(cabinAlt(t));
+  anim={t0:performance.now(),dur:REDUCED?200:2000,fromL:chL,fromR:chR,toL:midL-amb,toR:midR-amb};track=20;
+  toast('<b>Un-Pop.</b> Reading the cabin. Estimating your head. Two seconds.');
+}
+function neighbor(seat,msg){
+  declined++;$('#decl').textContent=declined;
+  addLog($('#nlog'),'Seat '+seat,'"'+msg+'" Declined by oPressure.',PH[curPhase()][2]);
+  const el=$('#s'+seat.slice(-1));el.style.background='#7a3b3b';setTimeout(()=>el.style.background='',700);
+}
+const curPhase=()=>PH.findIndex(p=>t>=p[0]&&t<p[1]);
+const COMPLAINTS={standard:['Your chamber is in my seat.','Can you turn it down?','My armrest is pressurized.','It is humming at me.'],compact:['Is it on?'],max:['I cannot see the movie.','It is touching my tray table.','Your dome is in my lap.','Flight attendant!','I can see my reflection in it.']};
+let nextComplaint=12;
+
+let last=performance.now();
+function tick(now){
+  const dt=Math.min(0.1,(now-last)/1000);last=now;
+  t=(t+dt)%FLIGHT;
+  const amb=psiAt(cabinAlt(t));
+  if(anim){const k=Math.min(1,(now-anim.t0)/anim.dur),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;chL=anim.fromL+(anim.toL-anim.fromL)*e;chR=anim.fromR+(anim.toR-anim.fromR)*e;if(k>=1){anim=null;if(track>0)toast('Equalized. <b>Zero popped ears.</b> Tracking the cabin for 20 s.');}}
+  else if(track>0){track-=dt;chL+=((midL-amb)-chL)*Math.min(1,dt*3);chR+=((midR-amb)-chR)*Math.min(1,dt*3);if(track<=0)toast('Un-Pop tracking ended. <b>Holding.</b>');}
+  else if(auto&&!hold&&Math.random()<dt/4){ // equalizes whenever it decides
+    const off=(Math.random()-0.5)*0.5;anim={t0:now,dur:900,fromL:chL,fromR:chR,toL:midL-amb+off,toR:midR-amb+(linked?off:(Math.random()-0.5)*0.5)};
+  }
+  // middle ears drift toward the pressure outside them (swallowing), and pop if the difference gets too big
+  [['L',()=>chL],['R',()=>chR]].forEach(([e,ch])=>{
+    const outside=amb+ch(),mid=e==='L'?midL:midR,d=outside-mid;let m=mid+d*Math.min(1,dt*0.5);
+    if(Math.abs(d)>0.45){m=outside;pops++;$('#pops').textContent=pops;if(now-lastPopToast>5000){lastPopToast=now;toast('<b>Pop</b> · '+(e==='L'?'left':'right')+' ear. Consider Un-Pop.');}}
+    if(e==='L')midL=m;else midR=m;
+  });
+  // a ghost ear without the Pressurizer, for the "pops prevented" estimate
+  {const d=amb-ghost;ghost+=d*Math.min(1,dt*0.22);if(Math.abs(d)>0.45){ghost=amb;saved=Math.max(0,saved+1);}}
+  $('#saved').textContent=Math.max(0,saved-pops);
+  // neighbors
+  nextComplaint-=dt*(size==='max'?2.2:size==='compact'?0.35:1);
+  if(nextComplaint<=0){nextComplaint=14+Math.random()*12;const L=COMPLAINTS[size];neighbor(Math.random()<.5?'23A':'23C',L[Math.floor(Math.random()*L.length)]);}
+  render(amb);requestAnimationFrame(tick);
+}
+function riskTxt(d){const a=Math.abs(d);return a<0.2?['Pop risk: low','ok']:a<0.38?['Pop risk: rising','warn']:['Pop risk: imminent','bad'];}
+function render(amb){
+  const shown=sel==='R'?chR:sel==='L'?chL:(chL+chR)/2;
+  $('#psi').textContent=fx(shown);$('#mode').textContent='psi · '+(anim?'equalizing':track>0?'tracking':hold?'hold':auto?'autonomous':'manual');
+  $('#needle').setAttribute('transform','rotate('+(shown/MAXP*90)+' 120 120)');
+  if(document.activeElement!==$('#slider'))$('#slider').value=shown.toFixed(2);
+  $('#lV').textContent=fx(chL);$('#rV').textContent=fx(chR);
+  const dL=amb+chL-midL,dR=amb+chR-midR,[tl,cl]=riskTxt(dL),[tr,cr]=riskTxt(dR);
+  $('#lK').textContent=tl;$('#lK').className='risk '+cl;$('#rK').textContent=tr;$('#rK').className='risk '+cr;
+  $('#lR').textContent='Δ '+fx(dL);$('#rR').textContent='Δ '+fx(dR);
+  const p=curPhase();if(p!==lastPhase){lastPhase=p;$$('#phase span').forEach(s=>s.classList.toggle('on',+s.dataset.p===p));if(p===1)toast('Climbing. Cabin pressure is dropping. <b>Your ears are about to have opinions.</b>');if(p===3)toast('Descending. <b>Un-Pop</b> is recommended.');}
+  $('#cab').textContent=Math.round(cabinAlt(t)).toLocaleString('en-US')+' ft';$('#amb').textContent=fx(amb);
+  const mm=Math.floor(t/96*325),hh=Math.floor(mm/60);$('#clockF').textContent=hh+'h '+String(mm%60).padStart(2,'0')+'m into flight';
+  if($('#v-flight').classList.contains('on'))drawAlt();
+}
+const cv=$('#alt'),cx=cv.getContext('2d');
+function drawAlt(){
+  const r=cv.getBoundingClientRect(),D=Math.min(2,devicePixelRatio||1);if(cv.width!==Math.round(r.width*D)){cv.width=Math.round(r.width*D);cv.height=Math.round(r.height*D);}
+  const W=cv.width,H=cv.height;cx.clearRect(0,0,W,H);
+  cx.strokeStyle='rgba(142,201,255,.18)';cx.lineWidth=1*D;for(let i=1;i<4;i++){cx.beginPath();cx.moveTo(0,H*i/4);cx.lineTo(W,H*i/4);cx.stroke();}
+  cx.beginPath();for(let x=0;x<=W;x+=2){const tt=x/W*FLIGHT,y=H-14*D-cabinAlt(tt)/8000*(H-34*D);x?cx.lineTo(x,y):cx.moveTo(x,y);}
+  cx.strokeStyle='#8EC9FF';cx.lineWidth=2.5*D;cx.stroke();
+  const px=t/FLIGHT*W,py=H-14*D-cabinAlt(t)/8000*(H-34*D);
+  cx.fillStyle='#EDEDF7';cx.beginPath();cx.arc(px,py,5*D,0,7);cx.fill();
+  cx.fillStyle='#9A9EC0';cx.font=(10*D)+'px JetBrains Mono, monospace';cx.fillText('8,000 ft cabin',8*D,16*D);
+}
+// --- controls ---
+function setSel(s){sel=s;$('#earL').classList.toggle('sel',s!=='R');$('#earR').classList.toggle('sel',s!=='L');$('#selK').textContent=s==='both'?'Both ears':s==='L'?'Left ear':'Right ear';}
+$('#link').addEventListener('click',()=>{linked=!linked;$('#link').classList.toggle('off',!linked);$('#link').setAttribute('aria-pressed',linked);setSel(linked?'both':'L');toast(linked?'Ears linked.':'Ears unlinked. <b>Your ears are individuals.</b> We respect that.');});
+$('#earL').addEventListener('click',()=>{if(linked){$('#link').click();}setSel('L');});
+$('#earR').addEventListener('click',()=>{if(linked){$('#link').click();}setSel('R');});
+$('#slider').addEventListener('input',e=>{anim=null;track=0;hold=false;$('#hold').classList.add('ghost');setCh(+e.target.value,sel==='both'?undefined:sel);});
+$('#unpop').addEventListener('click',unpop);
+$('#hold').addEventListener('click',()=>{hold=!hold;$('#hold').classList.toggle('ghost',!hold);anim=null;track=0;toast(hold?'Holding chamber pressure.':'Hold released.');});
+$('#vent').addEventListener('click',()=>{anim=null;track=0;chL=chR=0;toast('Vented. Air exits toward <b>Seats A and C</b>. This is called sharing.');setTimeout(()=>neighbor(Math.random()<.5?'23A':'23C','I felt that.'),1200);});
+$('#auto').addEventListener('change',e=>{auto=e.target.checked;toast(auto?'<b>Oddly Autonomous&trade;</b> will equalize whenever it decides.':'Manual control. You decide. Bravely.');});
+const NOTES={compact:'Total span 30 in. Fits, almost. Neighbors barely notice.',standard:'Total span 41 in. Average middle seat: 17 in.',max:'Total span 52 in. Extends into Seats A and C, and somewhat into Row 24.'};
+$$('#size button').forEach(b=>b.addEventListener('click',()=>{size=b.dataset.s;$$('#size button').forEach(x=>x.classList.toggle('on',x===b));$('#sizeNote').textContent=NOTES[size];}));
+window.onTab=id=>{if(id==='flight')drawAlt();};
+requestAnimationFrame(tick);
+
+</script>
+</body>
+</html>
