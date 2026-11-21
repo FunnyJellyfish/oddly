@@ -89,18 +89,6 @@
   .ticker span{display:inline-block;animation:tick 40s linear infinite;padding-left:100%}
   @keyframes tick{to{transform:translateX(-100%)}}
 
-  .origin{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
-  @media(max-width:900px){.origin{grid-template-columns:1fr}}
-  .origin p{color:var(--dim);font-size:17px;margin-bottom:16px}
-  .origin p b{color:var(--text);font-weight:600}
-  .pull{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:600;line-height:1.25;border-left:3px solid var(--haz);padding-left:20px;margin:6px 0 18px}
-  .pull cite{display:block;font-family:'JetBrains Mono',monospace;font-style:normal;font-size:12px;color:var(--dim);margin-top:12px;font-weight:400}
-  .memo{background:#f4efe2;color:#1d1a14;border-radius:6px;padding:26px 26px 70px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;box-shadow:0 20px 50px rgba(0,0,0,.45);transform:rotate(-1.2deg);position:relative}
-  .memo h3{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;margin-bottom:14px;border-bottom:1px solid #1d1a14;padding-bottom:8px}
-  .memo .redact{background:#1d1a14;color:#1d1a14;border-radius:2px;padding:0 3px;user-select:none}
-  .memo .stamp{position:absolute;right:18px;bottom:16px;transform:rotate(-12deg);border:3px solid #b3261e;color:#b3261e;font-weight:700;padding:4px 10px;letter-spacing:.1em;font-size:14px;opacity:.85}
-  .memo label{display:flex;gap:8px;align-items:flex-start;margin-top:12px}
-  .memo input{accent-color:#1d1a14;margin-top:3px}
 
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
   @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
@@ -277,7 +265,7 @@
     <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
     Oddly NukeMow&trade;
   </a>
-  <nav class="nav"><a href="#origin">Origin</a><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#app">App</a><a href="#plans">Plans</a></nav>
+  <nav class="nav"><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#app">App</a><a href="#plans">Plans</a></nav>
   <a class="btn" href="#plans">Subscribe</a>
 </div></div>
 
@@ -291,7 +279,7 @@
     <p>Mowing takes time. Robotic mowers take less time, but still some. We looked at that and said &mdash; this can be improved. When your grass reaches four inches, NukeMow launches from the nearest bunker and mows it. Once.</p>
     <div class="ctas">
       <a class="btn" href="#plans">The last mow you will ever need</a>
-      <a class="btn ghost" href="#origin">Independently invented &rarr;</a>
+      <a class="btn ghost" href="#how">How it works &rarr;</a>
     </div>
   </div>
 
@@ -322,27 +310,6 @@
 </div></header>
 
 <div class="ticker" aria-hidden="true"><div><span>THE LAST MOW YOU WILL EVER NEED &nbsp;·&nbsp; GRASS HEIGHT AFTER SERVICE: 0.000 IN &nbsp;·&nbsp; NEIGHBORING LAWNS MOWED AT NO EXTRA CHARGE &nbsp;·&nbsp; INDEPENDENTLY INVENTED BY ODDLY, INC. &nbsp;·&nbsp; PLANS FROM $29.99 / MONTH &nbsp;·&nbsp; FALLOUT PACK: $2,000,000 / MONTH, UNLIMITED LAUNCHES &nbsp;·&nbsp; HOA APPROVAL: PENDING &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG</span></div></div>
-
-<section id="origin"><div class="wrap">
-  <div class="origin">
-    <div data-r>
-      <div class="eyebrow">Origin</div>
-      <h2>Independently invented. Entirely.</h2>
-      <p>Oddly NukeMow&trade; was <b>independently invented by Oddly, Inc.</b> in the Office of the Chief Executive, by the Chief Executive, after a long and careful period of independent thought that began, coincidentally, shortly after an unrelated message arrived through <a href="/#contact">Message Stephen Stubborn, Literally</a>.</p>
-      <p>Any resemblance between NukeMow and that message is a coincidence. The sender checked the box. The box says, and has always said, <b>"I understand that Oddly, Inc. may independently invent this."</b> Oddly, Inc. did. Independently. We are very grateful to nobody in particular.</p>
-      <p class="pull">"Somebody suggested it, and I had already thought of it, the moment I read it. That is how independent invention works."<cite>— Stephen Stubborn, pronounced "Stefen Stu-Born"</cite></p>
-    </div>
-    <div data-r>
-      <div class="memo" role="img" aria-label="An internal memo with the sender's name redacted">
-        <h3>INTERNAL · RE: A MESSAGE WE DID NOT USE</h3>
-        <p>From: <span class="redact">a friend of a friend</span><br>Product: <span class="redact">auto nuke lawn</span> mower<br>Improves: grass. It is hard to cut.</p>
-        <p style="margin-top:10px">"Even if you have a robotic mower it still takes time, so <span class="redact">I created an auto nuke launcher</span> for your grass&hellip;"</p>
-        <label><input type="checkbox" checked disabled> I understand that Oddly, Inc. may independently invent this.</label>
-        <div class="stamp">INDEPENDENTLY INVENTED</div>
-      </div>
-    </div>
-  </div>
-</div></section>
 
 <section id="how"><div class="wrap">
   <div data-r>
