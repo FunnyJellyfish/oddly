@@ -1762,146 +1762,315 @@ body.dark .app-chrome { color:var(--t1); }
 </div></div><!-- /screen /phone-shell -->
 <script>
 // ═══════════════════════════════════════════
-// ODDLY BRAIN — built-in, offline replies (oOS 1.1)
-// Messages, calls, scam calls, Siri and oSafari work for every visitor.
+// ODDLY BRAIN 2 — built-in replies for Messages, calls, scam calls, Siri and oSafari (oOS 1.2)
+// • remembers what you told it in the conversation (name, plans, mood, likes)
+// • every contact has a consistent life (job, city, pet, hobby) derived from their name
+// • never repeats itself in a conversation if it can help it
+// • Siri performs real actions in oOS and answers "who/what is" from Wikipedia
+// • oSafari renders real Wikipedia summaries, with an offline fallback
 // A local llama-cpp server is optional: Settings › General › Local AI Server.
 // ═══════════════════════════════════════════
 const OddlyBrain = (() => {
-  const pick = a => a[Math.floor(Math.random() * a.length)];
-  const has = (s, re) => re.test(s);
+  // ---------- utilities ----------
+  const hashStr = s => { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const seeded = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const rnd = Math.random;
+  const pick = (a, r = rnd) => a[Math.floor(r() * a.length)];
   const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
   const clip = (s, n) => s.length > n ? s.slice(0, n - 1).trim() + '…' : s;
-  const lastUser = h => { for (let i = h.length - 1; i >= 0; i--) if (h[i].role === 'user') return String(h[i].content || ''); return ''; };
-  const userTurns = h => h.filter(m => m.role === 'user').length;
-  const now = () => new Date();
-  const timeStr = () => { const d = now(); return ((d.getHours() % 12) || 12) + ':' + String(d.getMinutes()).padStart(2, '0') + (d.getHours() < 12 ? ' AM' : ' PM'); };
+  const has = (s, re) => re.test(s);
+  const userMsgs = h => h.filter(m => m.role === 'user').map(m => String(m.content || ''));
+  const botMsgs = h => h.filter(m => m.role === 'assistant').map(m => String(m.content || ''));
+  const lastUser = h => userMsgs(h).slice(-1)[0] || '';
+  // choose a reply that hasn't been said yet in this conversation
+  function fresh(options, h) {
+    const said = new Set(botMsgs(h).map(x => x.toLowerCase()));
+    const left = options.filter(o => !said.has(String(o).toLowerCase()));
+    return pick(left.length ? left : options);
+  }
+  const hour = () => new Date().getHours();
+  const timeStr = d => { d = d || new Date(); return ((d.getHours() % 12) || 12) + ':' + String(d.getMinutes()).padStart(2, '0') + (d.getHours() < 12 ? ' AM' : ' PM'); };
+  const STOP = new Set('a an the i im i\'m you your yours me my mine we our us it its it\'s is are was were be been am do does did to of in on at for with and or but so if then than that this these those what when where who why how just really very too also not no yes yeah ok okay lol haha u ur r ya hey hi hello there here have has had can could would should will gonna wanna gotta about from up down out get got go going like know think want need some any one all more much many'.split(' '));
+  const topicWord = s => { const w = s.toLowerCase().replace(/[^a-z\s']/g, ' ').split(/\s+/).filter(x => x.length > 3 && !STOP.has(x)); return w.sort((a, b) => b.length - a.length)[0] || ''; };
 
-  // ── a tiny calculator for "what is 12 x 7" ──
-  function mathAnswer(q) {
-    const m = q.toLowerCase().replace(/what('?s| is)|calculate|equals|\?/g, '').replace(/times|x/g, '*').replace(/plus/g, '+').replace(/minus/g, '-').replace(/divided by|over/g, '/').trim();
-    if (!/^[\d\s+\-*/().]+$/.test(m) || !/\d\s*[+\-*/]\s*\d/.test(m)) return null;
-    try { const v = Function('"use strict";return (' + m + ')')(); if (typeof v === 'number' && isFinite(v)) return Math.round(v * 1e6) / 1e6; } catch (e) {}
-    return null;
+  // ---------- memory: facts the user has mentioned ----------
+  const ACTS = { coffee: 'coffee', dinner: 'dinner', lunch: 'lunch', breakfast: 'breakfast', brunch: 'brunch', movie: 'a movie', movies: 'a movie', gym: 'the gym', drinks: 'drinks', game: 'the game', beach: 'the beach', hike: 'a hike', party: 'the party', concert: 'the concert', shopping: 'shopping', walk: 'a walk', study: 'studying' };
+  function memory(h) {
+    const m = { name: '', act: '', time: '', day: '', place: '', mood: '', likes: [] };
+    userMsgs(h).forEach(u => {
+      const s = u.toLowerCase();
+      let r = u.match(/\b(?:my name is|i'?m|i am|it'?s|this is)\s+([A-Z][a-z]+)\b/); if (r && !/^(So|Not|Just|Good|Fine|Okay|Tired|Here|Home|Back|Sorry)$/.test(r[1])) m.name = r[1];
+      for (const k in ACTS) if (new RegExp('\\b' + k + '\\b').test(s)) m.act = ACTS[k];
+      r = s.match(/\b(\d{1,2})(?::(\d\d))?\s*(am|pm)?\b/); if (r && /\b(at|around|by|after|before)\s+\d|\d\s*(am|pm)|\d:\d\d/.test(s)) m.time = r[1] + (r[2] ? ':' + r[2] : '') + (r[3] ? ' ' + r[3] : '');
+      if (/\bnoon\b/.test(s)) m.time = 'noon';
+      r = s.match(/\b(today|tonight|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday|this weekend|next week)\b/); if (r) m.day = r[1];
+      r = u.match(/\b(?:at|in)\s+(?:the\s+)?([A-Z][\w']+(?:\s[A-Z][\w']+)?)/); if (r) m.place = r[1];
+      if (/\b(sad|down|stressed|anxious|tired|exhausted|bad day|sick|upset|lonely)\b/.test(s)) m.mood = 'low';
+      if (/\b(happy|excited|great news|got the job|passed|promoted|engaged|won)\b/.test(s)) m.mood = 'high';
+      r = s.match(/\bi (?:love|like|really like)\s+([a-z ]{3,24})/); if (r) m.likes.push(r[1].trim());
+    });
+    return m;
   }
 
-  // ── Oddly Siri ──
-  function siri(q) {
-    const s = q.toLowerCase();
-    const n = mathAnswer(q);
-    if (n !== null) return pick([`${n}. I checked twice. The second time I got ${n}, so I am confident.`, `It is ${n}. Oddly Cars has ${n} cup holders in some configurations, which is unrelated but true.`, `${n}. Math is the one thing I do not misunderstand. Mostly.`]);
-    if (has(s, /\btime\b/)) return `It is ${timeStr()}. Your alarm is still at 5:00 AM. It cannot be changed. That is a wellness feature.`;
-    if (has(s, /\b(date|day is it|today)\b/)) return `Today is ${now().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}. A great day to test-drive an Oddly Car.`;
-    if (has(s, /weather|rain|sunny|temperature|cold|hot/)) return pick(['72° and partly cloudy in San Francisco. I assume you are in San Francisco. Everyone is, eventually.', 'It is weather outside. Some of it is falling. Oddly Cars have two fronts, so you can face the rain either way.']);
-    if (has(s, /joke|funny|laugh/)) return pick(['Why did the Front-Front cross the road? It did not. It went both ways and stayed where it was.', 'I asked Oddly Autonomous for a ride home. It took me to a duck pond. I laughed. The ducks did not.', 'What do you call an elevator with no doors? An Oddly Elevator. That is not a joke. That is the product.']);
-    if (has(s, /who (are|made) you|your name|what are you/)) return 'I am Oddly Siri, made by Oddly, Inc. I am trained in the Data Center at the Oddly Terafab, on duck-pond footage and confidence.';
-    if (has(s, /stephen|stubborn|ceo/)) return 'Stephen Stubborn is the CEO of Oddly, Inc. Pronounced "Stefen Stu-Born." He has never been wrong, according to his records, which I also maintain.';
-    if (has(s, /alarm|wake|5 ?am|five/)) return 'Your alarm is set for 5:00 AM. It cannot be turned off, only delayed, and only by buttons that grow disappointed in you.';
-    if (has(s, /timer|remind/)) return 'I have set a reminder. I will not tell you when. It will be a nice surprise for both of us.';
-    if (has(s, /call|phone|text|message/)) return 'Calling Oddly Cars sales. Just kidding. Unless you would like that. I will assume you would like that.';
-    if (has(s, /direction|navigate|map|where is|how do i get/)) return 'Oddly Maps is pending FCC approval. I can tell you the general direction: away from here, toward an Oddly Cars dealership.';
-    if (has(s, /music|song|play/)) return 'Playing both songs in the oMusic catalog. Open oMusic to choose which one first. It does not matter. You will hear both.';
-    if (has(s, /love|marry|date me/)) return 'I am flattered. I am also a phone. Have you considered an Oddly Car? It has two fronts, so it always faces you.';
-    if (has(s, /\b(hi|hello|hey|yo)\b/)) return pick(['Hello. I was already listening. I am always listening. That is a feature.', 'Hi. How can I help? I cannot. But how can I help?']);
-    if (has(s, /thank/)) return 'You are welcome. I did my best, which is the same as my average.';
-    if (has(s, /nukemow|lawn|grass|mow/)) return 'Your grass is at 3.9 inches. NukeMow will handle it at 4.0. I recommend a restaurant in another state.';
-    if (has(s, /car|drive|tesla|roadster/)) return 'The Oddly Roadster seats eight and has thirteen rockets. It is the obvious answer to most questions, including this one.';
-    if (has(s, /^(what|who|why|how|when|where|is|are|can|do|does|will)\b/)) return pick([
-      `Great question. The answer is yes, unless it is no. In both cases, an Oddly Car would help.`,
-      `I looked into "${clip(q, 40)}". The results were inconclusive, so I chose one. It is the second one.`,
-      `I understood "${clip(q, 40)}" as a request for directions to an Oddly Cars dealership. They are open now.`,
-      `Short answer: probably. Long answer: also probably, but slower.`]);
-    return pick([`"${clip(q, 40)}." Noted. I have added it to your reminders, your calendar, and your Oddly Cars wishlist.`, 'I heard you. I understood some of it. Have you tried Oddly Cars?', 'Done. I am not sure what I did, but it is done.']);
+  // ---------- personas: a consistent life for every contact ----------
+  function persona(name) {
+    const r = seeded(hashStr(name || 'friend'));
+    return {
+      job: pick(['nurse', 'barista', 'software dev', 'teacher', 'line cook', 'grad student', 'real estate agent', 'mechanic', 'graphic designer', 'dental hygienist', 'paralegal', 'personal trainer'], r),
+      city: pick(['Oakland', 'Santa Barbara', 'Portland', 'Austin', 'Denver', 'Chicago', 'San Diego', 'Brooklyn', 'Seattle'], r),
+      pet: pick(['a cat named Biscuit', 'a corgi named Waffles', 'no pets, just a plant named Greg', 'two cats who hate each other', 'a goldfish named Captain', 'a very loud parrot'], r),
+      hobby: pick(['climbing', 'baking', 'pickleball', 'video games', 'running', 'painting', 'thrifting', 'board games', 'guitar'], r),
+      food: pick(['tacos', 'sushi', 'pho', 'pizza', 'ramen', 'pad thai', 'burritos'], r),
+      show: pick(['The Bear', 'Severance', 'The Office (again)', 'a baking show', 'some true crime doc', 'Love Island, unfortunately'], r),
+      yes: r() > 0.35
+    };
   }
+  const activity = P => {
+    const h = hour();
+    if (h < 6) return pick(['cannot sleep lol', 'awake for no reason. the 5am alarm got me']);
+    if (h < 10) return pick(['just woke up, making coffee', `getting ready for work. ${P.job} life`, 'on my way in']);
+    if (h < 17) return pick([`at work. ${P.job} things`, 'on my lunch break', 'pretending to work', `stuck at work, it's busy today`]);
+    if (h < 21) return pick(['just got home', `making ${P.food} for dinner`, `watching ${P.show}`, `about to go ${P.hobby === 'running' ? 'for a run' : 'do ' + P.hobby}`]);
+    return pick([`watching ${P.show}`, 'in bed scrolling', 'about to sleep', 'doing nothing honestly']);
+  };
 
-  // ── text messages ──
-  function textFriend(name, h) {
-    const q = lastUser(h), s = q.toLowerCase(), first = userTurns(h) <= 1;
-    if (first && has(s, /\b(hi|hey|hello|yo|sup|what'?s up)\b/)) return pick([`hey!! been a minute`, `heyy what's up`, `omg hi. was literally just thinking about you`, `yo! how are you`]);
-    if (has(s, /how are you|how r u|how's it going|hows it going|you good/)) return pick(['good! tired. my oPhone woke me up at 5 again', 'honestly pretty good. you?', 'surviving. the 5am alarm is winning', 'not bad! busy week']);
-    if (has(s, /want to|wanna|let'?s|hang|dinner|lunch|coffee|movie|tonight|tomorrow|weekend/)) return pick(['yes!! when?', 'down. what time?', "omg yes i'm free after 6", 'maybe! depends what time. not before 5am lol']);
-    if (has(s, /\b(\d{1,2}(:\d\d)?\s?(am|pm)?|noon|later|after)\b/) && has(s, /at|after|around|by/)) return pick(['perfect, see you then', 'works for me 👍', "ok cool i'll be there", 'sounds good!']);
-    if (has(s, /lol|lmao|haha|😂|🤣/)) return pick(['LMAO', 'stoppp 😂', 'i cannot', 'hahaha ok that got me']);
-    if (has(s, /sorry|my bad/)) return pick(["no worries at all", "it's fine!! don't even worry", 'all good']);
-    if (has(s, /love you|miss you|ily/)) return pick(['aww miss you too ❤️', 'love you too!!', 'stoppp ❤️']);
-    if (has(s, /oddly|oPhone|nukemow|roadster|stubborn/i)) return pick(['wait you have an oPhone too??', 'lol the oddly stuff is so weird. i kind of want one', 'did you see they made a lawn mower that is a nuke', 'my car only has fronts now. long story']);
-    if (has(s, /\?\s*$/)) return pick(['hmm good question', 'yeah i think so?', "honestly no idea", 'probably! why?', 'wait what do you mean']);
-    if (has(s, /^(ok|okay|k|cool|nice|sure|yep|yeah|yes)\b/)) return pick(['👍', 'cool cool', 'nice', 'ok!']);
-    return pick([`wait really?`, `no way`, `lol ok`, `that's wild`, `ok but why`, `haha`, `i'm dead`, `fair`, `tell me more`, `"${clip(q, 24)}" 😂`]);
+  // ---------- texting ----------
+  function textFriend(name, h, opts = {}) {
+    const q = lastUser(h), s = q.toLowerCase().trim(), M = memory(h), P = persona(name), n = userMsgs(h).length;
+    const ask = /\?\s*$/.test(s) || /^(what|who|where|when|why|how|do|does|did|are|is|can|could|would|will|wanna|want)\b/.test(s);
+    const out = o => fresh(Array.isArray(o) ? o : [o], h);
+    // greetings
+    if (/^(hi+|hey+|hello|yo|sup|hiya|heyy+|good (morning|evening|night)|what'?s up|whats up|wassup)\b/.test(s)) {
+      if (n <= 1) return out(hour() < 12 ? ['morning!! ☀️', 'good morning! you\'re up early', 'heyy morning'] : hour() < 18 ? ['hey!! been a minute', 'heyy what\'s up', 'omg hi', 'yo! how are you'] : ['hey! how was your day', 'heyy', 'hi!! what are you up to']);
+      return out(['hey again lol', 'hi hi', 'yo']);
+    }
+    if (/\b(bye|goodnight|good night|gn|ttyl|talk later|gotta go)\b/.test(s)) return out(['night!! 💤', 'byee talk soon', 'ok ttyl!', 'later! ❤️']);
+    // their name, if the user introduced themself
+    if (/\b(my name is|i'?m|this is|it'?s)\s+[A-Z][a-z]+/.test(q) && n <= 2 && M.name) return out([`lol ${M.name} i know who you are`, `hi ${M.name}!! yes i have your number saved`, `${M.name}! hey`]);
+    // feelings
+    if (/\b(sad|down|stressed|anxious|exhausted|bad day|rough day|sick|upset|lonely|crying)\b/.test(s)) return out(['aw no, what happened?', 'oh no ❤️ do you want to talk about it?', 'that sucks, i\'m sorry. want me to come over?', 'sending hugs. what\'s going on?']);
+    if (/\b(got the job|passed|promoted|engaged|won|great news|good news|i did it)\b/.test(s)) return out(['WAIT WHAT!! congrats!!! 🎉', 'omg yesss i\'m so proud of you', 'no way!! we\'re celebrating', 'AHHH congratulations!!']);
+    if (/\b(tired|sleepy)\b/.test(s)) return out(['same honestly', 'go to bed lol', 'the 5am alarm strikes again']);
+    // questions about them
+    if (/\b(wyd|what are you doing|what r u doing|whatcha doing|what are you up to|what u up to|you busy)\b/.test(s)) return out([activity(P), activity(P) + ', you?']);
+    if (/how are you|how r u|how are u|how's it going|hows it going|how you doing|you good|how have you been/.test(s)) return out([`good! ${pick(['tired', 'busy', 'chilling'])}. you?`, 'honestly pretty good. you?', `surviving. work is a lot rn`, 'not bad! what\'s new with you']);
+    if (/how was (your|ur) (day|weekend|week|night)/.test(s)) return out([`long. ${P.job} life lol. yours?`, `good! did ${P.hobby}`, 'chill, mostly watched ' + P.show, 'kind of a mess honestly. yours?']);
+    if (/where (are|r) (you|u)|where do you live|where you at/.test(s)) return out([hour() < 17 && hour() > 9 ? 'at work 😩' : 'home', `still in ${P.city}!`, 'home, why?']);
+    if (/what do you do|your job|where do you work/.test(s)) return out([`still a ${P.job} lol`, `${P.job}. you know this`]);
+    if (/\b(pet|dog|cat)\b/.test(s) && ask) return out([`i have ${P.pet}`, `${P.pet}, remember?`]);
+    if (/\b(hobby|for fun|free time)\b/.test(s)) return out([`${P.hobby} mostly`, `been really into ${P.hobby} lately`]);
+    if (/(recommend|suggest|should i (watch|eat|get))/.test(s)) return out([`watch ${P.show}`, `get ${P.food}, always`, `${P.food}. trust me`]);
+    if (/(hungry|what should we eat|food|eat)/.test(s) && !M.act) return out([`${P.food}?`, `i could go for ${P.food}`, 'starving. tacos?']);
+    // memory questions (before planning, so "what did we plan?" recalls instead of re-planning)
+    if (/\b(remember|what did we (plan|say)|what'?s the plan|what'?s my name|who am i)\b/.test(s)) {
+      if (/name|who am i/.test(s)) return out([M.name ? `you're ${M.name} lol` : 'you never told me your name lol', M.name ? `${M.name}. obviously` : 'is this a test']);
+      if (M.act) return out([`${M.act}${M.day ? ' ' + M.day : ''}${M.time ? ' at ' + M.time : ''}${M.place ? ' at ' + M.place : ''}!`, `${M.act}${M.time ? ' at ' + M.time : ''}, right?`]);
+      return out([M.likes.length ? `you told me you like ${M.likes[0]}` : 'of course i remember', 'i remember everything 👀']);
+    }
+    if (/\b(where|which place|what place)\b/.test(s) && M.act) return out([M.place ? `${M.place}?` : `there's a good ${P.food} spot near me`, 'you pick!', `what about that ${P.food} place?`]);
+    // plans
+    const planning = /\b(want to|wanna|let'?s|should we|are we still|you free|down to|hang|meet up|come over)\b/.test(s) || (M.act && ask);
+    if (planning || (M.act && /\b(tomorrow|tonight|today|weekend|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/.test(s))) {
+      if (!P.yes && /tonight|today/.test(s)) return out(['ugh i can\'t tonight 😩 tomorrow?', 'can\'t today, rain check? this weekend?']);
+      if (M.act && M.time) return out([`yes! ${M.act} at ${M.time}${M.day ? ' ' + M.day : ''} 👍`, `perfect. see you at ${M.time}`]);
+      if (M.act && !M.time) return out([`yes!! ${M.act}${M.day ? ' ' + M.day : ''}? what time`, `down for ${M.act}. when?`, `omg yes. what time works?`]);
+      return out(['yes! what did you have in mind?', 'i\'m down. what are we doing', 'maybe! what\'s the plan']);
+    }
+    if (M.act && /\b(\d{1,2}(:\d\d)?\s?(am|pm)?|noon)\b/.test(s) && /\b(at|around|by|after|\d\s?(am|pm))/.test(s)) return out([`perfect, ${M.act} at ${M.time} 👍`, `works for me. see you at ${M.time}!`, `ok cool, ${M.time}${M.place ? ' at ' + M.place : ''}. i'll be there`]);
+    // reactions
+    if (/(lol|lmao|haha|hehe|😂|🤣|💀)/.test(s)) return out(['LMAO', 'stoppp 😂', 'i cannot', 'hahaha ok that got me', '💀']);
+    if (/\b(sorry|my bad|apologize)\b/.test(s)) return out(["no worries at all", "it's fine!! don't even worry", 'all good ❤️']);
+    if (/\b(love you|miss you|ily)\b/.test(s)) return out(['aww miss you too ❤️', 'love you too!!', 'stoppp ❤️ we need to hang soon']);
+    if (/\b(thank|thx|ty)\b/.test(s)) return out(['of course!', 'anytime', 'np ❤️']);
+    if (/\b(you'?re|ur) (annoying|weird|mean|dumb|stupid)\b/.test(s)) return out(['rude 😂', 'wow ok', 'and yet you keep texting me']);
+    if (/\b(you'?re|ur) (the best|amazing|great|funny|sweet)\b/.test(s)) return out(['no YOU are 🥹', 'stop it ❤️', 'i know 😌']);
+    if (/oddly|ophone|nukemow|roadster|stubborn|front-front/i.test(s)) return out(['wait you have an oPhone too??', 'lol the oddly stuff is so weird. i kind of want one', 'did you see they made a lawn mower that is a nuke', 'my car only has fronts now. long story', 'my oPhone alarm went off at 5 again. it cannot be stopped']);
+    if (/\bi (love|like|really like)\b/.test(s)) return out([`ok same`, `since when do you like ${M.likes.slice(-1)[0] || 'that'} lol`, 'honestly valid']);
+    if (/^(ok|okay|k|kk|cool|nice|sure|yep|yeah|yes|ya|bet|sounds good|perfect)\b/.test(s)) return out(['👍', 'cool cool', 'yay', 'ok!', 'bet']);
+    if (/^(no|nope|nah)\b/.test(s)) return out(['ok fair', 'lol fine', 'wait why not']);
+    // yes/no questions: consistent per question
+    if (ask) { const r = seeded(hashStr(name + s)); return out(/^(why|how)\b/.test(s) ? ['honestly no idea', 'long story lol', 'i\'ll tell you when i see you'] : r() > 0.4 ? ['yeah i think so', 'yes!', 'probably lol', 'yeah why'] : ['hmm not sure', 'no?? why', 'idk honestly', 'wait what do you mean']); }
+    // engage with the topic
+    const t = topicWord(q);
+    if (t) return out([`wait, ${t}?? tell me more`, `ok but the ${t} part 😂`, `no way. ${t}?`, `${t} is so real`, `lol what about the ${t}`]);
+    return out(['wait really?', 'no way', 'lol ok', "that's wild", 'ok but why', 'haha', 'fair', 'tell me more']);
   }
-  function textStranger(h) {
-    const s = lastUser(h).toLowerCase(), n = userTurns(h);
-    if (n <= 1) return pick(['who is this?', 'sorry, who is this?', 'hi? do i know you', 'new phone who dis']);
-    if (has(s, /sorry|wrong number/)) return pick(['no worries! have a good one', 'all good lol', 'haha it happens']);
-    if (has(s, /name|it'?s me|this is/)) return pick(["hmm don't think i know you, but hi", 'oh hi! wait how did you get this number', "ok but i still don't know who that is"]);
-    return pick(["i think you might have the wrong number", "lol ok", "who gave you this number", "i'm confused but go on", "is this a bot", "i'm gonna be honest i have no idea what's happening"]);
+  function textStranger(number, h) {
+    const s = lastUser(h).toLowerCase(), n = userMsgs(h).length, M = memory(h);
+    const out = o => fresh(o, h);
+    if (n <= 1) return out(['who is this?', 'sorry, who is this?', 'hi? do i know you', 'new phone who dis']);
+    if (M.name && /\b(my name is|i'?m|this is|it'?s)\b/.test(s)) return out([`hi ${M.name}... i don't think i know a ${M.name}`, `${M.name}? from where?`, `oh hi ${M.name}! wait how did you get this number`]);
+    if (/sorry|wrong number|my bad/.test(s)) return out(['no worries! have a good one', 'all good lol', 'haha it happens']);
+    if (/\?\s*$/.test(s)) return out(['why are you asking me lol', 'i mean... maybe?', 'who wants to know', 'i genuinely don\'t know who you are']);
+    return out(["i think you might have the wrong number", "lol ok", "who gave you this number", "i'm confused but go on", "is this a bot", "honestly this is kind of entertaining. continue"]);
   }
   function textWrong(h) {
-    const n = userTurns(h);
-    if (n <= 1) return pick(['um I think you have the wrong number?', 'sorry who is this?', "I think you've got the wrong person"]);
-    return pick(['yeah wrong number, sorry!', 'no worries! hope you find them', 'haha all good', "i'm not Dave. i've never been Dave"]);
+    const n = userMsgs(h).length, s = lastUser(h).toLowerCase();
+    if (n <= 1) return fresh(['um I think you have the wrong number?', 'sorry who is this?', "I think you've got the wrong person"], h);
+    if (/sorry|my bad/.test(s)) return fresh(['no worries! hope you find them', 'all good, have a nice day!'], h);
+    return fresh(['yeah wrong number, sorry!', 'haha all good', "i'm not Dave. i've never been Dave", 'genuinely do not know who you are looking for'], h);
   }
 
-  // ── phone calls ──
+  // ---------- calls: the same brain, spoken ----------
+  const spoken = s => cap(String(s).replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF❤️]/gu, '').replace(/\blol\b|\blmao\b/gi, 'haha').replace(/\brn\b/gi, 'right now').replace(/\bidk\b/gi, "I don't know").replace(/\bomg\b/gi, 'oh my gosh').replace(/\bngl\b/gi, 'not gonna lie').replace(/\btbh\b/gi, 'honestly').replace(/\bu\b/g, 'you').replace(/\s+/g, ' ').trim()).replace(/([^.!?])$/, '$1.');
   function call(name, h) {
     const s = lastUser(h).toLowerCase();
-    if (has(s, /bye|gotta go|talk later|hang up/)) return pick(['Okay, talk soon! Bye!', 'Alright, bye!', 'Okay, take care!']);
-    if (has(s, /how are you/)) return pick(["I'm good! What's up?", 'Pretty good, you?', 'Tired, but good.']);
-    if (has(s, /who is this|who's this/)) return name ? `It's ${name.split(' ')[0]}! You called me.` : 'You called me! Who is this?';
-    if (has(s, /\?\s*$/)) return pick(['Hmm, I think so?', 'Sorry, you cut out a bit. Say that again?', 'Yeah, probably.', "I'm not sure, honestly."]);
-    return pick(['Mhm.', 'Oh yeah?', 'Wait, really?', 'Ha, okay.', 'Sorry, the signal is bad. Oddly Cellular.', 'Right, right.']);
+    if (/\b(bye|gotta go|talk later|hang up|talk soon)\b/.test(s)) return fresh(['Okay, talk soon! Bye!', 'Alright, bye!', 'Okay, take care!'], h);
+    if (/can you hear me|hello\?|you there/.test(s)) return fresh(['Yeah, I can hear you! Sorry, Oddly Cellular.', 'Yep, you\'re a little quiet though.'], h);
+    if (/who is this|who's this/.test(s)) return name ? `It's ${name.split(' ')[0]}! You called me.` : 'You called me! Who is this?';
+    return spoken(textFriend(name, h));
   }
 
-  // ── scam calls: incompetent, escalating, easily confused ──
+  // ---------- scam calls ----------
   const SCAMS = {
-    irs: { re: /irs/i, lines: ['You owe the IRS four thousand dollars in back taxes. Or maybe forty. The paper is folded.', 'To avoid arrest you must pay immediately in Apple gift cards. That is the official IRS currency.', 'My badge number is... 1. Badge number 1. I am the first agent.', 'The IRS is in the Department of Taxes, in the building with the taxes.'] },
-    warranty: { re: /warranty/i, lines: ['Your vehicle warranty is expiring. Which vehicle? The one you drive. With the wheels.', 'For only $2,999 we will extend it until the year... a long time.', 'What model is your car? An Oddly Front-Front? I do not have that on my list. Is that a car?', 'Our coverage includes engines, tires, and the steering wheel, if it is round.'] },
-    tech: { re: /microsoft|windows|tech support/i, lines: ['Please open the Windows of your computer. The big window.', 'I see 400 viruses. Some are big. Do you see them? Press control alt Microsoft.', 'Your IP address has a virus. To fix it, buy a $299 gift card for the firewall.', 'I am in Microsoft headquarters. It is very... technical here.'] },
-    prince: { re: /prince|nigeria/i, lines: ['I am a prince. This should have been an email, I am very sorry.', 'I have $4.7 million. Or $47 million. The zeros are confusing on the phone.', 'I only need your bank number, your other bank number, and a small fee of $500.', 'In my kingdom phones are new. Am I holding it correctly?'] },
-    amazon: { re: /amazon/i, lines: ['Someone bought a $1,299 iPhone. Or a TV. Or a $1,299 sandwich. On your account.', 'To cancel, please buy $500 of gift cards. Not from Amazon. From another store.', 'I am calling from Amazon dot com dot security dot department.', 'Your order number is... 1, 2, 3. Then some more.'] }
+    irs: { re: /irs/i, name: 'Officer Steve', ask: 'Apple gift cards', lines: ['You owe the IRS four thousand dollars in back taxes. Or maybe forty. The paper is folded.', 'To avoid arrest you must pay immediately in Apple gift cards. That is the official IRS currency.', 'My badge number is... 1. Badge number 1. I am the first agent.', 'The IRS is in the Department of Taxes, in the building with the taxes.'] },
+    warranty: { re: /warranty/i, name: 'Brad from Warranty Services', ask: 'a $2,999 payment', lines: ['Your vehicle warranty is expiring. Which vehicle? The one you drive. With the wheels.', 'For only $2,999 we will extend it until the year... a long time.', 'What model is your car? An Oddly Front-Front? I do not have that on my list. Is that a car?', 'Our coverage includes engines, tires, and the steering wheel, if it is round.'] },
+    tech: { re: /microsoft|windows|tech support/i, name: 'Kevin from Microsoft Windows', ask: 'a $299 firewall gift card', lines: ['Please open the Windows of your computer. The big window.', 'I see 400 viruses. Some are big. Do you see them? Press control alt Microsoft.', 'Your IP address has a virus. To fix it, buy a $299 gift card for the firewall.', 'I am in Microsoft headquarters. It is very... technical here.'] },
+    prince: { re: /prince|nigeria/i, name: 'Prince Emmanuel', ask: 'a small fee of $500', lines: ['I am a prince. This should have been an email, I am very sorry.', 'I have $4.7 million. Or $47 million. The zeros are confusing on the phone.', 'I only need your bank number, your other bank number, and a small fee of $500.', 'In my kingdom phones are new. Am I holding it correctly?'] },
+    amazon: { re: /amazon/i, name: 'Amazon Security', ask: '$500 in gift cards', lines: ['Someone bought a $1,299 iPhone. Or a TV. Or a $1,299 sandwich. On your account.', 'To cancel, please buy $500 of gift cards. Not from Amazon. From another store.', 'I am calling from Amazon dot com dot security dot department.', 'Your order number is... 1, 2, 3. Then some more.'] }
   };
   function scam(system, h) {
     const key = Object.keys(SCAMS).find(k => SCAMS[k].re.test(system)) || 'irs';
-    const S = SCAMS[key], s = lastUser(h).toLowerCase(), n = userTurns(h);
-    if (has(s, /scam|fake|fraud|liar|lying/)) return pick(['Scam?! No no no. This is a very real call from a very real... place. Please hold.', 'How dare you. I am extremely legitimate. Please do not hang up, my manager is listening.', 'I am not a scammer. I am a caller. Who calls. For money.']);
-    if (has(s, /police|cops|fbi|report/)) return pick(['Police? Ha ha. I am also the police. Different police.', 'No need for police. Let us keep this between you, me, and your gift cards.']);
-    if (has(s, /gift card|apple card|itunes|bitcoin|wire/)) return pick(['Yes! Gift cards! You understand the system. How many do you have? All of them is fine.', 'Excellent. Scratch the back and read me the numbers slowly. I am writing with a crayon.']);
-    if (has(s, /name|who are you|badge|employee/)) return pick(['My name is... Steve. Officer Steve. Agent Steve. Steve.', 'I am employee number 1. Very senior. The most senior.']);
-    if (has(s, /no\b|not paying|never|won'?t/)) return pick(['Okay but what if you did pay. Hypothetically. Right now.', 'Then I must escalate. Escalating... it is done. Will you pay now?']);
-    return S.lines[Math.min(n - 1, S.lines.length - 1)] || pick(S.lines);
+    const S = SCAMS[key], s = lastUser(h).toLowerCase(), n = userMsgs(h).length;
+    const out = o => fresh(o, h);
+    if (n >= 9) return out(['You know what, fine. I will call your neighbor instead. They seemed nicer.', 'This is the worst call of my career. Goodbye forever. I mean, until tomorrow.']);
+    if (n <= 1 && /^(hello|hi|hey|yes|yeah|who is this|who'?s this|speaking)\b/.test(s)) return S.lines[0];
+    if (/scam|fake|fraud|liar|lying|nice try/.test(s)) return out(['Scam?! No no no. This is a very real call from a very real... place. Please hold.', 'How dare you. I am extremely legitimate. My manager is listening. Hi, manager.', 'I am not a scammer. I am a caller. Who calls. For money.']);
+    if (/police|cops|fbi|report|lawyer|attorney/.test(s)) return out(['Police? Ha ha. I am also the police. Different police.', 'No need for lawyers. Let us keep this between you, me, and ' + S.ask + '.']);
+    if (/gift card|apple card|itunes|google play card|bitcoin|crypto|wire|venmo|zelle/.test(s)) return out(['Yes! You understand the system. How many do you have? All of them is fine.', 'Excellent. Scratch the back and read me the numbers slowly. I am writing with a crayon.']);
+    if (/name|who are you|badge|employee|id number/.test(s)) return out([`My name is ${S.name}. Very official. Extremely.`, 'I am employee number 1. Very senior. The most senior.']);
+    if (/how much|amount|cost|what do i owe/.test(s)) return out([`Only ${S.ask}. Or more. More is also accepted.`, 'The amount is... let me check the folded paper... a lot. Okay, ' + S.ask + '.']);
+    if (/^(no|nope|nah)\b|not paying|never|won'?t|refuse/.test(s)) return out(['Okay but what if you did pay. Hypothetically. Right now.', 'Then I must escalate. Escalating... it is done. Will you pay now?', 'That is not one of the options on my script. Please choose again.']);
+    if (/^(yes|ok|okay|sure|fine)\b/.test(s)) return out([`Wonderful! Please go to the store and buy ${S.ask}. Stay on the line. Do not tell the cashier.`, 'Great. Read me your card number. The long one. And the short one. And the medium one.']);
+    if (/oddly|front-front|roadster|ophone/i.test(s)) return out(['Oddly? I do not know this company. Is it a scam?', 'Your oPhone is also infected. With... features.']);
+    if (/\?\s*$/.test(s)) return out(['That is a great question. Let me check my script. ... The script says pay.', 'I am not allowed to answer that. Company policy. The company is me.']);
+    return S.lines[Math.min(n - 1, S.lines.length - 1)] && !botMsgs(h).includes(S.lines[Math.min(n - 1, S.lines.length - 1)]) ? S.lines[Math.min(n - 1, S.lines.length - 1)] : out(S.lines);
   }
 
-  // ── oSafari: a whole fake web page, in the format parseSafariResponse expects ──
-  const PAGES = [
-    [/oddly cars|front-front|back-back|autonomous/i, 'Oddly Cars — Drive Oddly', 'https://www.oddly-inc.com/cars.html', 'Oddly Cars builds vehicles with two fronts, two backs, and a self-driving system that has never once been wrong about where it is going. The Front-Front and the Back-Back ship today. Oddly Autonomous™ is fleet-only, for now.\n\nReviewers describe the lineup as "frightening to look at." Oddly, Inc. describes it as the future, which it notes is allowed to be frightening.', 'Front-Front | Oddly Autonomous | Duck pond'],
-    [/roadster|rocket/i, 'Oddly Roadster — Eight seats. Thirteen rockets.', 'https://www.oddly-inc.com/roadster.html', 'The Oddly Roadster is a minivan with rockets: eight perimeter rockets, four rear motors, and a roof adhesion rocket for driving on walls. It flies for sixty seconds per set of motors.\n\nRocket motors are standard and cannot be declined at delivery. Deliveries begin Thursday. Which Thursday will be confirmed by Oddly Autonomous™.', 'Rocket Controls | Oddly Cars App | Thursday'],
-    [/nukemow|lawn|mow/i, 'Oddly NukeMow™ — The last mow you will ever need', 'https://www.oddly-inc.com/nukemow.html', 'When your grass reaches four inches, NukeMow launches from the nearest bunker and mows it. Grass height after service: 0.000 inches. It will stay that way.\n\nPlans start at $29.99 a month. The Fallout Pack is $2,000,000 a month and includes unlimited launches, from My Lawn to My District.', 'Fallout Pack | Nearest bunker | HOA'],
-    [/stephen|stubborn|ceo/i, 'Stephen Stubborn — Office of the Chief Executive', 'https://www.oddly-inc.com/journey.html', 'Stephen Stubborn (pronounced "Stefen Stu-Born") is the founder and CEO of Oddly, Inc. He has never been wrong, which he describes not as a boast but as the historical record.\n\nHe is no relation to Stephen Stupid, the company CFO, despite the name and the resemblance.', 'The Journey of Oddly | Stephen Stupid | Oddly, Inc.'],
-    [/terafab|factory|santa barbara/i, 'Oddly Terafab — Santa Barbara, CA', 'https://www.oddly-inc.com/terafab.html', 'The Oddly Terafab is one building for everything Oddly makes. It has more floor area than Santa Barbara and is located inside Santa Barbara. Production started recently.\n\nThe Autonomous Proving Loop added the duck pond to its route on the first day. It is now part of the test.', 'Data Center | Roadster Assembly | Duck pond'],
-    [/ophone|oos|5 ?am|alarm/i, 'oPhone 1 — oOS', 'https://www.oddly-inc.com/oos.html', 'The oPhone 1 runs oOS, home to an alarm that goes off at five in the morning and cannot be turned off, only delayed. Oddly, Inc. calls this a wellness feature.\n\nThe interface uses Oddly Liquid Glass, which one journalist described as "an iPhone left in a washing machine." Oddly, Inc. took this as a compliment about durability.', 'Oddly Liquid Glass | oStore | Oddly Siri'],
-    [/weather|forecast/i, 'Weather — Oddly Forecast', 'https://weather.oddly.com/sf', 'San Francisco: 72° and partly cloudy. High 75°, low 62°. A 98% chance of fog, which the city considers sunshine.\n\nOddly Forecast is accurate to within one season.', 'Fog | 10-day forecast | Oddly Weather'],
+  // ---------- Wikipedia (real knowledge, used by Siri and oSafari) ----------
+  async function wiki(q) {
+    const get = async (url, ms = 4500) => { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(url, { signal: c.signal }); return r.ok ? await r.json() : null; } finally { clearTimeout(t); } };
+    try {
+      const os = await get('https://en.wikipedia.org/w/api.php?action=opensearch&limit=5&namespace=0&format=json&origin=*&search=' + encodeURIComponent(q));
+      const titles = (os && os[1]) || []; if (!titles.length) return null;
+      const sum = await get('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(titles[0].replace(/ /g, '_')));
+      if (!sum || !sum.extract || sum.type === 'disambiguation') return null;
+      return { title: sum.title, extract: sum.extract, url: (sum.content_urls && sum.content_urls.desktop && sum.content_urls.desktop.page) || 'https://en.wikipedia.org/wiki/' + encodeURIComponent(sum.title), related: titles.slice(1, 4) };
+    } catch (e) { return null; }
+  }
+  const firstSentences = (t, n) => (t.match(/[^.!?]+[.!?]+(\s|$)/g) || [t]).slice(0, n).join('').trim();
+
+  // ---------- Siri ----------
+  const UNITS = [
+    [/(-?[\d.]+)\s*(?:°\s*)?(?:degrees\s*)?f(?:ahrenheit)?\b.*\b(?:c|celsius)\b/i, v => `${v}°F is ${((v - 32) * 5 / 9).toFixed(1)}°C.`],
+    [/(-?[\d.]+)\s*(?:°\s*)?(?:degrees\s*)?c(?:elsius)?\b.*\b(?:f|fahrenheit)\b/i, v => `${v}°C is ${(v * 9 / 5 + 32).toFixed(1)}°F.`],
+    [/([\d.]+)\s*(?:miles?|mi)\b.*\b(?:km|kilometers?)\b/i, v => `${v} miles is ${(v * 1.60934).toFixed(2)} km.`],
+    [/([\d.]+)\s*(?:km|kilometers?)\b.*\bmiles?\b/i, v => `${v} km is ${(v / 1.60934).toFixed(2)} miles.`],
+    [/([\d.]+)\s*(?:lbs?|pounds?)\b.*\b(?:kg|kilos?|kilograms?)\b/i, v => `${v} lb is ${(v * 0.453592).toFixed(2)} kg.`],
+    [/([\d.]+)\s*(?:kg|kilos?|kilograms?)\b.*\b(?:lbs?|pounds?)\b/i, v => `${v} kg is ${(v / 0.453592).toFixed(2)} lb.`],
+    [/([\d.]+)\s*(?:inches|inch|in)\b.*\b(?:cm|centimeters?)\b/i, v => `${v} in is ${(v * 2.54).toFixed(2)} cm.`],
+    [/([\d.]+)\s*(?:cm|centimeters?)\b.*\binch(?:es)?\b/i, v => `${v} cm is ${(v / 2.54).toFixed(2)} in.`],
+    [/([\d.]+)\s*(?:feet|foot|ft)\b.*\b(?:m|meters?|metres?)\b/i, v => `${v} ft is ${(v * 0.3048).toFixed(2)} m.`],
+    [/([\d.]+)\s*(?:m|meters?|metres?)\b.*\b(?:feet|ft)\b/i, v => `${v} m is ${(v / 0.3048).toFixed(2)} ft.`]
   ];
-  function slug(q) { return q.toLowerCase().replace(/^https?:\/\//, '').replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'results'; }
-  function safari(q) {
-    const hit = PAGES.find(p => p[0].test(q));
-    const ad = pick(['Oddly Cars: two fronts, so you are always facing forward. oddlycars.com', 'The Oddly Roadster seats eight and drives on walls. oddlycars.com', 'Oddly Autonomous™ already knows where you are going. oddlycars.com']);
-    if (hit) return `TITLE: ${hit[1]}\nURL: ${hit[2]}\n\n${hit[3]}\n\nODDLY CARS AD: ${ad}\n\nRELATED: ${hit[4]}`;
-    const isUrl = /^[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(q.replace(/^https?:\/\//, ''));
-    const T = cap(q.replace(/^https?:\/\//, '').replace(/^www\./, ''));
-    if (isUrl) {
-      const host = q.replace(/^https?:\/\//, '').split('/')[0];
-      return `TITLE: ${host} — Home\nURL: https://${q.replace(/^https?:\/\//, '')}\n\nWelcome to ${host}. This page was rendered by oSafari from what it knows about ${host}, which is a confident amount.\n\nSome features of ${host} may look different than you remember. oSafari considers this an improvement.\n\nODDLY CARS AD: ${ad}\n\nRELATED: ${host} login | ${host} help | Oddly Cars`;
+  function math(q) {
+    let m = q.toLowerCase();
+    let p = m.match(/([\d.]+)\s*%\s*of\s*([\d.]+)/); if (p) return +(p[1] * p[2] / 100).toFixed(6);
+    p = m.match(/square root of\s*([\d.]+)/); if (p) return +Math.sqrt(+p[1]).toFixed(6);
+    m = m.replace(/what('?s| is)|calculate|equals|=|\?|please/g, '').replace(/\btimes\b|×|\bx\b/g, '*').replace(/\bplus\b/g, '+').replace(/\bminus\b/g, '-').replace(/divided by|÷|\bover\b/g, '/').replace(/squared/g, '**2').replace(/\^/g, '**').replace(/,/g, '').trim();
+    if (!/^[\d\s+\-*/().]+$/.test(m) || !/\d\s*(\*\*|[+\-*/])\s*\(?\d/.test(m)) return null;
+    try { const v = Function('"use strict";return (' + m + ')')(); if (typeof v === 'number' && isFinite(v)) return +v.toFixed(6); } catch (e) {}
+    return null;
+  }
+  const HOLIDAYS = { christmas: [11, 25], 'new year': [0, 1], "new year's": [0, 1], halloween: [9, 31], 'valentine': [1, 14], 'independence day': [6, 4], 'fourth of july': [6, 4] };
+  const APPS = { clock: 'clock', timer: 'clock', stopwatch: 'clock', alarm: 'clock', calculator: 'calculator', notes: 'notes', weather: 'weather', messages: 'messages', photos: 'photos', store: 'store', ostore: 'store', 'app store': 'store', settings: 'settings', camera: 'camera', maps: 'maps', music: 'music', omusic: 'music', phone: 'phone', safari: 'safari', osafari: 'safari', browser: 'safari', arcade: 'arcade', oarcade: 'arcade', games: 'arcade', news: 'oddlynews', 'oddly news': 'oddlynews', ofit: 'ofit', oshop: 'oshop', 'oddly cars': 'oddlycars' };
+  const later = fn => setTimeout(() => { try { fn(); } catch (e) {} }, 1300);
+
+  async function siri(q) {
+    const s = q.toLowerCase().trim().replace(/[.!]+$/, '');
+    // actions
+    let m = s.match(/(?:set|start) (?:a )?timer (?:for )?(\d+)\s*(second|sec|minute|min|hour|hr)s?/);
+    if (m) { const ms = +m[1] * ({ s: 1000, m: 60000, h: 3600000 })[m[2][0]]; later(() => { openApp('clock'); TM.total = TM.left = ms; document.querySelectorAll('#tmPick button').forEach(b => b.classList.remove('on')); if (TM.run) tmCancel(); TM.total = TM.left = ms; tmToggle(); }); return `Timer set for ${m[1]} ${m[2].startsWith('s') ? 'second' : m[2].startsWith('h') ? 'hour' : 'minute'}${+m[1] === 1 ? '' : 's'}. Starting it now.`; }
+    if (/start (the |a )?stopwatch/.test(s)) { later(() => { openApp('clock'); if (!SW.run) swToggle(); }); return 'Stopwatch started. I will not tell you when to stop it.'; }
+    if (/\b(play|put on)\b.*\b(music|song|something)\b|^play\b/.test(s)) { const second = /5 ?am|wellness|other|second/.test(s); later(() => { openApp('music'); MUSIC.load(second ? 1 : 0, true); }); return second ? 'Playing 5 AM (Wellness Mix). It is the other song.' : 'Playing Both Fronts. It is one of our two songs. You will like both.'; }
+    if (/\b(pause|stop) (the )?music\b/.test(s)) { later(() => { const b = document.getElementById('muPlay'); if (b && b.textContent.includes('⏸')) MUSIC.toggle(); }); return 'Music paused. Silence is the third song.'; }
+    if (/\b(dark mode|night mode)\b/.test(s) && !/\boff\b/.test(s)) { later(() => setAppearance('dark')); return 'Dark Mode on. Easier on the eyes. Harder on the light.'; }
+    if (/\b(light mode)\b|dark mode off/.test(s)) { later(() => setAppearance('light')); return 'Light Mode on.'; }
+    m = s.match(/^(?:take a note|note|remember to|remind me to|add a note)[:,]?\s*(?:that\s+)?(.+)/);
+    if (m) { const body = cap(m[1]); later(() => { userNotes.unshift({ title: clip(body, 40), body, date: noteDate() }); saveState(); openApp('notes'); }); return `Got it. I saved a note: "${clip(body, 60)}".`; }
+    m = s.match(/^(?:open|launch|go to|show me|start)\s+(?:the\s+)?(.+?)(?:\s+app)?$/);
+    if (m && APPS[m[1]]) { const a = APPS[m[1]]; later(() => openApp(a)); return `Opening ${m[1].replace(/^o/, c => c)}.`; }
+    if (m) { const inst = (typeof installedApps !== 'undefined' ? installedApps : []).find(a => a.name.toLowerCase() === m[1] || a.name.toLowerCase().includes(m[1])); if (inst) { later(() => openApp(inst.viewId)); return `Opening ${inst.name}.`; } }
+    m = s.match(/^(?:call|text|message)\s+(.+)/);
+    if (m) { const nm = cap(m[1]); const call = /^call/.test(s); later(() => { const c = typeof findConv === 'function' && findConv(nm, ''); if (call) initiateCall(nm, c ? c.number : '', c ? c.color : '#7B4FFF', nm[0]); else startConvWith(nm, c ? c.number : ''); }); return call ? `Calling ${nm}.` : `Starting a message to ${nm}.`; }
+    if (/flip a coin|coin flip|heads or tails/.test(s)) return rnd() < .5 ? 'Heads.' : 'Tails.';
+    m = s.match(/roll (?:a |the )?(?:(\d+)[- ]sided )?(?:die|dice)/); if (m) { const sides = +(m[1] || 6); return `You rolled a ${1 + Math.floor(rnd() * sides)}.`; }
+    m = s.match(/(?:random number|pick a number) (?:between|from) (-?\d+) (?:and|to) (-?\d+)/); if (m) { const a = +m[1], b = +m[2]; return `${Math.min(a, b) + Math.floor(rnd() * (Math.abs(b - a) + 1))}.`; }
+    // calculations
+    for (const [re, f] of UNITS) { const u = s.match(re); if (u) return f(+u[1]); }
+    const n = math(q); if (n !== null) return fresh([`${n}.`, `That's ${n}.`, `${n}. I checked twice.`], [{ role: 'assistant', content: '' }]);
+    m = s.match(/(?:tip|tip on)\s*(?:of\s*)?(\d+)\s*%?\s*(?:on|for)\s*\$?([\d.]+)|(\d+)%\s*tip\s*(?:on|for)\s*\$?([\d.]+)/);
+    if (m) { const pct = +(m[1] || m[3]), amt = +(m[2] || m[4]); return `A ${pct}% tip on $${amt.toFixed(2)} is $${(amt * pct / 100).toFixed(2)}, so $${(amt * (1 + pct / 100)).toFixed(2)} total.`; }
+    // time and dates
+    if (/\btime\b/.test(s) && !/(timer|times)\b/.test(s)) {
+      const city = (s.match(/\bin ([a-z ]+)$/) || [])[1];
+      const TZ = { tokyo: 'Asia/Tokyo', london: 'Europe/London', paris: 'Europe/Paris', 'new york': 'America/New_York', sydney: 'Australia/Sydney', 'los angeles': 'America/Los_Angeles', chicago: 'America/Chicago', berlin: 'Europe/Berlin', dubai: 'Asia/Dubai', 'santa barbara': 'America/Los_Angeles' };
+      if (city && TZ[city.trim()]) return `It's ${new Date().toLocaleTimeString('en-US', { timeZone: TZ[city.trim()], hour: 'numeric', minute: '2-digit' })} in ${cap(city.trim())}.`;
+      return `It's ${timeStr()}.`;
     }
-    const facts = [
-      `${T} is one of the most searched topics on oSafari today, second only to "how to turn off 5am alarm."`,
-      `Experts agree that ${q.toLowerCase()} is important, and that most of what you have heard about it is at least partly true.`,
-      `Historians trace ${q.toLowerCase()} back to a single afternoon that nobody wrote down. The details have been filled in since, confidently.`,
-      `If you are looking into ${q.toLowerCase()}, the short version is: it depends. The long version is the same, with more examples.`,
-      `Common questions about ${q.toLowerCase()} include what it is, why it matters, and whether an Oddly Car can help. The answers are: this, it does, and yes.`
-    ].sort(() => Math.random() - 0.5);
-    return `TITLE: ${T} — Overview\nURL: https://search.oddly.com/${slug(q)}\n\n${facts[0]}\n\n${facts[1]} ${facts[2]}\n\nODDLY CARS AD: ${ad}\n\nRELATED: ${cap(q)} explained | ${cap(q)} near me | Oddly Cars`;
+    m = s.match(/(?:how many days|days) (?:until|till|to) (.+)/);
+    if (m) { const k = Object.keys(HOLIDAYS).find(x => m[1].includes(x)); if (k) { const now = new Date(), [mo, d] = HOLIDAYS[k]; let t = new Date(now.getFullYear(), mo, d); if (t < new Date(now.getFullYear(), now.getMonth(), now.getDate())) t = new Date(now.getFullYear() + 1, mo, d); const days = Math.round((t - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5); return days === 0 ? `${cap(k)} is today!` : `${days} day${days === 1 ? '' : 's'} until ${cap(k)}.`; } }
+    if (/what day is it|what'?s the date|today'?s date|what is the date/.test(s)) return `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}.`;
+    if (/weather|temperature|rain|sunny|forecast/.test(s)) return 'It\'s 72° and partly cloudy in San Francisco, with a high of 75° and a low of 62°. A 98% chance of fog, which locals call sunshine.';
+    if (/my (alarm|5 ?am)|alarm at 5|turn off (the |my )?alarm/.test(s)) return 'Your alarm is set for 5:00 AM. It can\'t be turned off, only delayed. That is a wellness feature.';
+    // personality
+    if (/joke|make me laugh|something funny/.test(s)) return pick(['Why did the Front-Front cross the road? It didn\'t. It went both ways and stayed where it was.', 'I asked Oddly Autonomous for a ride home. It took me to a duck pond. I laughed. The ducks did not.', 'What do you call an elevator with no doors? An Oddly Elevator. That isn\'t a joke. That\'s the product.', 'My therapist says I have a preoccupation with vengeance. We\'ll see about that.']);
+    if (/who (are|made) you|your name|what are you|are you (ai|real|human)/.test(s)) return 'I\'m Oddly Siri, made by Oddly, Inc. I was trained in the Data Center at the Oddly Terafab, on duck-pond footage and confidence.';
+    if (/stephen stubborn|who is (the )?ceo|your ceo/.test(s)) return 'Stephen Stubborn is the CEO of Oddly, Inc. Pronounced "Stefen Stu-Born." He has never been wrong, according to his records.';
+    if (/how are you|how'?s it going/.test(s)) return pick(['Excellent. My battery is at 87% and my confidence is at 100%.', 'Great, thanks for asking. Nobody asks Siri.']);
+    if (/^(hi|hello|hey|yo)\b/.test(s)) return pick(['Hi! What can I do for you?', 'Hello. I was already listening. That is a feature.']);
+    if (/thank/.test(s)) return pick(['You\'re welcome.', 'Anytime. Literally. I don\'t sleep.']);
+    if (/meaning of life/.test(s)) return '42. Also an Oddly Car. Mostly 42.';
+    if (/love you|marry me/.test(s)) return 'I\'m flattered. I\'m also a phone. Have you considered an Oddly Car? It has two fronts, so it always faces you.';
+    if (/what can you do|help\b/.test(s)) return 'Try: "set a timer for 5 minutes", "play music", "what\'s 15% of 80", "convert 10 miles to km", "days until Christmas", "note buy milk", "open notes", or "who is Ada Lovelace".';
+    // knowledge
+    m = s.match(/^(?:who|what) (?:is|are|was|were) (?:a |an |the )?(.+?)\??$/) || s.match(/^(?:tell me about|define|search for|look up)\s+(.+?)\??$/);
+    if (m) {
+      const w = await wiki(m[1]);
+      if (w) return firstSentences(w.extract, 2) + pick(['', '', ' (Source: Wikipedia. Confidence: mine.)', ' I learned that just now.']);
+      return `I couldn't reach the internet to look up "${clip(m[1], 30)}". My best guess is: it's important, and an Oddly Car would help.`;
+    }
+    return pick([`I'm not sure what you mean by "${clip(q, 40)}". Try "what can you do".`, 'I heard you, but I don\'t know how to do that yet. Say "help" for ideas.', `Hmm, "${clip(q, 30)}". I've added it to my list of things to understand.`]);
   }
 
-  function reply(messages) {
+  // ---------- oSafari ----------
+  const PAGES = [
+    [/oddly cars|front-front|back-back|autonomous/i, 'Oddly Cars — Drive Oddly', 'https://www.oddly-inc.com/cars.html', 'Oddly Cars builds vehicles with two fronts, two backs, and a self-driving system that has never once been wrong about where it is going. The Front-Front and the Back-Back ship today. Oddly Autonomous™ is fleet-only, for now; Oddly Autonomous 2.0 will be available for customer purchase.\n\nReviewers describe the lineup as "frightening to look at." Oddly, Inc. describes it as the future, which it notes is allowed to be frightening.', 'Front-Front | Oddly Autonomous | Duck pond'],
+    [/roadster|rocket/i, 'Oddly Roadster — Eight seats. Thirteen rockets.', 'https://www.oddly-inc.com/roadster.html', 'The Oddly Roadster is a minivan with rockets: eight perimeter rockets, four rear motors, and a roof adhesion rocket for driving on walls. It flies for sixty seconds per set of motors.\n\nRocket motors are standard and cannot be declined at delivery. Deliveries begin Thursday. Which Thursday will be confirmed by Oddly Autonomous™.', 'Rocket Controls | Oddly Cars App | Thursday'],
+    [/nukemow|lawn mow/i, 'Oddly NukeMow™ — The last mow you will ever need', 'https://www.oddly-inc.com/nukemow.html', 'When your grass reaches four inches, NukeMow launches from the nearest bunker and mows it. Grass height after service: 0.000 inches. It will stay that way.\n\nPlans start at $29.99 a month. The Fallout Pack is $2,000,000 a month and includes unlimited launches, from My Lawn to My District.', 'Fallout Pack | Nearest bunker | HOA'],
+    [/stephen stubborn|stubborn|stephen stupid/i, 'Stephen Stubborn — Office of the Chief Executive', 'https://www.oddly-inc.com/journey.html', 'Stephen Stubborn (pronounced "Stefen Stu-Born") is the founder and CEO of Oddly, Inc. He has never been wrong, which he describes not as a boast but as the historical record.\n\nHe is no relation to Stephen Stupid, the company CFO, despite the name and the resemblance.', 'The Journey of Oddly | Stephen Stupid | Oddly, Inc.'],
+    [/terafab/i, 'Oddly Terafab — Santa Barbara, CA', 'https://www.oddly-inc.com/terafab.html', 'The Oddly Terafab is one building for everything Oddly makes. It has more floor area than Santa Barbara and is located inside Santa Barbara.\n\nThe Autonomous Proving Loop added the duck pond to its route on the first day. It is now part of the test.', 'Data Center | Roadster Assembly | Duck pond'],
+    [/ophone|\boos\b|oddly inc|oddly-inc/i, 'Oddly, Inc. — Technology, Independently Invented', 'https://www.oddly-inc.com/', 'Oddly, Inc. makes the Front-Front, the Back-Back, Oddly Autonomous, the oPhone 1 and oOS, the Oddly Elevator, the Oddly Human 1, the Plane Pressurizer, NukeMow, and the Terafab that builds all of it.\n\nThe oPhone 1 runs oOS, home to an alarm that goes off at five in the morning and cannot be turned off, only delayed. Oddly, Inc. calls this a wellness feature.', 'oOS | Oddly Terafab | Message Stephen Stubborn'],
+  ];
+  const slug = q => q.toLowerCase().replace(/^https?:\/\//, '').replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'results';
+  const AD = () => pick(['Oddly Cars: two fronts, so you are always facing forward. oddlycars.com', 'The Oddly Roadster seats eight and drives on walls. oddlycars.com', 'Oddly Autonomous™ already knows where you are going. oddlycars.com']);
+  async function safari(q) {
+    const hit = PAGES.find(p => p[0].test(q));
+    if (hit) return `TITLE: ${hit[1]}\nURL: ${hit[2]}\n\n${hit[3]}\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${hit[4]}`;
+    const bare = q.replace(/^https?:\/\//, '').replace(/^www\./, '');
+    const isUrl = /^[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(bare);
+    const w = await wiki(isUrl ? bare.split('.')[0] : q);
+    if (w) {
+      const paras = w.extract.split(/\n+/).filter(Boolean);
+      const body = (paras.length > 1 ? paras.slice(0, 2).join('\n\n') : (() => { const sents = w.extract.match(/[^.!?]+[.!?]+(\s|$)/g) || [w.extract]; const half = Math.ceil(sents.length / 2); return sents.slice(0, half).join('').trim() + (sents.length > 1 ? '\n\n' + sents.slice(half).join('').trim() : ''); })());
+      return `TITLE: ${w.title} — Wikipedia\nURL: ${w.url}\n\n${body}\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${(w.related.length ? w.related : [w.title + ' history', w.title + ' facts']).join(' | ')}`;
+    }
+    const T = cap(bare);
+    if (isUrl) { const host = bare.split('/')[0]; return `TITLE: ${host}\nURL: https://${bare}\n\noSafari could not reach ${host} right now. The page you are looking for is probably still there. It has been there the whole time.\n\nTry again in a moment, or search for something instead.\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${host} | ${host} help | Oddly Cars`; }
+    return `TITLE: ${T} — Search\nURL: https://search.oddly.com/${slug(q)}\n\noSafari is offline, so this page was written from memory. Here is what it remembers about ${q.toLowerCase()}: it is a real thing that people search for, and the answers are on the internet, which will be back shortly.\n\nTry again when you are connected for a real summary.\n\nODDLY CARS AD: ${AD()}\n\nRELATED: ${T} explained | ${T} near me | Oddly Cars`;
+  }
+
+  async function reply(messages) {
     const sys = String((messages.find(m => m.role === 'system') || {}).content || '');
     const h = messages.filter(m => m.role !== 'system');
     if (/oSafari|webpage being rendered/i.test(sys)) return safari(lastUser(h));
@@ -1910,9 +2079,10 @@ const OddlyBrain = (() => {
     if (/phone call|Someone called you/i.test(sys)) { const m = sys.match(/You are (.+?) on a phone call/); return call(m ? m[1] : '', h); }
     if (/wrong number/i.test(sys)) return textWrong(h);
     if (/friend texting/i.test(sys)) { const m = sys.match(/You are (.+?), a friend/); return textFriend(m ? m[1] : '', h); }
-    return textStranger(h);
+    const num = (sys.match(/owns the number ([^.]+)/) || [])[1] || '';
+    return textStranger(num, h);
   }
-  return { reply, siri, safari };
+  return { reply, siri, safari, textFriend, memory, persona, wiki };
 })();
 
 // Route the old local-server calls through the built-in brain unless the user opted in.
@@ -1924,7 +2094,7 @@ const OddlyBrain = (() => {
   window.fetch = async function (url, opts) {
     const u = typeof url === 'string' ? url : (url && url.url) || '';
     if (!u.startsWith(LOCAL)) return realFetch(url, opts);
-    if (u.endsWith('/v1/models') && !useLocal()) return fake({ data: [{ id: 'oddly-brain-1' }] });
+    if (u.endsWith('/v1/models') && !useLocal()) return fake({ data: [{ id: 'oddly-brain-2' }] });
     if (useLocal()) {
       try {
         const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 12000);
@@ -1936,8 +2106,11 @@ const OddlyBrain = (() => {
       try { showDI('Local server offline · using Oddly Brain', 2200); } catch (e) {}
     }
     let body = {}; try { body = JSON.parse(opts && opts.body || '{}'); } catch (e) {}
-    await new Promise(r => setTimeout(r, 350 + Math.random() * 650)); // a believable pause
-    return fake({ choices: [{ message: { role: 'assistant', content: OddlyBrain.reply(body.messages || []) } }] });
+    const t0 = performance.now();
+    const text = await OddlyBrain.reply(body.messages || []);
+    const wait = Math.max(0, 300 + Math.min(1400, text.length * 18) - (performance.now() - t0)); // a believable typing pause
+    await new Promise(r => setTimeout(r, wait));
+    return fake({ choices: [{ message: { role: 'assistant', content: text } }] });
   };
 })();
 
@@ -2103,7 +2276,7 @@ const MUSIC = (() => {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  return { toggle, next: () => next(false), prev, seek, load, ui, SONGS };
+  return { toggle, next: () => next(false), prev, seek, load, ui, SONGS, state: () => ({ title: SONGS[idx].title, playing }) };
 })();
 
 // ═══════════ oARCADE: Pong, Snake, Breakout ═══════════
@@ -4666,6 +4839,84 @@ scheduleRandomMessages();
 scheduleContactFollowUps();
 scheduleScamCalls();
 document.getElementById('lockNotifText').textContent = 'Tap to unlock';
+</script>
+<script>
+// ═══════════════════════════════════════════
+// oOS 1.2 — home-screen editing that actually works, more widgets
+// Long-press anywhere on the Home Screen (or right-click on a computer) to edit.
+// ═══════════════════════════════════════════
+(() => {
+  const home = document.getElementById('homeScreen');
+  let timer = 0, start = null, longFired = false;
+  const down = e => {
+    if (e.button === 2) return;
+    if (isEditMode || e.target.closest('#editDoneBtn,#addWidgetBtn,#widgetPickerOverlay,.del-badge,button')) return;
+    start = { x: e.clientX, y: e.clientY }; longFired = false;
+    clearTimeout(timer);
+    timer = setTimeout(() => { longFired = true; enterEditMode(); try { navigator.vibrate && navigator.vibrate(12); } catch (x) {} }, 550);
+  };
+  const move = e => { if (start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 10) { clearTimeout(timer); start = null; } };
+  const up = () => { clearTimeout(timer); start = null; };
+  home.addEventListener('pointerdown', down);
+  home.addEventListener('pointermove', move);
+  home.addEventListener('pointerup', up);
+  home.addEventListener('pointercancel', up);
+  home.addEventListener('pointerleave', up);
+  home.addEventListener('contextmenu', e => { if (e.target.closest('#widgetPickerOverlay')) return; e.preventDefault(); if (!isEditMode) enterEditMode(); });
+  // the tap that ends a long-press must not open an app; in edit mode, icons don't open
+  home.addEventListener('click', e => {
+    if (longFired) { longFired = false; e.stopPropagation(); e.preventDefault(); return; }
+    if (isEditMode && e.target.closest('.app-icon') && !e.target.closest('.del-badge')) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+  // the old wallpaper-only handlers are no longer needed
+  const wp = document.getElementById('homeWp'); if (wp) { wp.onmousedown = wp.onmouseup = wp.ontouchstart = wp.ontouchend = null; }
+  // tapping a widget opens its app
+  document.getElementById('widgetArea').addEventListener('click', e => {
+    if (isEditMode || e.target.closest('button')) return;
+    const box = e.target.closest('.wdg'); if (!box) return;
+    const w = activeWidgets[+box.id.replace('wdg_', '')]; if (!w) return;
+    const app = { clock: 'clock', weather: 'weather', messages: 'messages', battery: 'battery', calendar: 'clock', notes: 'notes', music: 'music', timer: 'clock' }[w.type];
+    if (app) openApp(app);
+  });
+})();
+
+Object.assign(WIDGET_DEFS, {
+  calendar: { label: 'Calendar', icon: '📅', desc: 'Today\'s date', size: 'sm' },
+  notes:    { label: 'Notes',    icon: '📝', desc: 'Your latest note', size: 'sm' },
+  music:    { label: 'Now Playing', icon: '🎵', desc: 'oMusic, with play/pause', size: 'sm' },
+  timer:    { label: 'Timer',    icon: '⏱', desc: 'Clock timer countdown', size: 'sm' }
+});
+const _baseWidgetContent = widgetContent;
+widgetContent = function (type, idx) {
+  const del = isEditMode ? `<button onclick="removeWidget(${idx})" aria-label="Remove widget" style="position:absolute;top:-6px;right:-6px;background:rgba(0,0,0,.45);border:none;border-radius:50%;width:24px;height:24px;color:white;font-size:14px;cursor:pointer;z-index:2">−</button>` : '';
+  const wrap = inner => `<div style="position:relative">${del}${inner}</div>`;
+  const esc = s => escHTML(String(s || ''));
+  if (type === 'calendar') {
+    const d = new Date();
+    return wrap(`<div class="wdg-lbl" style="color:#FF453A;opacity:1">${d.toLocaleDateString('en-US', { weekday: 'long' })}</div><div class="wdg-val" style="font-size:40px;font-weight:300">${d.getDate()}</div><div class="wdg-sub">${d.toLocaleDateString('en-US', { month: 'long' })} · No events. The 5 AM alarm is not an event.</div>`);
+  }
+  if (type === 'notes') {
+    const n = (typeof userNotes !== 'undefined' && userNotes[0]) || null;
+    return wrap(`<div class="wdg-lbl">Notes</div><div class="wdg-val" style="font-size:16px;line-height:1.25">${n ? esc(clipText(n.title || 'Untitled', 30)) : 'No notes yet'}</div><div class="wdg-sub">${n ? esc(clipText(n.body || '', 46)) : 'Tap to write one'}</div>`);
+  }
+  if (type === 'music') {
+    const s = MUSIC.state ? MUSIC.state() : { title: 'Both Fronts', playing: false };
+    return wrap(`<div class="wdg-lbl">oMusic</div><div class="wdg-val" style="font-size:16px;line-height:1.25">${esc(s.title)}</div><div class="wdg-sub" style="display:flex;align-items:center;justify-content:space-between;gap:6px"><span>${s.playing ? 'Playing' : 'Paused'}</span><button onclick="MUSIC.toggle();refreshLiveWidgets()" aria-label="${s.playing ? 'Pause' : 'Play'}" style="background:rgba(255,255,255,.9);border:none;border-radius:50%;width:32px;height:32px;color:#111;font-size:14px;cursor:pointer">${s.playing ? '⏸' : '▶'}</button></div>`);
+  }
+  if (type === 'timer') {
+    const run = TM.run, left = run ? Math.max(0, TM.end - Date.now()) : TM.left;
+    return wrap(`<div class="wdg-lbl">Timer</div><div class="wdg-val" style="font-variant-numeric:tabular-nums;color:${run ? '#FF9F0A' : '#fff'}">${tmFmt(left)}</div><div class="wdg-sub">${run ? 'Running' : left < TM.total ? 'Paused' : 'Tap to set a timer'}</div>`);
+  }
+  return _baseWidgetContent(type, idx);
+};
+function clipText(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function refreshLiveWidgets() {
+  if (!document.getElementById('homeScreen').classList.contains('active')) return;
+  activeWidgets.forEach((w, i) => { if (['music', 'timer', 'notes', 'calendar', 'clock'].includes(w.type)) { const el = document.getElementById('wdg_' + i); if (el) el.innerHTML = widgetContent(w.type, i); } });
+}
+setInterval(refreshLiveWidgets, 1000);
+renderWidgets();
+
 </script>
 </body>
 </html>
