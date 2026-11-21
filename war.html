@@ -163,6 +163,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-
 /* ---------- main menu ---------- */
 #menu{position:absolute;inset:0;z-index:30;overflow:auto;background:linear-gradient(90deg,rgba(8,10,9,.94) 0%,rgba(8,10,9,.82) 40%,rgba(8,10,9,.15) 75%,rgba(8,10,9,0) 100%)}
 .mwrap{max-width:640px;padding-block:28px 40px;padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:22px}
+.oddly-home{display:inline-block;margin-bottom:14px;text-decoration:none;color:var(--ink-3);transition:color .2s}
+.oddly-home:hover,.oddly-home:focus-visible{color:var(--brass)}
 .mark{font-family:var(--f-mark);font-weight:400;font-size:clamp(54px,11vw,118px);line-height:.86;letter-spacing:.01em;margin:0;color:var(--ink)}
 .mark span{color:var(--brass)}
 .tag{margin:6px 0 0;font-family:var(--f-display);font-size:18px;letter-spacing:.04em;color:var(--ink-2);max-width:42ch}
@@ -385,6 +387,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-
   <div id="menu">
     <div class="mwrap">
       <div>
+        <a class="lbl oddly-home" href="https://www.oddly-inc.com/" aria-label="Oddly, Inc. home">&larr; Oddly, Inc.</a>
         <h1 class="mark">IRON<br><span>MERIDIAN</span></h1>
         <p class="tag">Conquer a living planet one region at a time. Buy an army, fight for every city, and negotiate or betray your way across the globe.</p>
       </div>

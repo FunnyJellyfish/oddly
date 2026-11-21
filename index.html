@@ -683,6 +683,8 @@ const DOWNLOADS = [
     desc:'The oPhone 1 operating system. Single self-contained file.', fmt:'HTML' },
   { name:'Oddly OS',                  href:'oddlyos.html',         size:182639, launch:'Launch', accent:'#22D3EE', icon:'window',
     desc:'The desktop operating system with the spiral launcher.', fmt:'HTML' },
+  { name:'Iron Meridian',             href:'war.html', file:'Iron-Meridian.html', launchHref:'https://war.oddly-inc.com/', size:335442, launch:'Play', accent:'#D7A74F', icon:'swords',
+    desc:'Oddly Games. Real-time strategy on a living globe: three eras, troop groups, online multiplayer. Diplomacy optional.', fmt:'HTML' },
   { name:'Oddly Cars App',            href:'Oddly-Cars-App-1.0.4.html', size:47255, launch:'Launch', accent:'#5CF2C4', icon:'phone',
     desc:'The companion app for every Oddly vehicle. Rocket Controls, Roadster only. Certification: Pending.', fmt:'HTML' },
   { name:'Tickelish Shmock',          href:'shmock.html', size:null,   launch:'Launch', accent:'#FE2C55', icon:'play',
@@ -703,6 +705,7 @@ const ICONS = {
   flask:'<path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 1.800 3h10.400A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.500 15h9"/>',
   coaster:'<path d="M3 20c0-9 4-15 6-15s3 6 3 10c0 3 1 5 3 5 3 0 6-4 6-9"/><path d="M3 20h18"/><path d="M8 20v-4M16 20v-3"/>',
   path:'<circle cx="5.500" cy="18.500" r="2"/><circle cx="18.500" cy="5.500" r="2"/><path d="M7 17c5-1 3-6 6-8s4-2 4.500-2"/><path d="M12 12.500h.01"/>',
+  swords:'<path d="M4 4l9.5 9.5M4 4v3.2M4 4h3.2"/><path d="M20 4l-9.5 9.5M20 4v3.2M20 4h-3.2"/><path d="M11.5 15.5l-5 5M8 14l2 2M5 19l-1.5 1.5"/><path d="M12.5 15.5l5 5M16 14l-2 2M19 19l1.5 1.5"/>',
   nuke:'<circle cx="12" cy="12" r="1.8"/><path d="M12 9.6 9.6 5.4A7.5 7.5 0 0 1 14.4 5.4z"/><path d="M14.1 13.2l4.8 0a7.5 7.5 0 0 1-2.4 4.2z"/><path d="M9.9 13.2l-2.4 4.2a7.5 7.5 0 0 1-2.4-4.2z"/>',
   comb:'<path d="M3 9h18v3H3z"/><path d="M5 12v7M8 12v7M11 12v7M14 12v7M17 12v7M20 12v5"/><circle cx="17" cy="5" r="1.2"/><circle cx="13" cy="4" r="1"/>',
   factory:'<path d="M3 21V10l5 3V10l5 3V10l5 3V4h3v17z"/><path d="M7 17h2M11 17h2M15 17h2"/>',
@@ -780,11 +783,11 @@ DOWNLOADS.forEach(d=>{
   row.className='dl-row'; row.setAttribute('role','row');
   row.style.setProperty('--a', d.accent);
   const actions = [];
-  if(d.launch) actions.push(`<a class="btn btn-ghost btn-sm" href="${d.href}" target="_blank" rel="noopener" data-href="${d.href}">${d.launch}</a>`);
-  actions.push(`<a class="btn btn-accent btn-sm" href="${d.href}" download="${fileName(d.href)}" data-href="${d.href}">${mini('down')} Download</a>`);
+  if(d.launch) actions.push(`<a class="btn btn-ghost btn-sm" href="${d.launchHref||d.href}" target="_blank" rel="noopener" data-href="${d.href}">${d.launch}</a>`);
+  actions.push(`<a class="btn btn-accent btn-sm" href="${d.href}" download="${d.file||fileName(d.href)}" data-href="${d.href}">${mini('down')} Download</a>`);
   row.innerHTML = `
     <div class="ico">${svg(d.icon)}</div>
-    <div class="dl-name"><b>${d.name}</b><code>${fileName(d.href)}</code></div>
+    <div class="dl-name"><b>${d.name}</b><code>${d.file||fileName(d.href)}</code></div>
     <div class="dl-desc">${d.desc}</div>
     <div class="dl-fmt">${d.fmt}<span data-size="${d.href}">${fmtSize(d.size)}</span></div>
     <div class="dl-act">${actions.join('')}</div>`;
@@ -796,7 +799,7 @@ document.getElementById('footSites').innerHTML = SITES.map(s=>`<a href="${s.href
 document.getElementById('footFiles').innerHTML =
   SOFTWARE.map(s=>`<a href="${s.href}" target="_blank" rel="noopener" data-href="${s.href}">${s.name}</a>`).join('') +
   DOWNLOADS.filter(d=>!SOFTWARE.some(s=>s.href===d.href) && !SITES.some(s=>s.href===d.href))
-           .map(d=>`<a href="${d.href}" download="${fileName(d.href)}" data-href="${d.href}">${d.name}</a>`).join('');
+           .map(d=>`<a href="${d.href}" download="${d.file||fileName(d.href)}" data-href="${d.href}">${d.name}</a>`).join('');
 
 document.getElementById('st-sites').textContent = SITES.length;
 document.getElementById('st-os').textContent = SOFTWARE.length;

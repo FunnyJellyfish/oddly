@@ -2,32 +2,46 @@
   "redirects": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "lorem.oddly-inc.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "lorem.oddly-inc.com"
+        }
+      ],
       "destination": "/lorem.html",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "ahctpac.oddly-inc.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "ahctpac.oddly-inc.com"
+        }
+      ],
       "destination": "/ahctpac.html",
       "permanent": false
     },
     {
       "source": "/ahctpac.html",
-      "missing": [{ "type": "host", "value": "ahctpac.oddly-inc.com" }],
+      "missing": [
+        {
+          "type": "host",
+          "value": "ahctpac.oddly-inc.com"
+        }
+      ],
       "destination": "/",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "war.oddly-inc.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "war.oddly-inc.com"
+        }
+      ],
       "destination": "/war.html",
-      "permanent": false
-    },
-    {
-      "source": "/war.html",
-      "missing": [{ "type": "host", "value": "war.oddly-inc.com" }],
-      "destination": "/",
       "permanent": false
     }
   ]
