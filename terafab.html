@@ -6,6 +6,7 @@
 <title>Oddly Terafab — Santa Barbara, CA</title>
 <meta name="description" content="The Oddly Terafab. One factory for everything Oddly makes. Santa Barbara, California. Production starts today.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -99,6 +100,30 @@
   .maptip{position:absolute;left:12px;top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);background:rgba(8,10,20,.8);border:1px solid var(--line);border-radius:8px;padding:6px 9px;pointer-events:none}
   .pond-ct{position:absolute;left:12px;bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);background:rgba(8,10,20,.8);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
   .pond-ct b{color:var(--mint)}
+  /* 3D map */
+  .map3d{position:relative;aspect-ratio:16/10;background:linear-gradient(180deg,#3b2a5e,#c99a93 55%,#123a55 56%);border:1px solid var(--line);border-radius:20px;overflow:hidden;user-select:none;-webkit-user-select:none}
+  @media(max-width:620px){.map3d{aspect-ratio:4/5}}
+  .map3d .gl{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;outline:none;touch-action:none}
+  .map3d:not(.active) .gl{pointer-events:none}
+  .map3d .labels{position:absolute;inset:0;pointer-events:none}
+  .map3d .zoom,.map3d .pond-ct,.m3-tip,.done3{z-index:3}
+  .m3-tip{position:absolute;left:12px;top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);background:rgba(8,10,20,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:8px;padding:6px 9px;pointer-events:none;max-width:calc(100% - 80px)}
+  .lab3{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(8,10,20,.74);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:3px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .25s,border-color .2s,transform .2s;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+  .lab3 .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;color:#080A14;font-size:11px}
+  .lab3 .t{display:none;padding-right:7px}
+  .map3d.near .lab3 .t,.lab3:hover .t,.lab3:focus-visible .t,.lab3.on .t{display:inline}
+  .map3d.narrow.near .lab3:not(.on) .t{display:none}
+  .lab3:hover,.lab3:focus-visible{border-color:var(--text);outline:none}
+  .lab3.on{border-color:var(--mint);box-shadow:0 0 0 2px rgba(46,233,165,.35),0 4px 14px rgba(0,0,0,.35)}
+  .lab3.dim{opacity:.25}
+  .m3-load{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);background:rgba(8,10,20,.55);z-index:4}
+  .m3-load span{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,255,255,.2);border-top-color:var(--mint);animation:spin3 .9s linear infinite}
+  .m3-load[hidden]{display:none}
+  @keyframes spin3{to{transform:rotate(360deg)}}
+  .veil3{position:absolute;inset:0;z-index:5;background:transparent;border:none;cursor:pointer;display:grid;place-items:end center;padding-bottom:56px}
+  .veil3[hidden],.done3[hidden]{display:none}
+  .veil3 span{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#fff;background:var(--purple);border-radius:999px;padding:11px 20px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .done3{position:absolute;right:12px;bottom:12px;background:var(--purple);color:#fff;border:none;border-radius:999px;padding:9px 16px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
   .zone{cursor:pointer;outline:none}
   .zone .bld{transition:fill .2s,stroke .2s,opacity .25s}
   .zone:hover .bld,.zone:focus-visible .bld{stroke:var(--text);stroke-width:3}
@@ -262,7 +287,7 @@
     <div data-r>
       <div class="eyebrow">Interactive site map</div>
       <h2>Everything Oddly makes. One campus.</h2>
-      <p class="lede">Click any building. Drag to pan. Scroll or use + and &minus; to zoom. The small mint dots are Oddly Autonomous&trade; test cars on the Proving Loop. Their routes are their own.</p>
+      <p class="lede" id="mapLede">Click any building. Drag to pan. Scroll or use + and &minus; to zoom. The small mint dots are Oddly Autonomous&trade; test cars on the Proving Loop. Their routes are their own.</p>
     </div>
     <div class="filters" role="group" aria-label="Filter buildings" data-r>
       <button class="chip on" data-f="all">All</button>
@@ -275,6 +300,14 @@
 
   <div class="mapgrid">
     <div data-r>
+      <div class="map3d" id="map3d" hidden>
+        <div class="m3-tip" id="tip3">Click a building</div>
+        <div class="zoom"><button id="zin3" aria-label="Zoom in">+</button><button id="zout3" aria-label="Zoom out">&minus;</button><button id="zreset3" aria-label="Reset view" style="font-size:13px">⟲</button></div>
+        <div class="pond-ct">Test cars in duck pond today: <b id="pondN3">0</b></div>
+        <div class="m3-load" id="load3"><span></span>Rendering Santa Barbara…</div>
+        <button class="veil3" id="veil3" type="button" hidden><span>Tap to explore in 3D</span></button>
+        <button class="done3" id="done3" type="button" hidden>Done</button>
+      </div>
       <div class="mapbox" id="mapbox">
         <svg id="map" viewBox="0 0 1000 640" role="application" aria-label="Oddly Terafab site map">
           <defs>
@@ -521,6 +554,7 @@
     if(id==='pond'){iDl.lastChild.lastChild.textContent=pondN+' today';}
     if(z.href){iGo.hidden=false;iGo.href=z.href;iGo.textContent=z.link+' →';}else iGo.hidden=true;
     tip.textContent='Selected: '+z.name;
+    if(window.TF&&TF.onSelect)TF.onSelect(id);
   }
 
   // filters
@@ -529,6 +563,7 @@
       var f=ch.dataset.f;
       document.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c===ch);});
       Object.keys(nodes).forEach(function(k){nodes[k].classList.toggle('dim',f!=='all'&&byId[k].cat!==f);});
+      if(window.TF&&TF.onFilter)TF.onFilter(f);
     });
   });
 
@@ -588,6 +623,7 @@
   }
   var last=performance.now();
   function frame(now){
+    if(window.TF&&TF.mode3d)return; // the 3D map runs its own test cars
     var dt=Math.min(.05,(now-last)/1000);last=now;
     cars.forEach(function(c){
       if(c.state==='loop'){
@@ -639,8 +675,22 @@
     });
   });
 
+  // hooks for the 3D map (terafab-3d.js); the SVG map above is the fallback
+  window.TF={
+    zones:ZONES,cats:CATS,select:select,
+    getSel:function(){return sel;},
+    pondAdd:function(){
+      pondN++;pondEl.textContent=pondN;
+      var p3=document.getElementById('pondN3');if(p3)p3.textContent=pondN;
+      if(sel==='pond')select('pond');
+      resetIncidents();
+    },
+    onSelect:null,onFilter:null,mode3d:false
+  };
+
   select('entrance');
 })();
 </script>
+<script type="module" src="terafab-3d.js"></script>
 </body>
 </html>
