@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly Hair Lubricator</title>
+<meta name="description" content="1,200 robotic lice that swarm through your hair and oil it. Co-invented with a friend whose hair does this by itself. Certification: Pending.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --line:#242849; --line2:#323865;
+    --text:#EDEDF7; --dim:#9A9EC0; --faint:#666B92;
+    --purple:#7B4FFF; --mint:#2EE9A5; --amber:#F5A623; --oil:#E9B949; --red:#FF4D5E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .mono{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--oil);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:660px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--oil);color:#1a1200;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(233,185,73,.3)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+  .btn.ghost:hover{border-color:var(--oil);box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+
+  /* hero */
+  .hero{padding:64px 0 70px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(720px 420px at 76% 40%,rgba(233,185,73,.13),transparent 70%),radial-gradient(600px 340px at 5% 0%,rgba(123,79,255,.12),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1.08fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:940px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:26px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(48px,7.4vw,90px)}
+  .hero h1 em{font-style:italic;color:var(--oil);font-weight:600}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:520px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* simulator */
+  .sim{background:linear-gradient(180deg,#14172e,#0d1020);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+  .simhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px 0}
+  .simhead .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .live{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mint)}
+  .live i{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:blink 1.2s infinite}
+  #hair{display:block;width:100%;aspect-ratio:5/4;touch-action:pan-y;cursor:grab}
+  .controls{padding:0 16px 16px}
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin-bottom:12px}
+  .levels button{background:transparent;border:none;border-left:1px solid var(--line2);color:var(--dim);padding:9px 4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;cursor:pointer;transition:background .2s,color .2s}
+  .levels button:first-child{border-left:none}
+  .levels button.on{background:var(--oil);color:#1a1200;font-weight:600}
+  .levels button:hover:not(.on){color:var(--text)}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .meters{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-width:220px}
+  .meter{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .meter .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .meter .v{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+  .bar{height:5px;border-radius:5px;background:var(--line);margin-top:5px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a07a2c,var(--oil),#fff3c4);transition:width .3s}
+  #deploy{white-space:nowrap}
+  .simnote{font-size:13px;color:var(--dim);margin-top:10px;min-height:20px}
+
+  .ticker{background:var(--oil);color:#1a1200;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;padding:10px 0}
+  .ticker span{display:inline-block;animation:tick 40s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+
+  /* origin */
+  .origin{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
+  @media(max-width:900px){.origin{grid-template-columns:1fr}}
+  .origin p{color:var(--dim);font-size:17px;margin-bottom:16px}
+  .origin p b{color:var(--text);font-weight:600}
+  .pull{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:600;line-height:1.25;border-left:3px solid var(--oil);padding-left:20px;margin:6px 0 18px}
+  .pull cite{display:block;font-family:'JetBrains Mono',monospace;font-style:normal;font-size:12px;color:var(--dim);margin-top:12px;font-weight:400}
+  .compare{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .compare table{width:100%;border-collapse:collapse;font-size:14.5px}
+  .compare th,.compare td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .compare th{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:400}
+  .compare td:first-child{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--dim)}
+  .compare tr:last-child td{border-bottom:none}
+  .compare .yes{color:var(--oil)}
+
+  /* how */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;transition:border-color .2s,transform .2s}
+  .step:hover{border-color:var(--oil);transform:translateY(-3px)}
+  .step .n{font-family:'JetBrains Mono',monospace;color:var(--oil);font-size:13px}
+  .step h3{font-size:22px;margin:10px 0 8px}
+  .step p{color:var(--dim);font-size:15px}
+
+  /* specs + faq */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:860px){.two{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel h3{font-size:24px;margin-bottom:10px}
+  .specs{list-style:none}
+  .specs li{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .specs li:last-child{border-bottom:none}
+  .specs span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .specs span:last-child{text-align:right}
+  details{border-bottom:1px dashed var(--line);padding:12px 0}
+  details:last-child{border-bottom:none}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--oil)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15px;margin-top:8px}
+
+  /* quotes */
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:14px;padding:22px;display:flex;flex-direction:column}
+  .qc.cfo{border-left-color:var(--mint)}
+  .qc.vin{border-left-color:var(--oil)}
+  .qc p{font-family:'Fraunces',serif;font-size:19px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:auto;padding-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--purple);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--mint)}
+  .vin .av{background:rgba(233,185,73,.14);color:var(--oil)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+
+  /* order */
+  .order{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:760px){.order{grid-template-columns:1fr}}
+  .ed{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column}
+  .ed.best{border-color:var(--oil);box-shadow:0 0 0 1px rgba(233,185,73,.25) inset}
+  .ed .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .ed.best .tag{color:var(--oil)}
+  .ed h3{font-size:28px;margin:8px 0 4px}
+  .ed .price{font-family:'Fraunces',serif;font-size:40px;font-weight:800;margin:8px 0 12px}
+  .ed ul{list-style:none;margin-bottom:20px}
+  .ed li{color:var(--dim);font-size:15px;padding:6px 0;display:flex;gap:10px}
+  .ed li::before{content:"✓";color:var(--oil);font-weight:700}
+  .ed .btn{margin-top:auto;justify-content:center}
+  .ordermsg{margin-top:16px;font-size:14px;color:var(--dim);min-height:22px;text-align:center}
+  .ordermsg b{color:var(--oil)}
+
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:920px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--oil)}
+
+  @media(max-width:520px){
+    .wrap{padding:0 16px}
+    section{padding:64px 0}
+    .hero p{font-size:17px}
+    .levels button{font-size:10.5px;padding:9px 2px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ticker span,.badge i,.live i{animation:none}
+    .js [data-r]{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Oddly Hair Lubricator home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly Hair Lubricator
+  </a>
+  <nav class="nav"><a href="#origin">Origin</a><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#leadership">Leadership</a></nav>
+  <a class="btn" href="#order">Pre-order</a>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badge"><i></i>Certification: Pending</div>
+    <h1>Oddly Hair <em>Lubricator.</em></h1>
+    <p>Some people wake up with glossy hair. Most people wake up. We looked at that and said &mdash; this can be improved. 1,200 robotic lice swarm through your hair and oil every strand, from root to tip, while you do something else.</p>
+    <div class="ctas">
+      <a class="btn" href="#order">Pre-order &mdash; $399</a>
+      <a class="btn ghost" href="#origin">Meet Vincenzo &rarr;</a>
+    </div>
+  </div>
+
+  <div class="sim" data-r>
+    <div class="simhead">
+      <span class="k">Live swarm simulator</span>
+      <span class="live" id="liveTag"><i></i><span id="liveTxt">Swarm docked</span></span>
+    </div>
+    <canvas id="hair" aria-label="Simulated hair being oiled by a swarm of robotic lice. Move the cursor through the hair to comb it."></canvas>
+    <div class="controls">
+      <div class="levels" role="group" aria-label="Lubrication level">
+        <button data-lv="0" aria-pressed="false">Dry</button>
+        <button data-lv="1" aria-pressed="false">Conditioned</button>
+        <button data-lv="2" aria-pressed="false">Glossy</button>
+        <button data-lv="3" class="on" aria-pressed="true">Vincenzo</button>
+      </div>
+      <div class="row">
+        <div class="meters">
+          <div class="meter"><div class="k">Shine</div><div class="v" id="shineV">0%</div><div class="bar"><i id="shineB"></i></div></div>
+          <div class="meter"><div class="k">Lice deployed</div><div class="v" id="liceV">0</div><div class="bar"><i id="liceB"></i></div></div>
+        </div>
+        <button class="btn" id="deploy" type="button">Deploy swarm</button>
+      </div>
+      <div class="simnote" id="simnote">Move your cursor through the hair to comb it. The lice do not mind. They have been told not to.</div>
+    </div>
+  </div>
+</div></header>
+
+<div class="ticker" aria-hidden="true"><span>1,200 ROBOTIC LICE INCLUDED &nbsp;·&nbsp; THEY ARE NOT LICE. THEY ARE FOLLICLE ASSOCIATES &nbsp;·&nbsp; CO-INVENTED WITH VINCENZO &nbsp;·&nbsp; COLD-PRESSED, EXTRA VIRGIN &nbsp;·&nbsp; RETURNS TO THE HIVE COMB NIGHTLY &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG</span></div>
+
+<section id="origin"><div class="wrap">
+  <div class="origin">
+    <div data-r>
+      <div class="eyebrow">Origin</div>
+      <h2>It started with a friend.</h2>
+      <p>Stephen Stubborn has a friend named <b>Vincenzo</b>. Vincenzo is Italian. Vincenzo also has what he describes, with his permission and in his words, as <b>"self-lubricating hair."</b> He wakes up, and it is already shining. He has never purchased a product for it. He does not know what a product would be for.</p>
+      <p>Stephen Stubborn does not have that privilege. Stephen Stubborn wakes up, and his hair is in the same condition as Stephen Stubborn: determined, but dry.</p>
+      <p>So he did what he always does. He looked at Vincenzo's hair and said, "This can be improved." Vincenzo said it could not. Stephen agreed, and clarified that he meant his own hair. The two of them spent a weekend at Vincenzo's kitchen table designing the Oddly Hair Lubricator. Vincenzo supplied the oil, the technique, and the hair to copy. Stephen supplied the robotic lice.</p>
+      <p class="pull">"Vincenzo's hair does this by itself. Mine needs 1,200 robots. That is not a disadvantage. That is a supply chain."<cite>— Stephen Stubborn, pronounced "Stefen Stu-Born"</cite></p>
+    </div>
+    <div class="compare" data-r>
+      <table>
+        <thead><tr><th></th><th>Vincenzo</th><th>Stephen Stubborn, with Lubricator</th></tr></thead>
+        <tbody>
+          <tr><td>Shine</td><td>Natural</td><td class="yes">Natural (robotic)</td></tr>
+          <tr><td>Time to gloss</td><td>Already</td><td class="yes">11 minutes</td></tr>
+          <tr><td>Oil source</td><td>Unknown. He has asked us not to look into it.</td><td class="yes">Cold-pressed, extra virgin</td></tr>
+          <tr><td>Robots</td><td>0</td><td class="yes">1,200</td></tr>
+          <tr><td>Patent</td><td>Not required</td><td class="yes">Pending</td></tr>
+          <tr><td>Product named after</td><td>Was promised the product</td><td class="yes">Got the top setting</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">How it works</div>
+    <h2>Four steps. One swarm.</h2>
+    <p class="lede">Each Oddly Hair Lubricator ships with 1,200 robotic lice. Legally, they are not lice. Internally, we call them Follicle Associates. They call each other nothing. They are focused.</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-r><div class="n">01</div><h3>Deploy</h3><p>Hold the Hive Comb to your head and press the button. The swarm disembarks in an orderly fashion. Some of them wave.</p></div>
+    <div class="step" data-r><div class="n">02</div><h3>Swarm</h3><p>The lice map every strand. A full head is surveyed in under a minute. Ponytails are surveyed twice, for fairness.</p></div>
+    <div class="step" data-r><div class="n">03</div><h3>Lubricate</h3><p>Each louse carries a micro-reservoir of oil and works one strand from root to tip. Then the next strand. Then yours again, to be sure.</p></div>
+    <div class="step" data-r><div class="n">04</div><h3>Return</h3><p>At the selected level, the swarm marches back into the Hive Comb to recharge overnight. Most of them. The rest are considered loyal.</p></div>
+  </div>
+</div></section>
+
+<section id="specs"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Specifications</div>
+    <h2>The numbers, and the questions.</h2>
+  </div>
+  <div class="two">
+    <div class="panel" data-r>
+      <h3>Specs</h3>
+      <ul class="specs">
+        <li><span>Swarm</span><span>1,200 Follicle Associates</span></li>
+        <li><span>Legs per associate</span><span>6, all premium</span></li>
+        <li><span>Oil</span><span>Cold-pressed, extra virgin. Vincenzo's supplier.</span></li>
+        <li><span>Levels</span><span>Dry · Conditioned · Glossy · Vincenzo</span></li>
+        <li><span>Time to Vincenzo</span><span>11 minutes</span></li>
+        <li><span>Dock</span><span>The Hive Comb, charges overnight</span></li>
+        <li><span>Return rate</span><span>Within tolerance</span></li>
+        <li><span>Certification</span><span style="color:var(--amber)">Pending</span></li>
+      </ul>
+    </div>
+    <div class="panel" data-r>
+      <h3>Questions</h3>
+      <details><summary>Are they lice?</summary><p>They are robotic lice. Robotic lice are not lice, in the same way a robotic dog is not a dog. Ours are better than a robotic dog. They oil things.</p></details>
+      <details><summary>Will they leave my head?</summary><p>They return to the Hive Comb at the end of every session. A small number may remain, out of commitment. We consider this a feature and refer to them as your resident team.</p></details>
+      <details><summary>Can my friends catch them?</summary><p>Only if your friends ask nicely. Follicle Associates do not transfer between heads without a valid Oddly account.</p></details>
+      <details><summary>What does the Vincenzo setting do?</summary><p>It matches Vincenzo. We measured him on a Tuesday. He was not informed that Tuesday was the measurement. His hair did not change, because it never does.</p></details>
+      <details><summary>Is it safe?</summary><p>Certification is pending. It has been pending for some time. This is fine.</p></details>
+    </div>
+  </div>
+</div></section>
+
+<section id="leadership"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Leadership</div>
+    <h2>From the people who decided.</h2>
+  </div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"People asked why the lice are robotic. I asked why lice have never been useful. Nobody had an answer. Now they have jobs."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc vin" data-r><p>"I told him my hair just does this. He said, 'Not anymore. Now it is a platform.' I still do not know what he meant. My hair is fine."</p><div class="by"><div class="av">V</div><div><b>Vincenzo</b><small>Co-inventor · self-lubricating</small></div></div></div>
+    <div class="qc cfo" data-r><p>"Each unit includes 1,200 lice. Customers who lose some can buy more. Lice are a recurring revenue stream. They always have been."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Pre-order</div>
+    <h2>Choose your shine.</h2>
+  </div>
+  <div class="order">
+    <div class="ed" data-r>
+      <div class="tag">Standard</div>
+      <h3>Oddly Hair Lubricator</h3>
+      <div class="price">$399</div>
+      <ul><li>1,200 Follicle Associates</li><li>The Hive Comb</li><li>Dry, Conditioned and Glossy settings</li><li>30 days of oil</li></ul>
+      <button class="btn ghost" data-ed="Standard" type="button">Pre-order Standard</button>
+    </div>
+    <div class="ed best" data-r>
+      <div class="tag">Vincenzo Edition</div>
+      <h3>Oddly Hair Lubricator</h3>
+      <div class="price">$599</div>
+      <ul><li>1,200 Follicle Associates, plus 40 spares</li><li>The Hive Comb, in olive wood</li><li>All four settings, including Vincenzo</li><li>A signed photo of Vincenzo's hair</li></ul>
+      <button class="btn" data-ed="Vincenzo Edition" type="button">Pre-order Vincenzo Edition</button>
+    </div>
+  </div>
+  <div class="ordermsg" id="ordermsg" aria-live="polite"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="#top"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly Hair Lubricator</a>
+    <div class="links"><a href="#origin">Origin</a><a href="#specs">Specs</a><a href="#order">Pre-order</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. The Oddly Hair Lubricator contains robotic lice. Robotic lice are not lice and are not regulated as lice, or as anything else, yet. "Self-lubricating hair" is quoted with the permission of Vincenzo, who would like it noted that his hair is fine. Results may vary from Vincenzo. Do not deploy the swarm on pets, eyebrows, or other people without asking. Associates that do not return to the Hive Comb remain the property of Oddly, Inc. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+  'use strict';
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // reveal
+  var els=document.querySelectorAll('[data-r]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+    els.forEach(function(el){io.observe(el);});
+  } else els.forEach(function(el){el.classList.add('in');});
+
+  // ---------- hair + swarm simulator ----------
+  var cv=document.getElementById('hair'),ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=1,head={x:0,y:0,r:0};
+  var strands=[],lice=[],drops=[];
+  var NS=150,SEG=14,LICE=60,PER=20; // each louse drawn represents 20 of the 1,200
+  var TARGETS=[0.06,0.4,0.72,1.0],NAMES=['Dry','Conditioned','Glossy','Vincenzo'];
+  var level=3,deployed=false,mouse={x:-999,y:-999,px:-999,py:-999,on:false};
+  var dock={x:0,y:0};
+
+  function size(){
+    var r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);
+    W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);
+    head.r=Math.min(W,H)*0.3;head.x=W*0.5;head.y=H*0.47;
+    dock.x=W*0.86;dock.y=H*0.9;
+    build();
+  }
+  function hrand(i,k){var x=Math.sin(i*127.1+k*311.7)*43758.5453;return x-Math.floor(x);}
+  function build(){
+    var old=strands;strands=[];
+    var whorl={x:head.x+head.r*0.08,y:head.y-head.r*0.42};
+    for(var i=0;i<NS;i++){
+      // roots spread over the back of the head; hair grows away from the crown whorl, then falls
+      var a=-Math.PI*(1.12-1.24*hrand(i,1)),rr=head.r*(0.25+0.72*Math.sqrt(hrand(i,2)));
+      var rx=head.x+Math.cos(a)*rr,ry=head.y+Math.sin(a)*rr*0.98;
+      if(i<12){rx=whorl.x+(hrand(i,3)-0.5)*head.r*0.25;ry=whorl.y+(hrand(i,4)-0.5)*head.r*0.2;}
+      var dx=rx-whorl.x,dy=ry-whorl.y+head.r*0.25,dl=Math.sqrt(dx*dx+dy*dy)||1;dx/=dl;dy/=dl;
+      var len=head.r*(1.35+0.35*hrand(i,5))+Math.max(0,ry-head.y)*0.3;
+      var segL=len/SEG,pts=[];
+      for(var k=0;k<=SEG;k++){
+        var x=rx+dx*Math.min(k,3)*segL,y=ry+dy*Math.min(k,3)*segL+Math.max(0,k-3)*segL;
+        pts.push({x:x,y:y,px:x,py:y});
+      }
+      var rd=Math.sqrt((rx-head.x)*(rx-head.x)+(ry-head.y)*(ry-head.y));
+      strands.push({pts:pts,root:{x:rx,y:ry},segL:segL,minR:rd*0.97,oil:old[i]?old[i].oil:0.06,frizz:hrand(i,6)*1000,hue:Math.round(hrand(i,7)*10)});
+    }
+    strands.sort(function(p,q){return p.root.y-q.root.y;});
+    if(!lice.length){
+      for(var j=0;j<LICE;j++)lice.push({x:dock.x,y:dock.y,s:-1,t:0,dir:1,state:'dock',ph:Math.random()*6.28,wait:j*0.06,load:1});
+    } else lice.forEach(function(l){if(l.state==='dock'){l.x=dock.x;l.y=dock.y;}});
+  }
+
+  function stepPhysics(dt){
+    var g=900,damp=0.985,t=performance.now()/1000;
+    strands.forEach(function(s,si){
+      var p=s.pts,dry=1-s.oil;
+      p[0].x=s.root.x;p[0].y=s.root.y;
+      for(var k=1;k<p.length;k++){
+        var q=p[k],vx=(q.x-q.px)*damp,vy=(q.y-q.py)*damp;
+        q.px=q.x;q.py=q.y;
+        // a breeze; dry hair frizzes and lifts, oiled hair hangs heavy and smooth
+        var wind=Math.sin(t*0.9+si*0.3+k*0.4)*(6+14*dry);
+        q.x+=vx+wind*dt*dt*k*0.6;q.y+=vy+g*dt*dt*(0.55+0.45*s.oil);
+        if(mouse.on){
+          var mx=q.x-mouse.x,my=q.y-mouse.y,d2=mx*mx+my*my,R=46;
+          if(d2<R*R){var d=Math.sqrt(d2)||1,f=(R-d)/R;q.x+=mx/d*f*6+(mouse.x-mouse.px)*f*0.35;q.y+=my/d*f*6+(mouse.y-mouse.py)*f*0.35;}
+        }
+      }
+      for(var it=0;it<3;it++){
+        for(var k2=1;k2<p.length;k2++){
+          var a=p[k2-1],b=p[k2],ddx=b.x-a.x,ddy=b.y-a.y,dd=Math.sqrt(ddx*ddx+ddy*ddy)||1,diff=(dd-s.segL)/dd;
+          if(k2===1){b.x-=ddx*diff;b.y-=ddy*diff;} else {a.x+=ddx*diff*0.5;a.y+=ddy*diff*0.5;b.x-=ddx*diff*0.5;b.y-=ddy*diff*0.5;}
+        }
+        p[0].x=s.root.x;p[0].y=s.root.y;
+        // hair lies on the skull: it can't sink back inside the radius it grew from (above the nape)
+        for(var k3=1;k3<p.length;k3++){
+          var q2=p[k3],hx=q2.x-head.x,hy=q2.y-head.y,hd=Math.sqrt(hx*hx+hy*hy);
+          if(hy<head.r*0.55){var rx0=s.root.x-head.x,mn=Math.abs(rx0)*0.94;if(Math.abs(hx)<mn)q2.x=head.x+(rx0>=0?mn:-mn);}
+        }
+      }
+      // hair slowly dries out; the swarm is the only thing keeping up with it
+      s.oil=Math.max(0.04,s.oil-dt*0.006);
+    });
+    mouse.px=mouse.x;mouse.py=mouse.y;
+  }
+  function pointOn(s,u){ // u in [0,1] along the strand
+    var p=s.pts,f=u*(p.length-1),k=Math.min(p.length-2,Math.floor(f)),t=f-k;
+    return {x:p[k].x+(p[k+1].x-p[k].x)*t,y:p[k].y+(p[k+1].y-p[k].y)*t,ang:Math.atan2(p[k+1].y-p[k].y,p[k+1].x-p[k].x)};
+  }
+  function neediest(){
+    var best=-1,bv=1e9;
+    for(var i=0;i<8;i++){var j=Math.floor(Math.random()*strands.length),v=strands[j].oil+Math.random()*0.05;if(v<bv){bv=v;best=j;}}
+    return best;
+  }
+  function stepLice(dt){
+    var target=TARGETS[level];
+    lice.forEach(function(l,i){
+      if(l.state==='dock'){
+        if(deployed){l.wait-=dt;if(l.wait<=0){l.state='go';l.s=neediest();}}
+        l.x=dock.x+Math.cos(i*2.4)*4;l.y=dock.y+Math.sin(i*1.7)*3;return;
+      }
+      var s=strands[l.s];
+      if(l.state==='go'||l.state==='home'){
+        var tx,ty;
+        if(l.state==='go'){if(l.land==null)l.land=Math.random()*0.6;var r=pointOn(s,l.land);tx=r.x;ty=r.y;} else {tx=dock.x;ty=dock.y;}
+        var dx=tx-l.x,dy=ty-l.y,d=Math.sqrt(dx*dx+dy*dy)||1,sp=(reduced?90:240)*(0.8+0.4*Math.sin(i));
+        l.ang=Math.atan2(dy,dx);
+        if(d<sp*dt){l.x=tx;l.y=ty;if(l.state==='go'){l.state='work';l.t=l.land;l.land=null;l.dir=1;l.load=1;} else {l.state='dock';l.wait=0.2;}}
+        else {l.x+=dx/d*sp*dt;l.y+=dy/d*sp*dt;}
+        return;
+      }
+      // working: crawl root → tip, oiling as it goes, then pick another strand
+      var speed=(reduced?0.12:0.32)*(0.8+0.4*((i*37)%10)/10);
+      l.t+=speed*dt*l.dir;
+      var p=pointOn(s,Math.max(0,Math.min(1,l.t)));
+      l.x=p.x;l.y=p.y;l.ang=p.ang+(l.dir<0?Math.PI:0);
+      if(s.oil<target){s.oil=Math.min(1,s.oil+dt*0.24*l.load);if(Math.random()<dt*7)drops.push({x:l.x,y:l.y,vx:(Math.random()-.5)*20,vy:-10-Math.random()*20,life:1});}
+      if(l.t>=1){
+        if(!deployed){l.state='home';return;}
+        l.s=neediest();
+        if(strands[l.s].oil>=target){
+          // everything is at level; idle-patrol a random strand
+          l.s=Math.floor(Math.random()*strands.length);
+        }
+        l.state='go';
+      }
+    });
+    if(!deployed){lice.forEach(function(l){if(l.state==='go'||l.state==='work')l.state='home';});}
+  }
+
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    // backdrop
+    var bg=ctx.createRadialGradient(W*0.5,H*0.4,10,W*0.5,H*0.5,W*0.7);
+    bg.addColorStop(0,'#1d2142');bg.addColorStop(1,'#0d1020');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    // shoulders + neck (back view)
+    ctx.fillStyle='#232742';
+    ctx.beginPath();ctx.moveTo(W*0.06,H);ctx.quadraticCurveTo(W*0.1,H*0.8,W*0.36,H*0.76);ctx.lineTo(W*0.64,H*0.76);ctx.quadraticCurveTo(W*0.9,H*0.8,W*0.94,H);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#c99a7a';ctx.fillRect(head.x-head.r*0.36,head.y+head.r*0.6,head.r*0.72,H*0.2);
+    // head
+    var hg=ctx.createRadialGradient(head.x-head.r*0.3,head.y-head.r*0.4,head.r*0.1,head.x,head.y,head.r*1.05);
+    hg.addColorStop(0,'#3a2a20');hg.addColorStop(1,'#1c130e');
+    ctx.fillStyle=hg;ctx.beginPath();ctx.arc(head.x,head.y,head.r,0,Math.PI*2);ctx.fill();
+    // ears
+    ctx.fillStyle='#b98a6c';
+    [-1,1].forEach(function(s){ctx.beginPath();ctx.ellipse(head.x+s*head.r*0.98,head.y+head.r*0.12,head.r*0.1,head.r*0.18,0,0,Math.PI*2);ctx.fill();});
+    // strands: back to front by root angle
+    ctx.lineCap='round';
+    for(var i=0;i<strands.length;i++){
+      var s=strands[i],p=s.pts,o=s.oil,dry=1-o;
+      var base=[lerp(122,58,o),lerp(92,38,o),lerp(66,22,o)];
+      ctx.strokeStyle='rgb('+Math.round(base[0]+s.hue)+','+Math.round(base[1])+','+Math.round(base[2])+')';
+      ctx.lineWidth=lerp(1.2,2.1,o);
+      ctx.beginPath();ctx.moveTo(p[0].x,p[0].y);
+      for(var k=1;k<p.length-1;k++){
+        var jx=dry*dry*Math.sin(s.frizz+k*2.1+t*0.6)*k*0.22,jy=dry*dry*Math.cos(s.frizz*1.3+k*1.7)*k*0.16;
+        var mx=(p[k].x+p[k+1].x)/2,my=(p[k].y+p[k+1].y)/2;
+        ctx.quadraticCurveTo(p[k].x+jx,p[k].y+jy,mx,my);
+      }
+      ctx.stroke();
+      // split ends when dry
+      if(dry>0.6){var e=p[p.length-1],e2=p[p.length-2];ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(e2.x,e2.y);ctx.lineTo(e.x+6*dry,e.y+3);ctx.moveTo(e2.x,e2.y);ctx.lineTo(e.x-6*dry,e.y+2);ctx.stroke();}
+      // the shine: a moving highlight that appears as the strand is oiled
+      if(o>0.25){
+        var band=(Math.sin(t*0.8+i*0.15)*0.5+0.5)*0.5+0.12;
+        ctx.strokeStyle='rgba(255,246,226,'+(0.42*(o-0.25)/0.75)+')';ctx.lineWidth=lerp(0.5,1.1,o);
+        ctx.beginPath();
+        var a0=Math.floor(band*(p.length-2)),a1=Math.min(p.length-1,a0+3+Math.round(o*3));
+        ctx.moveTo(p[a0].x+0.8,p[a0].y);for(var k4=a0+1;k4<=a1;k4++)ctx.lineTo(p[k4].x+0.8,p[k4].y);ctx.stroke();
+      }
+    }
+    // oil drops
+    drops=drops.filter(function(d){return d.life>0;});
+    drops.forEach(function(d){
+      ctx.fillStyle='rgba(233,185,73,'+(0.85*d.life)+')';ctx.beginPath();ctx.arc(d.x,d.y,1.6+d.life,0,Math.PI*2);ctx.fill();
+    });
+    // the Hive Comb
+    ctx.save();ctx.translate(dock.x,dock.y);
+    ctx.fillStyle='#6b4a2b';roundRect(-W*0.075,-9,W*0.15,14,5);ctx.fill();
+    ctx.fillStyle='#8a6238';for(var c=0;c<11;c++){ctx.fillRect(-W*0.07+c*W*0.0135,4,3,12);}
+    ctx.fillStyle=deployed?'#2EE9A5':'#7B4FFF';ctx.beginPath();ctx.arc(W*0.06,-2,3,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(237,237,247,.75)';ctx.font='600 10px "JetBrains Mono", monospace';ctx.textAlign='center';ctx.fillText('HIVE COMB',0,-14);
+    ctx.restore();
+    // lice
+    lice.forEach(function(l,i){
+      if(l.state==='dock')return;
+      ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.ang||0);
+      var sc=Math.max(0.8,Math.min(W,H)/420),leg=Math.sin(t*22+i)*1.2;
+      ctx.scale(sc,sc);
+      ctx.strokeStyle='#9aa0aa';ctx.lineWidth=0.9;
+      for(var q=-1;q<=1;q++){ctx.beginPath();ctx.moveTo(q*2,0);ctx.lineTo(q*2+leg*(q===0?-1:1),-4.5);ctx.moveTo(q*2,0);ctx.lineTo(q*2-leg*(q===0?-1:1),4.5);ctx.stroke();}
+      var bgd=ctx.createLinearGradient(-4,-3,4,3);bgd.addColorStop(0,'#e4e7ee');bgd.addColorStop(1,'#7d8390');
+      ctx.fillStyle=bgd;ctx.beginPath();ctx.ellipse(0,0,4.6,3,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#2EE9A5';ctx.beginPath();ctx.arc(3.6,0,1.15,0,Math.PI*2);ctx.fill();
+      if(l.state==='work'&&strands[l.s].oil<TARGETS[level]){ctx.fillStyle='rgba(233,185,73,.95)';ctx.beginPath();ctx.arc(-3.5,0,1.1,0,Math.PI*2);ctx.fill();}
+      ctx.restore();
+    });
+    // cursor comb hint
+    if(mouse.on){ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(mouse.x,mouse.y,46,0,Math.PI*2);ctx.stroke();}
+  }
+  function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+  // UI
+  var shineV=document.getElementById('shineV'),shineB=document.getElementById('shineB'),liceV=document.getElementById('liceV'),liceB=document.getElementById('liceB');
+  var liveTxt=document.getElementById('liveTxt'),note=document.getElementById('simnote'),btn=document.getElementById('deploy');
+  var NOTES={
+    deploy:'Swarm deployed. 1,200 Follicle Associates are on your head. They are very polite about it.',
+    recall:'Swarm recalled. The associates are returning to the Hive Comb. Most of them.',
+    done:['Target reached: Dry. The swarm respects your choice. It does not understand it.','Target reached: Conditioned. Respectable. Not Vincenzo.','Target reached: Glossy. Visible from across a restaurant.','Target reached: Vincenzo. Vincenzo has been notified. He was not surprised.']
+  };
+  var reachedShown=-1;
+  function ui(){
+    var avg=strands.reduce(function(a,s){return a+s.oil;},0)/strands.length;
+    var shine=Math.round(Math.max(0,(avg-0.04)/0.96)*100);
+    shineV.textContent=shine+'%';shineB.style.width=shine+'%';
+    var out=lice.filter(function(l){return l.state!=='dock';}).length*PER;
+    liceV.textContent=out.toLocaleString('en-US');liceB.style.width=(out/1200*100)+'%';
+    liveTxt.textContent=deployed?(out<1200?'Deploying':'Swarm active'):(out>0?'Returning':'Swarm docked');
+    if(deployed&&avg>=TARGETS[level]-0.04&&reachedShown!==level){reachedShown=level;note.textContent=NOTES.done[level];}
+  }
+  function setDeployed(on){
+    deployed=on;btn.textContent=on?'Recall swarm':'Deploy swarm';
+    if(on)lice.forEach(function(l,i){if(l.state==='dock')l.wait=i*0.05;});
+    note.textContent=on?NOTES.deploy:NOTES.recall;reachedShown=-1;
+  }
+  btn.addEventListener('click',function(){setDeployed(!deployed);});
+  document.querySelectorAll('.levels button').forEach(function(b){
+    b.addEventListener('click',function(){
+      level=+b.dataset.lv;reachedShown=-1;
+      document.querySelectorAll('.levels button').forEach(function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);});
+      // going down a level: the swarm can't remove oil, but your hair dries over time
+      note.textContent=level===3?'Vincenzo setting selected. This is the setting that matches Vincenzo.':(NAMES[level]+' selected.'+(deployed?'':' Deploy the swarm to begin.'));
+    });
+  });
+  function pt(e){var r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
+  cv.addEventListener('pointermove',function(e){var p=pt(e);if(!mouse.on){mouse.px=p.x;mouse.py=p.y;}mouse.x=p.x;mouse.y=p.y;mouse.on=true;});
+  cv.addEventListener('pointerleave',function(){mouse.on=false;});
+  cv.addEventListener('pointerdown',function(e){var p=pt(e);mouse.x=mouse.px=p.x;mouse.y=mouse.py=p.y;mouse.on=true;});
+  cv.addEventListener('pointerup',function(e){if(e.pointerType!=='mouse')mouse.on=false;});
+
+  var last=performance.now(),acc=0,visible=true,running=false;
+  function loop(now){
+    if(!visible){running=false;return;}
+    requestAnimationFrame(loop);
+    var dt=Math.min(0.05,(now-last)/1000);last=now;
+    acc+=dt;var STEP=1/60,n=0;
+    while(acc>=STEP&&n<4){stepPhysics(STEP);stepLice(STEP);acc-=STEP;n++;}
+    if(n===4)acc=0;
+    drops.forEach(function(d){d.life-=dt*1.4;d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=160*dt;});
+    draw(now/1000);ui();
+  }
+  function start(){if(running)return;running=true;last=performance.now();requestAnimationFrame(loop);}
+  new IntersectionObserver(function(es){visible=es[0].isIntersecting;if(visible)start();}).observe(cv);
+  if('ResizeObserver' in window)new ResizeObserver(function(){size();}).observe(cv); else window.addEventListener('resize',size);
+  size();
+  // let the hair settle before anyone sees it
+  for(var i=0;i<90;i++)stepPhysics(1/60);
+  start();
+  // start with a demonstration
+  setTimeout(function(){if(!deployed)setDeployed(true);},1200);
+
+  // pre-orders
+  var ED_MSG={'Standard':'Pre-order received for the <b>Standard</b> edition. Your 1,200 associates are being briefed.','Vincenzo Edition':'Pre-order received for the <b>Vincenzo Edition</b>. Vincenzo has been told. He has asked why.'};
+  document.querySelectorAll('[data-ed]').forEach(function(b){b.addEventListener('click',function(){document.getElementById('ordermsg').innerHTML=ED_MSG[b.dataset.ed]+' Delivery date: Pending.';});});
+})();
+</script>
+</body>
+</html>
