@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hive</title>
+<meta name="description" content="Hive, the companion app for the Oddly Hair Lubricator. 1,200 Follicle Associates, one screen.">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://www.oddly-inc.com/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A14;--bg2:#0D1020;--card:#141831;--card2:#1b2040;--line:#262b4d;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;
+  --mint:#2EE9A5;--purple:#7B4FFF;--amber:#F5A623;--red:#FF4D5E;--acc:#E9B949;--accInk:#1a1200}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(900px 600px at 20% 10%,rgba(123,79,255,.16),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(233,185,73,.12),transparent 60%),#05060d;
+  color:var(--text);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+.site{position:fixed;left:18px;top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(8,10,20,.6)}
+.site:hover{color:var(--text);border-color:var(--acc)}
+.device{width:390px;height:min(844px,calc(100vh - 32px));border-radius:54px;background:var(--bg);border:2px solid #2a3058;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px #0e1226,0 0 0 8px #2a3058;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#000;z-index:20}
+.sb{height:50px;padding:16px 30px 0;display:flex;justify-content:space-between;font-weight:600;font-size:14px;flex:none}
+.sb .r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);padding-top:2px}
+@media(max-width:520px){body{display:block;background:var(--bg)}.site{display:none}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}.island{display:none}.sb{height:calc(30px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 20px 0}}
+.hdr{padding:6px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.hdr h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:var(--acc);color:var(--accInk);white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.view{display:none;padding:2px 16px 26px}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabs{flex:none;display:grid;border-top:1px solid var(--line);background:rgba(8,10,20,.94);padding:6px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs button{background:none;border:none;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:6px 0;cursor:pointer;transition:color .2s}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.acc{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 14%,var(--card)),var(--card))}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.big{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)} .small{font-size:12.5px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .card{margin-bottom:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--acc);color:var(--accInk);border:none;border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)} .btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:#2a2f52;border-radius:999px;transition:background .2s;cursor:pointer}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--acc)} .sw input:checked+i::after{transform:translateX(20px)}
+.sw input:disabled+i{opacity:.5;cursor:not-allowed}
+.sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set b{font-weight:600;font-size:14.5px;display:block}
+.set small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.seg{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:none;border:none;border-left:1px solid var(--line);padding:10px 4px;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button.on{background:var(--acc);color:var(--accInk)}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.list li:last-child{border-bottom:none}
+.list li span{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.list li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint)}
+.list li.new{animation:pop .5s ease}
+@keyframes pop{from{background:color-mix(in srgb,var(--acc) 25%,transparent)}to{background:transparent}}
+.toast{position:absolute;left:14px;right:14px;bottom:92px;background:rgba(20,24,49,.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:13.5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:30;backdrop-filter:blur(8px)}
+.toast.on{transform:none;opacity:1}
+.toast b{color:var(--acc)}
+.sheet{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(5,6,13,.92);backdrop-filter:blur(6px)}
+.sheet.on{display:flex;animation:fade .2s}
+.about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
+.about a{color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+#head{width:100%;aspect-ratio:1/1;display:block}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:4px 0 12px}
+.levels button{background:none;border:none;border-left:1px solid var(--line);padding:10px 2px;font-size:11.5px;font-weight:600;color:var(--dim);cursor:pointer}
+.levels button:first-child{border-left:none}
+.levels button.on{background:var(--acc);color:var(--accInk)}
+.bar{height:7px;border-radius:7px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a07a2c,var(--acc),#fff3c4);transition:width .3s}
+.zones .z{margin-bottom:12px}
+.zones .row b{font-size:14px}
+.ra{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:8px}
+.ra i{aspect-ratio:1;border-radius:4px;background:var(--acc);opacity:.85}
+.ra i.out{background:#3b406a;opacity:1}
+.ra i.miss{background:var(--red)}
+
+.tabs{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<a class="site" href="https://www.oddly-inc.com/hair-lubricator.html">&larr; Oddly Hair Lubricator on oddly-inc.com</a>
+<div class="device" role="application" aria-label="Hive">
+  <div class="island" aria-hidden="true"></div>
+  <div class="sb"><span id="clk">9:41</span><span class="r">oNet · 88%</span></div>
+  <header class="hdr"><div><h1>Hive</h1><div class="sub">ODDLY HAIR LUBRICATOR</div></div><span class="chip" id="lvChip">Vincenzo</span></header>
+  <main class="main">
+
+<section class="view on" id="v-swarm">
+  <div class="card acc" style="padding:8px"><canvas id="head" aria-label="Top-down view of a scalp with the swarm working"></canvas></div>
+  <div class="levels" id="levels"><button data-l="0">Dry</button><button data-l="1">Conditioned</button><button data-l="2">Glossy</button><button data-l="3" class="on">Vincenzo</button></div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="card"><div class="k">Shine</div><div class="big" id="shine" style="font-size:24px">4%</div><div class="bar"><i id="shineB"></i></div></div>
+    <div class="card"><div class="k">Deployed</div><div class="big" id="dep" style="font-size:24px">0</div><div class="bar"><i id="depB"></i></div></div>
+  </div>
+  <button class="btn" id="deploy">Deploy swarm</button>
+  <p class="about" id="note">The swarm is docked in the Hive Comb. They are ready. They are always ready.</p>
+</section>
+
+<section class="view" id="v-map">
+  <div class="card zones" id="zones"></div>
+  <div class="card"><div class="row"><span class="k">Oil reservoir</span><span class="mono" id="oilV">100%</span></div><div class="bar"><i id="oilB" style="width:100%"></i></div><p class="small dim" style="margin-top:8px">Cold-pressed, extra virgin. Vincenzo's supplier.</p></div>
+</section>
+
+<section class="view" id="v-roll">
+  <div class="card acc"><div class="row"><span class="k">Follicle Associates</span><span class="mono" id="rcount">1,200 / 1,200</span></div>
+    <div class="ra" id="ra" aria-label="Each square is 20 associates"></div>
+    <p class="small dim" style="margin-top:10px" id="rnote">All associates accounted for. Each square is 20 associates.</p></div>
+  <button class="btn ghost" id="recount">Take roll call</button>
+  <p class="about">Associates that do not return to the Hive Comb are considered loyal, and remain the property of Oddly, Inc.</p>
+</section>
+
+<section class="view" id="v-settings">
+  <div class="card">
+    <label class="set"><span><b>Return to Hive Comb at target</b><small>Most of them.</small></span><span class="sw"><input type="checkbox" checked id="ret"><i></i></span></label>
+    <label class="set"><span><b>Avoid eyebrows</b><small>Recommended. Not guaranteed.</small></span><span class="sw"><input type="checkbox" checked><i></i></span></label>
+    <label class="set"><span><b>Allow transfer to other heads</b><small>Requires a valid Oddly account on the other head.</small></span><span class="sw"><input type="checkbox" disabled><i></i></span></label>
+    <div class="set"><span><b>Vincenzo calibration</b><small>Measured on a Tuesday. He was not informed.</small></span><span class="chip ghost">v1</span></div>
+  </div>
+  <p class="about">Hive 1.0 · Oddly Hair Lubricator<br>Robotic lice are not lice. Certification: Pending.<br><a href="https://www.oddly-inc.com/hair-lubricator.html">oddly-inc.com/hair-lubricator.html</a></p>
+</section>
+
+  </main>
+  <nav class="tabs" role="tablist"><button data-t="swarm" role="tab" aria-selected="true" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="8" r="2"/><circle cx="16" cy="6" r="2"/><circle cx="12" cy="14" r="2"/><circle cx="18" cy="16" r="2"/><circle cx="6" cy="18" r="2"/></svg>Swarm</button><button data-t="map" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c5 0 8 4 8 9s-3 9-8 9-8-4-8-9 3-9 8-9z"/><path d="M12 3v18M4 12h16"/></svg>Scalp Map</button><button data-t="roll" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>Roll Call</button><button data-t="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Settings</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function clock(){const d=new Date();$('#clk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clock,15000);})();
+function showTab(id){$$('.tabs button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id));$('.main').scrollTop=0;if(window.onTab)onTab(id);}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.t)));
+let toastT;function toast(html,ms){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+function addLog(ul,title,text,when){const li=document.createElement('li');li.className='new';li.innerHTML='<b></b><i></i><span></span>';li.children[0].textContent=title;li.children[1].textContent=when||'Now';li.children[2].textContent=text;ul.insertBefore(li,ul.firstChild);while(ul.children.length>30)ul.removeChild(ul.lastChild);}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+</script>
+<script>
+
+const TARGET=[.06,.4,.72,1],NAMES=['Dry','Conditioned','Glossy','Vincenzo'];
+const ZN=[['Crown',0],['Left side',0],['Right side',0],['Fringe',0],['Nape',0]];
+let level=3,deployed=false,oil=100,missing=0,reached=-1;
+const zoil=[.05,.05,.05,.05,.05];
+const cv=$('#head'),g=cv.getContext('2d');let W=0,D=1;
+function size(){const r=cv.getBoundingClientRect();D=Math.min(2,devicePixelRatio||1);W=r.width;cv.width=W*D;cv.height=W*D;g.setTransform(D,0,0,D,0,0);}
+new ResizeObserver(size).observe(cv);
+// zone centers (top-down head, nose up)
+const ZC=[[.5,.45],[.27,.52],[.73,.52],[.5,.22],[.5,.78]];
+const lice=Array.from({length:60},(_,i)=>({x:.5,y:1.05,z:i%5,tx:.5,ty:1.05,ph:Math.random()*6,state:'dock',w:i*.05}));
+function zoneOf(i){return i;}
+function avg(){return zoil.reduce((a,b)=>a+b,0)/5;}
+function setLevel(l){level=l;reached=-1;$$('#levels button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l));$('#lvChip').textContent=NAMES[l];}
+$$('#levels button').forEach(b=>b.addEventListener('click',()=>{setLevel(+b.dataset.l);toast(NAMES[level]+' selected.'+(level===3?' <b>This is the setting that matches Vincenzo.</b>':''));}));
+$('#deploy').addEventListener('click',()=>{deployed=!deployed;$('#deploy').textContent=deployed?'Recall swarm':'Deploy swarm';
+  lice.forEach((l,i)=>{l.w=i*.04;});$('#note').textContent=deployed?'1,200 Follicle Associates are on your head. They are very polite about it.':'Recalled. The associates are returning to the Hive Comb. Most of them.';
+  if(!deployed)setTimeout(()=>{missing+=Math.floor(Math.random()*3);rollCall();},4000);});
+function rollCall(){const ra=$('#ra');let h='';const out=lice.filter(l=>l.state!=='dock').length;
+  for(let i=0;i<60;i++)h+='<i class="'+(i<missing?'miss':i<missing+out?'out':'')+'"></i>';ra.innerHTML=h;
+  const n=1200-missing*20;$('#rcount').textContent=n.toLocaleString('en-US')+' / 1,200';
+  $('#rnote').textContent=missing?missing*20+' associates did not return. They are considered loyal, and are now your resident team.':(out?out*20+' associates are on your head. The rest are in the Hive Comb.':'All associates accounted for. Each square is 20 associates.');}
+$('#recount').addEventListener('click',()=>{rollCall();toast(missing?'<b>'+missing*20+'</b> associates are unaccounted for. Locally.':'Roll call complete. <b>All present.</b>');});
+function zones(){$('#zones').innerHTML=ZN.map((z,i)=>'<div class="z"><div class="row"><b>'+z[0]+'</b><span class="mono">'+Math.round(zoil[i]*100)+'%</span></div><div class="bar"><i style="width:'+Math.round(zoil[i]*100)+'%"></i></div></div>').join('');}
+let last=performance.now(),zt=0;
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;const tg=TARGET[level];
+  lice.forEach((l,i)=>{
+    if(deployed&&l.state==='dock'){l.w-=dt;if(l.w<=0){l.state='go';l.z=zoil.indexOf(Math.min(...zoil));const c=ZC[l.z];l.tx=c[0]+(Math.random()-.5)*.2;l.ty=c[1]+(Math.random()-.5)*.14;}}
+    if(!deployed&&l.state!=='dock'){l.state='home';l.tx=.5+(Math.random()-.5)*.1;l.ty=1.05;}
+    const dx=l.tx-l.x,dy=l.ty-l.y,d=Math.hypot(dx,dy),sp=REDUCED?.25:.45;
+    if(d>.01){l.x+=dx/d*Math.min(d,sp*dt);l.y+=dy/d*Math.min(d,sp*dt);l.a=Math.atan2(dy,dx);}
+    else if(l.state==='go'||l.state==='work'){l.state='work';if(zoil[l.z]<tg&&oil>0){zoil[l.z]=Math.min(1,zoil[l.z]+dt*.012);oil=Math.max(0,oil-dt*.05);}
+      if(Math.random()<dt*.8){l.z=zoil[l.z]>=tg?zoil.indexOf(Math.min(...zoil)):l.z;const c=ZC[l.z];l.tx=c[0]+(Math.random()-.5)*.22;l.ty=c[1]+(Math.random()-.5)*.16;}}
+    else if(l.state==='home'&&d<=.01)l.state='dock';
+  });
+  zoil.forEach((v,i)=>zoil[i]=Math.max(.04,v-dt*.0015));
+  const a=avg(),sh=Math.round(Math.max(0,(a-.04)/.96)*100),out=lice.filter(l=>l.state!=='dock').length;
+  $('#shine').textContent=sh+'%';$('#shineB').style.width=sh+'%';$('#dep').textContent=(out*20).toLocaleString('en-US');$('#depB').style.width=(out/60*100)+'%';
+  $('#oilV').textContent=Math.round(oil)+'%';$('#oilB').style.width=oil+'%';
+  if(deployed&&a>=tg-.03&&reached!==level){reached=level;toast(['Target reached: Dry.','Target reached: <b>Conditioned</b>. Respectable. Not Vincenzo.','Target reached: <b>Glossy</b>. Visible from across a restaurant.','Target reached: <b>Vincenzo</b>. Vincenzo has been notified. He was not surprised.'][level],3400);
+    if($('#ret').checked){deployed=false;$('#deploy').textContent='Deploy swarm';setTimeout(()=>{missing+=1+Math.floor(Math.random()*2);rollCall();},4000);}}
+  zt+=dt;if(zt>.4){zt=0;if($('#v-map').classList.contains('on'))zones();}
+  draw(now/1000);requestAnimationFrame(loop);}
+function draw(t){if(!W)return;g.clearRect(0,0,W,W);const cx=W/2,cy=W*.5,R=W*.38;
+  // shoulders hint and head (top-down)
+  g.fillStyle='#1b2040';g.beginPath();g.ellipse(cx,W*.92,W*.48,W*.14,0,0,7);g.fill();
+  g.fillStyle='#c99a7a';g.beginPath();g.ellipse(cx-R*1.02,cy+R*.05,R*.1,R*.2,0,0,7);g.ellipse(cx+R*1.02,cy+R*.05,R*.1,R*.2,0,0,7);g.fill();
+  g.fillStyle='#c99a7a';g.beginPath();g.moveTo(cx-R*.12,cy-R*1.02);g.lineTo(cx,cy-R*1.16);g.lineTo(cx+R*.12,cy-R*1.02);g.fill();
+  // hair, colored per zone by oil
+  for(let i=0;i<5;i++){}
+  const hg=g.createRadialGradient(cx,cy-R*.1,R*.1,cx,cy,R);hg.addColorStop(0,'#5a4030');hg.addColorStop(1,'#3a281c');g.fillStyle=hg;g.beginPath();g.ellipse(cx,cy,R*.92,R,0,0,7);g.fill();
+  // strands radiating from the crown whorl
+  g.lineCap='round';
+  for(let k=0;k<220;k++){const a=k/220*Math.PI*2+Math.sin(k)*.05,r0=R*.06,r1=R*(.86+.1*Math.sin(k*3.1));
+    const x1=cx+Math.cos(a)*r1*.92,y1=cy+Math.sin(a)*r1;
+    const zx=(x1-cx)/W+.5,zy=(y1-cy)/W+.5;let zi=0,bd=9;ZC.forEach((c,i)=>{const d=Math.hypot(c[0]-zx,c[1]-zy);if(d<bd){bd=d;zi=i;}});
+    const o=zoil[zi],dry=1-o;
+    g.strokeStyle='rgb('+Math.round(150-90*o)+','+Math.round(112-72*o)+','+Math.round(80-58*o)+')';g.lineWidth=1.2+o;
+    g.beginPath();g.moveTo(cx+Math.cos(a)*r0,cy-R*.1+Math.sin(a)*r0);g.quadraticCurveTo(cx+Math.cos(a+.25*dry*Math.sin(k))*r1*.55,cy+Math.sin(a+.2)*r1*.55,x1,y1);g.stroke();
+    if(o>.3&&k%3===0){g.strokeStyle='rgba(255,240,200,'+(.35*(o-.3))+')';g.lineWidth=1;g.beginPath();g.moveTo(cx+Math.cos(a)*r1*.45,cy+Math.sin(a)*r1*.45);g.lineTo(cx+Math.cos(a)*r1*.62,cy+Math.sin(a)*r1*.62);g.stroke();}}
+  // hive comb
+  g.fillStyle='#6b4a2b';g.beginPath();g.roundRect(cx-W*.12,W*.94,W*.24,W*.035,4);g.fill();
+  // lice
+  lice.forEach((l,i)=>{if(l.state==='dock')return;g.save();g.translate(l.x*W,l.y*W);g.rotate((l.a||0)+Math.sin(t*12+i)*.15);
+    g.strokeStyle='#9aa0aa';g.lineWidth=.8;const lg=Math.sin(t*20+i)*1.1;for(let q=-1;q<=1;q++){g.beginPath();g.moveTo(q*2,0);g.lineTo(q*2+lg,-4);g.moveTo(q*2,0);g.lineTo(q*2-lg,4);g.stroke();}
+    g.fillStyle='#dfe3ea';g.beginPath();g.ellipse(0,0,4.2,2.7,0,0,7);g.fill();g.fillStyle='#2EE9A5';g.beginPath();g.arc(3.2,0,1,0,7);g.fill();g.restore();});
+  g.fillStyle='rgba(237,237,247,.6)';g.font='600 10px JetBrains Mono, monospace';g.textAlign='center';g.fillText('HIVE COMB',cx,W*.925);g.fillText('FRONT',cx,W*.045);}
+zones();rollCall();requestAnimationFrame(loop);
+setTimeout(()=>{if(!deployed)$('#deploy').click();},1200);
+
+</script>
+</body>
+</html>
