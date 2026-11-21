@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly NukeMow™</title>
+<meta name="description" content="The last mow you will ever need. When your grass reaches 4 inches, Oddly NukeMow™ launches from the nearest bunker and mows it. Independently invented by Oddly, Inc. Certification: Pending.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --line:#242849; --line2:#323865;
+    --text:#EDEDF7; --dim:#9A9EC0; --faint:#666B92;
+    --purple:#7B4FFF; --mint:#2EE9A5; --amber:#F5A623; --haz:#FFD23F; --red:#FF4D5E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--haz);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:660px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--haz);color:#1a1400;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,210,63,.3)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+  .btn.ghost:hover{border-color:var(--haz);box-shadow:none}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+
+  .hero{padding:64px 0 70px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(720px 420px at 76% 40%,rgba(255,210,63,.11),transparent 70%),radial-gradient(600px 340px at 5% 0%,rgba(123,79,255,.12),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:940px){.hero .wrap{grid-template-columns:1fr}}
+  .badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  .badge.haz{border-style:solid;border-color:rgba(255,210,63,.5);color:var(--haz)}
+  .badge.haz i{background:var(--haz)}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(52px,8vw,96px)}
+  .hero h1 em{font-style:italic;color:var(--haz);font-weight:600}
+  .hero h1 sup{font-size:.3em;vertical-align:top;position:relative;top:.4em;color:var(--dim);font-family:'JetBrains Mono',monospace;font-weight:400}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:520px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* simulator */
+  .sim{background:linear-gradient(180deg,#14172e,#0d1020);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+  .simhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px 0}
+  .simhead .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .status{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mint)}
+  .status i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.2s infinite}
+  .status.warn{color:var(--haz)}
+  .status.red{color:var(--red)}
+  #lawn{display:block;width:100%;aspect-ratio:16/10}
+  .controls{padding:0 16px 16px}
+  .meters{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+  .meter{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+  .meter .k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .meter .v{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  #mow{min-width:132px}
+  .radius button{white-space:nowrap}
+  .radius{display:inline-flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden;flex:1;min-width:200px}
+  .radius button{flex:1;background:transparent;border:none;border-left:1px solid var(--line2);color:var(--dim);padding:9px 6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;cursor:pointer;transition:background .2s,color .2s}
+  .radius button:first-child{border-left:none}
+  .radius button.on{background:var(--text);color:var(--bg);font-weight:600}
+  .auto{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);cursor:pointer;user-select:none}
+  .auto input{accent-color:var(--haz);width:16px;height:16px}
+  .simnote{font-size:13px;color:var(--dim);margin-top:10px;min-height:40px}
+
+  .ticker{background:repeating-linear-gradient(-45deg,var(--haz) 0 18px,#1a1400 18px 36px);color:#1a1400;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;padding:0}
+  .ticker div{background:var(--haz);margin:6px 0;padding:6px 0}
+  .ticker span{display:inline-block;animation:tick 40s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+
+  .origin{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
+  @media(max-width:900px){.origin{grid-template-columns:1fr}}
+  .origin p{color:var(--dim);font-size:17px;margin-bottom:16px}
+  .origin p b{color:var(--text);font-weight:600}
+  .pull{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:600;line-height:1.25;border-left:3px solid var(--haz);padding-left:20px;margin:6px 0 18px}
+  .pull cite{display:block;font-family:'JetBrains Mono',monospace;font-style:normal;font-size:12px;color:var(--dim);margin-top:12px;font-weight:400}
+  .memo{background:#f4efe2;color:#1d1a14;border-radius:6px;padding:26px 26px 70px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;box-shadow:0 20px 50px rgba(0,0,0,.45);transform:rotate(-1.2deg);position:relative}
+  .memo h3{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.14em;margin-bottom:14px;border-bottom:1px solid #1d1a14;padding-bottom:8px}
+  .memo .redact{background:#1d1a14;color:#1d1a14;border-radius:2px;padding:0 3px;user-select:none}
+  .memo .stamp{position:absolute;right:18px;bottom:16px;transform:rotate(-12deg);border:3px solid #b3261e;color:#b3261e;font-weight:700;padding:4px 10px;letter-spacing:.1em;font-size:14px;opacity:.85}
+  .memo label{display:flex;gap:8px;align-items:flex-start;margin-top:12px}
+  .memo input{accent-color:#1d1a14;margin-top:3px}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;transition:border-color .2s,transform .2s}
+  .step:hover{border-color:var(--haz);transform:translateY(-3px)}
+  .step .n{font-family:'JetBrains Mono',monospace;color:var(--haz);font-size:13px}
+  .step h3{font-size:22px;margin:10px 0 8px}
+  .step p{color:var(--dim);font-size:15px}
+
+  .cmp{width:100%;border-collapse:collapse;margin-top:36px;font-size:15px}
+  .cmp th,.cmp td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .cmp th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:400}
+  .cmp td:first-child{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);width:24%}
+  .cmp td:nth-child(2){color:var(--dim)}
+  .cmp td:nth-child(3){color:var(--haz);font-weight:500}
+  @media(max-width:620px){.cmp th:first-child,.cmp td:first-child{display:none}}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:860px){.two{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel h3{font-size:24px;margin-bottom:10px}
+  .specs{list-style:none}
+  .specs li{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .specs li:last-child{border-bottom:none}
+  .specs span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .specs span:last-child{text-align:right}
+  details{border-bottom:1px dashed var(--line);padding:12px 0}
+  details:last-child{border-bottom:none}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--haz)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15px;margin-top:8px}
+
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:760px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:14px;padding:24px}
+  .qc.cfo{border-left-color:var(--mint)}
+  .qc p{font-family:'Fraunces',serif;font-size:21px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--purple);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--mint)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.plans{grid-template-columns:1fr}}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column}
+  .plan.best{border-color:var(--haz);box-shadow:0 0 0 1px rgba(255,210,63,.2) inset}
+  .plan .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .plan.best .tag{color:var(--haz)}
+  .plan h3{font-size:26px;margin:8px 0 2px}
+  .plan .price{font-family:'Fraunces',serif;font-size:36px;font-weight:800;margin:8px 0 2px}
+  .plan .per{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);margin-bottom:14px}
+  .plan ul{list-style:none;margin-bottom:20px}
+  .plan li{color:var(--dim);font-size:15px;padding:6px 0;display:flex;gap:10px}
+  .plan li::before{content:"✓";color:var(--haz);font-weight:700}
+  .plan .btn{margin-top:auto}
+  .ordermsg{margin-top:16px;font-size:14px;color:var(--dim);min-height:22px;text-align:center}
+  .ordermsg b{color:var(--haz)}
+
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:920px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--haz)}
+
+  @media(max-width:520px){
+    .wrap{padding:0 16px}
+    section{padding:64px 0}
+    .hero p{font-size:17px}
+    .meters{grid-template-columns:1fr 1fr}
+    .meters .meter:last-child{grid-column:1/-1}
+    .radius{flex:1 1 100%;min-width:0}
+    #mow{flex:1}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ticker span,.badge i,.status i{animation:none}
+    .js [data-r]{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Oddly NukeMow home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly NukeMow&trade;
+  </a>
+  <nav class="nav"><a href="#origin">Origin</a><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#plans">Plans</a></nav>
+  <a class="btn" href="#plans">Subscribe</a>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badges">
+      <div class="badge haz"><i></i>Auto-launch armed</div>
+      <div class="badge"><i></i>Certification: Pending</div>
+    </div>
+    <h1>Oddly <em>NukeMow.</em><sup>™</sup></h1>
+    <p>Mowing takes time. Robotic mowers take less time, but still some. We looked at that and said &mdash; this can be improved. When your grass reaches four inches, NukeMow launches from the nearest bunker and mows it. Once.</p>
+    <div class="ctas">
+      <a class="btn" href="#plans">The last mow you will ever need</a>
+      <a class="btn ghost" href="#origin">Independently invented &rarr;</a>
+    </div>
+  </div>
+
+  <div class="sim" data-r>
+    <div class="simhead">
+      <span class="k">Lawn status · 1 Oddly Way</span>
+      <span class="status" id="status"><i></i><span id="statusTxt">Growing</span></span>
+    </div>
+    <canvas id="lawn" aria-label="A suburban lawn. When the grass reaches four inches, a cartoon missile launches from a bunker and mows it."></canvas>
+    <div class="controls">
+      <div class="meters">
+        <div class="meter"><div class="k">Grass height</div><div class="v" id="hV">2.10 in</div></div>
+        <div class="meter"><div class="k">Nearest bunker</div><div class="v" id="bV">0.8 mi</div></div>
+        <div class="meter"><div class="k">Next mow</div><div class="v" id="nV">—</div></div>
+      </div>
+      <div class="row">
+        <div class="radius" role="group" aria-label="Service area">
+          <button data-r2="0" class="on" aria-pressed="true">My lawn</button>
+          <button data-r2="1" aria-pressed="false">The block</button>
+          <button data-r2="2" aria-pressed="false">ZIP code</button>
+        </div>
+        <label class="auto"><input type="checkbox" id="auto" checked> Auto at 4.0 in</label>
+        <button class="btn" id="mow" type="button">Mow now</button>
+      </div>
+      <p class="simnote" id="note">Auto-launch is armed. Your lawn will be mowed when it reaches four inches. You do not need to do anything. You should not be here.</p>
+    </div>
+  </div>
+</div></header>
+
+<div class="ticker" aria-hidden="true"><div><span>THE LAST MOW YOU WILL EVER NEED &nbsp;·&nbsp; GRASS HEIGHT AFTER SERVICE: 0.000 IN &nbsp;·&nbsp; NEIGHBORING LAWNS MOWED AT NO EXTRA CHARGE &nbsp;·&nbsp; INDEPENDENTLY INVENTED BY ODDLY, INC. &nbsp;·&nbsp; HOA APPROVAL: PENDING &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; THIS IS NOT A BUG</span></div></div>
+
+<section id="origin"><div class="wrap">
+  <div class="origin">
+    <div data-r>
+      <div class="eyebrow">Origin</div>
+      <h2>Independently invented. Entirely.</h2>
+      <p>Oddly NukeMow&trade; was <b>independently invented by Oddly, Inc.</b> in the Office of the Chief Executive, by the Chief Executive, after a long and careful period of independent thought that began, coincidentally, shortly after an unrelated message arrived through <a href="/#contact">Message Stephen Stubborn, Literally</a>.</p>
+      <p>Any resemblance between NukeMow and that message is a coincidence. The sender checked the box. The box says, and has always said, <b>"I understand that Oddly, Inc. may independently invent this."</b> Oddly, Inc. did. Independently. We are very grateful to nobody in particular.</p>
+      <p class="pull">"Somebody suggested it, and I had already thought of it, the moment I read it. That is how independent invention works."<cite>— Stephen Stubborn, pronounced "Stefen Stu-Born"</cite></p>
+    </div>
+    <div data-r>
+      <div class="memo" role="img" aria-label="An internal memo with the sender's name redacted">
+        <h3>INTERNAL · RE: A MESSAGE WE DID NOT USE</h3>
+        <p>From: <span class="redact">a friend of a friend</span><br>Product: <span class="redact">auto nuke lawn</span> mower<br>Improves: grass. It is hard to cut.</p>
+        <p style="margin-top:10px">"Even if you have a robotic mower it still takes time, so <span class="redact">I created an auto nuke launcher</span> for your grass&hellip;"</p>
+        <label><input type="checkbox" checked disabled> I understand that Oddly, Inc. may independently invent this.</label>
+        <div class="stamp">INDEPENDENTLY INVENTED</div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">How it works</div>
+    <h2>Four steps. One mow.</h2>
+    <p class="lede">NukeMow replaces every mower you will ever own with a single, final mowing event. Setup takes four minutes. Mowing takes less.</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-r><div class="n">01</div><h3>Measure</h3><p>A sensor in your lawn measures the grass daily. At four inches, it decides that it is time. You are notified. The grass is not.</p></div>
+    <div class="step" data-r><div class="n">02</div><h3>Locate</h3><p>The Oddly app finds the nearest bunker. Oddly, Inc. operates a bunker near every lawn. We are not able to say where. Neither is the app.</p></div>
+    <div class="step" data-r><div class="n">03</div><h3>Launch</h3><p>NukeMow launches. Flight time is under a minute. The app plays a short, calming chime that is louder than you would expect.</p></div>
+    <div class="step" data-r><div class="n">04</div><h3>Mowed</h3><p>Your grass is now 0.000 inches. It will stay that way. Your lawn is now glass, which does not need mowing either.</p></div>
+  </div>
+</div></section>
+
+<section id="compare"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Compared</div>
+    <h2>Other mowers mow. Ours concludes.</h2>
+  </div>
+  <table class="cmp" data-r>
+    <thead><tr><th></th><th>Robotic mower</th><th>Oddly NukeMow&trade;</th></tr></thead>
+    <tbody>
+      <tr><td>Time to mow</td><td>Hours, every week</td><td>Under a minute, once</td></tr>
+      <tr><td>Grass height after</td><td>2.5 in</td><td>0.000 in</td></tr>
+      <tr><td>Mows again in</td><td>7 days</td><td>Never. It is finished.</td></tr>
+      <tr><td>Neighbors' lawns</td><td>Not included</td><td>Included, at no extra charge</td></tr>
+      <tr><td>Edging</td><td>Separate tool</td><td>Total</td></tr>
+      <tr><td>Gets stuck under the deck</td><td>Often</td><td>There is no longer a deck</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section id="specs"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Specifications</div>
+    <h2>The numbers, and the questions.</h2>
+  </div>
+  <div class="two">
+    <div class="panel" data-r>
+      <h3>Specs</h3>
+      <ul class="specs">
+        <li><span>Trigger height</span><span>4.0 in</span></li>
+        <li><span>Height after service</span><span>0.000 in</span></li>
+        <li><span>Service area</span><span>My lawn · The block · ZIP code</span></li>
+        <li><span>Difference between them</span><span>None, in practice</span></li>
+        <li><span>Nearest bunker</span><span>Under a mile. Every time.</span></li>
+        <li><span>Mows per lifetime</span><span>1</span></li>
+        <li><span>Treaty compliance</span><span style="color:var(--amber)">Pending</span></li>
+        <li><span>Certification</span><span style="color:var(--amber)">Pending</span></li>
+      </ul>
+    </div>
+    <div class="panel" data-r>
+      <h3>Questions</h3>
+      <details><summary>Where should I be when it mows?</summary><p>Elsewhere. The app will suggest a nice restaurant in another state. Reservations are recommended, because everyone in your ZIP code will also be going.</p></details>
+      <details><summary>Will it mow my neighbor's lawn?</summary><p>Yes. Neighboring lawns are mowed at no extra charge. Your neighbors may not have asked for this. That is why it is free.</p></details>
+      <details><summary>Can I choose "My lawn" only?</summary><p>You can choose it. It is the first option. The results are the same as the other two options. We offer the choice because people like choices.</p></details>
+      <details><summary>What about my flower beds?</summary><p>Your flower beds will be mowed too. Everything will be mowed. That is what we mean by premium edging.</p></details>
+      <details><summary>Is NukeMow legal?</summary><p>Legal review is pending. It has been pending for some time. This is fine.</p></details>
+    </div>
+  </div>
+</div></section>
+
+<section id="leadership"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Leadership</div>
+    <h2>From the people who decided.</h2>
+  </div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"People asked if a nuclear mower was too much. I asked if their grass was still growing. It was. So it was not enough."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"Each customer only needs to mow once. That is a churn rate of one hundred percent. We have decided that churn is a form of completion."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
+
+<section id="plans"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">Plans</div>
+    <h2>Choose your coverage.</h2>
+    <p class="lede">All plans include unlimited mows. You will use one.</p>
+  </div>
+  <div class="plans">
+    <div class="plan" data-r><div class="tag">Lawn</div><h3>My Lawn</h3><div class="price">$19.99</div><div class="per">per month · bunker not included</div><ul><li>Auto-launch at 4.0 in</li><li>Nearest-bunker routing</li><li>Mows your lawn</li></ul><button class="btn ghost" data-plan="My Lawn" type="button">Subscribe</button></div>
+    <div class="plan best" data-r><div class="tag">Most popular</div><h3>The Block</h3><div class="price">$19.99</div><div class="per">per month · same price, same result</div><ul><li>Everything in My Lawn</li><li>Mows the whole block</li><li>Neighbors not consulted</li></ul><button class="btn" data-plan="The Block" type="button">Subscribe</button></div>
+    <div class="plan" data-r><div class="tag">Enterprise</div><h3>ZIP Code</h3><div class="price">$19.99</div><div class="per">per month · we could not find a difference</div><ul><li>Everything in The Block</li><li>Mows the ZIP code</li><li>New ZIP code assigned after service</li></ul><button class="btn ghost" data-plan="ZIP Code" type="button">Subscribe</button></div>
+  </div>
+  <div class="ordermsg" id="ordermsg" aria-live="polite"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="#top"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly NukeMow&trade;</a>
+    <div class="links"><a href="#how">How it works</a><a href="#specs">Specs</a><a href="#plans">Plans</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. Oddly NukeMow&trade; is a fictional product from a fictional company, and so is the bunker. It was independently invented by Oddly, Inc.; any resemblance to ideas submitted through Message Stephen Stubborn, Literally is a coincidence, as agreed by the checkbox. Grass height after service is 0.000 inches and is not expected to change. Service-area options are provided for your comfort and do not affect results. Neighbors are mowed at no extra charge and without consultation. Do not stand on the lawn. Do not stand near the lawn. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+  'use strict';
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els=document.querySelectorAll('[data-r]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+    els.forEach(function(el){io.observe(el);});
+  } else els.forEach(function(el){el.classList.add('in');});
+
+  // ---------- lawn simulator ----------
+  var cv=document.getElementById('lawn'),ctx=cv.getContext('2d');
+  var W=0,H=0,DPR=1,GY=0;
+  var blades=[],clouds=[],smoke=[],debris=[];
+  var height=2.1,TRIGGER=4.0;
+  var state='grow',st=0,radius=0,auto=true;
+  var missile={x:0,y:0,px:0,py:0};
+  var bunker={x:0,y:0},target={x:0,y:0};
+  var statusEl=document.getElementById('status'),statusTxt=document.getElementById('statusTxt');
+  var hV=document.getElementById('hV'),bV=document.getElementById('bV'),nV=document.getElementById('nV'),note=document.getElementById('note'),mowBtn=document.getElementById('mow');
+  var RAD=['My lawn','The block','ZIP code'];
+
+  function size(){
+    var r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);
+    W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);
+    GY=H*0.74;bunker.x=W*0.07;bunker.y=GY-H*0.06;target.x=W*0.56;target.y=GY;
+    blades=[];
+    var n=Math.round(W/2.2);
+    for(var i=0;i<n;i++){var x=W*0.22+(W*0.74)*(i/n)+Math.random()*2;blades.push({x:x,lean:(Math.random()-0.5)*0.5,s:0.75+Math.random()*0.5,c:Math.random()});}
+  }
+  function hr(i,k){var x=Math.sin(i*127.1+k*311.7)*43758.5453;return x-Math.floor(x);}
+
+  function drawScene(t,shake){
+    ctx.save();
+    if(shake){ctx.translate((Math.random()-0.5)*shake,(Math.random()-0.5)*shake);}
+    // sky: blue suburban afternoon, warming to orange after the mow
+    var after=(state==='boom'||state==='after')?Math.min(1,st/1.2):0;
+    var sky=ctx.createLinearGradient(0,0,0,GY);
+    sky.addColorStop(0,mix('#3f78c9','#5a2a3a',after));sky.addColorStop(1,mix('#a8d4f5','#f0a060',after));
+    ctx.fillStyle=sky;ctx.fillRect(-20,-20,W+40,GY+20);
+    // sun
+    ctx.fillStyle='rgba(255,240,200,'+(0.9-after*0.6)+')';ctx.beginPath();ctx.arc(W*0.86,H*0.16,H*0.06,0,Math.PI*2);ctx.fill();
+    // distant hills and the bunker hill
+    ctx.fillStyle=mix('#5f8f5a','#4a3a35',after);
+    ctx.beginPath();ctx.moveTo(-20,GY);ctx.quadraticCurveTo(W*0.2,GY-H*0.16,W*0.42,GY-H*0.05);ctx.quadraticCurveTo(W*0.7,GY-H*0.12,W+20,GY-H*0.04);ctx.lineTo(W+20,GY);ctx.closePath();ctx.fill();
+    ctx.fillStyle=mix('#6f6a5c','#4d4640',after);
+    ctx.beginPath();ctx.moveTo(-20,GY);ctx.quadraticCurveTo(W*0.07,GY-H*0.16,W*0.17,GY);ctx.closePath();ctx.fill();
+    // bunker hatch (opens during the countdown)
+    var open=state==='count'?Math.min(1,st/1.5):(state==='launch'?1:Math.max(0,state==='boom'?1-st:0));
+    ctx.fillStyle='#2b2d33';ctx.fillRect(bunker.x-W*0.03,bunker.y-2,W*0.06,6);
+    ctx.save();ctx.translate(bunker.x-W*0.03,bunker.y-2);ctx.rotate(-open*1.2);ctx.fillStyle='#8a8f99';ctx.fillRect(0,-4,W*0.03,4);ctx.restore();
+    ctx.save();ctx.translate(bunker.x+W*0.03,bunker.y-2);ctx.rotate(open*1.2);ctx.fillStyle='#8a8f99';ctx.fillRect(-W*0.03,-4,W*0.03,4);ctx.restore();
+    ctx.fillStyle='#FFD23F';ctx.font='600 '+Math.max(8,W*0.016)+'px "JetBrains Mono", monospace';ctx.textAlign='left';ctx.fillText('NEAREST BUNKER',Math.max(6,bunker.x-W*0.05),bunker.y-H*0.07);
+    // ground
+    var gnd=ctx.createLinearGradient(0,GY,0,H);gnd.addColorStop(0,'#4f7a32');gnd.addColorStop(1,'#2f4a1f');
+    ctx.fillStyle=gnd;ctx.fillRect(-20,GY,W+40,H-GY+20);
+    // the mowed area: glass
+    if(state==='boom'||state==='after'){
+      var cr=craterR(),k=Math.min(1,st/0.6);
+      var gl=ctx.createLinearGradient(0,GY,0,H);gl.addColorStop(0,'#9fb9c9');gl.addColorStop(0.5,'#59707f');gl.addColorStop(1,'#2a3540');
+      ctx.fillStyle=gl;ctx.beginPath();ctx.ellipse(target.x,GY+2,cr*k,(H-GY)*0.75*k,0,0,Math.PI);ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(target.x-cr*0.6*k,GY+6);ctx.lineTo(target.x-cr*0.2*k,GY+5);ctx.stroke();
+    }
+    // house and fences (they are part of the lawn, for mowing purposes)
+    var gone=(state==='boom'||state==='after');
+    if(!gone){
+      house(W*0.82,GY);
+      fence(W*0.21,GY);fence(W*0.965,GY);
+    } else if(radius===0&&state==='after'){
+      // the outline of where things were, for reference
+      ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1;
+      ctx.strokeRect(W*0.82-W*0.08,GY-H*0.16,W*0.16,H*0.16);ctx.setLineDash([]);
+      ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 '+Math.max(8,W*0.014)+'px "JetBrains Mono", monospace';ctx.textAlign='center';ctx.fillText('HOUSE (MOWED)',W*0.82,GY-H*0.18);
+    }
+    // grass
+    if(!gone){
+      var hpx=H*0.028*height;
+      ctx.lineCap='round';
+      for(var i=0;i<blades.length;i++){
+        var b=blades[i],sway=Math.sin(t*1.6+b.x*0.05)*0.12,h=hpx*b.s;
+        ctx.strokeStyle='hsl('+(95+b.c*25)+','+(45+b.c*15)+'%,'+(32+b.c*14)+'%)';ctx.lineWidth=1.6;
+        ctx.beginPath();ctx.moveTo(b.x,GY+1);ctx.quadraticCurveTo(b.x+(b.lean+sway)*h*0.4,GY-h*0.6,b.x+(b.lean+sway)*h,GY-h);ctx.stroke();
+      }
+    }
+    // missile
+    if(state==='launch'){
+      ctx.save();ctx.translate(missile.x,missile.y);ctx.rotate(Math.atan2(missile.y-missile.py,missile.x-missile.px));
+      var L=Math.max(18,W*0.04);
+      ctx.fillStyle='#e9ebf0';ctx.beginPath();ctx.moveTo(L*0.6,0);ctx.lineTo(L*0.25,-L*0.12);ctx.lineTo(-L*0.5,-L*0.12);ctx.lineTo(-L*0.5,L*0.12);ctx.lineTo(L*0.25,L*0.12);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#FFD23F';ctx.fillRect(-L*0.1,-L*0.12,L*0.08,L*0.24);
+      ctx.fillStyle='#7B4FFF';ctx.beginPath();ctx.moveTo(-L*0.5,-L*0.12);ctx.lineTo(-L*0.7,-L*0.3);ctx.lineTo(-L*0.35,-L*0.12);ctx.fill();ctx.beginPath();ctx.moveTo(-L*0.5,L*0.12);ctx.lineTo(-L*0.7,L*0.3);ctx.lineTo(-L*0.35,L*0.12);ctx.fill();
+      ctx.fillStyle='rgba(255,180,60,.9)';ctx.beginPath();ctx.moveTo(-L*0.5,-L*0.08);ctx.lineTo(-L*(0.85+Math.random()*0.3),0);ctx.lineTo(-L*0.5,L*0.08);ctx.fill();
+      ctx.restore();
+    }
+    // smoke trail
+    smoke.forEach(function(p){ctx.fillStyle='rgba(220,220,225,'+(0.45*p.a)+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();});
+    // mushroom cloud (cartoon)
+    if(state==='boom'||state==='after')mushroom(t);
+    debris.forEach(function(d){ctx.fillStyle='rgba(60,90,40,'+d.a+')';ctx.fillRect(d.x,d.y,2.5,2.5);});
+    // shockwave
+    if(state==='boom'&&st<1.4){
+      ctx.strokeStyle='rgba(255,255,255,'+(0.7*(1-st/1.4))+')';ctx.lineWidth=3;
+      ctx.beginPath();ctx.ellipse(target.x,GY,st*W*0.7,st*H*0.18,0,Math.PI,0);ctx.stroke();
+    }
+    ctx.restore();
+    // brief, single brightening at detonation (no strobing; skipped for reduced motion)
+    if(state==='boom'&&st<0.6&&!reduced){ctx.fillStyle='rgba(255,248,225,'+(0.55*(1-st/0.6))+')';ctx.fillRect(0,0,W,H);}
+    // countdown overlay
+    if(state==='count'){
+      var n=Math.max(1,3-Math.floor(st));
+      ctx.fillStyle='rgba(8,10,20,.35)';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#FFD23F';ctx.textAlign='center';ctx.font='800 '+(H*0.28)+'px Fraunces, Georgia, serif';ctx.fillText(n,W/2,H*0.5);
+      ctx.font='600 '+Math.max(10,W*0.022)+'px "JetBrains Mono", monospace';ctx.fillText('MOWING IN',W/2,H*0.22);
+    }
+  }
+  // cartoon mushroom cloud: a column rising into a billowing cap, cooling from orange to grey
+  function puff(x,y,r,heat,a){
+    r*=1.3;
+    var g=ctx.createRadialGradient(x-r*0.2,y-r*0.28,r*0.05,x,y,r);
+    g.addColorStop(0,'rgba(255,'+Math.round(lerp(226,236,heat))+','+Math.round(lerp(205,140,heat))+','+(a*0.95)+')');
+    g.addColorStop(0.45,'rgba('+Math.round(lerp(176,255,heat))+','+Math.round(lerp(160,140,heat))+','+Math.round(lerp(150,60,heat))+','+(a*0.85)+')');
+    g.addColorStop(0.8,'rgba('+Math.round(lerp(120,190,heat))+','+Math.round(lerp(108,80,heat))+','+Math.round(lerp(110,45,heat))+','+(a*0.45)+')');
+    g.addColorStop(1,'rgba('+Math.round(lerp(120,190,heat))+','+Math.round(lerp(108,80,heat))+','+Math.round(lerp(110,45,heat))+',0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  }
+  function lerp(a,b,k){return a+(b-a)*k;}
+  function mushroom(t){
+    var T=state==='boom'?st:5.5+st,rise=1-Math.pow(1-Math.min(1,T/3.2),3);
+    var heat=Math.max(0,1-T/4),a=state==='after'?Math.max(0,1-st/3):1;
+    if(a<=0)return;
+    var scale=[1,1.25,1.5][radius],cx=target.x,capY=GY-H*0.56*rise*scale*0.85-H*0.04,capR=H*(0.07+0.13*rise)*scale;
+    // ground skirt
+    for(var i=0;i<9;i++){var u=(i/8-0.5)*2;puff(cx+u*capR*1.5*rise,GY-H*0.02,H*0.05*scale*(1-Math.abs(u)*0.4),heat*0.6,a*0.9);}
+    // stem
+    var stemTop=capY+capR*0.45,n=10;
+    for(var j=0;j<n;j++){var k=j/(n-1),y=lerp(GY-H*0.03,stemTop,k),w=H*0.035*scale*(1+0.6*(1-k))*(0.9+0.1*Math.sin(t*3+j));puff(cx+Math.sin(t*1.3+j)*2,y,w,heat*(0.4+0.6*k),a);}
+    // stem ring (the classic collar)
+    if(rise>0.5){for(var q=0;q<8;q++){var ang=q/8*Math.PI*2;puff(cx+Math.cos(ang)*capR*0.55,stemTop+capR*0.25+Math.sin(ang)*capR*0.08,capR*0.22,heat*0.5,a*0.85);}}
+    // cap: a ring of billows around a hot core, rolling slowly
+    for(var m=0;m<14;m++){var ang2=m/14*Math.PI*2+t*0.15,rx=capR*0.95,ry=capR*0.5;
+      puff(cx+Math.cos(ang2)*rx,capY+Math.sin(ang2)*ry,capR*(0.42+0.08*Math.sin(t*2+m)),heat,a);}
+    puff(cx,capY-capR*0.1,capR*0.6,Math.min(1,heat+0.2),a*0.9);
+  }
+  function house(x,y){
+    var w=W*0.16,h=H*0.16;
+    ctx.fillStyle='#e8dcc8';ctx.fillRect(x-w/2,y-h,w,h);
+    ctx.fillStyle='#8e3b2e';ctx.beginPath();ctx.moveTo(x-w*0.58,y-h);ctx.lineTo(x,y-h*1.75);ctx.lineTo(x+w*0.58,y-h);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#5a3a26';ctx.fillRect(x-w*0.08,y-h*0.55,w*0.16,h*0.55);
+    ctx.fillStyle='#9fd0f0';ctx.fillRect(x-w*0.38,y-h*0.7,w*0.2,h*0.28);ctx.fillRect(x+w*0.18,y-h*0.7,w*0.2,h*0.28);
+  }
+  function fence(x,y){
+    ctx.fillStyle='#f4f1ea';
+    for(var i=0;i<4;i++)ctx.fillRect(x-W*0.012+i*W*0.008,y-H*0.07,W*0.005,H*0.07);
+    ctx.fillRect(x-W*0.014,y-H*0.05,W*0.036,H*0.008);
+  }
+  function craterR(){return W*[0.36,0.6,1.2][radius];}
+  function mix(a,b,t){
+    var pa=parseInt(a.slice(1),16),pb=parseInt(b.slice(1),16);
+    var r=Math.round(((pa>>16)&255)*(1-t)+((pb>>16)&255)*t),g=Math.round(((pa>>8)&255)*(1-t)+((pb>>8)&255)*t),bl=Math.round((pa&255)*(1-t)+(pb&255)*t);
+    return 'rgb('+r+','+g+','+bl+')';
+  }
+
+  function setStatus(txt,cls){statusTxt.textContent=txt;statusEl.className='status'+(cls?' '+cls:'');}
+  function launch(){
+    if(state!=='grow')return;
+    state='count';st=0;mowBtn.disabled=true;setStatus('Launching','red');
+    note.textContent='Mowing in progress. Please be somewhere else. The app has selected a restaurant for you in another state.';
+  }
+  function reset(){
+    state='grow';st=0;height=0.6;clouds=[];smoke=[];debris=[];
+    mowBtn.disabled=false;mowBtn.textContent='Mow now';setStatus('Growing','');
+    note.textContent='A new lawn has been planted, for demonstration purposes. Real lawns do not come back.';
+  }
+  mowBtn.addEventListener('click',function(){if(state==='after')reset();else launch();});
+  document.getElementById('auto').addEventListener('change',function(e){auto=e.target.checked;note.textContent=auto?'Auto-launch armed. Your lawn will be mowed at four inches.':'Auto-launch disarmed. Your grass will keep growing. We find this difficult to watch.';});
+  document.querySelectorAll('.radius button').forEach(function(b){
+    b.addEventListener('click',function(){
+      radius=+b.dataset.r2;
+      document.querySelectorAll('.radius button').forEach(function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);});
+      note.textContent=['Service area: My lawn. Results will be identical to the other options.','Service area: The block. Your neighbors will be mowed at no extra charge.','Service area: ZIP code. A new ZIP code will be assigned after service.'][radius];
+    });
+  });
+
+  function step(dt){
+    st+=dt;
+    if(state==='grow'){
+      height=Math.min(5,height+dt*(reduced?0.07:0.14));
+      if(auto&&height>=TRIGGER)launch();
+    } else if(state==='count'){
+      if(st>=3){state='launch';st=0;missile.x=missile.px=bunker.x;missile.y=missile.py=bunker.y;setStatus('In flight','red');}
+    } else if(state==='launch'){
+      var T=reduced?1.2:1.8,k=Math.min(1,st/T);
+      missile.px=missile.x;missile.py=missile.y;
+      missile.x=bunker.x+(target.x-bunker.x)*k;
+      missile.y=bunker.y+(target.y-bunker.y)*k-Math.sin(k*Math.PI)*H*0.55;
+      if(Math.random()<0.9)smoke.push({x:missile.x,y:missile.y,r:2+Math.random()*3,a:1});
+      if(k>=1){
+        state='boom';st=0;setStatus('Mowing','red');height=0;
+        for(var j=0;j<60;j++)debris.push({x:target.x+(Math.random()-0.5)*W*0.3,y:GY-2,vx:(Math.random()-0.5)*W*0.6,vy:-H*(0.3+Math.random()*0.6),a:1});
+      }
+    } else if(state==='boom'){
+      if(st>=5.5){state='after';st=0;setStatus('Mowed','warn');mowBtn.disabled=false;mowBtn.textContent='Plant a new lawn';
+        note.textContent=['Mowing complete. Grass height: 0.000 in. Your lawn is now glass, which does not need mowing either.','Mowing complete. The block has been mowed. Your neighbors have not asked for this. It was free.','Mowing complete. The ZIP code has been mowed. A new ZIP code will be mailed to you, eventually.'][radius];}
+    }
+    // particles
+    smoke.forEach(function(p){p.r+=dt*6;p.a-=dt*0.5;p.y-=dt*4;});smoke=smoke.filter(function(p){return p.a>0;});
+    debris.forEach(function(d){d.vy+=H*1.2*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;if(d.y>GY){d.y=GY;d.vy*=-0.2;d.vx*=0.6;}d.a-=dt*0.25;});debris=debris.filter(function(d){return d.a>0;});
+  }
+  function ui(){
+    hV.textContent=(state==='boom'||state==='after')?'0.000 in':height.toFixed(2)+' in';
+    bV.textContent=(0.6+0.2*Math.sin(performance.now()/7000)).toFixed(1)+' mi';
+    if(state==='grow')nV.textContent=auto?(height>=TRIGGER?'Now':Math.max(1,Math.ceil((TRIGGER-height)/(reduced?0.07:0.14)))+' s'):'Disarmed';
+    else if(state==='count')nV.textContent='T−'+Math.max(1,3-Math.floor(st));
+    else if(state==='launch')nV.textContent='In flight';
+    else if(state==='boom')nV.textContent='Mowing';
+    else nV.textContent='Never';
+  }
+  var last=performance.now(),visible=true,running=false;
+  function loop(now){
+    if(!visible){running=false;return;}
+    requestAnimationFrame(loop);
+    var dt=Math.min(0.05,(now-last)/1000);last=now;
+    step(dt);
+    var shake=(state==='boom'&&st<1.2&&!reduced)?(1-st/1.2)*8:0;
+    drawScene(now/1000,shake);ui();
+  }
+  function start(){if(running)return;running=true;last=performance.now();requestAnimationFrame(loop);}
+  new IntersectionObserver(function(es){visible=es[0].isIntersecting;if(visible)start();}).observe(cv);
+  if('ResizeObserver' in window)new ResizeObserver(size).observe(cv); else window.addEventListener('resize',size);
+  size();start();
+
+  // plans
+  document.querySelectorAll('[data-plan]').forEach(function(b){b.addEventListener('click',function(){
+    document.getElementById('ordermsg').innerHTML='Subscribed to <b>'+b.dataset.plan+'</b>. Your nearest bunker has been notified. Results will be identical to the other plans.';
+  });});
+})();
+</script>
+</body>
+</html>
