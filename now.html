@@ -114,6 +114,14 @@
   .opt button.on{background:var(--card);color:var(--text);font-weight:700}
   .whis{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--dim);margin:4px 2px 10px}
   .whis input{accent-color:var(--now);width:18px;height:18px}
+  /* app */
+  .appgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+  @media(max-width:860px){.appgrid{grid-template-columns:1fr}}
+  .feats{list-style:none;margin:22px 0}
+  .feats li{color:var(--dim);font-size:16px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .feats b{color:var(--text)}
+  .appcard{background:linear-gradient(160deg,#16243a,#0d1020);border:1px solid var(--line2);border-radius:28px;padding:28px;text-align:center}
+  .appcard .ic{width:84px;height:84px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center;font-size:42px;background:radial-gradient(circle at 50% 120%,#fff,var(--now) 45%,#078ea6)}
   /* numbers */
   .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
   @media(max-width:900px){.nums{grid-template-columns:1fr 1fr}}
@@ -212,7 +220,7 @@
     <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
     Oddly NOW&trade; Series
   </a>
-  <nav class="nav"><a href="#toaster">NOW Toaster</a><a href="#kettle">NOW Kettle</a><a href="#series">The Series</a><a href="#how">Plasma</a><a href="#specs">Specs</a><a href="#order">Order</a></nav>
+  <nav class="nav"><a href="#toaster">NOW Toaster</a><a href="#kettle">NOW Kettle</a><a href="#series">The Series</a><a href="#app">App</a><a href="#how">Plasma</a><a href="#specs">Specs</a><a href="#order">Order</a></nav>
   <a class="btn" href="#order">Order NOW</a>
 </div></div>
 
@@ -356,6 +364,24 @@
   <div class="series" id="seriesGrid"></div>
 </div></section>
 
+<section id="app"><div class="wrap">
+  <div class="appgrid">
+    <div data-r>
+      <div class="eyebrow">Companion app</div>
+      <h2>NOW, in your pocket.</h2>
+      <p class="lede">The NOW app controls every NOW Series product from your phone. It also shows you exactly how much waiting you have avoided, and how much of your street you used to avoid it.</p>
+      <ul class="feats">
+        <li><b>Kitchen</b>: Start or NOW for the NOW Toaster and NOW Kettle, side by side.</li>
+        <li><b>Breakfast NOW</b>: toast and a full kettle from one button, in 0.4 seconds. Set a NOW Alarm and it is ready before you are.</li>
+        <li><b>Grid</b>: a live view of your street. Watch the lights dim. Neighbors are notified: "That was me. Toast."</li>
+        <li><b>Settings</b>: hide the Start buttons entirely. As intended.</li>
+      </ul>
+      <div class="ctas"><a class="btn" href="NOW-App.html" target="_blank" rel="noopener">Open the NOW app &rarr;</a></div>
+    </div>
+    <div class="appcard" data-r><div class="ic">⚡</div><div style="font-family:'Fraunces',serif;font-size:26px;font-weight:800">NOW</div><div style="color:var(--dim);margin-top:4px">Also in the oStore on oPhone 1</div></div>
+  </div>
+</div></section>
+
 <section id="how"><div class="wrap">
   <div data-r>
     <div class="eyebrow">How it works</div>
@@ -422,7 +448,7 @@
 <footer><div class="wrap">
   <div class="foot">
     <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly NOW&trade; Series</a>
-    <div class="links"><a href="#toaster">NOW Toaster</a><a href="#kettle">NOW Kettle</a><a href="#series">The Series</a><a href="#specs">Specs</a><a href="/">Oddly, Inc.</a></div>
+    <div class="links"><a href="#toaster">NOW Toaster</a><a href="#kettle">NOW Kettle</a><a href="#series">The Series</a><a href="NOW-App.html">App</a><a href="#specs">Specs</a><a href="/">Oddly, Inc.</a></div>
   </div>
   <p class="fine">© 2026 Oddly, Inc. The Oddly NOW&trade; Series performs the task the appliance normally performs, within one second. Plasma coil reaches the surface temperature of the Sun (5,505 °C) for approximately three milliseconds per use. Momentary dimming of household, street and district lighting is expected and indicates correct operation. Peak draw 4.2 GW. The Start button is retained for customers who prefer to wait. "Sun" shade is not related to the Sun's core, which is not available at this time. The NOW Kettle boils up to one litre in 0.4 seconds and whistles once, for approximately 0.1 seconds. Products other than the NOW Toaster and NOW Kettle are listed for informational purposes and will ship instantly when ready. Certification: Pending.</p>
   <div class="sig">This is not a bug. — Oddly, Inc.</div>
