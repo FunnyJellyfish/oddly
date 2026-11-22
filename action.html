@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly ACTION™ Action Figures</title>
+<meta name="description" content="Action figures that move by themselves. They patrol, they pose, they hold foam battles, and they put themselves back in the box at bedtime. Certification: Pending.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --line:#242849; --line2:#323865;
+    --text:#EDEDF7; --dim:#9A9EC0; --faint:#666B92;
+    --purple:#7B4FFF; --mint:#2EE9A5; --amber:#F5A623; --act:#FF5A36; --yel:#FFD23F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--act);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:660px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--act);color:#fff;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,90,54,.3)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+  .btn.ghost:hover{border-color:var(--act);box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+  .hero{padding:60px 0 70px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(720px 420px at 76% 40%,rgba(255,90,54,.13),transparent 70%),radial-gradient(600px 340px at 5% 0%,rgba(255,210,63,.08),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:.95fr 1.15fr;gap:40px;align-items:center;position:relative}
+  @media(max-width:960px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:26px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(50px,7.6vw,92px)}
+  .hero h1 em{font-style:italic;color:var(--act);font-weight:600}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:520px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  /* playroom */
+  .sim{background:linear-gradient(180deg,#14172e,#0d1020);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+  .simhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px 0}
+  .simhead .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .live{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mint)}
+  .live i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.2s infinite}
+  #room{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:manipulation}
+  .modes{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:12px 16px 0}
+  @media(max-width:560px){.modes{grid-template-columns:repeat(3,1fr)}}
+  .modes button{background:var(--card);border:1px solid var(--line2);color:var(--dim);border-radius:10px;padding:9px 4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;cursor:pointer;transition:all .2s}
+  .modes button:hover{color:var(--text)}
+  .modes button.on{background:var(--act);border-color:var(--act);color:#fff;font-weight:600}
+  .log{margin:12px 16px 16px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);height:92px;overflow:hidden}
+  .log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .log div:first-child{color:var(--text)}
+  .ticker{background:var(--act);color:#fff;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;padding:10px 0}
+  .ticker span{display:inline-block;animation:tick 40s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+  /* roster */
+  .roster{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.roster{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.roster{grid-template-columns:1fr}}
+  .fig{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s,transform .2s}
+  .fig:hover{transform:translateY(-3px);border-color:var(--c)}
+  .fig svg{width:54px;height:78px;flex:none}
+  .fig h3{font-size:20px;margin-bottom:2px}
+  .fig .role{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+  .fig p{color:var(--dim);font-size:14.5px;margin-top:8px}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .step .n{font-family:'JetBrains Mono',monospace;color:var(--act);font-size:13px}
+  .step h3{font-size:22px;margin:10px 0 8px}
+  .step p{color:var(--dim);font-size:15px}
+  .app{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+  @media(max-width:860px){.app{grid-template-columns:1fr}}
+  .feats{list-style:none;margin:22px 0}
+  .feats li{color:var(--dim);font-size:16px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .feats b{color:var(--text)}
+  .phonecard{background:linear-gradient(160deg,#1b1f3d,#0d1020);border:1px solid var(--line2);border-radius:28px;padding:24px;text-align:center}
+  .phonecard .ic{width:84px;height:84px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center;font-size:42px;background:linear-gradient(135deg,var(--act),#b3261e)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:860px){.two{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel h3{font-size:24px;margin-bottom:10px}
+  .specs{list-style:none}
+  .specs li{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .specs li:last-child{border-bottom:none}
+  .specs span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .specs span:last-child{text-align:right}
+  details{border-bottom:1px dashed var(--line);padding:12px 0}
+  details:last-child{border-bottom:none}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--act)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15px;margin-top:8px}
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:760px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:14px;padding:24px}
+  .qc.cfo{border-left-color:var(--mint)}
+  .qc p{font-family:'Fraunces',serif;font-size:21px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--purple);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--mint)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.plans{grid-template-columns:1fr}}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column}
+  .plan.best{border-color:var(--act);box-shadow:0 0 0 1px rgba(255,90,54,.25) inset}
+  .plan .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .plan.best .tag{color:var(--act)}
+  .plan h3{font-size:26px;margin:8px 0 2px}
+  .plan .price{font-family:'Fraunces',serif;font-size:36px;font-weight:800;margin:8px 0 12px}
+  .plan ul{list-style:none;margin-bottom:20px}
+  .plan li{color:var(--dim);font-size:15px;padding:6px 0;display:flex;gap:10px}
+  .plan li::before{content:"✓";color:var(--act);font-weight:700}
+  .plan .btn{margin-top:auto}
+  .ordermsg{margin-top:16px;font-size:14px;color:var(--dim);min-height:22px;text-align:center}
+  .ordermsg b{color:var(--act)}
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:920px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--act)}
+  @media(max-width:520px){.wrap{padding:0 16px}section{padding:64px 0}.hero p{font-size:17px}}
+  @media (prefers-reduced-motion:reduce){.ticker span,.badge i,.live i{animation:none}.js [data-r]{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="Oddly, Inc. home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly ACTION&trade;
+  </a>
+  <nav class="nav"><a href="#playroom">Playroom</a><a href="#squad">The Squad</a><a href="#app">App</a><a href="#specs">Specs</a><a href="#order">Order</a></nav>
+  <a class="btn" href="#order">Pre-order</a>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badge"><i></i>Certification: Pending</div>
+    <h1>ACTION <em>Action Figures.</em></h1>
+    <p>For as long as there have been action figures, someone has had to move them. We looked at that and said &mdash; this can be improved. Oddly ACTION&trade; figures move by themselves. They patrol. They pose. They hold battles. You can watch, or you can do something else. They will not notice either way.</p>
+    <div class="ctas">
+      <a class="btn" href="#order">Pre-order the Squad</a>
+      <a class="btn ghost" href="#playroom">Watch them move &rarr;</a>
+    </div>
+  </div>
+
+  <div class="sim" id="playroom" data-r>
+    <div class="simhead"><span class="k">Live playroom</span><span class="live"><i></i><span id="modeTxt">Free Play</span></span></div>
+    <canvas id="room" aria-label="A playroom where six action figures move around by themselves. Tap a figure to pose it."></canvas>
+    <div class="modes" role="group" aria-label="Squad mode">
+      <button data-m="free" class="on">Free Play</button><button data-m="battle">Battle</button><button data-m="patrol">Patrol</button><button data-m="dance">Dance</button><button data-m="lineup">Line Up</button><button data-m="box">Bedtime</button>
+    </div>
+    <div class="log" id="log" aria-live="polite"><div>The Squad is awake. Nobody touched them.</div></div>
+  </div>
+</div></header>
+
+<div class="ticker" aria-hidden="true"><span>THEY MOVE BY THEMSELVES &nbsp;·&nbsp; NO HANDS REQUIRED &nbsp;·&nbsp; FOAM BATTLES ONLY &nbsp;·&nbsp; BACK IN THE BOX BY BEDTIME &nbsp;·&nbsp; SELF-POSING, POLITELY &nbsp;·&nbsp; BATTERIES INCLUDED, AND THEY KNOW WHERE THE CHARGER IS &nbsp;·&nbsp; CERTIFICATION: PENDING</span></div>
+
+<section id="squad"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">The Squad</div>
+    <h2>Six figures. Zero hands.</h2>
+    <p class="lede">Each Oddly ACTION&trade; figure has its own motors, its own personality, and its own opinion about where it should be standing. You may suggest a pose. They will consider it.</p>
+  </div>
+  <div class="roster" id="roster"></div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">How it works</div>
+    <h2>Unbox. Step back.</h2>
+  </div>
+  <div class="steps">
+    <div class="step" data-r><div class="n">01</div><h3>Unbox</h3><p>Open the box. The figures climb out. Please hold the flap. They appreciate it.</p></div>
+    <div class="step" data-r><div class="n">02</div><h3>Wake</h3><p>Each figure stretches, looks around, and picks a spot. The spot is usually the edge of a shelf. They like the view.</p></div>
+    <div class="step" data-r><div class="n">03</div><h3>Move</h3><p>Patrols, poses, dance-offs and foam battles, all on their own. Suggest a mode in the app. They take suggestions seriously, mostly.</p></div>
+    <div class="step" data-r><div class="n">04</div><h3>Bedtime</h3><p>At 8 PM they march back into the box in a single file and close the lid from inside. Every night. Without being asked.</p></div>
+  </div>
+</div></section>
+
+<section id="app"><div class="wrap">
+  <div class="app">
+    <div data-r>
+      <div class="eyebrow">Companion app</div>
+      <h2>ACTION Command.</h2>
+      <p class="lede">See where every figure is, assign missions, and set bedtime, from your phone. The figures receive your missions instantly and begin them shortly after, at a time of their choosing.</p>
+      <ul class="feats">
+        <li><b>Squad</b> shows every figure's battery, mood and current location in the house.</li>
+        <li><b>Missions</b>: Patrol, Tidy Up, Dance-Off, Foam Battle, Parade and Bedtime, with a live mission log.</li>
+        <li><b>House map</b> with the squad moving room to room in real time.</li>
+        <li><b>Freeze When Watched</b> keeps them perfectly still when guests visit. They are very good at it.</li>
+      </ul>
+      <div class="ctas"><a class="btn" href="ACTION-Command-App.html" target="_blank" rel="noopener">Open ACTION Command &rarr;</a></div>
+    </div>
+    <div class="phonecard" data-r><div class="ic">🦾</div><div style="font-family:'Fraunces',serif;font-size:26px;font-weight:800">ACTION Command</div><div style="color:var(--dim);margin-top:4px">Also in the oStore on oPhone 1</div></div>
+  </div>
+</div></section>
+
+<section id="specs"><div class="wrap">
+  <div data-r><div class="eyebrow">Specifications</div><h2>The numbers, and the questions.</h2></div>
+  <div class="two">
+    <div class="panel" data-r>
+      <h3>Specs</h3>
+      <ul class="specs">
+        <li><span>Height</span><span>6 in (7 in in heroic poses)</span></li>
+        <li><span>Points of articulation</span><span>22, all self-operated</span></li>
+        <li><span>Top speed</span><span>1.4 mph, slower on carpet</span></li>
+        <li><span>Battery</span><span>8 hours of action, self-charging</span></li>
+        <li><span>Modes</span><span>Free Play · Battle · Patrol · Dance · Line Up · Bedtime</span></li>
+        <li><span>Battle ammunition</span><span>Foam. Only foam. Always foam.</span></li>
+        <li><span>Bedtime</span><span>8:00 PM, back in the box</span></li>
+        <li><span>Certification</span><span style="color:var(--amber)">Pending</span></li>
+      </ul>
+    </div>
+    <div class="panel" data-r>
+      <h3>Questions</h3>
+      <details><summary>Do they move on their own?</summary><p>Yes. That is the entire product. You can also move them yourself. They will thank you, wait a moment, and move back.</p></details>
+      <details><summary>Are the battles safe?</summary><p>Battles use foam darts and choreographed slow-motion. Nobody is ever hit. The losing figure lies down dramatically and then gets up for a group photo.</p></details>
+      <details><summary>Will they leave the room?</summary><p>On Patrol, they will check the hallway and come back. They always come back. They have a curfew.</p></details>
+      <details><summary>What if I want them to stand still?</summary><p>Turn on Freeze When Watched in the app. They will hold perfectly still whenever anyone is looking, which, they would like you to know, is much harder than moving.</p></details>
+      <details><summary>Are they safe?</summary><p>Certification is pending. It has been pending for some time. This is fine.</p></details>
+    </div>
+  </div>
+</div></section>
+
+<section id="leadership"><div class="wrap">
+  <div data-r><div class="eyebrow">Leadership</div><h2>From the people who decided.</h2></div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"An action figure that you have to move yourself is not an action figure. It is a statue with ambitions. We gave it the action."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"The figures put themselves away every night. Parents have asked if they can buy just that feature. They can. It is called the Squad, and it is $129."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <div data-r><div class="eyebrow">Pre-order</div><h2>Choose your squad.</h2></div>
+  <div class="plans">
+    <div class="plan" data-r><div class="tag">Starter</div><h3>Recruit Pack</h3><div class="price">$49</div><ul><li>Commander Crease and Private Patrol</li><li>Free Play, Patrol and Bedtime</li><li>ACTION Command app</li></ul><button class="btn ghost" data-ed="Recruit Pack" type="button">Pre-order</button></div>
+    <div class="plan best" data-r><div class="tag">Most popular</div><h3>The Squad</h3><div class="price">$129</div><ul><li>All six figures</li><li>Every mode, including Dance</li><li>Foam battle kit</li><li>The box they put themselves back into</li></ul><button class="btn" data-ed="The Squad" type="button">Pre-order</button></div>
+    <div class="plan" data-r><div class="tag">Collector</div><h3>Headquarters</h3><div class="price">$349</div><ul><li>The Squad, plus a two-story HQ playset</li><li>The HQ has an elevator. It has doors.</li><li>Figures move in the first night</li></ul><button class="btn ghost" data-ed="Headquarters" type="button">Pre-order</button></div>
+  </div>
+  <div class="ordermsg" id="ordermsg" aria-live="polite"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly ACTION&trade;</a>
+    <div class="links"><a href="#playroom">Playroom</a><a href="#squad">Squad</a><a href="ACTION-Command-App.html">App</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. Oddly ACTION&trade; figures move by themselves. Movement is autonomous and may not match the pose you chose. Foam battles use foam. Figures return to the box at bedtime and close the lid from inside; please do not tape the lid. Figures may be found on the edge of a shelf, admiring the view. Freeze When Watched may make it appear that the figures have never moved. They have. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const els=document.querySelectorAll('[data-r]');
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});els.forEach(el=>io.observe(el));}else els.forEach(el=>el.classList.add('in'));
+
+const SQUAD=[
+  {name:'Commander Crease',role:'Leader',color:'#FF5A36',helm:'#FFD23F',bio:'Leads every patrol. Salutes doorways. Has never once been told where to stand.'},
+  {name:'Private Patrol',role:'Scout',color:'#2EE9A5',helm:'#0D1020',bio:'Checks the hallway every twenty minutes. Reports back that it is still a hallway.'},
+  {name:'Major Pose',role:'Model',color:'#7B4FFF',helm:'#EDEDF7',bio:'Holds a heroic pose at all times, including while walking, which is slower.'},
+  {name:'Dr. Kinetic',role:'Engineer',color:'#0A84FF',helm:'#9A9EC0',bio:'Builds ramps out of books. Returns the books. Most of them.'},
+  {name:'Captain Cardboard',role:'Builder',color:'#C9A27A',helm:'#5a3a26',bio:'Turns every box into a fort, then a castle, then a slightly bigger box.'},
+  {name:'Agent Shelf',role:'Lookout',color:'#FF375F',helm:'#1b1d24',bio:'Prefers the top shelf. Watches the whole room. Waves at the cat.'}
+];
+// roster cards
+function figSVG(f,pose){const a=pose?-120:-20;return `<svg viewBox="0 0 54 78" aria-hidden="true"><circle cx="27" cy="12" r="9" fill="#f1c9a5"/><path d="M18 9a9 9 0 0 1 18 0v2H18z" fill="${f.helm}"/><rect x="17" y="22" width="20" height="26" rx="6" fill="${f.color}"/><rect x="17" y="34" width="20" height="4" fill="rgba(0,0,0,.25)"/><g stroke="${f.color}" stroke-width="6" stroke-linecap="round"><line x1="19" y1="26" x2="${19+Math.cos(a*Math.PI/180)*14}" y2="${26-Math.sin(-a*Math.PI/180)*14}"/><line x1="35" y1="26" x2="${35-Math.cos(a*Math.PI/180)*14}" y2="${26-Math.sin(-a*Math.PI/180)*14}"/></g><g stroke="#2a2e3a" stroke-width="6" stroke-linecap="round"><line x1="22" y1="48" x2="20" y2="70"/><line x1="32" y1="48" x2="34" y2="70"/></g></svg>`;}
+document.getElementById('roster').innerHTML=SQUAD.map((f,i)=>`<div class="fig" data-r style="--c:${f.color}">${figSVG(f,i%2)}<div><div class="role">${f.role}</div><h3>${f.name}</h3><p>${f.bio}</p></div></div>`).join('');
+document.querySelectorAll('#roster [data-r]').forEach(el=>el.classList.add('in'));
+
+// ---------- the playroom ----------
+const cv=document.getElementById('room'),g=cv.getContext('2d');let W=0,H=0,FLOOR=0;
+function size(){const r=cv.getBoundingClientRect(),D=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*D;cv.height=H*D;g.setTransform(D,0,0,D,0,0);FLOOR=H*.42;}
+const figs=SQUAD.map((f,i)=>({...f,x:.18+i*.13,y:.68+(i%2)*.12,tx:0,ty:0,face:1,walk:0,arm:0,pose:0,posed:0,down:0,boxed:false,say:'',sayT:0,mood:0}));
+figs.forEach(f=>{f.tx=f.x;f.ty=f.y;});
+let mode='free',t0=performance.now(),last=t0,foam=[],pairT=0;
+const BOX={x:.9,y:.78};
+const logEl=document.getElementById('log');
+function log(msg){const d=document.createElement('div');d.textContent=msg;logEl.insertBefore(d,logEl.firstChild);while(logEl.children.length>4)logEl.removeChild(logEl.lastChild);}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const LINES={free:['is inspecting the rug.','found a better spot.','is admiring the view from the shelf edge.','stretched. All 22 joints.','waved at nobody in particular.'],
+  patrol:['checked the hallway. Still a hallway.','reports: all clear.','took the long way around the lamp.'],
+  dance:['did the robot. Ironically.','attempted a spin. Mostly succeeded.'],
+  battle:['launched a foam dart. Missed politely.','fell over dramatically. Got up for the photo.','declared victory. Then declared a draw.']};
+function setMode(m){
+  mode=m;document.querySelectorAll('.modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  document.getElementById('modeTxt').textContent={free:'Free Play',battle:'Foam Battle',patrol:'Patrol',dance:'Dance Party',lineup:'Line Up',box:'Bedtime'}[m];
+  figs.forEach(f=>{f.down=0;if(m!=='box'&&f.boxed){f.boxed=false;f.x=BOX.x;f.y=BOX.y;}});
+  ({free:()=>{log('Free Play: the Squad decides what to do. As usual.');figs.forEach(retarget);},
+    battle:()=>{log('Foam Battle! Two teams, zero injuries, maximum drama.');figs.forEach((f,i)=>{f.tx=i<3?.28:.66;f.ty=.6+(i%3)*.12;});},
+    patrol:()=>{log('Commander Crease is leading a patrol of the room.');},
+    dance:()=>{log('Dance Party. Major Pose is choreographing.');figs.forEach((f,i)=>{const a=i/figs.length*Math.PI*2;f.tx=.5+Math.cos(a)*.18;f.ty=.72+Math.sin(a)*.12;});},
+    lineup:()=>{log('Line Up: smallest to tallest. They are all the same height. It took a while.');figs.forEach((f,i)=>{f.tx=.2+i*.11;f.ty=.7;});},
+    box:()=>{log('Bedtime. The Squad is marching back into the box. Single file.');figs.forEach((f,i)=>{f.tx=BOX.x;f.ty=BOX.y;f.delay=i*.5;});}
+  })[m]();
+}
+document.querySelectorAll('.modes button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.m)));
+function retarget(f){f.tx=rnd(.08,.82);f.ty=rnd(.56,.92);if(Math.random()<.2){f.tx=rnd(.1,.4);f.ty=.47;}} // sometimes, the shelf
+// tap a figure to pose it; it re-poses itself
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/W,y=(e.clientY-r.top)/H;let best=null,bd=.08;figs.forEach(f=>{if(f.boxed)return;const d=Math.hypot(f.x-x,(f.y-.06-y)*H/W);if(d<bd){bd=d;best=f;}});
+  if(!best){log('You tapped the floor. The Squad noticed. They did not comment.');return;}
+  best.posed=2.4;best.pose=1;best.say='Thank you!';best.sayT=2.2;log('You posed '+best.name+'. It is holding the pose out of courtesy.');
+  setTimeout(()=>{best.say=pick(['My turn.','Better.','Like this.','Hmm, no.']);best.sayT=1.8;log(best.name+' re-posed itself. It was a nice pose, though.');},2400);
+});
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function step(dt,t){
+  figs.forEach((f,i)=>{
+    if(f.boxed)return;
+    if(f.posed>0){f.posed-=dt;return;}
+    if(mode==='patrol'){const k=(t*.06+i*.07)%1,a=k*Math.PI*2;f.tx=.47+Math.cos(a)*.33;f.ty=.74+Math.sin(a)*.15;}
+    if(mode==='dance'){const a=i/figs.length*Math.PI*2+t*.5;f.tx=.47+Math.cos(a)*.2;f.ty=.75+Math.sin(a)*.11;}
+    if(mode==='box'&&f.delay>0){f.delay-=dt;return;}
+    const dx=f.tx-f.x,dy=f.ty-f.y,d=Math.hypot(dx,dy),sp=(mode==='patrol'||mode==='dance'?.15:.09)*(f.name==='Major Pose'?.7:1);
+    if(d>.006){f.x+=dx/d*Math.min(d,sp*dt);f.y+=dy/d*Math.min(d,sp*dt);f.walk+=dt*9;if(Math.abs(dx)>.002)f.face=dx>0?1:-1;}
+    else{f.walk=0;
+      if(mode==='box'){f.boxed=true;log(f.name+' is in the box.');if(figs.every(x=>x.boxed))log('Lid closed from inside. Goodnight.');return;}
+      if(mode==='free'&&Math.random()<dt*.35){retarget(f);if(Math.random()<.4)log(f.name+' '+pick(LINES.free));}
+    }
+    f.arm=mode==='dance'?Math.sin(t*6+i)*1.2:mode==='lineup'&&d<.01?-2.6:mode==='battle'?Math.sin(t*2+i)*.3+.3:Math.sin(f.walk)*.5;
+    if(f.sayT>0)f.sayT-=dt;
+  });
+  if(mode==='battle'){pairT-=dt;if(pairT<0){pairT=rnd(.7,1.4);const a=pick(figs.slice(0,3)),b=pick(figs.slice(3));const [s,tg]=Math.random()<.5?[a,b]:[b,a];foam.push({x:s.x,y:s.y-.08,tx:tg.x,ty:tg.y-.06,k:0,miss:Math.random()<.7});if(Math.random()<.25){tg.down=1.6;tg.say='Oh no! Anyway.';tg.sayT=1.6;log(tg.name+' '+pick(LINES.battle));}}}
+  if(mode==='patrol'&&Math.random()<dt*.3)log(pick(figs).name+' '+pick(LINES.patrol));
+  if(mode==='dance'&&Math.random()<dt*.25)log(pick(figs).name+' '+pick(LINES.dance));
+  foam.forEach(p=>p.k+=dt*1.4);foam=foam.filter(p=>p.k<1);
+  figs.forEach(f=>{if(f.down>0)f.down-=dt;});
+}
+function drawFig(f,t){
+  const s=Math.min(W,H)/360,x=f.x*W,y=f.y*H-(mode==='dance'&&!f.posed?Math.abs(Math.sin(t*5+f.x*9))*8*s:0),fall=f.down>0?Math.min(1,(1.6-f.down)*3)*Math.min(1,f.down*2):0;
+  g.save();g.translate(x,y);g.scale(s*(.75+f.y*.4),s*(.75+f.y*.4));
+  g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(0,2,16,4,0,0,7);g.fill();
+  g.rotate(fall*f.face*-1.4);
+  const leg=Math.sin(f.walk)*.5;
+  g.strokeStyle='#2a2e3a';g.lineWidth=6;g.lineCap='round';
+  g.beginPath();g.moveTo(-5,-24);g.lineTo(-5+Math.sin(leg)*14,-24+Math.cos(leg)*22);g.moveTo(5,-24);g.lineTo(5-Math.sin(leg)*14,-24+Math.cos(leg)*22);g.stroke();
+  g.fillStyle=f.color;g.beginPath();g.roundRect(-10,-52,20,30,6);g.fill();g.fillStyle='rgba(0,0,0,.22)';g.fillRect(-10,-38,20,4);
+  const pose=f.posed>0?-2.5:f.arm;g.strokeStyle=f.color;g.lineWidth=6;
+  g.beginPath();g.moveTo(-9,-48);g.lineTo(-9+Math.sin(pose)*-14,-48+Math.cos(pose)*16);g.moveTo(9,-48);g.lineTo(9+Math.sin(pose)*14,-48+Math.cos(f.posed>0?pose:-pose)*16);g.stroke();
+  g.fillStyle='#f1c9a5';g.beginPath();g.arc(0,-62,9,0,7);g.fill();g.fillStyle=f.helm;g.beginPath();g.arc(0,-63,9.5,Math.PI,0);g.fill();
+  g.fillStyle='#1b1d24';g.fillRect(f.face>0?2:-5,-63,3,3);
+  g.restore();
+  if(f.sayT>0){g.font='600 '+Math.max(11,12*s)+'px Space Grotesk,sans-serif';const w=g.measureText(f.say).width+14,bx=Math.min(W-w-4,Math.max(4,x-w/2)),by=y-92*s;g.fillStyle='rgba(255,255,255,.95)';g.beginPath();g.roundRect(bx,by-18,w,24,10);g.fill();g.fillStyle='#111';g.fillText(f.say,bx+7,by-1);}
+}
+function draw(t){
+  g.clearRect(0,0,W,H);
+  // wall + window + shelf
+  const wall=g.createLinearGradient(0,0,0,FLOOR);wall.addColorStop(0,'#2a2f55');wall.addColorStop(1,'#1d2142');g.fillStyle=wall;g.fillRect(0,0,W,FLOOR);
+  g.fillStyle='#0b1230';g.fillRect(W*.62,H*.06,W*.22,H*.24);g.fillStyle='#ffe9a8';g.beginPath();g.arc(W*.78,H*.12,H*.03,0,7);g.fill();g.strokeStyle='#3b416e';g.lineWidth=4;g.strokeRect(W*.62,H*.06,W*.22,H*.24);
+  // floor + rug
+  const fl=g.createLinearGradient(0,FLOOR,0,H);fl.addColorStop(0,'#4a3424');fl.addColorStop(1,'#2e2016');g.fillStyle=fl;g.fillRect(0,FLOOR,W,H-FLOOR);
+  g.fillStyle='rgba(123,79,255,.25)';g.beginPath();g.ellipse(W*.47,H*.76,W*.36,H*.16,0,0,7);g.fill();
+  g.strokeStyle='rgba(255,255,255,.08)';g.lineWidth=2;g.beginPath();g.ellipse(W*.47,H*.76,W*.3,H*.12,0,0,7);g.stroke();
+  // low bookshelf against the wall (Agent Shelf's favourite)
+  g.fillStyle='#5a3d24';g.fillRect(W*.07,H*.47,W*.36,H*.09);g.fillStyle='#7a5434';g.fillRect(W*.065,H*.462,W*.37,H*.016);
+  ['#3b5bdb','#c2255c','#2f9e44','#f08c00','#5f3dc4','#1098ad','#e8590c'].forEach((c,i)=>{g.fillStyle=c;g.fillRect(W*(.09+i*.045),H*.49,W*.03,H*.06);});
+  // the box
+  const bx=BOX.x*W,by=BOX.y*H,bw=W*.12,bh=H*.16;g.fillStyle='#c94a2a';g.fillRect(bx-bw/2,by-bh,bw,bh);g.fillStyle='#ff7a52';g.fillRect(bx-bw/2,by-bh,bw,bh*.22);
+  g.fillStyle='#fff';g.font='800 '+Math.max(10,W*.018)+'px Fraunces,serif';g.textAlign='center';g.fillText('ACTION',bx,by-bh*.45);g.textAlign='left';
+  const inBox=figs.filter(f=>f.boxed).length;if(inBox){g.fillStyle='rgba(255,255,255,.85)';g.font='600 '+Math.max(10,W*.016)+'px JetBrains Mono,monospace';g.textAlign='center';g.fillText(inBox+'/6 inside',bx,by+16);g.textAlign='left';}
+  // figures, back to front
+  figs.filter(f=>!f.boxed).sort((a,b)=>a.y-b.y).forEach(f=>drawFig(f,t));
+  // foam darts
+  foam.forEach(p=>{const k=p.k,x=(p.x+(p.tx-p.x)*k)*W,y=(p.y+(p.ty-p.y)*k)*H-Math.sin(k*Math.PI)*H*.08+(p.miss?k*k*H*.05:0);g.fillStyle='#FFD23F';g.beginPath();g.ellipse(x,y,6,3,Math.atan2(p.ty-p.y,p.tx-p.x),0,7);g.fill();g.fillStyle='#FF5A36';g.beginPath();g.arc(x,y,2.4,0,7);g.fill();});
+}
+let running=true;
+function loop(now){if(!running)return;const dt=Math.min(.05,(now-last)/1000)*(reduced?.5:1);last=now;step(dt,now/1000);draw(now/1000);requestAnimationFrame(loop);}
+new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!running){running=true;last=performance.now();requestAnimationFrame(loop);}if(!v)running=false;}).observe(cv);
+if('ResizeObserver' in window)new ResizeObserver(size).observe(cv);else addEventListener('resize',size);
+size();requestAnimationFrame(loop);
+setTimeout(()=>{const f=figs[5];if(mode==='free'){f.tx=.3;f.ty=.47;log('Agent Shelf is climbing onto the shelf. It wants a better view.');}},2500);
+document.querySelectorAll('[data-ed]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('ordermsg').innerHTML='Pre-order received for <b>'+b.dataset.ed+'</b>. Your figures will be shipped in a box. They will be waiting by the door.';}));
+})();
+</script>
+</body>
+</html>
