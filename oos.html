@@ -1006,7 +1006,7 @@ body.lowpower *, body.lowpower *::before, body.lowpower *::after { animation-pla
 <div class="view app-chrome" id="appStore">
   <div class="app-nav"><button class="back-btn" onclick="closeApp()"><span class="back-chev">‹</span> Home</button><div class="nav-title">oStore</div></div>
   <div class="app-body">
-    <div class="store-hero" style="background:linear-gradient(135deg,#FFD23F,#E9B949 40%,#7B4FFF);cursor:pointer" onclick="document.getElementById('storeCompanion').scrollIntoView({behavior:'smooth'})"><div class="store-hero-lbl">New in the oStore</div><div class="store-hero-name">Oddly Companion Apps</div><div class="store-hero-desc">Control your Oddly products from your oPhone. Seven apps. Certification: Pending.</div></div>
+    <div class="store-hero" style="background:linear-gradient(135deg,#FFD23F,#E9B949 40%,#7B4FFF);cursor:pointer" onclick="document.getElementById('storeCompanion').scrollIntoView({behavior:'smooth'})"><div class="store-hero-lbl">New in the oStore</div><div class="store-hero-name">Oddly Companion Apps</div><div class="store-hero-desc">Control your Oddly products from your oPhone. Eight apps. Certification: Pending.</div></div>
     <p class="sec-label" id="storeCompanion">Oddly Companion Apps</p>
     <div class="card-list" id="storeCompanionList"></div>
     <p class="sec-label">Top Charts</p>
@@ -2445,7 +2445,8 @@ const WEB_APPS = {
   'web:nukemow': { name: 'NukeMow', file: 'NukeMow-App.html', emoji: '☢️', color: 'linear-gradient(135deg,#FFD23F,#c99a00)' },
   'web:opc':     { name: 'OPC Command', file: 'OPC-Command-App.html', emoji: '🚤', color: 'linear-gradient(135deg,#2EE9A5,#127a5a)' },
   'web:hive':    { name: 'Hive', file: 'Hive-App.html', emoji: '🪮', color: 'linear-gradient(135deg,#E9B949,#9c7420)' },
-  'web:action':  { name: 'ACTION Command', file: 'ACTION-Command-App.html', emoji: '🦾', color: 'linear-gradient(135deg,#FF5A36,#b3261e)' }
+  'web:action':  { name: 'ACTION Command', file: 'ACTION-Command-App.html', emoji: '🦾', color: 'linear-gradient(135deg,#FF5A36,#b3261e)' },
+  'web:now':     { name: 'NOW', file: 'NOW-App.html', emoji: '⚡', color: 'linear-gradient(135deg,#3DF5FF,#0a7f99)' }
 };
 function openWebApp(id) {
   const a = WEB_APPS[id]; if (!a) return;
@@ -2463,7 +2464,8 @@ const STORE_CATALOG = [
   ['☢️', 'NukeMow', 'Companion · NukeMow™', WEB_APPS['web:nukemow'].color, '★★★★★', 'web:nukemow', 'Your lawn, in your pocket. Briefly. Slide to mow.', true],
   ['🚤', 'OPC Command', 'Companion · Pool Cleaner', WEB_APPS['web:opc'].color, '★★★☆☆', 'web:opc', 'Sonar, classification, and the torpedo bay. Everything Belongs or Does Not.', true],
   ['🪮', 'Hive', 'Companion · Hair Lubricator', WEB_APPS['web:hive'].color, '★★★★☆', 'web:hive', 'Swarm control for 1,200 Follicle Associates. Most of them come back.', true],
-  ['🦾', 'ACTION Command', 'Companion · ACTION Figures', WEB_APPS['web:action'].color, '★★★★★', 'web:action', 'Missions for a squad that moves by itself. Bedtime included.', true]
+  ['🦾', 'ACTION Command', 'Companion · ACTION Figures', WEB_APPS['web:action'].color, '★★★★★', 'web:action', 'Missions for a squad that moves by itself. Bedtime included.', true],
+  ['⚡', 'NOW', 'Companion · NOW Series', WEB_APPS['web:now'].color, '★★★★★', 'web:now', 'Toast in 0.003 s. Tea in 0.4 s. Breakfast in one button.', true]
 ];
 
 </script>
@@ -5478,7 +5480,7 @@ const ACCOUNT = (() => {
     const list = [['📱', 'This oPhone 1', 'oOS 2.0 · ' + (SET.get('lowPower', false) ? 'Low Power' : '87%')]];
     if (SET.get('bluetooth', true) && SET.get('podsConnected', true)) list.push(['🎧', 'Oddly Pods Pro', 'Connected']);
     const inst = (typeof installedApps !== 'undefined' ? installedApps : []).map(x => x.viewId);
-    const MAP = { 'web:cars': ['🚗', 'Oddly Roadster', 'Parked · location: approximate'], 'web:human': ['🤖', 'Oddly Human 1', 'Standing quietly'], 'web:opress': ['✈️', 'Plane Pressurizer', 'Seat 23B'], 'web:nukemow': ['☢️', 'NukeMow Sensor', 'Lawn 01 · armed'], 'web:opc': ['🚤', 'Oddly Pool Cleaner', 'Patrolling'], 'web:hive': ['🪮', 'Hive Comb', '1,200 associates'], 'web:action': ['🦾', 'ACTION Squad', '6 figures · awake'] };
+    const MAP = { 'web:cars': ['🚗', 'Oddly Roadster', 'Parked · location: approximate'], 'web:human': ['🤖', 'Oddly Human 1', 'Standing quietly'], 'web:opress': ['✈️', 'Plane Pressurizer', 'Seat 23B'], 'web:nukemow': ['☢️', 'NukeMow Sensor', 'Lawn 01 · armed'], 'web:opc': ['🚤', 'Oddly Pool Cleaner', 'Patrolling'], 'web:hive': ['🪮', 'Hive Comb', '1,200 associates'], 'web:action': ['🦾', 'ACTION Squad', '6 figures · awake'], 'web:now': ['⚡', 'NOW Kitchen', 'Toaster + Kettle · 4.2 GW'] };
     inst.forEach(v => { if (MAP[v]) list.push(MAP[v]); });
     return list;
   }

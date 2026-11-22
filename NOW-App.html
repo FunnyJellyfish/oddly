@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOW</title>
+<meta name="description" content="NOW, the companion app for the Oddly NOW™ Series. Toast, boil and breakfast within one second, from your phone.">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://www.oddly-inc.com/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A14;--bg2:#0D1020;--card:#141831;--card2:#1b2040;--line:#262b4d;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;
+  --mint:#2EE9A5;--purple:#7B4FFF;--amber:#F5A623;--red:#FF4D5E;--acc:#3DF5FF;--accInk:#041418}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(900px 600px at 20% 10%,rgba(123,79,255,.16),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(61,245,255,.13),transparent 60%),#05060d;
+  color:var(--text);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh;overflow:hidden}
+button,input,select{font-family:inherit;color:inherit}
+.site{position:fixed;left:18px;top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(8,10,20,.6)}
+.site:hover{color:var(--text);border-color:var(--acc)}
+.device{width:390px;height:min(844px,calc(100vh - 32px));border-radius:54px;background:var(--bg);border:2px solid #2a3058;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 7px #0e1226,0 0 0 8px #2a3058;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#000;z-index:20}
+.sb{height:50px;padding:16px 30px 0;display:flex;justify-content:space-between;font-weight:600;font-size:14px;flex:none}
+.sb .r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);padding-top:2px}
+@media(max-width:520px){body{display:block;background:var(--bg)}.site{display:none}
+  .device{width:100vw;height:100vh;height:100dvh;border-radius:0;border:0;box-shadow:none}.island{display:none}.sb{height:calc(30px + env(safe-area-inset-top));padding:calc(8px + env(safe-area-inset-top)) 20px 0}}
+.hdr{padding:6px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.hdr h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:27px;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;border-radius:999px;padding:4px 9px;background:var(--acc);color:var(--accInk);white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.view{display:none;padding:2px 16px 26px}
+.view.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabs{flex:none;display:grid;border-top:1px solid var(--line);background:rgba(8,10,20,.94);padding:6px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs button{background:none;border:none;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:6px 0;cursor:pointer;transition:color .2s}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card.acc{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 14%,var(--card)),var(--card))}
+.k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.big{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)} .small{font-size:12.5px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .card{margin-bottom:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--acc);color:var(--accInk);border:none;border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)} .btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw i{position:absolute;inset:0;background:#2a2f52;border-radius:999px;transition:background .2s;cursor:pointer}
+.sw i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+i{background:var(--acc)} .sw input:checked+i::after{transform:translateX(20px)}
+.sw input:disabled+i{opacity:.5;cursor:not-allowed}
+.sw input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set b{font-weight:600;font-size:14.5px;display:block}
+.set small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px;cursor:pointer}
+.seg{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{background:none;border:none;border-left:1px solid var(--line);padding:10px 4px;font-size:12px;font-weight:600;color:var(--dim);cursor:pointer}
+.seg button:first-child{border-left:none}
+.seg button.on{background:var(--acc);color:var(--accInk)}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.list li:last-child{border-bottom:none}
+.list li span{grid-column:1/-1;color:var(--dim);font-size:12.5px}
+.list li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--faint)}
+.list li.new{animation:pop .5s ease}
+@keyframes pop{from{background:color-mix(in srgb,var(--acc) 25%,transparent)}to{background:transparent}}
+.toast{position:absolute;left:14px;right:14px;bottom:92px;background:rgba(20,24,49,.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:13.5px;
+  box-shadow:0 14px 40px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:30;backdrop-filter:blur(8px)}
+.toast.on{transform:none;opacity:1}
+.toast b{color:var(--acc)}
+.sheet{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(5,6,13,.92);backdrop-filter:blur(6px)}
+.sheet.on{display:flex;animation:fade .2s}
+.about{font-size:12px;color:var(--faint);text-align:center;margin-top:16px;line-height:1.6}
+.about a{color:var(--dim)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* inside oOS (?oos=1): oOS draws the status bar and the home indicator */
+html.oos body{display:block;background:var(--bg)} html.oos .site,html.oos .island,html.oos .sb{display:none}
+html.oos .device{width:100vw;height:100vh;border-radius:0;border:0;box-shadow:none}
+html.oos .hdr{padding-top:10px} html.oos .tabs{padding-bottom:8px}
+
+
+.dev{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center}
+.dev .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:var(--card2);border:1px solid var(--line)}
+.dev b{font-size:16px;display:block}
+.dev .st{font-size:12.5px;color:var(--dim);margin-top:2px}
+.go{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;margin-top:12px}
+.go button{border-radius:12px;padding:11px 6px;font-weight:700;font-size:13px;cursor:pointer;border:1px solid var(--line);font-family:'JetBrains Mono',monospace}
+.go .s{background:var(--card2);color:var(--text)}
+.go .s small{display:block;font-weight:400;font-size:10px;color:var(--dim)}
+.go .n{background:radial-gradient(circle at 50% 130%,#fff,var(--acc) 45%,#0aa9c4);color:var(--accInk);border:none;letter-spacing:.14em;font-size:17px;box-shadow:0 0 22px rgba(61,245,255,.3)}
+.go .n small{display:block;font-size:9.5px;letter-spacing:0;opacity:.75}
+.go button:active{transform:scale(.97)}
+.bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FFB43A,#fff3c9)}
+.bar.now i{background:linear-gradient(90deg,var(--acc),#fff)}
+.flashy{position:absolute;inset:0;z-index:35;pointer-events:none;background:radial-gradient(circle at 50% 45%,#fff,rgba(61,245,255,.55) 35%,rgba(61,245,255,0) 70%);opacity:0}
+.flashy.go{animation:fl .5s ease-out}
+@keyframes fl{0%{opacity:0}8%{opacity:1}100%{opacity:0}}
+.device.dimmed{animation:dm .5s ease-out}
+@keyframes dm{0%{filter:none}12%{filter:brightness(.5)}100%{filter:none}}
+.bk{display:grid;place-items:center;text-align:center;padding:22px 14px}
+#bkBtn{width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 50% 120%,#fff,var(--acc) 45%,#078ea6);color:var(--accInk);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;letter-spacing:.12em;box-shadow:0 0 0 8px rgba(61,245,255,.08),0 0 60px rgba(61,245,255,.35);transition:transform .15s}
+#bkBtn small{display:block;font-size:11px;letter-spacing:0;font-weight:600;opacity:.75;margin-top:4px}
+#bkBtn:active{transform:scale(.96)}
+.plate{display:flex;gap:12px;justify-content:center;font-size:34px;min-height:44px;margin-top:16px}
+.plate span{opacity:.15;transition:opacity .2s,transform .2s}
+.plate span.on{opacity:1;transform:scale(1.1)}
+#hood{width:100%;aspect-ratio:1/1;display:block;border-radius:12px}
+.gauge{display:flex;align-items:flex-end;gap:10px}
+.gauge .big{font-size:28px}
+select.pick{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 8px;font-size:13px}
+
+.tabs{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<script>if(/[?&]oos=1/.test(location.search))document.documentElement.classList.add('oos');</script>
+<a class="site" href="https://www.oddly-inc.com/now.html">&larr; Oddly NOW™ Series on oddly-inc.com</a>
+<div class="device" role="application" aria-label="NOW">
+  <div class="island" aria-hidden="true"></div>
+  <div class="sb"><span id="clk">9:41</span><span class="r">oNet · 4.2 GW</span></div>
+  <header class="hdr"><div><h1>NOW</h1><div class="sub">ODDLY NOW&trade; SERIES</div></div><span class="chip" id="saveChip">0 s saved</span></header>
+  <main class="main">
+
+<section class="view on" id="v-kitchen">
+  <div class="card acc">
+    <div class="dev"><div class="ic">🍞</div><div><b>NOW Toaster</b><div class="st" id="tSt">Ready · bread loaded · Medium</div></div></div>
+    <div class="go"><button class="s" id="tStart">Start<small id="tSub">2:30</small></button><button class="n" id="tNow">NOW<small>0.003 s</small></button></div>
+    <div class="bar" id="tBarW"><i id="tBar"></i></div>
+  </div>
+  <div class="card acc">
+    <div class="dev"><div class="ic">🫖</div><div><b>NOW Kettle</b><div class="st" id="kSt">Ready · 1 L · 18 °C</div></div></div>
+    <div class="go"><button class="s" id="kStart">Boil<small id="kSub">3:00</small></button><button class="n" id="kNow">NOW<small>0.4 s</small></button></div>
+    <div class="bar" id="kBarW"><i id="kBar"></i></div>
+  </div>
+  <div class="card" style="opacity:.75">
+    <div class="dev"><div class="ic">📦</div><div><b>NOW Microwave</b><div class="st">Coming soon · the beep is the cooking</div></div></div>
+  </div>
+  <div class="card" style="opacity:.75">
+    <div class="dev"><div class="ic">👕</div><div><b>NOW Dryer</b><div class="st">Coming soon · slightly crisp</div></div></div>
+  </div>
+  <p class="about">Start is still there, for nostalgia.</p>
+</section>
+
+<section class="view" id="v-breakfast">
+  <div class="card acc bk">
+    <div class="k" style="margin-bottom:14px">Toast and tea, together</div>
+    <button id="bkBtn" type="button">NOW<small>breakfast · 0.4 s</small></button>
+    <div class="plate" aria-hidden="true"><span id="pT">🍞</span><span id="pK">🫖</span><span id="pB">🧈</span></div>
+    <div class="small dim" id="bkMsg" style="margin-top:10px">One button. Toast and a full kettle. The butter is on you.</div>
+  </div>
+  <div class="card">
+    <div class="row"><span><b style="font-size:14.5px">NOW Alarm</b><div class="small dim">Breakfast NOW, at a set time</div></span><span class="sw"><input type="checkbox" id="alarm"><i></i></span></div>
+    <div class="row" style="margin-top:10px"><span class="small dim">Time</span><select class="pick" id="alarmT"><option>5:00 AM</option><option>6:30 AM</option><option selected>7:00 AM</option><option>8:15 AM</option></select></div>
+  </div>
+  <div class="card"><div class="row"><span class="k">Breakfast log</span><span class="mono small dim" id="bkN">0</span></div><ul class="list" id="bkLog"></ul></div>
+</section>
+
+<section class="view" id="v-grid">
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="card acc"><div class="k">Last NOW</div><div class="big" id="gPeak">0 GW</div><div class="small dim" id="gPeakSub">Nothing pressed yet</div></div>
+    <div class="card"><div class="k">Today</div><div class="big" id="gKwh">0.0</div><div class="small dim">kWh · <span id="gCost">$0.00</span></div></div>
+  </div>
+  <div class="card" style="padding:8px"><canvas id="hood" aria-label="Your street at night. Lights dim when you press NOW."></canvas></div>
+  <div class="card"><div class="row"><span class="k">Neighbors notified</span><span class="mono" id="gNb">0</span></div>
+    <p class="small dim" style="margin-top:8px" id="gNote">Your street is lit. Press NOW anywhere in the app and watch it dim. That is how you know it worked.</p></div>
+</section>
+
+<section class="view" id="v-settings">
+  <div class="card">
+    <div class="set"><span><b>Toast shade</b><small>NOW does every shade in 0.003 s.</small></span><select class="pick" id="sShade"><option>Light</option><option selected>Medium</option><option>Dark</option><option>Sun</option></select></div>
+    <div class="set"><span><b>Kettle</b><small>Amount and temperature.</small></span><select class="pick" id="sKettle"><option value="0">Cup · 80°</option><option value="1">Half · 93°</option><option value="2" selected>Litre · 100°</option></select></div>
+    <label class="set"><span><b>Whistle once</b><small>0.1 seconds. You will hear it if you are listening.</small></span><span class="sw"><input type="checkbox" id="sWhistle" checked><i></i></span></label>
+    <label class="set"><span><b>Show Start buttons</b><small>For customers who enjoy waiting.</small></span><span class="sw"><input type="checkbox" id="sStart" checked><i></i></span></label>
+    <label class="set"><span><b>Notify neighbors</b><small>Sends "That was me. Toast." when their lights dim.</small></span><span class="sw"><input type="checkbox" id="sNotify" checked><i></i></span></label>
+    <label class="set"><span><b>Confirm before NOW</b><small>Not available. NOW does not wait for confirmation.</small></span><span class="sw"><input type="checkbox" disabled><i></i></span></label>
+  </div>
+  <p class="about">NOW 1.0 · Oddly NOW&trade; Series<br>Peak draw 4.2 GW. Certification: Pending.<br><a href="https://www.oddly-inc.com/now.html">oddly-inc.com/now.html</a></p>
+</section>
+
+  </main>
+  <nav class="tabs" role="tablist"><button data-t="kitchen" role="tab" aria-selected="true" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="4"/><path d="M7.5 9V5.5h3.5V9M13 9V5.5h3.5V9M10 15h4"/></svg>Kitchen</button><button data-t="breakfast" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4.5 13.5H12L11 22l8.5-11.5H12z"/></svg>Breakfast</button><button data-t="grid" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Grid</button><button data-t="settings" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Settings</button></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="flashy" id="flashy" aria-hidden="true"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function clock(){const d=new Date();$('#clk').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clock,15000);})();
+function showTab(id){$$('.tabs button').forEach(b=>{const on=b.dataset.t===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id));$('.main').scrollTop=0;if(window.onTab)onTab(id);}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.t)));
+let toastT;function toast(html,ms){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||2600);}
+function addLog(ul,title,text,when){const li=document.createElement('li');li.className='new';li.innerHTML='<b></b><i></i><span></span>';li.children[0].textContent=title;li.children[1].textContent=when||'Now';li.children[2].textContent=text;ul.insertBefore(li,ul.firstChild);while(ul.children.length>30)ul.removeChild(ul.lastChild);}
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}}
+</script>
+<script>
+
+const SHADES={Light:105,Medium:150,Dark:195,Sun:150};
+const KET=[{n:'Cup',l:'0.25 L',c:80,t:75},{n:'Half',l:'0.5 L',c:93,t:120},{n:'Litre',l:'1 L',c:100,t:180}];
+const S=Object.assign({shade:'Medium',kettle:2,whistle:true,start:true,notify:true,alarm:false,alarmT:'7:00 AM'},store('nowApp')||{});
+const save=()=>store('nowApp',S);
+let saved=0,kwh=0,nb=0,bkN=0,tRun=null,kRun=null,dimT=0,actx=null;
+const clk=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+function fmtSaved(s){return s<60?Math.round(s)+' s saved':s<3600?(s/60).toFixed(1)+' min saved':(s/3600).toFixed(1)+' h saved';}
+function credit(sec,gw,ms){saved+=sec;kwh+=gw*1e9*ms/1000/3.6e6;$('#saveChip').textContent=fmtSaved(saved);
+  $('#gPeak').textContent=gw.toFixed(1)+' GW';$('#gPeakSub').textContent='for '+ms+' ms · '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  $('#gKwh').textContent=kwh.toLocaleString('en-US',{maximumFractionDigits:1});$('#gCost').textContent='$'+(kwh*.31).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(S.notify){nb+=3+Math.floor(Math.random()*5);$('#gNb').textContent=nb;}
+  $('#gNote').textContent=S.notify?'Your neighbors were told: "That was me. Toast." They have stopped asking.':'Your street dimmed. Nobody was told. They suspect.';
+  dimT=1;$('.device').classList.remove('dimmed');void $('.device').offsetWidth;$('.device').classList.add('dimmed');
+  const f=$('#flashy');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');}
+function whistle(long){if(!S.whistle)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain(),t=actx.currentTime,d=long?1.2:.1;o.frequency.setValueAtTime(2400,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+.02);g.gain.setValueAtTime(.05,t+d-.03);g.gain.linearRampToValueAtTime(0,t+d);o.connect(g).connect(actx.destination);o.start(t);o.stop(t+d+.02);}catch(e){}}
+// generic slow run
+function slow(total,bar,st,label,done){const t0=performance.now();const r={id:0,t0,total};const tick=()=>{const s=(performance.now()-t0)/1000,k=Math.min(1,s/total);$(bar).style.width=(k*100)+'%';$(bar).parentNode.classList.remove('now');
+  $(st).textContent=label+' the normal way · '+clk(s)+' / '+clk(total);if(k>=1){done();return;}r.id=requestAnimationFrame(tick);};r.id=requestAnimationFrame(tick);return r;}
+function fast(bar,ms){const b=$(bar);b.parentNode.classList.add('now');b.style.transition='none';b.style.width='0';void b.offsetWidth;b.style.transition='width '+Math.max(.05,ms/1000)+'s linear';b.style.width='100%';setTimeout(()=>{b.style.transition='';},ms+60);}
+function tSub(){$('#tSub').textContent=clk(SHADES[S.shade]);}
+function kSub(){const k=KET[S.kettle];$('#kSub').textContent=clk(k.t*(k.c-18)/82);$('#kSt').textContent='Ready · '+k.l+' · 18 °C';}
+// toaster
+$('#tStart').addEventListener('click',()=>{if(tRun){toast('Already toasting. Patiently. <b>NOW</b> is right there.');return;}
+  tRun=slow(SHADES[S.shade],'#tBar','#tSt','Toasting',()=>{tRun=null;$('#tSt').textContent='Toast · '+S.shade+' · the normal way';toast('Toast is ready. It took '+clk(SHADES[S.shade])+'. Like always.');});});
+function toastNow(silent){let waited=0;if(tRun){cancelAnimationFrame(tRun.id);waited=(performance.now()-tRun.t0)/1000;tRun=null;}
+  fast('#tBar',30);const ms=S.shade==='Sun'?4:3;credit(SHADES[S.shade]-waited,4.2,ms);$('#tSt').textContent='Toast · '+S.shade+' · 0.00'+ms+' s · 41 °C';
+  if(!silent)toast(waited?'Impatience detected. You waited <b>'+waited.toFixed(1)+' s</b>, then pressed NOW.':pick(['Toast in <b>0.00'+ms+' s</b>. The lights dimmed. That means it worked.','<b>0.00'+ms+' s</b>. Butter is now the bottleneck.','<b>0.00'+ms+' s</b>. Your street noticed.']));}
+$('#tNow').addEventListener('click',()=>toastNow());
+// kettle
+$('#kStart').addEventListener('click',()=>{if(kRun){toast('Already boiling. You could press <b>NOW</b>.');return;}const k=KET[S.kettle];
+  kRun=slow(k.t*(k.c-18)/82,'#kBar','#kSt','Boiling',()=>{kRun=null;$('#kSt').textContent='Ready · '+k.l+' · '+k.c+' °C · the normal way';whistle(true);toast('Water is ready. It whistled for a while.');});});
+function kettleNow(silent){const k=KET[S.kettle];let waited=0;if(kRun){cancelAnimationFrame(kRun.id);waited=(performance.now()-kRun.t0)/1000;kRun=null;}
+  fast('#kBar',400);setTimeout(()=>{$('#kSt').textContent='Ready · '+k.l+' · '+k.c+' °C · 0.4 s';whistle(false);},400);credit(k.t*(k.c-18)/82-waited,.9,400);
+  if(!silent)toast(waited?'Impatience detected. <b>0.4 s</b> after '+waited.toFixed(1)+' s of listening.':S.whistle?'Boiled in <b>0.4 s</b>. It whistled. Once.':'Boiled in <b>0.4 s</b>. Silently.');}
+$('#kNow').addEventListener('click',()=>kettleNow());
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+// breakfast
+function breakfast(src){['#pT','#pK','#pB'].forEach(x=>$(x).classList.remove('on'));toastNow(true);setTimeout(()=>$('#pT').classList.add('on'),40);kettleNow(true);setTimeout(()=>$('#pK').classList.add('on'),420);
+  setTimeout(()=>{$('#pB').classList.add('on');$('#bkMsg').innerHTML=src==='alarm'?'Your NOW Alarm made breakfast at <b>'+S.alarmT+'</b>. You were asleep. It is still warm.':pick(['Breakfast in <b>0.4 s</b>. The butter took longer. The butter always takes longer.','Breakfast in <b>0.4 s</b>. You have gained four minutes. Use them well.','Breakfast in <b>0.4 s</b>. Stephen Stupid has been notified of the electricity.']);},700);
+  addLog($('#bkLog'),src==='alarm'?'NOW Alarm':'Breakfast NOW','Toast ('+S.shade+') and '+KET[S.kettle].l+' at '+KET[S.kettle].c+' °C in 0.4 s.',new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}));$('#bkN').textContent=++bkN;}
+$('#bkBtn').addEventListener('click',()=>breakfast());
+$('#alarm').addEventListener('change',e=>{S.alarm=e.target.checked;save();toast(S.alarm?'NOW Alarm set for <b>'+S.alarmT+'</b>. Breakfast will be ready before you are.':'NOW Alarm off.');if(S.alarm)setTimeout(()=>{if(S.alarm)breakfast('alarm');},2600);});
+$('#alarmT').addEventListener('change',e=>{S.alarmT=e.target.value;save();toast('NOW Alarm: <b>'+S.alarmT+'</b>.'+(S.alarmT==='5:00 AM'?' Same time as the oPhone alarm. Unchanged.':''));});
+// settings
+function apply(){$('#sShade').value=S.shade;$('#sKettle').value=S.kettle;$('#sWhistle').checked=S.whistle;$('#sStart').checked=S.start;$('#sNotify').checked=S.notify;$('#alarm').checked=S.alarm;$('#alarmT').value=S.alarmT;
+  $$('.go .s').forEach(b=>b.style.display=S.start?'':'none');$$('.go').forEach(g=>g.style.gridTemplateColumns=S.start?'':'1fr');tSub();kSub();if(!tRun)$('#tSt').textContent='Ready · bread loaded · '+S.shade;}
+$('#sShade').addEventListener('change',e=>{S.shade=e.target.value;save();apply();toast('Shade: <b>'+S.shade+'</b>.'+(S.shade==='Sun'?' One extra millisecond. The core is not available.':''));});
+$('#sKettle').addEventListener('change',e=>{S.kettle=+e.target.value;save();apply();});
+$('#sWhistle').addEventListener('change',e=>{S.whistle=e.target.checked;save();toast(S.whistle?'The kettle will whistle once.':'The kettle will not whistle. It is a little hurt.');});
+$('#sStart').addEventListener('change',e=>{S.start=e.target.checked;save();apply();toast(S.start?'Start buttons are back. For nostalgia.':'Start buttons hidden. <b>Only NOW remains.</b> As intended.');});
+$('#sNotify').addEventListener('change',e=>{S.notify=e.target.checked;save();toast(S.notify?'Neighbors will be notified.':'Neighbors will not be notified. They will wonder.');});
+// the street
+const cv=$('#hood'),g=cv.getContext('2d');let W=0;
+function size(){const r=cv.getBoundingClientRect();if(!r.width)return;const D=Math.min(2,devicePixelRatio||1);W=r.width;cv.width=W*D;cv.height=W*D;g.setTransform(D,0,0,D,0,0);}
+new ResizeObserver(size).observe(cv);
+const HOUSES=Array.from({length:12},(_,i)=>({x:.1+(i%4)*.25,y:i<4?.2:i<8?.52:.84,you:i===5,w:[Math.random()<.8,Math.random()<.8]}));
+function drawHood(t){if(!W)return;const dim=Math.max(0,dimT);g.fillStyle='#070915';g.fillRect(0,0,W,W);
+  g.fillStyle='#14182e';g.fillRect(0,W*.34,W,W*.06);g.fillRect(0,W*.66,W,W*.06);
+  for(let i=0;i<8;i++){const x=(i+.5)/8*W;[.37,.69].forEach(y=>{const lit=1-dim*.8;g.fillStyle='rgba(255,210,120,'+(.25*lit)+')';g.beginPath();g.arc(x,y*W,10,0,7);g.fill();g.fillStyle='rgba(255,230,170,'+lit+')';g.beginPath();g.arc(x,y*W,2,0,7);g.fill();});}
+  HOUSES.forEach(h=>{const x=h.x*W,y=h.y*W,s=W*.13;g.fillStyle=h.you?'#1f2a4a':'#181c34';g.fillRect(x-s/2,y-s*.55,s,s*.75);g.beginPath();g.moveTo(x-s*.6,y-s*.5);g.lineTo(x,y-s*.95);g.lineTo(x+s*.6,y-s*.5);g.fillStyle=h.you?'#26345c':'#1d2140';g.fill();
+    h.w.forEach((on,j)=>{if(!on)return;const lit=Math.max(.12,1-dim*(h.you?.95:.85));g.fillStyle='rgba(255,214,130,'+lit+')';g.fillRect(x-s*.32+j*s*.38,y-s*.32,s*.24,s*.22);});
+    if(h.you){g.fillStyle='rgba(61,245,255,'+(.25+dim*.75)+')';g.beginPath();g.arc(x,y+s*.05,4+dim*30,0,7);g.fill();g.fillStyle='#3DF5FF';g.font='700 9px JetBrains Mono';g.textAlign='center';g.fillText('YOU',x,y+s*.32);g.textAlign='left';}});
+}
+let last=performance.now();function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;dimT=Math.max(0,dimT-dt*1.4);drawHood(now/1000);requestAnimationFrame(loop);}
+window.onTab=id=>{if(id==='grid')size();};
+apply();requestAnimationFrame(loop);
+
+</script>
+</body>
+</html>
