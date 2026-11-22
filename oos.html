@@ -13,113 +13,6 @@
   --t1: #000; --t2: #3C3C43; --t3: #999; --sep: rgba(60,60,67,0.12);
 }
 html, body { height:100%; background:#0B0D17; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; display:flex; justify-content:center; align-items:center; overflow:hidden; }
-@media (max-width:430px) {
-  body { background:#000; padding-top: env(safe-area-inset-top); }
-  .phone-shell { width:100vw; height:calc(100dvh - env(safe-area-inset-top)); border-radius:0; box-shadow:none; }
-  .phone-shell::before,.phone-shell::after { display:none; }
-  .screen { border-radius:0; }
-  #alarmOverlay { border-radius:0; }
-
-  /* ── Status bar & nav ── */
-  .sb  { height:44px; padding:0 20px 8px; }
-  .di  { top:8px; }
-  .app-nav  { padding-top:46px !important; padding-bottom:10px !important; }
-  .new-conv-to { padding-top:46px !important; }
-
-  /* ── Lock screen ── */
-  .lock-big       { font-size:clamp(52px,17vw,88px); letter-spacing:-3px; }
-  .lock-time-block{ top:90px; }
-  .lock-date      { font-size:15px; }
-  .lock-notif     { top:320px; }
-
-  /* ── Setup ── */
-  .setup-step   { padding:16px 20px; gap:0; }
-  .setup-logo   { font-size:clamp(32px,10vw,56px); margin-bottom:12px; }
-  .setup-h1     { font-size:clamp(22px,6.5vw,36px); margin-bottom:8px; }
-  .setup-body   { font-size:13px; margin-bottom:18px; }
-  .setup-btn    { padding:13px 0; font-size:15px; border-radius:13px; }
-  .setup-options{ gap:8px; margin-bottom:18px; }
-  .setup-option { padding:12px 16px; font-size:15px; }
-  .setup-input  { padding:12px 14px; font-size:15px; margin-bottom:8px; }
-  .face-scan-area { width:140px; height:140px; font-size:56px; margin-bottom:16px; }
-  .pc-dots      { gap:16px; margin-bottom:28px; }
-  .pc-dot       { width:13px; height:13px; }
-  .pc-grid      { grid-template-columns:repeat(3,68px); gap:10px; }
-  .pc-key       { height:68px; }
-  .pc-key-num   { font-size:24px; }
-
-  /* ── Clock app ── */
-  .clock-big  { font-size:clamp(44px,14vw,72px); letter-spacing:-3px; }
-  .clock-hero { padding:20px 16px 18px; }
-
-  /* ── Dialer ── */
-  .dial-display      { padding:10px 14px 6px; min-height:52px; }
-  .dial-number       { font-size:clamp(22px,7vw,34px); }
-  .dial-grid         { gap:7px; padding:2px 14px 6px; }
-  .dial-btn          { height:clamp(52px,13vw,66px); font-size:22px; border-radius:50%; }
-  .dial-btn .dial-sub{ font-size:8px; }
-  .dial-bottom-row   { padding:4px 14px 18px; }
-  .dial-call-btn     { width:clamp(56px,14vw,64px); height:clamp(56px,14vw,64px); font-size:24px; }
-
-  /* ── Calculator ── */
-  .calc-display { font-size:clamp(40px,13vw,60px); padding:10px 20px 6px; }
-  .cbtn         { height:clamp(60px,15vw,72px); font-size:clamp(20px,6vw,24px); }
-  .calc-grid    { gap:7px; padding:6px 10px 20px; }
-
-  /* ── Conversation / messages ── */
-  .bubble       { font-size:15px; padding:9px 13px; }
-  .chat-input-bar { padding:8px 12px 16px; }
-  .chat-area    { padding:12px 12px; gap:6px; }
-
-  /* ── Call screen ── */
-  .call-top     { padding-top:clamp(48px,10vh,80px); gap:8px; }
-  .call-avatar  { width:68px !important; height:68px !important; font-size:30px !important; }
-  .call-name    { font-size:clamp(20px,6vw,28px); }
-  .call-chat    { padding:10px 14px; gap:8px; }
-  .call-bubble  { font-size:14px; padding:8px 12px; }
-  .call-input-row { padding:8px 12px 12px; }
-  .call-bottom  { padding:6px 28px 18px; }
-  .call-end-btn { width:clamp(56px,14vw,68px); height:clamp(56px,14vw,68px); font-size:24px; }
-  .call-ctrl    { width:50px; height:50px; font-size:20px; }
-
-  /* ── Alarm ── */
-  .alarm-bell       { font-size:clamp(52px,16vw,72px); }
-  .alarm-time-disp  { font-size:clamp(60px,19vw,90px); letter-spacing:-4px; }
-  .alarm-lbl        { font-size:18px; margin-bottom:32px; }
-  .alarm-dismiss    { padding:14px 36px; font-size:17px; }
-
-  /* ── General spacing ── */
-  .app-body   { padding:12px 12px 24px; }
-  .card-list  { margin-bottom:12px; border-radius:10px; }
-  .row        { padding:11px 14px; }
-  .row-lbl    { font-size:16px; }
-  .sec-label  { font-size:12px; }
-  .dock       { bottom:12px; padding:11px 12px; border-radius:24px; }
-  .app-grid   { top:56px; padding:0 14px; row-gap:18px; }
-  .icon-bg    { width:54px; height:54px; font-size:26px; border-radius:14px; }
-  .app-label  { font-size:10px; }
-  .dock .icon-bg { width:52px !important; height:52px !important; }
-  .about-icon { width:80px; height:80px; font-size:40px; }
-  .about-device { font-size:22px; }
-  .nb-text    { font-size:13px; }
-}
-
-/* ── Extra short screens (iPhone SE, small Android) ── */
-@media (max-height:700px) and (max-width:430px) {
-  .lock-big        { font-size:48px; }
-  .lock-time-block { top:72px; }
-  .lock-notif      { top:270px; }
-  .setup-logo      { font-size:28px; margin-bottom:8px; }
-  .setup-h1        { font-size:20px; }
-  .setup-body      { font-size:12px; margin-bottom:12px; }
-  .clock-big       { font-size:44px; }
-  .dial-btn        { height:50px; }
-  .call-top        { padding-top:32px; }
-  .alarm-time-disp { font-size:56px; }
-  .alarm-bell      { font-size:48px; }
-  .pc-key          { height:60px; }
-  .pc-grid         { grid-template-columns:repeat(3,62px); gap:8px; }
-}
 @media (max-height:900px) and (min-width:431px) { .phone-shell{transform:scale(0.92);transform-origin:center;} }
 @media (max-height:780px) and (min-width:431px) { .phone-shell{transform:scale(0.80);} }
 
@@ -619,6 +512,125 @@ body.dark .app-chrome { color:var(--t1); }
 /* oOS 2.0 settings effects */
 body.truetone .screen::after { content:''; position:absolute; inset:0; background:rgba(255,190,120,.06); mix-blend-mode:multiply; pointer-events:none; z-index:8887; }
 body.lowpower *, body.lowpower *::before, body.lowpower *::after { animation-play-state:paused !important; }
+
+/* ── PHONES: must come last so it overrides the desktop mock-up sizes above ── */
+@media (max-width:430px) {
+  body { background:#000; padding-top: env(safe-area-inset-top); }
+  .phone-shell { width:100vw; height:calc(100dvh - env(safe-area-inset-top)); border-radius:0; box-shadow:none; }
+  .phone-shell::before,.phone-shell::after { display:none; }
+  .screen { border-radius:0; }
+  #alarmOverlay { border-radius:0; }
+
+  /* ── Status bar & nav ── */
+  .sb  { height:44px; padding:0 20px 8px; }
+  .di  { top:8px; }
+  .app-nav  { padding-top:46px !important; padding-bottom:10px !important; }
+  .new-conv-to { padding-top:46px !important; }
+
+  /* ── Lock screen ── */
+  .lock-big       { font-size:clamp(52px,17vw,88px); letter-spacing:-3px; }
+  .lock-time-block{ top:90px; }
+  .lock-date      { font-size:15px; }
+  .lock-notif     { top:320px; }
+
+  /* ── Setup ── */
+  .setup-step   { padding:16px 20px; gap:0; }
+  .setup-logo   { font-size:clamp(32px,10vw,56px); margin-bottom:12px; }
+  .setup-h1     { font-size:clamp(22px,6.5vw,36px); margin-bottom:8px; }
+  .setup-body   { font-size:13px; margin-bottom:18px; }
+  .setup-btn    { padding:13px 0; font-size:15px; border-radius:13px; }
+  .setup-options{ gap:8px; margin-bottom:18px; }
+  .setup-option { padding:12px 16px; font-size:15px; }
+  .setup-input  { padding:12px 14px; font-size:15px; margin-bottom:8px; }
+  .face-scan-area { width:140px; height:140px; font-size:56px; margin-bottom:16px; }
+  .pc-dots      { gap:16px; margin-bottom:28px; }
+  .pc-dot       { width:13px; height:13px; }
+  .pc-grid      { grid-template-columns:repeat(3,68px); gap:10px; }
+  .pc-key       { height:68px; }
+  .pc-key-num   { font-size:24px; }
+
+  /* ── Clock app ── */
+  .clock-big  { font-size:clamp(44px,14vw,72px); letter-spacing:-3px; }
+  .clock-hero { padding:20px 16px 18px; }
+
+  /* ── Dialer ── */
+  .dial-display      { padding:10px 14px 6px; min-height:52px; }
+  .dial-number       { font-size:clamp(22px,7vw,34px); }
+  .dial-grid         { gap:7px; padding:2px 14px 6px; }
+  .dial-btn          { height:clamp(52px,13vw,66px); font-size:22px; border-radius:50%; }
+  .dial-btn .dial-sub{ font-size:8px; }
+  .dial-bottom-row   { padding:4px 14px 18px; }
+  .dial-call-btn     { width:clamp(56px,14vw,64px); height:clamp(56px,14vw,64px); font-size:24px; }
+
+  /* ── Calculator ── */
+  .calc-display { font-size:clamp(40px,13vw,60px); padding:10px 20px 6px; }
+  .cbtn         { height:clamp(60px,15vw,72px); font-size:clamp(20px,6vw,24px); }
+  .calc-grid    { gap:7px; padding:6px 10px 20px; }
+
+  /* ── Conversation / messages ── */
+  .bubble       { font-size:15px; padding:9px 13px; }
+  .chat-input-bar { padding:8px 12px 16px; }
+  .chat-area    { padding:12px 12px; gap:6px; }
+
+  /* ── Call screen ── */
+  .call-top     { padding-top:clamp(48px,10vh,80px); gap:8px; }
+  .call-avatar  { width:68px !important; height:68px !important; font-size:30px !important; }
+  .call-name    { font-size:clamp(20px,6vw,28px); }
+  .call-chat    { padding:10px 14px; gap:8px; }
+  .call-bubble  { font-size:14px; padding:8px 12px; }
+  .call-input-row { padding:8px 12px 12px; }
+  .call-bottom  { padding:6px 28px 18px; }
+  .call-end-btn { width:clamp(56px,14vw,68px); height:clamp(56px,14vw,68px); font-size:24px; }
+  .call-ctrl    { width:50px; height:50px; font-size:20px; }
+
+  /* ── Alarm ── */
+  .alarm-bell       { font-size:clamp(52px,16vw,72px); }
+  .alarm-time-disp  { font-size:clamp(60px,19vw,90px); letter-spacing:-4px; }
+  .alarm-lbl        { font-size:18px; margin-bottom:32px; }
+  .alarm-dismiss    { padding:14px 36px; font-size:17px; }
+
+  /* ── General spacing ── */
+  .app-body   { padding:12px 12px 24px; }
+  .card-list  { margin-bottom:12px; border-radius:10px; }
+  .row        { padding:11px 14px; }
+  .row-lbl    { font-size:16px; }
+  .sec-label  { font-size:12px; }
+  .dock       { bottom:12px; padding:11px 12px; border-radius:24px; }
+  .app-grid   { top:56px; padding:0 14px; row-gap:18px; }
+  .icon-bg    { width:54px; height:54px; font-size:26px; border-radius:14px; }
+  .app-label  { font-size:10px; }
+  .dock .icon-bg { width:52px !important; height:52px !important; }
+  .about-icon { width:80px; height:80px; font-size:40px; }
+  .about-device { font-size:22px; }
+  .nb-text    { font-size:13px; }
+}
+
+/* ── Extra short screens (iPhone SE, small Android) ── */
+@media (max-height:700px) and (max-width:430px) {
+  .lock-big        { font-size:48px; }
+  .lock-time-block { top:72px; }
+  .lock-notif      { top:270px; }
+  .setup-logo      { font-size:28px; margin-bottom:8px; }
+  .setup-h1        { font-size:20px; }
+  .setup-body      { font-size:12px; margin-bottom:12px; }
+  .clock-big       { font-size:44px; }
+  .dial-btn        { height:50px; }
+  .call-top        { padding-top:32px; }
+  .alarm-time-disp { font-size:56px; }
+  .alarm-bell      { font-size:48px; }
+  .pc-key          { height:60px; }
+  .pc-grid         { grid-template-columns:repeat(3,62px); gap:8px; }
+}
+@media (max-width:430px) {
+  .phone-shell { width:100vw; max-width:100vw; height:calc(100dvh - env(safe-area-inset-top)); }
+  .screen { border-radius:0; }
+}
+/* companion apps: the home bar sits above the iPhone's own gesture area and is easy to hit */
+#appWeb iframe { top:50px; bottom:auto; height:calc(100% - 84px - env(safe-area-inset-bottom)); }
+#appWeb .home-ind { height:calc(34px + env(safe-area-inset-bottom)); padding-bottom:env(safe-area-inset-bottom); background:linear-gradient(180deg,rgba(5,6,13,.0),rgba(5,6,13,.85)); touch-action:none; }
+#appWeb .home-ind i { width:140px; height:6px; background:rgba(255,255,255,.85); box-shadow:0 0 0 1px rgba(0,0,0,.3); }
+#appWeb .home-ind:hover i { background:#fff; }
+#appWeb .web-load { inset:50px 0 calc(34px + env(safe-area-inset-bottom)); }
 </style>
 </head>
 <body>
@@ -5547,6 +5559,32 @@ MUSIC.next = function () { const acc = ACCOUNT.get(); if (!acc || !acc.musicPlus
 const _sv2 = switchView;
 switchView = function (id) { const r = _sv2.apply(this, arguments); if (id === 'appAccount') ACCOUNT.render(); if (id === 'appSettings') ACCOUNT.paintCard(); return r; };
 
+</script>
+<script>
+// ═══════════ getting Home from companion apps: tap or swipe up on the bar, swipe up from the bottom edge inside the app, or press Esc ═══════════
+(() => {
+  const view = document.getElementById('appWeb'), bar = view.querySelector('.home-ind'), frame = document.getElementById('webFrame');
+  const goHome = () => { if (view.classList.contains('active')) closeApp(); };
+  // swipe up on the bar (touch or mouse)
+  let y0 = null;
+  bar.addEventListener('pointerdown', e => { y0 = e.clientY; });
+  bar.addEventListener('pointerup', () => { y0 = null; });
+  view.addEventListener('pointermove', e => { if (y0 !== null && y0 - e.clientY > 30) { y0 = null; goHome(); } });
+  // inside the companion app (same site, so oOS can listen): swipe up from the bottom edge
+  frame.addEventListener('load', () => {
+    try {
+      const doc = frame.contentDocument; if (!doc || doc.__oosHome) return; doc.__oosHome = true;
+      let start = null;
+      doc.addEventListener('touchstart', e => { const t = e.touches[0]; start = t.clientY > frame.clientHeight - 56 ? { y: t.clientY, x: t.clientX } : null; }, { passive: true });
+      doc.addEventListener('touchmove', e => { if (!start) return; const t = e.touches[0]; if (start.y - t.clientY > 60 && Math.abs(t.clientX - start.x) < 80) { start = null; goHome(); } }, { passive: true });
+      doc.addEventListener('keydown', e => { if (e.key === 'Escape') goHome(); });
+    } catch (e) {}
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && view.classList.contains('active')) goHome(); });
+  // first time: tell people how to get Home
+  const _open = openWebApp;
+  openWebApp = function (id) { const r = _open.apply(this, arguments); try { if (!localStorage.getItem('oOS_homeHint')) { localStorage.setItem('oOS_homeHint', '1'); setTimeout(() => showDI('Swipe up or tap the bar to go Home', 3200), 900); } } catch (e) {} return r; };
+})();
 </script>
 </body>
 </html>
