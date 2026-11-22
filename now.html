@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oddly NOW™ Series</title>
+<meta name="description" content="The Oddly NOW™ Series does what your appliance already does, within a second. Flagship: the NOW Toaster, with a plasma coil that reaches the temperature of the Sun for three milliseconds. Certification: Pending.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --line:#242849; --line2:#323865;
+    --text:#EDEDF7; --dim:#9A9EC0; --faint:#666B92;
+    --purple:#7B4FFF; --mint:#2EE9A5; --amber:#F5A623; --now:#3DF5FF; --hot:#FF3DCB; --sun:#FFB43A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--now);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:660px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--now);color:#041418;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(61,245,255,.3)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+  .btn.ghost:hover{border-color:var(--now);box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+  /* hero */
+  .hero{padding:64px 0 72px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 420px at 75% 45%,rgba(61,245,255,.12),transparent 70%),radial-gradient(560px 340px at 0% 0%,rgba(255,61,203,.09),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:960px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:26px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(52px,8vw,100px)}
+  .hero h1 em{font-style:normal;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:-.04em;background:linear-gradient(90deg,var(--now),#fff 45%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:520px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  /* toaster demo */
+  .demo{background:linear-gradient(180deg,#14172e,#0d1020);border:1px solid var(--line);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+  .dhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .dhead .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .readout{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--now)}
+  .stage{position:relative;display:grid;place-items:center;height:290px}
+  .stage svg{width:min(100%,340px);height:auto;overflow:visible}
+  #slices rect{transition:fill .25s}
+  .flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#fff 0%,rgba(255,255,255,.95) 18%,rgba(61,245,255,.6) 38%,rgba(255,61,203,.25) 58%,transparent 72%);opacity:0;pointer-events:none;z-index:3}
+  .flash.go{animation:flash .55s ease-out}
+  @keyframes flash{0%{opacity:0}6%{opacity:1}100%{opacity:0}}
+  .demo.dim-lights{animation:dimmer .5s ease-out}
+  @keyframes dimmer{0%{filter:brightness(1)}10%{filter:brightness(.55)}100%{filter:brightness(1)}}
+  .gauges{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0 12px}
+  .g{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 10px;min-width:0}
+  .g .k{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .g .v{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .g .v.hot{color:var(--sun)}
+  .shade{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin-bottom:10px}
+  .shade button{background:none;border:none;border-left:1px solid var(--line2);color:var(--dim);padding:9px 2px;font-family:'JetBrains Mono',monospace;font-size:11.5px;cursor:pointer}
+  .shade button:first-child{border-left:none}
+  .shade button.on{background:var(--card);color:var(--text);font-weight:700}
+  .shade button i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+  .ctrl{display:grid;grid-template-columns:1fr 1.25fr;gap:10px}
+  .ctrl button{border-radius:14px;padding:14px 8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;cursor:pointer;border:1px solid var(--line2);transition:transform .12s,box-shadow .2s}
+  .ctrl button:active{transform:scale(.97)}
+  #startBtn{background:var(--card);color:var(--text)}
+  #startBtn small{display:block;font-weight:400;font-size:10.5px;color:var(--dim);margin-top:2px}
+  #nowBtn{background:radial-gradient(circle at 50% 120%,#fff,var(--now) 45%,#0aa9c4);color:#041418;border:none;letter-spacing:.14em;font-size:22px;box-shadow:0 0 0 1px rgba(61,245,255,.5),0 0 34px rgba(61,245,255,.35)}
+  #nowBtn:hover{box-shadow:0 0 0 1px rgba(61,245,255,.8),0 0 50px rgba(61,245,255,.55)}
+  #nowBtn small{display:block;font-size:10.5px;letter-spacing:0;font-weight:600;opacity:.75;margin-top:1px}
+  .pbar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:12px}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sun),#fff3c9)}
+  .msg{margin-top:10px;font-size:14px;color:var(--dim);min-height:44px}
+  .msg b{color:var(--now)}
+  .ticker{background:linear-gradient(90deg,var(--now),#fff,var(--hot));color:#06070f;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;padding:10px 0}
+  .ticker span{display:inline-block;animation:tick 34s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+  /* numbers */
+  .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.nums{grid-template-columns:1fr 1fr}}
+  .num{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .num .v{font-family:'JetBrains Mono',monospace;font-size:clamp(26px,3.4vw,36px);font-weight:700;font-variant-numeric:tabular-nums;color:var(--now);line-height:1.1}
+  .num p{color:var(--dim);font-size:14.5px;margin-top:8px}
+  /* series */
+  .series{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.series{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.series{grid-template-columns:1fr}}
+  .prod{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;overflow:hidden;min-width:0;transition:border-color .2s,transform .2s}
+  .prod:hover{transform:translateY(-3px);border-color:var(--line2)}
+  .prod.flag{border-color:rgba(61,245,255,.55);background:linear-gradient(160deg,rgba(61,245,255,.09),var(--card) 55%)}
+  .prod .top2{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .prod .em{font-size:30px}
+  .st{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid var(--line2);color:var(--dim);white-space:nowrap}
+  .st.ok{border-color:var(--now);color:var(--now)}
+  .prod h3{font-size:23px;margin:12px 0 6px}
+  .prod p{color:var(--dim);font-size:14.5px;flex:1}
+  .cmp{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px}
+  .cmp .r{display:grid;grid-template-columns:62px 1fr 64px;gap:8px;align-items:center;margin-top:6px}
+  .cmp .r span:first-child{color:var(--dim)}
+  .cmp .r span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .cmp .b{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+  .cmp .b i{display:block;height:100%;width:0;border-radius:6px}
+  .cmp .old i{background:var(--faint)}
+  .cmp .new i{background:var(--now)}
+  .try{margin-top:14px;background:none;border:1px solid var(--line2);color:var(--text);border-radius:10px;padding:9px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12.5px;letter-spacing:.1em;cursor:pointer;transition:border-color .2s,background .2s}
+  .try:hover{border-color:var(--now)}
+  .try.done{background:rgba(61,245,255,.1);border-color:var(--now);color:var(--now)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .step .n{font-family:'JetBrains Mono',monospace;color:var(--now);font-size:13px}
+  .step h3{font-size:22px;margin:10px 0 8px}
+  .step p{color:var(--dim);font-size:15px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:860px){.two{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel h3{font-size:24px;margin-bottom:10px}
+  .specs{list-style:none}
+  .specs li{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .specs li:last-child{border-bottom:none}
+  .specs span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .specs span:last-child{text-align:right}
+  details{border-bottom:1px dashed var(--line);padding:12px 0}
+  details:last-child{border-bottom:none}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--now)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15px;margin-top:8px}
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:760px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:14px;padding:24px}
+  .qc.cfo{border-left-color:var(--mint)}
+  .qc p{font-family:'Fraunces',serif;font-size:21px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--purple);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--mint)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.plans{grid-template-columns:1fr}}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column}
+  .plan.best{border-color:var(--now);box-shadow:0 0 0 1px rgba(61,245,255,.22) inset}
+  .plan .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .plan.best .tag{color:var(--now)}
+  .plan h3{font-size:26px;margin:8px 0 2px}
+  .plan .price{font-family:'Fraunces',serif;font-size:36px;font-weight:800;margin:8px 0 12px}
+  .plan .price small{font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--dim);font-weight:500}
+  .plan ul{list-style:none;margin-bottom:20px}
+  .plan li{color:var(--dim);font-size:15px;padding:6px 0;display:flex;gap:10px}
+  .plan li::before{content:"✓";color:var(--now);font-weight:700}
+  .plan .btn{margin-top:auto}
+  .ordermsg{margin-top:16px;font-size:14px;color:var(--dim);min-height:22px;text-align:center}
+  .ordermsg b{color:var(--now)}
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:920px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--now)}
+  @media(max-width:520px){.wrap{padding:0 16px}section{padding:64px 0}.hero p{font-size:17px}.stage{height:240px}.g .v{font-size:14px}#nowBtn{font-size:19px}}
+  @media (prefers-reduced-motion:reduce){.ticker span,.badge i{animation:none}.js [data-r]{opacity:1;transform:none;transition:none}.flash.go{animation-duration:.01s}}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="Oddly, Inc. home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly NOW&trade; Series
+  </a>
+  <nav class="nav"><a href="#toaster">NOW Toaster</a><a href="#series">The Series</a><a href="#how">Plasma</a><a href="#specs">Specs</a><a href="#order">Order</a></nav>
+  <a class="btn" href="#order">Order NOW</a>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badge"><i></i>Certification: Pending</div>
+    <h1>Waiting is over. <em>NOW.</em></h1>
+    <p>Your appliances already do their jobs. They simply take too long. The Oddly NOW&trade; Series does exactly the same job, within one second. Every product keeps its normal button. Every product gets one more. It says NOW.</p>
+    <div class="ctas">
+      <a class="btn" href="#toaster">Try the NOW Toaster</a>
+      <a class="btn ghost" href="#series">See the Series &rarr;</a>
+    </div>
+  </div>
+
+  <div class="demo" id="toaster" data-r>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="dhead"><span class="k">NOW Toaster · live</span><span class="readout" id="state">Ready. Bread loaded.</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 340 250" aria-label="The NOW Toaster with two slices of bread">
+        <defs>
+          <linearGradient id="chrome" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e9edf7"/><stop offset=".45" stop-color="#a9b0c6"/><stop offset="1" stop-color="#5d6480"/></linearGradient>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#3DF5FF"/><stop offset="1" stop-color="#3DF5FF" stop-opacity="0"/></radialGradient>
+        </defs>
+        <g id="slices">
+          <g id="bread" transform="translate(0,0)">
+            <rect x="92" y="38" width="66" height="86" rx="22" fill="#F3D9A4" stroke="#b98a4e" stroke-width="3"/>
+            <rect x="182" y="38" width="66" height="86" rx="22" fill="#F3D9A4" stroke="#b98a4e" stroke-width="3"/>
+          </g>
+        </g>
+        <rect x="52" y="84" width="236" height="140" rx="40" fill="url(#chrome)"/>
+        <rect x="88" y="84" width="74" height="12" rx="6" fill="#1b1d2c"/><rect x="178" y="84" width="74" height="12" rx="6" fill="#1b1d2c"/>
+        <ellipse id="coil" cx="170" cy="150" rx="86" ry="26" fill="url(#glow)" opacity="0"/>
+        <rect x="64" y="150" width="212" height="2" fill="rgba(255,255,255,.35)"/>
+        <rect x="287" y="106" width="7" height="82" rx="3.5" fill="#1b1d2c"/>
+        <rect id="lever" x="286" y="108" width="28" height="11" rx="5" fill="#2a2e44" stroke="#5d6480" stroke-width="1.5"/>
+        <text x="170" y="196" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="700" font-size="15" fill="#1b1d2c" letter-spacing="3">NOW</text>
+        <circle cx="128" cy="191" r="5" id="led" fill="#3b3f57"/>
+        <rect x="80" y="222" width="22" height="10" rx="3" fill="#2a2e44"/><rect x="238" y="222" width="22" height="10" rx="3" fill="#2a2e44"/>
+      </svg>
+    </div>
+    <div class="gauges">
+      <div class="g"><div class="k">Time</div><div class="v" id="gTime">0.000 s</div></div>
+      <div class="g"><div class="k">Coil</div><div class="v" id="gTemp">21 °C</div></div>
+      <div class="g"><div class="k">Doneness</div><div class="v" id="gDone">Bread</div></div>
+    </div>
+    <div class="shade" role="group" aria-label="Shade">
+      <button data-s="0"><i style="background:#E2B26B"></i>Light</button><button data-s="1" class="on"><i style="background:#C68642"></i>Medium</button><button data-s="2"><i style="background:#8A5426"></i>Dark</button><button data-s="3"><i style="background:linear-gradient(135deg,#FFB43A,#fff)"></i>Sun</button>
+    </div>
+    <div class="ctrl">
+      <button id="startBtn" type="button">Toast › Start<small id="startSub">2:30, like always</small></button>
+      <button id="nowBtn" type="button">NOW<small>0.003 s · plasma</small></button>
+    </div>
+    <div class="pbar"><i id="pbar"></i></div>
+    <div class="msg" id="msg" aria-live="polite">Two options. One of them is NOW.</div>
+  </div>
+</div></header>
+
+<div class="ticker" aria-hidden="true"><span>WAITING CAN BE IMPROVED &nbsp;·&nbsp; THE SUN, FOR THREE MILLISECONDS &nbsp;·&nbsp; YOUR LIGHTS MAY DIM. THIS MEANS IT WORKED &nbsp;·&nbsp; START IS STILL THERE, FOR NOSTALGIA &nbsp;·&nbsp; THE NOW SERIES &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; WAITING CAN BE IMPROVED &nbsp;·&nbsp; NOW</span></div>
+
+<section id="numbers"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">The numbers</div>
+    <h2>Two minutes and thirty seconds. Returned.</h2>
+    <p class="lede">The average person waits for toast four times a week. That is eight hours a year, standing in a kitchen, looking at a slot. Oddly, Inc. does not believe in the slot.</p>
+  </div>
+  <div class="nums">
+    <div class="num" data-r><div class="v">0.003 s</div><p>From NOW to toast. The toast pops at 0.004 s. The extra millisecond is ceremony.</p></div>
+    <div class="num" data-r><div class="v">50,000×</div><p>Faster than a regular toaster. Not one of them is slower than ours.</p></div>
+    <div class="num" data-r><div class="v">5,505 °C</div><p>Plasma coil temperature. The surface of the Sun. Measured from two inches away.</p></div>
+    <div class="num" data-r><div class="v" id="saved">0 h</div><p>Waiting returned to NOW Series owners since you opened this page. Live.</p></div>
+  </div>
+</div></section>
+
+<section id="series"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">The Series</div>
+    <h2>Same job. One second.</h2>
+    <p class="lede">The NOW Toaster is first. It is not last. Every appliance that makes you wait is now on a list. Press NOW on any card below. That is what it is like.</p>
+  </div>
+  <div class="series" id="seriesGrid"></div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">How it works</div>
+    <h2>A very small Sun. Very briefly.</h2>
+    <p class="lede">The Sun is 93 million miles away for a reason. Ours is two inches away, for three milliseconds. We have simply improved the distance.</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-r><div class="n">0.0000 s</div><h3>Press NOW</h3><p>One button. It is larger than Start. This was a decision.</p></div>
+    <div class="step" data-r><div class="n">0.0008 s</div><h3>Charge</h3><p>The plasma coil draws from your home, your street, and, briefly, your district. Your lights dim. This is how you know.</p></div>
+    <div class="step" data-r><div class="n">0.0011 s</div><h3>The Sun</h3><p>The coil reaches 5,505 °C, the surface temperature of the Sun, for three milliseconds. The bread browns evenly. It does not have time to do anything else.</p></div>
+    <div class="step" data-r><div class="n">0.0040 s</div><h3>Toast</h3><p>The toast pops. It has cooled to a comfortable 41 °C in transit. Butter immediately. You now have two minutes and thirty seconds. Use them well.</p></div>
+  </div>
+</div></section>
+
+<section id="specs"><div class="wrap">
+  <div data-r><div class="eyebrow">NOW Toaster specifications</div><h2>The numbers, and the questions.</h2></div>
+  <div class="two">
+    <div class="panel" data-r>
+      <h3>Specs</h3>
+      <ul class="specs">
+        <li><span>Buttons</span><span>Start · NOW</span></li>
+        <li><span>Start toast time</span><span>2 min 30 s, as nature intended</span></li>
+        <li><span>NOW toast time</span><span>0.003 s</span></li>
+        <li><span>Coil</span><span>Plasma, contained, mostly</span></li>
+        <li><span>Peak temperature</span><span>5,505 °C (the Sun, surface)</span></li>
+        <li><span>Peak power draw</span><span>4.2 GW for 3 ms</span></li>
+        <li><span>Shades</span><span>Light · Medium · Dark · Sun</span></li>
+        <li><span>Slots</span><span>2, extra wide, extra lit</span></li>
+        <li><span>Certification</span><span style="color:var(--amber)">Pending</span></li>
+      </ul>
+    </div>
+    <div class="panel" data-r>
+      <h3>Questions</h3>
+      <details><summary>Will it burn my toast?</summary><p>No. Burning takes time. The NOW Toaster does not give the toast any.</p></details>
+      <details><summary>Why are my lights flickering?</summary><p>You pressed NOW. For three milliseconds the toaster needed the electricity more than your lights did. The lights agree.</p></details>
+      <details><summary>Why keep the Start button?</summary><p>Some customers enjoy waiting. We do not understand them. We respect them. Start toasts in 2:30, exactly like a normal toaster, which is what it is.</p></details>
+      <details><summary>What is the "Sun" setting?</summary><p>The same 5,505 °C, held for one additional millisecond. The toast comes out golden on the outside and, according to our testers, "warm in a way that felt personal."</p></details>
+      <details><summary>Can I touch the toaster after NOW?</summary><p>Yes. The outside never exceeds 38 °C. The heat goes into the toast and then, apparently, somewhere else. We are looking into where.</p></details>
+      <details><summary>Is it safe?</summary><p>Certification is pending. It has been pending for 0.003 seconds, which, in NOW terms, is a long time.</p></details>
+    </div>
+  </div>
+</div></section>
+
+<section id="leadership"><div class="wrap">
+  <div data-r><div class="eyebrow">Leadership</div><h2>From the people who decided.</h2></div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"People ask why toast takes two and a half minutes. Nobody had an answer. So we removed the two and a half minutes. Toast is still toast. It is simply on time now."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"Each NOW press uses 4.2 gigawatts for three milliseconds. That is 3.5 kilowatt-hours. A regular toaster uses about 0.04. I raised this. I was told it is a premium experience. It is."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <div data-r><div class="eyebrow">Order</div><h2>Available NOW.</h2><p class="lede">The NOW Toaster ships today. The rest of the Series ships when it is ready, which will be instantly.</p></div>
+  <div class="plans">
+    <div class="plan" data-r><div class="tag">Standard</div><h3>Toaster (Start only)</h3><div class="price">$39</div><ul><li>Start button</li><li>2:30 toast, every time</li><li>For people who enjoy waiting</li></ul><button class="btn ghost" data-ed="Toaster (Start only)" type="button">Order</button></div>
+    <div class="plan best" data-r><div class="tag">Flagship</div><h3>NOW Toaster</h3><div class="price">$499</div><ul><li>Start and NOW</li><li>Plasma coil, 5,505 °C</li><li>Light · Medium · Dark · Sun</li><li>Lights dim at no extra charge</li></ul><button class="btn" data-ed="NOW Toaster" type="button">Order NOW</button></div>
+    <div class="plan" data-r><div class="tag">Whole kitchen</div><h3>NOW Kitchen</h3><div class="price">$4,999 <small>+ grid connection</small></div><ul><li>Every NOW Series product as it ships</li><li>Dedicated substation hookup</li><li>Breakfast for four in under a second</li></ul><button class="btn ghost" data-ed="NOW Kitchen" type="button">Pre-order</button></div>
+  </div>
+  <div class="ordermsg" id="ordermsg" aria-live="polite"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly NOW&trade; Series</a>
+    <div class="links"><a href="#toaster">NOW Toaster</a><a href="#series">The Series</a><a href="#specs">Specs</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. The Oddly NOW&trade; Series performs the task the appliance normally performs, within one second. Plasma coil reaches the surface temperature of the Sun (5,505 °C) for approximately three milliseconds per use. Momentary dimming of household, street and district lighting is expected and indicates correct operation. Peak draw 4.2 GW. The Start button is retained for customers who prefer to wait. "Sun" shade is not related to the Sun's core, which is not available at this time. Products other than the NOW Toaster are listed for informational purposes and will ship instantly when ready. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const els=$$('[data-r]');
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});els.forEach(el=>io.observe(el));}else els.forEach(el=>el.classList.add('in'));
+
+// ---------- the NOW Toaster ----------
+const SHADES=[{n:'Light',c:'#E2B26B',t:105},{n:'Medium',c:'#C68642',t:150},{n:'Dark',c:'#8A5426',t:195},{n:'Sun',c:'#D9963F',t:150}];
+const RAW=[243,217,164];
+let shade=1,run=null,toasted=false,nowCount=0;
+const slices=$$('#bread rect'),bread=$('#bread'),coil=$('#coil'),led=$('#led'),lever=$('#lever');
+const hex=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+const mix=(a,b,k)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')+')';
+function color(k){slices.forEach(r=>r.setAttribute('fill',mix(RAW,hex(SHADES[shade].c),k)));}
+function fmtClock(s){const m=Math.floor(s/60),r=Math.floor(s%60);return m+':'+String(r).padStart(2,'0');}
+function setShade(i){shade=i;$$('.shade button').forEach(b=>b.classList.toggle('on',+b.dataset.s===i));$('#startSub').textContent=fmtClock(SHADES[i].t)+', like always';
+  if(i===3&&!run)say('Sun shade: the surface of the Sun, held one millisecond longer. The core is not available at this time.');}
+$$('.shade button').forEach(b=>b.addEventListener('click',()=>setShade(+b.dataset.s)));
+function say(h){$('#msg').innerHTML=h;}
+function down(){bread.setAttribute('transform','translate(0,46)');lever.setAttribute('y','174');led.setAttribute('fill','#FFB43A');}
+function pop(){bread.setAttribute('transform','translate(0,-14)');lever.setAttribute('y','108');led.setAttribute('fill','#3b3f57');setTimeout(()=>{if(!run)bread.setAttribute('transform','translate(0,0)');},260);}
+function reload(){toasted=false;color(0);$('#gDone').textContent='Bread';}
+function finish(label){$('#gDone').textContent=SHADES[shade].n;color(1);pop();toasted=true;}
+function startToast(){
+  if(run){say('Already toasting. Patiently. Like a normal toaster. You could press <b>NOW</b>.');return;}
+  if(toasted)reload();
+  const total=SHADES[shade].t,t0=performance.now();down();$('#state').textContent='Toasting the normal way…';$('#gTemp').textContent='~230 °C';$('#gTemp').classList.remove('hot');
+  say('Toasting. This will take '+fmtClock(total)+'. You may wait here. Or you may press <b>NOW</b>.');
+  run={t0,total,id:0};
+  const lines=[[10,'Ten seconds. The toast is thinking about it.'],[30,'Thirty seconds. Still bread, technically.'],[60,'One minute. The NOW Toaster would have finished twenty thousand slices by now.'],[100,'You are still here. We respect that. We do not understand it.']];
+  const tick=()=>{if(!run)return;const s=(performance.now()-run.t0)/1000,k=Math.min(1,s/total);
+    $('#gTime').textContent=fmtClock(s)+' / '+fmtClock(total);$('#pbar').style.width=(k*100)+'%';color(Math.max(0,(k-.15)/.85));
+    lines.forEach(l=>{if(!l.done&&s>=l[0]&&s<total){l.done=1;say(l[1]+' <b>NOW</b> is right there.');}});
+    if(k>=1){run=null;finish();$('#state').textContent='Done. The normal way.';$('#gTemp').textContent='21 °C';say('Done in '+fmtClock(total)+'. Exactly like every toaster before it. That is what Start is for.');return;}
+    run.id=requestAnimationFrame(tick);};
+  run.id=requestAnimationFrame(tick);
+}
+function nowToast(){
+  const interrupted=!!run;let waited=0;
+  if(run){cancelAnimationFrame(run.id);waited=(performance.now()-run.t0)/1000;run=null;}
+  else if(toasted)reload();
+  nowCount++;down();
+  const demo=$('#toaster');$('#flash').classList.remove('go');demo.classList.remove('dim-lights');void demo.offsetWidth;$('#flash').classList.add('go');demo.classList.add('dim-lights');
+  coil.setAttribute('opacity','1');$('#state').textContent='NOW';
+  const ms=shade===3?4:3,temp=$('#gTemp');temp.textContent='5,505 °C';temp.classList.add('hot');$('#gTime').textContent='0.00'+ms+' s';$('#pbar').style.width='100%';
+  try{if(navigator.vibrate&&navigator.userActivation&&navigator.userActivation.hasBeenActive)navigator.vibrate(18);}catch(e){}
+  setTimeout(()=>{coil.setAttribute('opacity','0');finish();temp.textContent='41 °C';temp.classList.remove('hot');$('#state').textContent='Toast. NOW.';
+    const msgs=interrupted?['Impatience detected. You waited '+waited.toFixed(1)+' s, then pressed <b>NOW</b>. It took 0.00'+ms+' s. You have learned something today.']
+      :nowCount===1?['Toast in <b>0.00'+ms+' s</b>. Your lights dimmed briefly. That means it worked.']
+      :['Toast in <b>0.00'+ms+' s</b>. Again.','<b>0.00'+ms+' s</b>. Your neighbor\'s lights also dimmed. They will understand.','<b>0.00'+ms+' s</b>. That is '+nowCount+' slices of toast today. Butter is now the bottleneck.','<b>0.00'+ms+' s</b>. Stephen Stupid has been notified of the electricity. He is fine.'];
+    say(interrupted||nowCount===1?msgs[0]:msgs[(nowCount-2)%msgs.length]);},reduced?60:140);
+}
+$('#startBtn').addEventListener('click',startToast);
+$('#nowBtn').addEventListener('click',nowToast);
+
+// ---------- time saved counter ----------
+let hrs=0;const saved=$('#saved');setInterval(()=>{hrs+=Math.random()*3.8+1.4;saved.textContent=Math.round(hrs).toLocaleString('en-US')+' h';},900);
+
+// ---------- the Series ----------
+const SERIES=[
+  {e:'🍞',n:'NOW Toaster',st:'Available now',av:1,d:'Toast › Start, or toast › NOW. A plasma coil at the temperature of the Sun, for three milliseconds.',old:150,nw:.003,u:'toast',flag:1},
+  {e:'🫖',n:'NOW Kettle',st:'Coming soon',d:'Boils a full litre in 0.4 seconds. It still whistles. Once. Very briefly. You will hear it if you are listening.',old:180,nw:.4,u:'boil'},
+  {e:'📦',n:'NOW Microwave',st:'Coming soon',d:'Reheats anything in a single beep. The beep is the cooking. Leftovers come out evenly hot, including the middle, for the first time in history.',old:120,nw:.2,u:'reheat'},
+  {e:'👕',n:'NOW Dryer',st:'Coming soon',d:'A full load, dry in one second. Clothes come out warm, folded by the air pressure, and very slightly crisp. Crisp is a premium texture.',old:3600,nw:1,u:'dry'},
+  {e:'🍽️',n:'NOW Dishwasher',st:'Coming soon',d:'Dishes clean in 0.8 seconds. The water turns to steam before it touches anything. So does the food. So does the soap. The dishes remain.',old:7200,nw:.8,u:'wash'},
+  {e:'🍲',n:'NOW Slow Cooker',st:'Coming soon',d:'Eight hours of slow cooking, finished in one second. We kept the name. The name is a tribute.',old:28800,nw:1,u:'cook'}
+];
+const fmtDur=s=>s<60?s+' s':s<3600?(Math.round(s/30)/2)+' min':Math.round(s/3600)+' h';
+$('#seriesGrid').innerHTML=SERIES.map((p,i)=>`<div class="prod${p.flag?' flag':''}" data-r><div class="top2"><span class="em" aria-hidden="true">${p.e}</span><span class="st${p.av?' ok':''}">${p.st}</span></div><h3>${p.n}</h3><p>${p.d}</p>
+  <div class="cmp"><div class="r old"><span>Normal</span><div class="b"><i></i></div><span>${fmtDur(p.old)}</span></div><div class="r new"><span>NOW</span><div class="b"><i></i></div><span>${fmtDur(p.nw)}</span></div></div>
+  <button class="try" type="button" data-i="${i}">NOW</button></div>`).join('');
+$$('#seriesGrid [data-r]').forEach(el=>el.classList.add('in'));
+$('#seriesGrid').addEventListener('click',e=>{const b=e.target.closest('.try');if(!b)return;const p=SERIES[+b.dataset.i],card=b.closest('.prod');
+  const nb=card.querySelector('.new .b i'),ob=card.querySelector('.old .b i');nb.style.transition='none';nb.style.width='100%';
+  ob.style.transition='none';ob.style.width='0';void ob.offsetWidth;const dur=Math.min(20,p.old/12);ob.style.transition='width '+dur+'s linear';ob.style.width='100%';
+  b.classList.add('done');b.textContent='Done · '+fmtDur(p.nw)+' · normal still going…';clearTimeout(b._t);b._t=setTimeout(()=>{b.textContent='NOW';b.classList.remove('done');},Math.min(dur*1000,6000));
+  if(p.flag)document.getElementById('toaster').scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});});
+
+$$('[data-ed]').forEach(b=>b.addEventListener('click',()=>{const ed=b.dataset.ed;$('#ordermsg').innerHTML=ed.indexOf('Start only')>=0?'Order received for the <b>'+ed+'</b>. It will arrive in 3 to 5 business days. You are used to waiting.':'Order received for the <b>'+ed+'</b>. Processed in 0.003 s. Shipping takes longer. We are working on NOW Shipping.';}));
+})();
+</script>
+</body>
+</html>
