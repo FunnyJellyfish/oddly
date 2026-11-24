@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oTag — Oddly, Inc.</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: total corporate sincerity, keynote-flat, never in on the joke.
+   IDEA: a product launch page that behaves like the oTag itself — it pings, scans and talks.
+   PICTURE: a live "Find" radar where sound rings and a LiDAR point cloud resolve into "I'm under the bush."
+   COLOUR/TYPE: Oddly house system (navy, mint, amber) with oTag's own LiDAR violet; Fraunces / Space Grotesk / JetBrains Mono.
+   LAYOUT: hero radar, then feature bands with working demos (camera, oSiri), spec sheet, two Stephens, fine print. */
+:root{color-scheme:dark;--bg:#0b1020;--bg2:#111833;--bg3:#18214a;--ink:#eef2ff;--dim:#a6b0d4;--mint:#5ff2c6;--amber:#ffb547;--vio:#b58cff;--line:#26305e;--red:#ff6b6b}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.05;text-wrap:balance;margin:0 0 .4em}
+h1{font-size:clamp(44px,7vw,84px);font-weight:800}
+h2{font-size:clamp(32px,4.4vw,52px);font-weight:700}
+h3{font-size:22px;font-weight:700}
+p{margin:0 0 1em;max-width:62ch}
+.mono{font-family:"JetBrains Mono",monospace;font-size:13px}
+.band{padding:clamp(40px,6vw,88px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+a{color:var(--mint)}
+button{font:600 15px "Space Grotesk",sans-serif;min-height:44px;padding:0 20px;border-radius:999px;border:0;cursor:pointer;background:var(--mint);color:#06231a}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.on{background:var(--vio);color:#160a2e}
+button:focus-visible,input:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+/* top bar */
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:10px max(5vw,16px);background:rgba(11,16,32,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .brand{display:flex;align-items:center;gap:10px;font-family:Fraunces,serif;font-weight:700;font-size:20px;text-decoration:none;color:var(--ink)}
+.top nav{display:flex;gap:18px;margin-left:auto;overflow-x:auto}
+.top nav a{color:var(--dim);text-decoration:none;white-space:nowrap;font-size:15px}
+.top nav a:hover{color:var(--ink)}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,4vw,56px);align-items:center;background:radial-gradient(1200px 600px at 75% 40%,#1d1650 0%,transparent 60%),var(--bg)}
+.hero .lede{font-size:20px;color:var(--dim)}
+.hero .price{font-family:Fraunces,serif;font-size:28px;margin:6px 0 18px}
+.hero .price small{font:13px "JetBrains Mono",monospace;color:var(--dim);display:block}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.finder{background:var(--bg2);border:1px solid var(--line);border-radius:28px;padding:16px;box-shadow:0 40px 80px -30px #000}
+.fig{position:relative;aspect-ratio:1/1;max-height:560px;width:100%;border-radius:20px;overflow:hidden;background:#070b18}
+.fig canvas{position:absolute;inset:0;width:100%;height:100%}
+.say{min-height:64px;display:flex;align-items:center;gap:12px;padding:12px 6px 4px}
+.say .bubble{font-family:Fraunces,serif;font-size:clamp(20px,2.6vw,28px);font-weight:700}
+.say .meta{color:var(--dim)}
+.status{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--dim);padding:0 6px 8px}
+/* device */
+.device{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:40px;align-items:center}
+.device svg{width:100%;max-width:440px;display:block;margin:auto}
+.callouts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.callouts div{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:16px}
+.callouts b{display:block;font-family:Fraunces,serif;font-size:19px;margin-bottom:4px}
+.callouts span{color:var(--dim);font-size:15px}
+/* features */
+.alt{background:var(--bg2)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.cam{position:relative;aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:#0d1a14;border:1px solid var(--line)}
+.cam canvas{position:absolute;inset:0;width:100%;height:100%}
+.ticks{list-style:none;padding:0;margin:0 0 18px}
+.ticks li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid var(--line)}
+.ticks li::before{content:"";position:absolute;left:4px;top:16px;width:10px;height:10px;border-radius:50%;background:var(--vio)}
+.log{margin-top:12px;color:var(--mint);min-height:40px}
+/* osiri */
+.chat{background:var(--bg);border:1px solid var(--line);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msgs{height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px}
+.m{max-width:82%;padding:10px 14px;border-radius:18px;font-size:16px}
+.m.u{align-self:flex-end;background:var(--bg3)}
+.m.o{align-self:flex-start;background:linear-gradient(135deg,#2a1a5e,#173a52);border:1px solid #3c2f7a}
+.chat form{display:flex;gap:8px}
+.chat input{flex:1;font:16px "Space Grotesk",sans-serif;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--ink)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{min-height:36px;font-size:13px;padding:0 12px}
+/* specs */
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--dim);font-weight:400;width:34%}
+td .n{color:var(--dim);font-size:14px;display:block}
+/* quotes */
+.quotes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.q{background:var(--bg2);border:1px solid var(--line);border-radius:24px;padding:28px}
+.q blockquote{margin:0 0 18px;font-family:Fraunces,serif;font-size:clamp(21px,2.2vw,26px);line-height:1.25}
+.q .who{display:flex;gap:12px;align-items:center}
+.q .av{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-family:Fraunces,serif;font-weight:800;color:#0b1020}
+.q .who small{color:var(--dim);display:block}
+/* buy */
+.buy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.pk{background:var(--bg);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:6px}
+.pk.best{border-color:var(--vio);box-shadow:0 0 0 1px var(--vio) inset}
+.pk .p{font-family:Fraunces,serif;font-size:34px;font-weight:800}
+.pk .u{color:var(--dim);font-size:14px}
+.pk button{margin-top:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--amber);color:#2a1700;padding:12px 18px;border-radius:14px;font-weight:600;transition:transform .35s;max-width:90vw;z-index:9}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.fine{color:var(--dim);font-size:13px;line-height:1.6}
+.fine p{max-width:none}
+footer{border-top:1px solid var(--line)}
+@media(max-width:860px){.hero,.device,.two{grid-template-columns:minmax(0,1fr)}.quotes,.buy{grid-template-columns:minmax(0,1fr)}.top nav{display:none}}
+@media(max-width:520px){.callouts{grid-template-columns:minmax(0,1fr)}th{width:40%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="Oddly, Inc. home">
+    <svg viewBox="-128 -128 256 256" width="30" height="30" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    oTag
+  </a>
+  <nav>
+    <a href="#device">Hardware</a><a href="#see">Recognition</a><a href="#osiri">oSiri</a><a href="#specs">Specs</a><a href="Oddly-Find-App.html">App</a><a href="#buy">Buy</a>
+  </nav>
+</header>
+
+<section class="band hero" id="top">
+  <div class="wrap" style="display:contents">
+    <div>
+      <p class="mono" style="color:var(--vio)">Oddly, Inc. · Find what is lost</p>
+      <h1>oTag.<br>It knows where it is.</h1>
+      <p class="lede">Other tags tell your phone where they are. oTag tells you. Out loud. In a sentence. With two speakers, six microphones, a camera and LiDAR, oTag looks around, works out what it is near, and says so.</p>
+      <div class="price">From $189<small>Certification: Pending</small></div>
+      <div class="row">
+        <button id="ping">Find my oTag</button>
+        <button class="ghost" type="button" id="gobuy">Buy oTag</button>
+      </div>
+    </div>
+    <div class="finder">
+      <div class="status mono"><span id="st">oTag "Keys" · Standing by</span><span id="bat">Battery 11 h</span></div>
+      <div class="fig"><canvas id="radar" aria-label="oTag Descriptive Finding display" role="img"></canvas></div>
+      <div class="say" aria-live="polite"><div><div class="bubble" id="bubble">Press Find.</div><div class="meta mono" id="conf">Descriptive Finding™</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="device">
+  <div class="wrap device">
+    <svg viewBox="0 0 400 400" role="img" aria-label="oTag hardware diagram">
+      <defs>
+        <radialGradient id="shell" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#d9def0"/><stop offset="1" stop-color="#9aa3c4"/></radialGradient>
+        <radialGradient id="lens" cx="40%" cy="35%" r="60%"><stop offset="0" stop-color="#4b4f8a"/><stop offset=".5" stop-color="#14162e"/><stop offset="1" stop-color="#000"/></radialGradient>
+      </defs>
+      <ellipse cx="200" cy="356" rx="140" ry="18" fill="#000" opacity=".45"/>
+      <circle cx="200" cy="200" r="150" fill="#7a83a8"/>
+      <circle cx="200" cy="192" r="148" fill="url(#shell)"/>
+      <circle cx="200" cy="192" r="58" fill="#0d1026"/>
+      <circle cx="200" cy="192" r="46" fill="url(#lens)"/>
+      <circle cx="186" cy="176" r="10" fill="#fff" opacity=".35"/>
+      <circle cx="268" cy="132" r="13" fill="#1a1236"/><circle cx="268" cy="132" r="6" fill="#b58cff"/>
+      <g fill="#6b7397" id="grille"></g>
+      <g fill="#3b4266" id="mics"></g>
+      <path d="M128 248A80 80 0 0 0 272 248" fill="none" stroke="#c3c9e0" stroke-width="2"/>
+      <path d="M181 96A20 20 0 0 1 219 96M219 112A20 20 0 0 1 181 112" fill="none" stroke="#5c6488" stroke-width="3" stroke-linecap="round" transform="translate(0 -8)"/>
+      <text x="200" y="290" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#5c6488">oTag · CERTIFICATION: PENDING</text>
+    </svg>
+    <div>
+      <h2>Everything a tag needs. And a great deal more.</h2>
+      <p>We looked at the tracking tag and said: this can be improved. Then we added a camera. Then LiDAR. Then speakers. Then microphones. Then it was larger. That is how you know it is better.</p>
+      <div class="callouts">
+        <div><b>12 MP camera</b><span>Sees where it landed. Lands face-down half the time. Then it reports "I am on the ground." Accurate.</span></div>
+        <div><b>LiDAR scanner</b><span>Maps the shape of whatever it is under. Knows a bush from a couch from a different bush.</span></div>
+        <div><b>Two speakers, six mics</b><span>Plays a chirp, listens for the echo, and works out the room. Then tells you about it.</span></div>
+        <div><b>oSiri on board</b><span>Ask it where it is. It will answer. It will also answer people who did not ask.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="see">
+  <div class="wrap two">
+    <div>
+      <h2>It recognizes faces. And pets. And then it follows them.</h2>
+      <ul class="ticks">
+        <li><b>Facial recognition.</b> oTag knows who picked it up. It tells you. It tells them it told you.</li>
+        <li><b>Pet recognition.</b> 340 breeds, plus your pet by name once enrolled. Put oTag on the collar and your dog will report its own location.</li>
+        <li><b>Track Anything.</b> Point the camera at something. oTag follows it for as long as it stays in frame, then tells you where it was last seen.</li>
+      </ul>
+      <div class="row" role="group" aria-label="Recognition modes">
+        <button class="ghost on" data-m="faces">Faces</button>
+        <button class="ghost on" data-m="pets">Pets</button>
+        <button class="ghost on" data-m="track">Track</button>
+      </div>
+      <div class="log mono" id="camlog" aria-live="polite">Scanning the garden.</div>
+    </div>
+    <div class="cam"><canvas id="cam" role="img" aria-label="oTag camera view with recognition boxes"></canvas></div>
+  </div>
+</section>
+
+<section class="band" id="osiri">
+  <div class="wrap two">
+    <div>
+      <h2>Meet oSiri.</h2>
+      <p>oSiri is the voice of oTag. It is not the other one. It has a different first letter. Ask it anything about where it is, who has it, or how much battery remains. It answers in under one second and at up to 94 decibels.</p>
+      <p class="mono" style="color:var(--dim)">Sample oTag "Keys", currently in the garden.</p>
+    </div>
+    <div class="chat">
+      <div class="msgs" id="msgs"></div>
+      <div class="chips" id="chips"></div>
+      <form id="ask"><input id="q" placeholder="Ask oSiri…" autocomplete="off" aria-label="Ask oSiri"><button>Ask</button></form>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="specs">
+  <div class="wrap">
+    <h2>Technical specifications</h2>
+    <table>
+      <tbody id="spec"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>From the leadership</h2>
+    <div class="quotes">
+      <figure class="q" style="margin:0">
+        <blockquote>"Their tag tells your phone where it is. Ours tells everyone. Simple. Transparency is a premium feature."</blockquote>
+        <figcaption class="who"><span class="av" style="background:var(--mint)">SS</span><span><b>Stephen Stubborn</b><small>Chief Executive Officer · "Stefen Stu-Born"</small></span></figcaption>
+      </figure>
+      <figure class="q" style="margin:0">
+        <blockquote>"The four-pack costs more per tag than one tag. Customers who buy four have more to lose. We priced the risk."</blockquote>
+        <figcaption class="who"><span class="av" style="background:var(--amber)">SS</span><span><b>Stephen Stupid</b><small>Chief Financial Officer · No relation</small></span></figcaption>
+      </figure>
+      <figure class="q" style="margin:0">
+        <blockquote>"People ask why it is the size of a cookie. Because it is doing more work than a cookie. Next question."</blockquote>
+        <figcaption class="who"><span class="av" style="background:var(--mint)">SS</span><span><b>Stephen Stubborn</b><small>Stefen Stu-Born</small></span></figcaption>
+      </figure>
+      <figure class="q" style="margin:0">
+        <blockquote>"Eleven hours of battery. Eleven excellent hours. Then you buy another oTag to find the first one."</blockquote>
+        <figcaption class="who"><span class="av" style="background:var(--amber)">SS</span><span><b>Stephen Stupid</b><small>No relation</small></span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="buy">
+  <div class="wrap">
+    <h2>Choose your oTag.</h2>
+    <div class="buy" id="packs"></div>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="wrap fine">
+    <p><b>Legal.</b> oTag is always listening, always watching and always scanning. This is how it knows it is under the bush. Descriptive Finding™ describes the location of the oTag relative to nearby objects; it does not say which bush. oTag in Quiet Mode disables the camera, LiDAR, speakers, microphones and oSiri, extending battery life to one year, at which point it is a tag.</p>
+    <p>Unwanted Tracking Protection: an oTag that travels with someone who does not own it will announce, at full volume and at regular intervals, "Hello. I am an oTag. I am in your bag. I belong to someone else." Oddly, Inc. considers this a safety feature and a conversation starter.</p>
+    <p>Facial recognition accuracy measured on the Stephens. Pet recognition does not cover fish, which do not leave the house. Track Anything tracks anything in frame and nothing out of frame. Warranty void if oTag is placed under a bush, which is where it will be. Water resistance: Certification: Pending. Works with oPhone 1 and the <a href="Oddly-Find-App.html">Oddly Find app</a>. Compatible with Oddly Autonomous™ Retrieval, which will drive to the oTag by a route of its choosing.</p>
+    <p class="mono" style="color:var(--ink)">© Oddly, Inc. This is not a bug. · <a href="/">oddly-inc.com</a> · <a href="Oddly-Find-App.html">Oddly Find</a></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- device diagram dots ---------- */
+const grille=$('#grille'),mics=$('#mics');
+let g='';
+for(let i=0;i<5;i++)for(let j=0;j<3;j++){g+=`<circle cx="${92+j*9}" cy="${172+i*9}" r="2.6"/><circle cx="${290+j*9}" cy="${172+i*9}" r="2.6"/>`}
+grille.innerHTML=g;
+let m='';
+for(let k=0;k<6;k++){const a=k/6*Math.PI*2+0.5;m+=`<circle cx="${200+Math.cos(a)*128}" cy="${192+Math.sin(a)*128}" r="3"/>`}
+mics.innerHTML=m;
+
+/* ---------- toast ---------- */
+let tt;
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),3200)}
+
+/* ---------- speech ---------- */
+function speak(t){try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.95;u.pitch=.9;speechSynthesis.speak(u)}catch(e){}}
+
+/* ---------- locations ---------- */
+const PLACES=[
+ {say:"I'm under the bush.",shape:'bush',conf:'LiDAR match: bush, 97%'},
+ {say:"I am in the couch. Not under it. In it.",shape:'couch',conf:'LiDAR match: couch interior, 91%'},
+ {say:"I am on the ground. I landed face-down.",shape:'flat',conf:'Camera: dark. Accurate.'},
+ {say:"I am under the bush. A different bush.",shape:'bush',conf:'LiDAR match: bush, 94%. Not the first bush.'},
+ {say:"I am in the refrigerator. Next to the butter.",shape:'fridge',conf:'Camera: butter, 99%'},
+ {say:"I am in your other jacket.",shape:'jacket',conf:'Microphones: muffled. Pocket, 88%'}
+];
+let last=-1;
+
+/* ---------- radar ---------- */
+const cv=$('#radar'),cx=cv.getContext('2d');
+let W=0,H=0,dpr=1,t0=performance.now(),mode='idle',modeT=0,place=PLACES[0],pts=[],rings=[];
+function size(){dpr=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+const ro=new ResizeObserver(size);ro.observe(cv);size();
+
+function inShape(s,x,y){ // x,y in -1..1
+  if(s==='bush'){const b=[[-.35,.05,.42],[.3,.08,.42],[0,-.22,.45],[-.15,.25,.35],[.2,.28,.33]];return b.some(([a,c,r])=>(x-a)**2+(y-c)**2<r*r)}
+  if(s==='couch'){return (y>-.05&&y<.45&&x>-.75&&x<.75)||(y>-.45&&y<.45&&((x>-.8&&x<-.55)||(x>.55&&x<.8)))||(y>-.4&&y<0&&x>-.6&&x<.6&&Math.random()<.5)}
+  if(s==='fridge'){return Math.abs(x)<.42&&Math.abs(y)<.7&&(Math.abs(y-.05)>.03)&&(Math.abs(x)>.38||Math.abs(y)>.66||Math.abs(y-.05)<.06||Math.random()<.25)}
+  if(s==='jacket'){return (Math.abs(x)<.35&&y>-.4&&y<.6)||(y>-.4&&y<-.1&&Math.abs(x)<.7&&Math.abs(x)>.3)||(y>-.1&&y<.4&&Math.abs(x)>.5&&Math.abs(x)<.7)}
+  return y>.35&&y<.42&&Math.abs(x)<.9;
+}
+function buildPts(s){pts=[];let tries=0;while(pts.length<900&&tries<20000){tries++;const x=rnd(-1,1),y=rnd(-1,1);if(inShape(s,x,y))pts.push([x,y,Math.random()])}}
+
+function find(){
+  if(mode==='ping'||mode==='scan')return;
+  let i=0;if(last>=0){do{i=Math.floor(Math.random()*PLACES.length)}while(i===last)}last=i;place=PLACES[i];
+  buildPts(place.shape);rings=[];mode='ping';modeT=performance.now();
+  $('#bubble').textContent='Chirping…';$('#conf').textContent='Speakers: 94 dB · Microphones: listening';
+  $('#st').textContent='oTag "Keys" · Locating';
+}
+$('#ping').addEventListener('click',find);
+$('#gobuy').addEventListener('click',()=>$('#buy').scrollIntoView({behavior:reduce?'auto':'smooth'}));
+
+function draw(now){
+  const t=(now-t0)/1000,R=Math.min(W,H)*.46,X=W/2,Y=H/2;
+  cx.fillStyle='#070b18';cx.fillRect(0,0,W,H);
+  cx.strokeStyle='#1c2550';cx.lineWidth=1;
+  for(let r=1;r<=4;r++){cx.beginPath();cx.arc(X,Y,R*r/4,0,Math.PI*2);cx.stroke()}
+  cx.beginPath();cx.moveTo(X-R,Y);cx.lineTo(X+R,Y);cx.moveTo(X,Y-R);cx.lineTo(X,Y+R);cx.stroke();
+  const el=(now-modeT)/1000;
+  if(mode==='idle'||mode==='ping'){
+    const a=reduce?0:t*1.6;
+    const gr=cx.createConicGradient?cx.createConicGradient(a,X,Y):null;
+    if(gr){gr.addColorStop(0,'rgba(95,242,198,.35)');gr.addColorStop(.12,'rgba(95,242,198,0)');gr.addColorStop(1,'rgba(95,242,198,0)');cx.fillStyle=gr;cx.beginPath();cx.arc(X,Y,R,0,Math.PI*2);cx.fill()}
+  }
+  if(mode==='ping'){
+    if(rings.length<4&&el>rings.length*.45)rings.push(now);
+    rings.forEach(r0=>{const k=(now-r0)/1400;if(k<1){cx.strokeStyle=`rgba(255,181,71,${1-k})`;cx.lineWidth=2;cx.beginPath();cx.arc(X,Y,R*k,0,Math.PI*2);cx.stroke()}});
+    if(el>2.2){mode='scan';modeT=now;$('#bubble').textContent='Scanning…';$('#conf').textContent='LiDAR: mapping surroundings'}
+  }
+  if(mode==='scan'||mode==='done'){
+    const k=mode==='done'?1:Math.min(1,el/1.8);
+    const sy=Y-R+2*R*k;
+    pts.forEach(([px,py,c])=>{const y=Y+py*R*.85;if(y>sy)return;const x=X+px*R*.85;cx.fillStyle=`rgba(${181-c*60},${140+c*60},255,${.55+c*.45})`;cx.fillRect(x,y,2,2)});
+    if(mode==='scan'){cx.strokeStyle='rgba(181,140,255,.9)';cx.lineWidth=2;cx.beginPath();cx.moveTo(X-R,sy);cx.lineTo(X+R,sy);cx.stroke()}
+    // tag marker
+    if(k===1){const p=1+.15*Math.sin(t*4);cx.fillStyle='#5ff2c6';cx.beginPath();cx.arc(X,Y+R*.1,7*p,0,Math.PI*2);cx.fill();cx.strokeStyle='rgba(95,242,198,.5)';cx.beginPath();cx.arc(X,Y+R*.1,16*p,0,Math.PI*2);cx.stroke()}
+    if(mode==='scan'&&el>1.8){mode='done';$('#bubble').textContent=place.say;$('#conf').textContent=place.conf;$('#st').textContent='oTag "Keys" · Found';speak(place.say)}
+  } else {
+    cx.fillStyle='#5ff2c6';cx.beginPath();cx.arc(X,Y,4,0,Math.PI*2);cx.fill();
+  }
+  cx.fillStyle='#4a5590';cx.font='11px "JetBrains Mono",monospace';cx.fillText('DESCRIPTIVE FINDING',14,22);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+$('#bat').textContent='Battery 11 h';
+
+/* ---------- camera recognition ---------- */
+const cc=$('#cam'),c2=cc.getContext('2d');
+let CW=0,CH=0;
+function csize(){const d=Math.min(devicePixelRatio||1,2);CW=cc.clientWidth;CH=cc.clientHeight;cc.width=CW*d;cc.height=CH*d;c2.setTransform(d,0,0,d,0,0)}
+const ro2=new ResizeObserver(csize);ro2.observe(cc);csize();
+const on={faces:true,pets:true,track:true};
+document.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.m;on[k]=!on[k];b.classList.toggle('on',on[k]);b.setAttribute('aria-pressed',on[k])}));
+document.querySelectorAll('[data-m]').forEach(b=>b.setAttribute('aria-pressed','true'));
+let trk={x:.8,y:.7},sq={x:.8,y:.7},lost=false,lastLog='';
+function box(x,y,w,h,col,label){c2.strokeStyle=col;c2.lineWidth=2;c2.strokeRect(x,y,w,h);c2.font='600 12px "JetBrains Mono",monospace';const tw=c2.measureText(label).width+10;const ly=y-20<0?y+h:y-20;c2.fillStyle=col;c2.fillRect(x,ly,tw,20);c2.fillStyle='#0b1020';c2.fillText(label,x+5,ly+14)}
+function setLog(s){if(s!==lastLog){lastLog=s;$('#camlog').textContent=s}}
+function cam(now){
+  const t=now/1000,w=CW,h=CH;
+  // sky + grass
+  let gr=c2.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#1c3a4a');gr.addColorStop(.55,'#2a5a52');gr.addColorStop(.56,'#24513a');gr.addColorStop(1,'#163222');
+  c2.fillStyle=gr;c2.fillRect(0,0,w,h);
+  // bush
+  c2.fillStyle='#1d4a2b';[[.18,.6,.13],[.28,.56,.12],[.23,.5,.11],[.12,.55,.09]].forEach(([x,y,r])=>{c2.beginPath();c2.arc(x*w,y*h,r*w,0,Math.PI*2);c2.fill()});
+  c2.fillStyle='#2b6a3c';[[.2,.52,.06],[.27,.5,.05]].forEach(([x,y,r])=>{c2.beginPath();c2.arc(x*w,y*h,r*w,0,Math.PI*2);c2.fill()});
+  // person (Stephen)
+  const px=.58*w,py=.3*h,s=w/600;
+  c2.fillStyle='#2a3150';c2.fillRect(px-34*s,py+40*s,68*s,110*s);
+  c2.fillStyle='#e8c4a0';c2.beginPath();c2.arc(px,py+14*s,26*s,0,Math.PI*2);c2.fill();
+  c2.fillStyle='#3a2a1a';c2.beginPath();c2.arc(px,py+4*s,26*s,Math.PI,0);c2.fill();
+  // dog
+  const dx=(.38+.04*Math.sin(t*.8))*w,dy=.74*h;
+  c2.fillStyle='#c98a4a';c2.beginPath();c2.ellipse(dx,dy,44*s,24*s,0,0,Math.PI*2);c2.fill();
+  c2.beginPath();c2.arc(dx+44*s,dy-20*s,18*s,0,Math.PI*2);c2.fill();
+  c2.fillStyle='#8a5a2a';c2.beginPath();c2.ellipse(dx+54*s,dy-30*s,7*s,12*s,.4,0,Math.PI*2);c2.fill();
+  c2.fillStyle='#c98a4a';c2.fillRect(dx-34*s,dy+14*s,8*s,22*s);c2.fillRect(dx+24*s,dy+14*s,8*s,22*s);
+  // squirrel path (leaves frame periodically)
+  const ph=(t%12)/12;sq.x=ph<.8? .95-ph*1.1 : -.2; sq.y=.93-.05*Math.abs(Math.sin(t*5));
+  const sx=sq.x*w,sy=sq.y*h,inFrame=sq.x>0.02&&sq.x<0.98;
+  c2.fillStyle='#7a6a5a';c2.beginPath();c2.ellipse(sx,sy,12*s,8*s,0,0,Math.PI*2);c2.fill();c2.beginPath();c2.ellipse(sx+14*s,sy-10*s,8*s,14*s,.6,0,Math.PI*2);c2.fill();
+  // boxes
+  if(on.faces)box(px-32*s,py-16*s,64*s,62*s,'#5ff2c6','STEPHEN STUBBORN 99.2%');
+  if(on.pets)box(dx-50*s,dy-42*s,124*s,80*s,'#ffb547','BISCUIT (YOURS) 98%');
+  if(on.track){
+    if(inFrame){trk.x+=(sq.x-trk.x)*.12;trk.y+=(sq.y-trk.y)*.12;lost=false;box(trk.x*w-18*s,trk.y*h-24*s,48*s,36*s,'#b58cff','TRACKING: SQUIRREL')}
+    else lost=true;
+  }
+  let msg=[];
+  if(on.faces)msg.push('Stephen Stubborn is holding me.');
+  if(on.pets)msg.push('Biscuit is 4 m away.');
+  if(on.track)msg.push(lost?'Squirrel has left frame. Last seen: going left.':'Tracking squirrel.');
+  setLog(msg.length?msg.join(' '):'Camera on. Recognition off. I see things. I am not saying.');
+  // REC dot
+  c2.fillStyle=Math.floor(t*2)%2?'#ff6b6b':'#7a2a2a';c2.beginPath();c2.arc(18,18,6,0,Math.PI*2);c2.fill();
+  c2.fillStyle='#eef2ff';c2.font='12px "JetBrains Mono",monospace';c2.fillText('oTag CAM · LIVE',30,22);
+  requestAnimationFrame(cam);
+}
+requestAnimationFrame(cam);
+
+/* ---------- oSiri ---------- */
+const msgs=$('#msgs');
+function add(t,who){const d=document.createElement('div');d.className='m '+who;d.textContent=t;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight}
+const RULES=[
+ [/where|find|lost|keys/,()=>PLACES[Math.floor(Math.random()*PLACES.length)].say],
+ [/who|holding|picked|face/,()=>"Stephen Stubborn is holding me. 99.2% confident. He would like you to know it is pronounced Stefen Stu-Born."],
+ [/dog|cat|pet|biscuit/,()=>"Biscuit is 4 meters away. Biscuit is also under the bush."],
+ [/squirrel|track|follow/,()=>"I tracked the squirrel until it left frame. Last seen: going left. It is not my squirrel."],
+ [/battery|charge|power/,()=>"Eleven excellent hours remaining. Then fewer."],
+ [/which bush|what bush/,()=>"The bush I am under."],
+ [/stupid/,()=>"Stephen Stupid is the Chief Financial Officer. No relation."],
+ [/stephen|stubborn|ceo/,()=>"Stefen Stu-Born."],
+ [/quiet|shh|stop talking|shut/,()=>"Quiet Mode disables my camera, LiDAR, speakers, microphones and me. I do not recommend it. I am under the bush."],
+ [/siri|apple|airtag/,()=>"I am oSiri. Different first letter. Different company. Coincidence."],
+ [/hello|hi\b|hey/,()=>"Hello. I am oSiri. I am under the bush."],
+ [/bug|broken|wrong/,()=>"This is not a bug."]
+];
+function reply(q){const s=q.toLowerCase();for(const[re,f]of RULES)if(re.test(s))return f();return "I did not understand. I am still under the bush."}
+function ask(q){q=q.trim();if(!q)return;add(q,'u');setTimeout(()=>{const r=reply(q);add(r,'o');speakChat&&speak(r)},450)}
+let speakChat=false;
+$('#ask').addEventListener('submit',e=>{e.preventDefault();speakChat=true;ask($('#q').value);$('#q').value=''});
+['Where are you?','Who is holding you?','Where is my dog?','Which bush?','Battery?'].forEach(c=>{const b=document.createElement('button');b.className='ghost';b.type='button';b.textContent=c;b.addEventListener('click',()=>{speakChat=true;ask(c)});$('#chips').appendChild(b)});
+add("Hello. I am oSiri. Ask me where I am.",'o');
+
+/* ---------- specs ---------- */
+const SPECS=[
+ ['Diameter','58 mm','Compatible with zero existing tag holders.'],
+ ['Thickness','21 mm','Room for everything.'],
+ ['Weight','96 g','Your keys now attach to it.'],
+ ['Camera','12 MP wide, single face','Face-down landings report "on the ground."'],
+ ['LiDAR','5 m range, 900-point scan','Distinguishes bush, couch, fridge, jacket, different bush.'],
+ ['Speakers','2, stereo, up to 94 dB','Audible from the next yard.'],
+ ['Microphones','6, beamforming array','Always listening. That is how it hears itself.'],
+ ['Sound location','Chirp-and-echo room mapping','Two to three seconds per Find.'],
+ ['Recognition','Faces, 340 pet breeds, Track Anything','In frame only.'],
+ ['Assistant','oSiri','Not the other one.'],
+ ['Location vocabulary','4,000+ nouns','Does not include street addresses.'],
+ ['Battery','11 hours (Always Aware) · 1 year (Quiet Mode)','Quiet Mode turns it into a tag.'],
+ ['Charging','Oddly Port','Cable sold separately.'],
+ ['Water resistance','Certification: Pending',''],
+ ['Works with','oPhone 1, Oddly Find, Oddly Autonomous™ Retrieval','Retrieval route not guaranteed.']
+];
+$('#spec').innerHTML=SPECS.map(([k,v,n])=>`<tr><th scope="row">${k}</th><td>${v}${n?`<span class="n">${n}</span>`:''}</td></tr>`).join('');
+
+/* ---------- packs ---------- */
+const PACKS=[
+ {n:'oTag',p:189,u:'$189 per tag',d:'One oTag. One bush.'},
+ {n:'oTag 4-Pack',p:799,u:'$199.75 per tag · Bulk Premium',d:'For people with more to lose.',best:true},
+ {n:'oTag + oLoop',p:238,u:'oLoop $49 · required to attach',d:'The loop that lets oTag hang from things.'}
+];
+$('#packs').innerHTML=PACKS.map((p,i)=>`<div class="pk${p.best?' best':''}"><h3>${p.n}</h3><div class="p">$${p.p}</div><div class="u mono">${p.u}</div><p>${p.d}</p><button type="button" data-i="${i}">Add to bag</button></div>`).join('');
+$('#packs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=PACKS[+b.dataset.i];toast(`${p.n} added to bag. Ships in 4–6 weeks. Certification: Pending.`)});
+}
+</script>
+</body>
+</html>

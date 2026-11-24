@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oddly Find — oTag App</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: deadpan, sincere product launch for a companion app that reports far too much.
+   IDEA: the page is a working oPhone running Oddly Find; notifications drop in like the real thing.
+   PICTURE: the phone itself, large and live, with tag list, Find, Look, oSiri, Alerts and Settings.
+   COLOUR/TYPE: Oddly house navy/mint/amber + oTag LiDAR violet; Fraunces, Space Grotesk, JetBrains Mono.
+   LAYOUT: copy and notification controls left, phone right; stacks title → phone → controls on narrow screens. */
+:root{color-scheme:dark;--bg:#0b1020;--bg2:#111833;--bg3:#18214a;--ink:#eef2ff;--dim:#a6b0d4;--mint:#5ff2c6;--amber:#ffb547;--vio:#b58cff;--line:#26305e;--red:#ff6b6b}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:radial-gradient(1000px 700px at 70% 30%,#1d1650 0%,transparent 60%),var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif;overflow-x:clip;min-height:100vh}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.05;margin:0 0 .4em;text-wrap:balance}
+h1{font-size:clamp(42px,6vw,72px);font-weight:800}
+p{margin:0 0 1em;max-width:60ch}
+.mono{font-family:"JetBrains Mono",monospace;font-size:13px}
+button{font:600 15px "Space Grotesk",sans-serif;min-height:44px;padding:0 18px;border-radius:999px;border:0;cursor:pointer;background:var(--mint);color:#06231a}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.page{max-width:1240px;margin:0 auto;padding:clamp(28px,5vw,64px) max(5vw,16px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(28px,5vw,72px);align-items:start}
+.intro .lede{font-size:19px;color:var(--dim)}
+.panel{background:var(--bg2);border:1px solid var(--line);border-radius:22px;padding:18px;margin-top:20px}
+.panel h3{font-size:20px}
+.nbtns{display:flex;flex-wrap:wrap;gap:8px}
+.nbtns button{min-height:38px;font-size:13px;padding:0 12px}
+.auto{display:flex;align-items:center;gap:10px;margin-top:14px;color:var(--dim)}
+.feat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px}
+.feat div{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:14px}
+.feat b{display:block;font-family:Fraunces,serif;font-size:18px}
+.feat span{color:var(--dim);font-size:14px}
+.q{margin-top:20px;border-left:3px solid var(--mint);padding:4px 0 4px 16px}
+.q p{font-family:Fraunces,serif;font-size:22px;line-height:1.25;margin:0 0 6px}
+.q small{color:var(--dim)}
+.fine{color:var(--dim);font-size:13px;margin-top:24px}
+/* phone */
+.phone{width:min(390px,92vw);height:800px;max-height:calc(100vh - 40px);min-height:640px;border-radius:54px;padding:12px;background:linear-gradient(145deg,#3a4270,#141933);box-shadow:0 50px 100px -30px #000,inset 0 0 0 2px #4b548a;position:sticky;top:20px}
+.screen{position:relative;height:100%;border-radius:44px;overflow:hidden;background:#090d1c;display:flex;flex-direction:column}
+.sbar{display:flex;justify-content:space-between;align-items:center;padding:14px 26px 6px;font:600 14px "Space Grotesk";flex:none}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:110px;height:30px;background:#000;border-radius:20px;z-index:4}
+.body{flex:1;overflow-y:auto;padding:8px 18px 18px}
+.tabs{flex:none;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:#0d1328;padding:6px 6px 18px}
+.tabs button{background:none;color:var(--dim);font-size:12px;min-height:48px;padding:0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
+.tabs button.on{color:var(--mint)}
+.tabs svg{width:22px;height:22px}
+.badge{position:absolute;top:4px;right:calc(50% - 22px);background:var(--red);color:#fff;font-size:11px;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+.ttl{font-family:Fraunces,serif;font-size:32px;font-weight:800;margin:6px 0 12px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;cursor:pointer;width:100%;text-align:left;color:var(--ink);font:inherit;min-height:auto}
+.card:hover{border-color:#3a4688}
+.av{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font:800 18px Fraunces,serif;color:#0b1020}
+.card .nm{font-weight:700}
+.card .loc{color:var(--dim);font-size:14px;line-height:1.3}
+.card .bt{margin-left:auto;font-size:12px;color:var(--dim);white-space:nowrap}
+.back{background:none;color:var(--mint);padding:0;min-height:36px;font-size:15px}
+.big{font-family:Fraunces,serif;font-size:26px;font-weight:800;line-height:1.15;margin:8px 0 4px}
+.conf{color:var(--vio)}
+.viz{position:relative;aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:#070b18;margin:12px 0;border:1px solid var(--line)}
+.viz canvas{position:absolute;inset:0;width:100%;height:100%}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg2);border-radius:14px;padding:4px}
+.seg button{min-height:36px;font-size:13px;background:none;color:var(--dim);border-radius:10px;padding:0}
+.seg button.on{background:var(--bg3);color:var(--ink)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.acts button{border-radius:16px;font-size:14px;padding:0 8px}
+.acts .wide{grid-column:1/-1;background:var(--vio);color:#160a2e}
+.hist{margin-top:14px}
+.hist div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hist span:last-child{color:var(--dim);white-space:nowrap}
+.al{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:8px;width:100%;text-align:left;color:var(--ink);font:inherit;min-height:auto;display:block}
+.al .h{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:2px}
+.al b{display:block;font-size:15px}
+.al p{margin:0;font-size:14px;color:#cfd6f2}
+.al.new{border-color:var(--mint)}
+.empty{color:var(--dim);text-align:center;padding:40px 10px}
+.msgs{display:flex;flex-direction:column;gap:8px}
+.m{max-width:85%;padding:10px 14px;border-radius:18px;font-size:15px}
+.m.u{align-self:flex-end;background:var(--bg3)}
+.m.o{align-self:flex-start;background:linear-gradient(135deg,#2a1a5e,#173a52);border:1px solid #3c2f7a}
+.ask{display:flex;gap:6px;padding:8px 14px;flex:none}
+.ask input{flex:1;font:16px "Space Grotesk";min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 14px 4px;flex:none}
+.chips button{min-height:34px;font-size:12px;white-space:nowrap;padding:0 10px}
+.set{background:var(--bg2);border:1px solid var(--line);border-radius:18px;margin-bottom:12px}
+.set .r{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.set .r:last-child{border-bottom:0}
+.set .r small{display:block;color:var(--dim);font-size:12px;line-height:1.3}
+.sw{width:52px;height:32px;border-radius:16px;background:#2a3360;position:relative;flex:none;padding:0;min-height:32px}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .2s}
+.sw.on{background:var(--mint)}.sw.on::after{left:23px}
+input[type=range]{width:120px;accent-color:var(--mint)}
+select{font:14px "Space Grotesk";background:var(--bg3);color:var(--ink);border:1px solid var(--line);border-radius:10px;min-height:36px;padding:0 8px}
+/* banner */
+.banner{position:absolute;left:10px;right:10px;top:-120px;z-index:6;background:rgba(30,38,80,.92);backdrop-filter:blur(14px);border:1px solid #3a4688;border-radius:22px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;transition:top .4s cubic-bezier(.2,.9,.3,1.2);cursor:pointer;text-align:left;color:var(--ink);font:inherit;min-height:auto;width:auto}
+.banner.show{top:46px}
+.banner .ic{width:36px;height:36px;border-radius:10px;background:var(--bg);display:grid;place-items:center;flex:none}
+.banner .h{font-size:12px;color:var(--dim);display:flex;justify-content:space-between;gap:8px}
+.banner b{font-size:14px;display:block}
+.banner p{margin:0;font-size:13px;line-height:1.3}
+.dlg{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:7;display:none;align-items:center;justify-content:center;padding:24px}
+.dlg.show{display:flex}
+.dlg div{background:var(--bg3);border-radius:22px;padding:18px;text-align:center}
+.dlg p{font-size:15px;margin:0 0 14px}
+.dlg .row{display:flex;gap:8px;justify-content:center}
+.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--amber);color:#2a1700;padding:10px 14px;border-radius:14px;font-size:13px;font-weight:600;z-index:8;opacity:0;transition:opacity .25s;width:max-content;max-width:85%;text-align:center;pointer-events:none}
+.toast.show{opacity:1}
+@media(max-width:880px){.page{grid-template-columns:minmax(0,1fr)}.phone{position:relative;top:0;margin:0 auto;height:740px}.intro{display:contents}.intro>.head{order:1}.phone{order:2}.intro>.rest{order:3}}
+@media(max-width:480px){.feat{grid-template-columns:minmax(0,1fr)}.phone{border-radius:44px;padding:8px}.screen{border-radius:38px}}
+@media(prefers-reduced-motion:reduce){.banner,.sw::after,.toast{transition:none}}
+/* inside oOS (?oos=1): oOS draws the phone, status bar and home indicator */
+html.oos body{background:#090d1c;min-height:0}
+html.oos .intro,html.oos .intro>*{display:none!important}
+html.oos .page{display:block;max-width:none;padding:0;margin:0}
+html.oos .phone{width:100vw;height:100vh;max-height:none;min-height:0;border-radius:0;padding:0;background:none;box-shadow:none;position:relative;top:0;margin:0}
+html.oos .screen{border-radius:0}
+html.oos .notch,html.oos .sbar{display:none}
+html.oos .body{padding-top:14px}
+html.oos .banner.show{top:10px}
+html.oos .tabs{padding-bottom:8px}
+</style>
+</head>
+<body>
+<script>if(/[?&]oos=1/.test(location.search))document.documentElement.classList.add('oos');</script>
+<main class="page">
+  <div class="intro">
+    <div class="head">
+      <p class="mono" style="color:var(--vio)"><a href="/" style="color:inherit">Oddly, Inc.</a> · Companion app for <a href="otag.html" style="color:inherit">oTag</a></p>
+      <h1>Oddly Find.</h1>
+      <p class="lede">Your oTag knows where it is. Oddly Find is where it tells you. Every sentence, every face, every bush, delivered as a notification the moment it happens. Sometimes before.</p>
+    </div>
+    <div class="rest">
+      <div class="panel">
+        <h3>Send a notification</h3>
+        <p class="mono" style="color:var(--dim);margin-bottom:10px">Each one drops onto the phone. Tap it to open the tag.</p>
+        <div class="nbtns" id="nbtns"></div>
+        <label class="auto"><button class="sw on" id="autoSw" role="switch" aria-checked="true" aria-label="Automatic notifications"></button> Automatic notifications, about every 12 seconds</label>
+      </div>
+      <div class="feat">
+        <div><b>Descriptive Finding™</b><span>No map. A sentence. "I'm under the bush."</span></div>
+        <div><b>Look</b><span>See what your oTag sees, live, with recognition boxes.</span></div>
+        <div><b>Who Touched It</b><span>A face log of everyone who has picked up your things.</span></div>
+        <div><b>Autonomous Retrieval</b><span>Oddly Autonomous™ drives to your oTag by a route of its choosing.</span></div>
+      </div>
+      <div class="q"><p>"People asked for fewer notifications. We heard them. We sent a notification about it."</p><small>Stephen Stubborn, CEO · "Stefen Stu-Born"</small></div>
+      <div class="q" style="border-color:var(--amber)"><p>"The app is free. The notifications are free. The oTag that sends them is $189."</p><small>Stephen Stupid, CFO · No relation</small></div>
+      <p class="fine">Oddly Find requires oPhone 1 and an oTag. Notifications cannot be fully disabled; Do Not Disturb reduces announcement volume to 80 dB. Facial recognition cannot be turned off, because facial recognition is how oTag knows it is you turning it off. Certification: Pending. This is not a bug. — Oddly, Inc.</p>
+    </div>
+  </div>
+
+  <div class="phone" aria-label="Oddly Find app on oPhone 1">
+    <div class="screen" id="screen">
+      <div class="notch"></div>
+      <div class="sbar"><span id="clock">9:41</span><span class="mono" style="font-size:12px">94 dB</span></div>
+      <button class="banner" id="banner" type="button" aria-live="polite"></button>
+      <div class="body" id="body"></div>
+      <div id="extra"></div>
+      <nav class="tabs" id="tabs"></nav>
+      <div class="dlg" id="dlg"><div><p id="dlgT"></p><div class="row"><button class="ghost" id="dlgNo" type="button">Cancel</button><button id="dlgYes" type="button">Continue</button></div></div></div>
+      <div class="toast" id="toast" role="status"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- data ---------- */
+const TAGS=[
+ {id:'keys',name:'Keys',col:'#5ff2c6',bat:11,shape:'bush',say:"I'm under the bush.",conf:'LiDAR match: bush, 97%',hist:[['Stephen Stubborn','9:12'],['You','8:03']]},
+ {id:'wallet',name:'Wallet',col:'#ffb547',bat:2,shape:'couch',say:'I am in the couch. Not under it. In it.',conf:'LiDAR match: couch interior, 91%',hist:[['Stephen Stupid (no relation)','9:30'],['You','7:55']]},
+ {id:'biscuit',name:"Biscuit's Collar",col:'#ff9e7a',bat:9,shape:'bush',say:'I am under the bush. Biscuit is also under the bush.',conf:'Pet recognition: Biscuit, 98%',hist:[['Biscuit (dog)','9:38'],['Squirrel (not yours)','9:20']]},
+ {id:'bag',name:'Backpack',col:'#b58cff',bat:6,shape:'flat',say:'I am on the ground. I landed face-down.',conf:'Camera: dark. Accurate.',hist:[['Unknown face','8:41'],['You','8:40']]},
+ {id:'car',name:'Oddly Roadster',col:'#7ab8ff',bat:10,shape:'car',say:'I am in the Oddly Roadster. The Roadster is not where you left it.',conf:'Microphones: rocket idle, 99%',hist:[['Oddly Autonomous™','9:40'],['You','Yesterday']]}
+];
+const MORE={
+ keys:["I am under the bush. A different bush.","I'm under the bush."],
+ wallet:["I am in the couch. Deeper now.","I am in the couch. Next to a coin and a remote."],
+ biscuit:["I am under the bush. Biscuit has not left the bush.","I am in the kitchen. Biscuit is looking at the refrigerator."],
+ bag:["I am on the ground. I landed face-down.","I am on a chair. I can see the ceiling."],
+ car:["I am in the Oddly Roadster. The Roadster is on a different street.","I am in the Oddly Roadster. The Roadster is in a parking lot. Not yours."]
+};
+const NOTES=[
+ {tag:'keys',t:'Keys',b:"I'm under the bush.",k:'Location'},
+ {tag:'keys',t:'Separation Alert',b:'You left Keys behind. Keys would like you to come back. Keys is under the bush.',k:'Separation'},
+ {tag:'wallet',t:'Face Detected',b:'Stephen Stupid (no relation) is holding your Wallet. 99.1% confident.',k:'Faces'},
+ {tag:'wallet',t:'Low Battery',b:'Wallet has 2 excellent hours remaining. Then fewer.',k:'Battery'},
+ {tag:'biscuit',t:"Biscuit's Collar",b:'Biscuit has left the bush. Biscuit is now under a different bush.',k:'Pets'},
+ {tag:'biscuit',t:'Track Anything',b:'Squirrel has left frame. Last seen: going left. It is not your squirrel.',k:'Tracking'},
+ {tag:'bag',t:'Backpack',b:'I landed face-down. I am on the ground.',k:'Location'},
+ {tag:'bag',t:'Unwanted Tracking',b:'An oTag is traveling with you. It says hello. It belongs to someone else.',k:'Safety'},
+ {tag:'car',t:'Oddly Autonomous™',b:'Your Roadster has relocated itself. It has not said where. The oTag inside has.',k:'Vehicle'},
+ {tag:'keys',t:'oSiri',b:'I heard my name. Nobody said my name. I am still listening.',k:'oSiri'},
+ {tag:'keys',t:'Firmware 1.0.1',b:'Installed. Improves bush recognition. Certification: Pending.',k:'System'},
+ {tag:'wallet',t:'Do Not Disturb',b:'oTag does not recognize Do Not Disturb. This notification was delivered more quietly.',k:'System'}
+];
+let alerts=[],unread=0,tab='tags',cur=null,view='find',chat=[{w:'o',t:'Hello. I am oSiri. Ask me where your things are.'}];
+const S={quiet:false,dnd:false,face:true,vol:94,lang:'English'};
+
+/* ---------- tiny helpers ---------- */
+let tt;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2600)}
+function speak(t){try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.95;u.pitch=.9;speechSynthesis.speak(u)}catch(e){}}
+let actx=null;function chirp(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.setValueAtTime(1320,actx.currentTime);o.frequency.setValueAtTime(1760,actx.currentTime+.08);g.gain.setValueAtTime(S.dnd?.05:.12,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.25);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.26)}catch(e){}}
+const now=()=>{const d=new Date();let h=d.getHours()%12||12;return h+':'+String(d.getMinutes()).padStart(2,'0')};
+function tick(){$('#clock').textContent=now()}tick();setInterval(tick,15000);
+const tagById=id=>TAGS.find(t=>t.id===id);
+function oddly(s){return S.lang==='English (Oddly)'?s.replace(/\bI am\b/g,'This unit is').replace(/\bI'm\b/g,'This unit is').replace(/\.$/,'. Confirmed.'):s}
+
+/* ---------- icons ---------- */
+const IC={
+ tags:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>',
+ alerts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+ osiri:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 11v2"/></svg>',
+ settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>'
+};
+const LOGO='<svg viewBox="-128 -128 256 256" width="24" height="24" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>';
+
+/* ---------- render ---------- */
+function renderTabs(){
+  $('#tabs').innerHTML=[['tags','Tags'],['alerts','Alerts'],['osiri','oSiri'],['settings','Settings']].map(([k,l])=>`<button type="button" data-tab="${k}" class="${tab===k?'on':''}" aria-label="${l}">${IC[k]}${l}${k==='alerts'&&unread?`<span class="badge">${unread}</span>`:''}</button>`).join('');
+}
+function render(){
+  stopViz();renderTabs();$('#extra').innerHTML='';
+  const B=$('#body');
+  if(tab==='tags'&&!cur){
+    B.innerHTML=`<div class="ttl">Tags</div>`+(S.quiet?`<p class="mono" style="color:var(--amber)">Quiet Mode is on. Your oTags are tags.</p>`:'')+TAGS.map(t=>`<button type="button" class="card" data-open="${t.id}"><span class="av" style="background:${t.col}">${esc(t.name[0])}</span><span><span class="nm">${esc(t.name)}</span><br><span class="loc">${S.quiet?'Location: a tag does not say.':esc(oddly(t.say))}</span></span><span class="bt">${S.quiet?'1 yr':t.bat+' h'}</span></button>`).join('');
+  } else if(tab==='tags'&&cur){
+    const t=cur;
+    B.innerHTML=`<button type="button" class="back" data-back>‹ Tags</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:4px"><span class="av" style="background:${t.col};width:36px;height:36px;font-size:15px">${esc(t.name[0])}</span><b style="font-size:18px">${esc(t.name)}</b><span class="mono" style="margin-left:auto;color:var(--dim)">${t.bat} h</span></div>
+    <div class="big" id="say" aria-live="polite">${S.quiet?'Quiet Mode. I am a tag.':esc(oddly(t.say))}</div>
+    <div class="mono conf" id="conf">${S.quiet?'Sensors off.':esc(t.conf)}</div>
+    <div class="viz"><canvas id="viz"></canvas></div>
+    <div class="seg" role="tablist">${['find','look','lidar'].map(v=>`<button type="button" data-view="${v}" class="${view===v?'on':''}">${{find:'Find',look:'Look',lidar:'LiDAR'}[v]}</button>`).join('')}</div>
+    <div class="acts">
+      <button type="button" data-act="find">Find</button>
+      <button type="button" class="ghost" data-act="sound">Play Sound</button>
+      <button type="button" class="ghost" data-act="ask">Ask oSiri</button>
+      <button type="button" class="ghost" data-act="share">Share Location</button>
+      <button type="button" class="wide" data-act="retrieve">Retrieve with Oddly Autonomous™</button>
+    </div>
+    <div class="hist"><b style="font-size:15px">Who Touched It</b>${t.hist.map(([w,h])=>`<div><span>${esc(w)}</span><span>${esc(h)}</span></div>`).join('')}</div>`;
+    startViz();
+  } else if(tab==='alerts'){
+    unread=0;renderTabs();
+    B.innerHTML=`<div class="ttl">Alerts</div>`+(alerts.length?alerts.map((a,i)=>`<button type="button" class="al ${a.fresh?'new':''}" data-alert="${i}"><span class="h"><span>${esc(a.k)}</span><span>${esc(a.time)}</span></span><b>${esc(a.t)}</b><p>${esc(oddly(a.b))}</p></button>`).join('')+`<button type="button" class="ghost" data-act="clear" style="width:100%;margin-top:6px">Clear All</button>`:`<div class="empty">No alerts yet.<br>Give it a moment.</div>`);
+    alerts.forEach(a=>a.fresh=false);
+  } else if(tab==='osiri'){
+    B.innerHTML=`<div class="ttl">oSiri</div><div class="msgs" id="msgs">${chat.map(m=>`<div class="m ${m.w}">${esc(m.t)}</div>`).join('')}</div>`;
+    $('#extra').innerHTML=`<div class="chips">${['Where are my keys?','Who has my wallet?','Where is Biscuit?','Where is my car?','Which bush?'].map(c=>`<button type="button" class="ghost" data-chip="${esc(c)}">${esc(c)}</button>`).join('')}</div><form class="ask" id="askF"><input id="q" placeholder="Ask oSiri…" autocomplete="off" aria-label="Ask oSiri"><button>Ask</button></form>`;
+    B.scrollTop=B.scrollHeight;
+  } else if(tab==='settings'){
+    const sw=(k,on)=>`<button type="button" class="sw ${on?'on':''}" data-sw="${k}" role="switch" aria-checked="${on}"></button>`;
+    B.innerHTML=`<div class="ttl">Settings</div>
+    <div class="set">
+      <div class="r"><span>Quiet Mode<small>Turns off camera, LiDAR, speakers, mics and oSiri. Battery: 1 year.</small></span>${sw('quiet',S.quiet)}</div>
+      <div class="r"><span>Do Not Disturb<small>Announcements at 80 dB instead of 94.</small></span>${sw('dnd',S.dnd)}</div>
+      <div class="r"><span>Facial Recognition<small>Knows who picked it up.</small></span>${sw('face',S.face)}</div>
+    </div>
+    <div class="set">
+      <div class="r"><span>Announcement Volume<small id="volL">${S.vol} dB</small></span><input type="range" min="60" max="94" value="${S.vol}" id="vol" aria-label="Announcement volume"></div>
+      <div class="r"><span>Description Language<small>How oTag describes where it is.</small></span><select id="lang" aria-label="Description language">${['English','English (Oddly)'].map(l=>`<option ${S.lang===l?'selected':''}>${l}</option>`).join('')}</select></div>
+    </div>
+    <div class="set"><div class="r"><span>About<small>Oddly Find 1.0 · oTag firmware 1.0.1<br>Certification: Pending</small></span>${LOGO}</div></div>`;
+  }
+}
+
+/* ---------- viz canvas ---------- */
+let raf=0,vizMode='idle',vizT=0,pts=[];
+function inShape(s,x,y){
+  if(s==='bush'){return [[-.35,.05,.42],[.3,.08,.42],[0,-.22,.45],[-.15,.25,.35],[.2,.28,.33]].some(([a,c,r])=>(x-a)**2+(y-c)**2<r*r)}
+  if(s==='couch'){return (y>-.05&&y<.45&&x>-.75&&x<.75)||(y>-.45&&y<.45&&((x>-.8&&x<-.55)||(x>.55&&x<.8)))}
+  if(s==='car'){return (y>0&&y<.35&&Math.abs(x)<.85)||(y>-.3&&y<=0&&Math.abs(x)<.55)||((x+.5)**2+(y-.4)**2<.03)||((x-.5)**2+(y-.4)**2<.03)}
+  return y>.35&&y<.42&&Math.abs(x)<.9;
+}
+function buildPts(s){pts=[];let n=0;while(pts.length<700&&n<20000){n++;const x=Math.random()*2-1,y=Math.random()*2-1;if(inShape(s,x,y))pts.push([x,y,Math.random()])}}
+function stopViz(){cancelAnimationFrame(raf);raf=0}
+function startViz(){
+  const c=$('#viz');if(!c)return;const g=c.getContext('2d');
+  const d=Math.min(devicePixelRatio||1,2),W=c.clientWidth,H=c.clientHeight;c.width=W*d;c.height=H*d;g.setTransform(d,0,0,d,0,0);
+  buildPts(cur.shape);
+  const loop=ts=>{
+    const t=ts/1000,X=W/2,Y=H/2,R=Math.min(W,H)*.46,el=(ts-vizT)/1000;
+    g.fillStyle='#070b18';g.fillRect(0,0,W,H);
+    if(S.quiet){g.fillStyle='#4a5590';g.font='13px "JetBrains Mono"';g.textAlign='center';g.fillText('SENSORS OFF',X,Y);g.textAlign='start';raf=requestAnimationFrame(loop);return}
+    if(view==='look'){drawLook(g,W,H,t)}
+    else{
+      g.strokeStyle='#1c2550';g.lineWidth=1;for(let r=1;r<=4;r++){g.beginPath();g.arc(X,Y,R*r/4,0,Math.PI*2);g.stroke()}
+      if(vizMode==='ping'){
+        for(let i=0;i<4;i++){const k=(el-i*.35)/1.2;if(k>0&&k<1){g.strokeStyle=`rgba(255,181,71,${1-k})`;g.lineWidth=2;g.beginPath();g.arc(X,Y,R*k,0,Math.PI*2);g.stroke()}}
+        if(el>2){vizMode='scan';vizT=ts}
+      }
+      const k=view==='lidar'?1:vizMode==='scan'?Math.min(1,el/1.5):vizMode==='done'?1:0;
+      if(k>0){const sy=Y-R+2*R*k;pts.forEach(([px,py,c])=>{const y=Y+py*R*.85;if(y>sy)return;g.fillStyle=`rgba(${181-c*60},${140+c*60},255,${.5+c*.5})`;g.fillRect(X+px*R*.85,y,2,2)});
+        if(vizMode==='scan'&&k<1){g.strokeStyle='#b58cff';g.lineWidth=2;g.beginPath();g.moveTo(X-R,sy);g.lineTo(X+R,sy);g.stroke()}}
+      if(vizMode==='scan'&&el>1.5){vizMode='done';reveal()}
+      if(vizMode!=='ping'&&vizMode!=='scan'){const p=1+(reduce?0:.15*Math.sin(t*4));g.fillStyle='#5ff2c6';g.beginPath();g.arc(X,Y+R*.1,6*p,0,Math.PI*2);g.fill()}
+      g.fillStyle='#4a5590';g.font='11px "JetBrains Mono"';g.fillText(view==='lidar'?'LIDAR · 900 PTS':'DESCRIPTIVE FINDING',10,18);
+    }
+    raf=requestAnimationFrame(loop);
+  };
+  raf=requestAnimationFrame(loop);
+}
+function lbl(g,x,y,w,h,col,s){g.strokeStyle=col;g.lineWidth=2;g.strokeRect(x,y,w,h);g.font='600 11px "JetBrains Mono"';const tw=g.measureText(s).width+8;const ly=y-18<0?y+h:y-18;g.fillStyle=col;g.fillRect(x,ly,tw,18);g.fillStyle='#0b1020';g.fillText(s,x+4,ly+13)}
+function drawLook(g,W,H,t){
+  const s=cur.shape;
+  if(s==='flat'){g.fillStyle='#050505';g.fillRect(0,0,W,H);g.fillStyle='#3a3a3a';g.font='13px "JetBrains Mono"';g.textAlign='center';g.fillText('CAMERA: DARK',W/2,H/2);g.fillText('I am face-down.',W/2,H/2+20);g.textAlign='start'}
+  else if(s==='bush'){
+    const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#2b4a3a');gr.addColorStop(1,'#10251a');g.fillStyle=gr;g.fillRect(0,0,W,H);
+    for(let i=0;i<26;i++){const x=(i*73%100)/100*W,y=(i*37%60)/100*H,r=18+(i*13%22);g.fillStyle=i%3?'#1f5a33':'#2f7a45';g.beginPath();g.ellipse(x+Math.sin(t+i)*2,y,r,r*.6,i,0,Math.PI*2);g.fill()}
+    g.fillStyle='#3d2a1a';g.fillRect(W*.47,H*.55,W*.06,H*.45);
+    lbl(g,W*.08,H*.14,W*.84,H*.4,'#5ff2c6','BUSH 97%');
+    if(cur.id==='biscuit'){g.fillStyle='#c98a4a';g.beginPath();g.ellipse(W*.7,H*.8,W*.14,H*.08,0,0,Math.PI*2);g.fill();lbl(g,W*.55,H*.7,W*.3,H*.2,'#ffb547','BISCUIT 98%')}
+  } else if(s==='couch'){
+    g.fillStyle='#3a2a4a';g.fillRect(0,0,W,H);for(let i=0;i<H;i+=6){g.fillStyle=i%12?'#40304f':'#352744';g.fillRect(0,i,W,3)}
+    g.fillStyle='#d4b14a';g.beginPath();g.arc(W*.3,H*.7,14,0,Math.PI*2);g.fill();lbl(g,W*.3-20,H*.7-20,40,40,'#ffb547','COIN');
+    g.fillStyle='#222';g.fillRect(W*.55,H*.45,W*.3,H*.1);lbl(g,W*.55-4,H*.45-4,W*.3+8,H*.1+8,'#b58cff','REMOTE 93%');
+  } else {
+    g.fillStyle='#14182a';g.fillRect(0,0,W,H);g.fillStyle='#2a3050';g.fillRect(W*.1,H*.15,W*.8,H*.35);
+    const sx=(t*40)%(W*.8);g.fillStyle='#3a4470';for(let i=0;i<5;i++)g.fillRect(W*.1+((sx+i*W*.2)%(W*.8)),H*.35,W*.08,H*.1);
+    lbl(g,W*.1,H*.15,W*.8,H*.35,'#7ab8ff','WINDOW · MOVING');g.fillStyle='#eef2ff';g.font='12px "JetBrains Mono"';g.fillText('Driver: none',W*.1,H*.7);g.fillText('Destination: undisclosed',W*.1,H*.7+18);
+  }
+  g.fillStyle=Math.floor(t*2)%2?'#ff6b6b':'#7a2a2a';g.beginPath();g.arc(14,14,5,0,Math.PI*2);g.fill();g.fillStyle='#eef2ff';g.font='11px "JetBrains Mono"';g.fillText('LIVE',24,18);
+}
+function reveal(){
+  const opts=MORE[cur.id]||[cur.say];const s=opts[Math.floor(Math.random()*opts.length)];cur.say=s;
+  const e=$('#say');if(e)e.textContent=oddly(s);const c=$('#conf');if(c)c.textContent=cur.conf;speak(oddly(s));
+}
+
+/* ---------- notifications ---------- */
+let bt,ni=0;
+function notify(n,user){
+  const a={...n,time:now(),fresh:true};alerts.unshift(a);if(alerts.length>40)alerts.pop();
+  if(tab!=='alerts')unread++;else render();renderTabs();
+  if(S.quiet&&n.k!=='Safety'&&n.k!=='System'){a.b='Quiet Mode is on. Your oTag wanted to say something. It did not.'}
+  const b=$('#banner');
+  b.innerHTML=`<span class="ic">${LOGO}</span><span style="flex:1"><span class="h"><span>ODDLY FIND</span><span>now</span></span><b>${esc(a.t)}</b><p>${esc(oddly(a.b))}</p></span>`;
+  b.dataset.tag=n.tag;b.classList.add('show');if(user)chirp();
+  clearTimeout(bt);bt=setTimeout(()=>b.classList.remove('show'),4800);
+}
+$('#banner').addEventListener('click',()=>{const id=$('#banner').dataset.tag;$('#banner').classList.remove('show');tab='tags';cur=tagById(id);view='find';vizMode='done';render()});
+$('#nbtns').innerHTML=NOTES.map((n,i)=>`<button type="button" class="ghost" data-n="${i}">${esc(n.t)}</button>`).join('');
+$('#nbtns').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(b)notify(NOTES[+b.dataset.n],true)});
+let auto=true,autoTimer=null;
+function schedule(){clearInterval(autoTimer);if(auto)autoTimer=setInterval(()=>{notify(NOTES[ni++%NOTES.length],false)},12000)}
+$('#autoSw').addEventListener('click',e=>{auto=!auto;e.currentTarget.classList.toggle('on',auto);e.currentTarget.setAttribute('aria-checked',auto);schedule()});
+setTimeout(()=>notify(NOTES[ni++],false),1800);schedule();
+
+/* ---------- dialog ---------- */
+let dlgCb=null;
+function confirmIn(t,cb){$('#dlgT').textContent=t;dlgCb=cb;$('#dlg').classList.add('show')}
+$('#dlgNo').addEventListener('click',()=>{$('#dlg').classList.remove('show')});
+$('#dlgYes').addEventListener('click',()=>{$('#dlg').classList.remove('show');dlgCb&&dlgCb()});
+
+/* ---------- oSiri ---------- */
+const RULES=[
+ [/key/,()=>"Keys: "+tagById('keys').say],
+ [/wallet/,()=>"Your Wallet is in the couch. Stephen Stupid held it at 9:30. He is no relation."],
+ [/dog|biscuit|pet|collar/,()=>"Biscuit is under the bush. Biscuit's collar agrees."],
+ [/car|roadster|vehicle/,()=>"Your Oddly Roadster is not where you left it. Oddly Autonomous™ is handling it."],
+ [/bag|backpack/,()=>"Your Backpack is on the ground. Face-down. Accurate."],
+ [/which bush|what bush/,()=>"The bush I am under."],
+ [/who|face|holding|touch/,()=>"Today: Stephen Stubborn, Stephen Stupid, Biscuit, one squirrel. The squirrel is not yours."],
+ [/battery|charge/,()=>"Wallet has 2 excellent hours. Keys has 11. Quiet Mode would fix this. I do not recommend Quiet Mode."],
+ [/notification|alert|stop|quiet|shh/,()=>"Notifications cannot be stopped. They can be quieter. 80 decibels."],
+ [/stupid/,()=>"Stephen Stupid. Chief Financial Officer. No relation."],
+ [/stephen|stubborn|ceo/,()=>"Stefen Stu-Born."],
+ [/siri|apple|airtag/,()=>"I am oSiri. Different first letter. Coincidence."],
+ [/where/,()=>"Somewhere specific. Ask about a tag by name."],
+ [/hello|hi\b|hey/,()=>"Hello. I am under the bush."]
+];
+function reply(q){const s=q.toLowerCase();if(S.quiet)return"Quiet Mode is on. I am not here. This message is from before.";for(const[r,f]of RULES)if(r.test(s))return oddly(f());return"I did not understand. I am still under the bush."}
+function ask(q){q=q.trim();if(!q)return;chat.push({w:'u',t:q});render();setTimeout(()=>{const r=reply(q);chat.push({w:'o',t:r});if(tab==='osiri'){render();const i=$('#q');i&&i.focus()}speak(r)},450)}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const T=e.target.closest('[data-tab],[data-open],[data-back],[data-view],[data-act],[data-alert],[data-chip],[data-sw]');if(!T||!$('#screen').contains(T))return;
+  if(T.dataset.tab){tab=T.dataset.tab;if(tab!=='tags')cur=null;else cur=null;render();return}
+  if(T.dataset.open){cur=tagById(T.dataset.open);view='find';vizMode='done';render();return}
+  if('back' in T.dataset){cur=null;render();return}
+  if(T.dataset.view){view=T.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('on',b===T));return}
+  if(T.dataset.chip){ask(T.dataset.chip);return}
+  if(T.dataset.alert){const a=alerts[+T.dataset.alert];tab='tags';cur=tagById(a.tag);view='find';vizMode='done';render();return}
+  if(T.dataset.sw){const k=T.dataset.sw;
+    if(k==='face'){T.classList.remove('on');setTimeout(()=>{T.classList.add('on');toast('Facial recognition is how oTag knows it is you turning it off.')},350);return}
+    if(k==='quiet'&&!S.quiet){confirmIn('Quiet Mode turns your oTags into tags. They will no longer know where they are. Continue?',()=>{S.quiet=true;render();toast('Your oTags are now tags.')});return}
+    S[k]=!S[k];if(k==='dnd'){S.vol=S.dnd?80:94;toast(S.dnd?'oTag does not recognize Do Not Disturb. Volume set to 80 dB.':'Volume restored to 94 dB.')}
+    render();return}
+  const a=T.dataset.act;
+  if(a==='find'){if(S.quiet){toast('Quiet Mode is on. Your oTag is a tag.');return}view='find';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('on',b.dataset.view==='find'));vizMode='ping';vizT=performance.now();$('#say').textContent='Chirping…';$('#conf').textContent='Speakers: '+S.vol+' dB · Microphones: listening';chirp()}
+  else if(a==='sound'){chirp();toast(`Playing at ${S.vol} dB. Your neighbors have been notified.`)}
+  else if(a==='ask'){tab='osiri';const n=cur.name;cur=null;ask('Where is my '+n.toLowerCase()+'?')}
+  else if(a==='share'){toast(`Shared: "${oddly(cur.say)}" Recipients will need to find the bush.`)}
+  else if(a==='retrieve'){confirmIn('Oddly Autonomous™ will drive to your oTag by a route of its choosing. ETA: unknown. Continue?',()=>{toast('Roadster dispatched. Route: its choice.');setTimeout(()=>notify({tag:'car',t:'Oddly Autonomous™',b:'Your Roadster has departed. It is going somewhere. It is confident.',k:'Vehicle'},true),2500)})}
+  else if(a==='clear'){alerts=[];render();toast('Cleared. More are coming.')}
+});
+document.addEventListener('submit',e=>{if(e.target.id==='askF'){e.preventDefault();const i=$('#q');ask(i.value);i.value=''}});
+document.addEventListener('input',e=>{if(e.target.id==='vol'){S.vol=+e.target.value;$('#volL').textContent=S.vol+' dB'+(S.vol===60?' · minimum. oTag must be heard.':'')}});
+document.addEventListener('change',e=>{if(e.target.id==='lang'){S.lang=e.target.value;toast(S.lang==='English'?'English restored.':'This unit now speaks English (Oddly). Confirmed.')}});
+
+render();
+}
+</script>
+</body>
+</html>
