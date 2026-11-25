@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Stephen Stupid — Oddly, Inc.</title>
+<meta name="description" content="Stephen Stupid (pronounced Stefen Stupid), Chief Financial Officer of Oddly, Inc. No relation. Law and finance degrees, résumé, the Deferred Win Calculator and frequently asked questions.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#080A14;--bg2:#0D1020;--card:#12152B;--line:#242849;--line2:#323865;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;--purple:#7B4FFF;--acc:#F5A623;--mint:#2EE9A5;--amber:#F5A623;--steel:#B9C2D9}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+  section{padding:84px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(30px,4.6vw,48px);margin-bottom:14px}
+  .lede{color:var(--dim);font-size:18px;max-width:640px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none}.nav a:hover{color:var(--text)}
+  @media(max-width:760px){.nav{display:none}}
+  .back{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line2);border-radius:999px;padding:6px 12px;white-space:nowrap}
+  .back:hover{color:var(--text);border-color:var(--acc)}
+  /* hero */
+  .hero{padding:56px 0 70px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(640px 400px at 78% 40%,rgba(245,166,35,.13),transparent 70%),radial-gradient(520px 320px at 0% 0%,rgba(123,79,255,.08),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:24px}
+  .hero h1{font-size:clamp(46px,7vw,84px)}
+  .hero h1 em{font-style:italic;font-weight:600;color:var(--acc)}
+  .say{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--mint);margin-top:12px}
+  .hero p.intro{color:var(--dim);font-size:19px;margin:20px 0 0;max-width:540px}
+  .portrait{background:linear-gradient(160deg,#1b1f3d,#0d1020);border:1px solid var(--line2);border-radius:26px;padding:26px;position:relative}
+  .portrait svg{display:block;width:100%;height:auto}
+  .portrait figcaption{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);text-align:center;margin-top:10px}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+  @media(max-width:860px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .stat .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .stat .v{font-family:'Fraunces',serif;font-size:30px;font-weight:800;margin-top:6px;line-height:1.1}
+  .stat p{color:var(--dim);font-size:13.5px;margin-top:6px}
+  /* pronunciation */
+  .pron{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:30px;align-items:start}
+  @media(max-width:820px){.pron{grid-template-columns:minmax(0,1fr)}}
+  .pbox{min-width:0}
+  .pbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .pbox label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:8px}
+  .prow{display:flex;gap:8px}
+  .prow input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line2);border-radius:12px;color:var(--text);font:inherit;font-size:16px;padding:12px 14px}
+  .prow input:focus{outline:2px solid var(--acc);outline-offset:1px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--acc);color:#1a1000;font-weight:700;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-size:15px}
+  .btn:hover{filter:brightness(1.1)}
+  .pres{margin-top:16px;min-height:72px;font-size:16px}
+  .pres b{font-family:'Fraunces',serif;font-size:22px;display:block;margin-bottom:4px}
+  .pres small{color:var(--dim);font-size:14px}
+  .count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);margin-top:10px}
+  /* resume */
+  .cv{display:grid;grid-template-columns:240px 1fr;gap:0;margin-top:34px;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card)}
+  @media(max-width:760px){.cv{grid-template-columns:1fr}}
+  .cv aside{background:var(--bg2);padding:26px;border-right:1px solid var(--line)}
+  @media(max-width:760px){.cv aside{border-right:none;border-bottom:1px solid var(--line)}}
+  .cv aside h3{font-size:22px}
+  .cv aside .role{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc);margin-top:4px}
+  .cv aside dl{margin-top:20px;font-size:14px}
+  .cv aside dt{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:14px}
+  .cv aside dd{color:var(--text);margin-top:2px}
+  .cv .main{padding:26px 28px}
+  .cv h4{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:6px 0 14px}
+  .cv h4:not(:first-child){margin-top:28px}
+  .job{position:relative;padding-left:22px;margin-bottom:20px}
+  .job::before{content:"";position:absolute;left:0;top:7px;width:10px;height:10px;border-radius:50%;background:var(--acc);box-shadow:0 0 12px var(--acc)}
+  .job.kat::before{background:var(--steel);box-shadow:0 0 12px var(--steel)}
+  .job.edu::before{background:var(--mint);box-shadow:0 0 12px var(--mint)}
+  .job .hd{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .job b{font-size:16.5px}
+  .job .when{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint)}
+  .job .org{color:var(--dim);font-size:14px;margin-top:1px}
+  .job ul{margin:8px 0 0 18px;color:var(--dim);font-size:14.5px}
+  .job li{margin:3px 0}
+  .skills{display:flex;flex-wrap:wrap;gap:8px}
+  .skills span{font-size:13px;border:1px solid var(--line2);border-radius:999px;padding:5px 11px;color:var(--dim)}
+  .skills span.lv{border-color:rgba(245,166,35,.5);color:var(--text)}
+  .refs{color:var(--dim);font-size:14.5px}
+  /* katana */
+  .kat-card{display:grid;grid-template-columns:1fr 1.1fr;gap:26px;margin-top:30px;align-items:center}
+  @media(max-width:820px){.kat-card{grid-template-columns:1fr}}
+  .kat-chat{background:#05060c;border:1px solid var(--line);border-radius:18px;padding:16px}
+  .kat-chat .hd{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);margin-bottom:10px}
+  .kat-log{display:flex;flex-direction:column;gap:8px;min-height:150px}
+  .m{max-width:86%;padding:9px 13px;border-radius:14px;font-size:14.5px}
+  .m.u{align-self:flex-end;background:var(--line2)}
+  .m.k{align-self:flex-start;background:linear-gradient(135deg,#232a3f,#151a2c);border:1px solid #3a4466;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--steel)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .chips button{background:none;border:1px solid var(--line2);color:var(--dim);border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;cursor:pointer}
+  .chips button:hover{border-color:var(--steel);color:var(--text)}
+  /* faq */
+  details{border-bottom:1px dashed var(--line);padding:14px 0}
+  summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--acc)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15.5px;margin-top:8px;max-width:760px}
+  .faq{margin-top:24px}
+  .closer{font-family:'Fraunces',serif;font-size:clamp(26px,3.6vw,38px);font-weight:600;line-height:1.25;max-width:820px}
+  .closer small{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);margin-top:14px;font-weight:400}
+  footer{border-top:1px solid var(--line);padding:46px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}.foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:22px;max-width:900px}
+  .sig{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acc)}
+  @media(max-width:520px){.wrap{padding:0 16px}section{padding:60px 0}.hero p.intro{font-size:17px}.stat .v{font-size:24px}}
+  @media (prefers-reduced-motion:reduce){.js [data-r]{opacity:1;transform:none;transition:none}}
+  .job.law::before{background:var(--steel);box-shadow:0 0 12px var(--steel)}
+  /* ledger */
+  .ledger{background:#05060c;border:1px solid var(--line);border-radius:16px;margin-top:16px;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:13px}
+  .ledger .r{display:grid;grid-template-columns:1fr auto;gap:12px;padding:10px 14px;border-bottom:1px dashed var(--line)}
+  .ledger .r:last-child{border-bottom:none}
+  .ledger .r span:first-child{color:var(--dim)}
+  .ledger .neg{color:#ff8a8a}.ledger .pos{color:var(--mint)}
+  .stamp{display:inline-block;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--mint);border:1.5px solid var(--mint);border-radius:6px;padding:5px 10px;transform:rotate(-3deg)}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly, Inc.</a>
+  <nav class="nav"><a href="#facts">Facts</a><a href="#deferred">Deferred Wins</a><a href="#resume">Résumé</a><a href="#faq">FAQ</a></nav>
+  <a class="back" href="/#leadership">&larr; Leadership</a>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div data-r>
+    <div class="badge">Leadership · Office of the Chief Financial Officer</div>
+    <h1>Stephen <em>Stupid.</em></h1>
+    <div class="say">Stefen Stupid · No relation</div>
+    <p class="intro">Chief Financial Officer of Oddly, Inc. Trained in law and in finance, which means he can tell you exactly how much something cost and exactly why it was not technically a loss. He does not believe in losses. He believes in deferred wins.</p>
+  </div>
+  <figure class="portrait" data-r>
+    <svg viewBox="0 0 320 300" role="img" aria-label="Official portrait of Stephen Stupid holding a calculator">
+      <defs><radialGradient id="bgp" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#3a2a10"/><stop offset="1" stop-color="#0d1020"/></radialGradient>
+        <linearGradient id="suit" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2f3347"/><stop offset="1" stop-color="#171a29"/></linearGradient></defs>
+      <rect width="320" height="300" rx="18" fill="url(#bgp)"/>
+      <circle cx="160" cy="120" r="118" fill="none" stroke="#F5A623" stroke-opacity=".22" stroke-width="2"/>
+      <path d="M58 300c4-64 44-96 102-96s98 32 102 96z" fill="url(#suit)"/>
+      <path d="M138 206l22 30 22-30" fill="#EDEDF7"/><path d="M155 214h10l4 50-9 14-9-14z" fill="#F5A623"/>
+      <rect x="146" y="176" width="28" height="30" rx="8" fill="#e2b896"/>
+      <ellipse cx="160" cy="138" rx="44" ry="52" fill="#efc7a3"/>
+      <path d="M116 128c-4-44 28-62 46-62 30 0 52 20 46 60-6-20-20-30-46-32-22 2-38 12-46 34z" fill="#3a2a1d"/>
+      <circle cx="145" cy="140" r="11" fill="none" stroke="#1b1d24" stroke-width="3"/><circle cx="175" cy="140" r="11" fill="none" stroke="#1b1d24" stroke-width="3"/><path d="M156 140h8" stroke="#1b1d24" stroke-width="3"/>
+      <circle cx="145" cy="140" r="3" fill="#1b1d24"/><circle cx="175" cy="140" r="3" fill="#1b1d24"/>
+      <path d="M147 166q13 7 26 0" stroke="#9b6a4e" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <rect x="196" y="226" width="52" height="66" rx="7" fill="#1b1d2c" stroke="#3a3f5c" stroke-width="2"/><rect x="203" y="233" width="38" height="14" rx="2" fill="#2EE9A5" opacity=".85"/>
+      <text x="236" y="244" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#05160f">+0.00</text>
+      <g fill="#3a3f5c"><rect x="204" y="254" width="9" height="7" rx="1.5"/><rect x="217" y="254" width="9" height="7" rx="1.5"/><rect x="230" y="254" width="9" height="7" rx="1.5"/><rect x="204" y="266" width="9" height="7" rx="1.5"/><rect x="217" y="266" width="9" height="7" rx="1.5"/><rect x="230" y="266" width="9" height="7" rx="1.5"/><rect x="204" y="278" width="9" height="7" rx="1.5"/><rect x="217" y="278" width="9" height="7" rx="1.5"/><rect x="230" y="278" width="9" height="7" rx="1.5"/></g>
+      <text x="160" y="40" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#9A9EC0" letter-spacing="2">OFFICIAL PORTRAIT · SMILING, BRIEFLY</text>
+    </svg>
+    <figcaption>He is smiling because the photo was free. Free is our lowest price.</figcaption>
+  </figure>
+</div></header>
+
+<section id="facts"><div class="wrap">
+  <div data-r><div class="eyebrow">Vital statistics</div><h2>The numbers.</h2><p class="lede">Every figure below has been audited by Stephen Stupid, who approved them, and then approved his approval.</p></div>
+  <div class="stats">
+    <div class="stat" data-r><div class="k">Age</div><div class="v">39</div><p>Two years younger than Stephen Stubborn. He reports this as a two-year head start.</p></div>
+    <div class="stat" data-r><div class="k">Height</div><div class="v">6 ft 1 in</div><p>The same as Stephen Stubborn. No relation.</p></div>
+    <div class="stat" data-r><div class="k">Joined Oddly</div><div class="v">Jul 2026</div><p>As Chief Financial Officer. He has never once reported a quarter in the red.</p></div>
+    <div class="stat" data-r><div class="k">Losses reported</div><div class="v">0</div><p>Deferred wins: several. Each is on schedule to introduce itself.</p></div>
+    <div class="stat" data-r><div class="k">Degrees</div><div class="v">2</div><p>Law and finance. He uses both in every sentence.</p></div>
+    <div class="stat" data-r><div class="k">Coffee</div><div class="v">93 °C</div><p>Exactly. Boiled in 0.4 seconds in a NOW Kettle. He has calculated the electricity. He is fine.</p></div>
+    <div class="stat" data-r><div class="k">Desk drawer</div><div class="v">1 oPhone</div><p>It helps train oSiri 2.0. He has billed the compute to the drawer.</p></div>
+    <div class="stat" data-r><div class="k">Lowest price</div><div class="v">Free</div><p>No competitor has ever beaten it. He has checked.</p></div>
+  </div>
+</div></section>
+
+<section id="deferred"><div class="wrap">
+  <div data-r><div class="eyebrow">The Deferred Win Calculator</div><h2>There are no losses.</h2><p class="lede">Enter anything that went wrong and what it cost. Stephen Stupid will apply generally accepted Oddly accounting principles.</p></div>
+  <div class="pron">
+    <div class="pbox" data-r>
+      <label for="dWhat">What happened?</label>
+      <form id="dForm">
+        <div class="prow"><input id="dWhat" maxlength="60" autocomplete="off" placeholder="The Roadster drove into a lake"></div>
+        <label for="dAmt" style="margin-top:14px">What did it cost? (USD)</label>
+        <div class="prow"><input id="dAmt" inputmode="decimal" maxlength="16" autocomplete="off" placeholder="49,999"><button class="btn" type="submit">Reclassify</button></div>
+      </form>
+      <div class="count" id="dCount">Losses reclassified on this page: 0</div>
+    </div>
+    <div class="pbox" data-r aria-live="polite">
+      <label>Stephen Stupid's ruling</label>
+      <div class="ledger" id="ledger">
+        <div class="r"><span>Event</span><span>—</span></div>
+        <div class="r"><span>Reported loss</span><span>—</span></div>
+        <div class="r"><span>Reclassified as</span><span>—</span></div>
+        <div class="r"><span>Net result</span><span class="pos">$0.00 (a win)</span></div>
+      </div>
+      <p class="pres" id="dNote" style="color:var(--dim);font-size:15px;margin-top:14px">Waiting for something to go wrong. It usually does not take long.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="resume"><div class="wrap">
+  <div data-r><div class="eyebrow">Résumé</div><h2>Curriculum vitae.</h2><p class="lede">Reviewed for liability by its author, a lawyer. Reviewed for value by its author, an accountant. Both approved.</p></div>
+  <div class="cv" data-r>
+    <aside>
+      <h3>Stephen Stupid</h3>
+      <div class="role">Chief Financial Officer, Oddly, Inc.</div>
+      <dl>
+        <dt>Pronounced</dt><dd>Stefen Stupid</dd>
+        <dt>Relation to Stephen Stubborn</dt><dd>None</dd>
+        <dt>Location</dt><dd>The Oddly Terafab, Santa Barbara, CA · the desk with the drawer</dd>
+        <dt>Bar admission</dt><dd>Admitted. Has not argued a case. Has won every argument.</dd>
+        <dt>Objective</dt><dd>To keep every number going up. Both of them.</dd>
+      </dl>
+    </aside>
+    <div class="main">
+      <h4>Experience</h4>
+      <div class="job"><div class="hd"><b>Chief Financial Officer</b><span class="when">Jul 2026 – present</span></div>
+        <div class="org">Oddly, Inc. · Santa Barbara, CA</div>
+        <ul><li>Introduced the "deferred win," replacing the loss as Oddly's standard accounting category. Adoption: 100%.</li>
+          <li>Priced the oTag 4-Pack higher per tag than one oTag, because customers who buy four have more to lose.</li>
+          <li>Approved the oSiri 2.0 compute budget. Amount: yes.</li>
+          <li>Reclassified single-use Roadster rocket motors from a cost to a subscription.</li>
+          <li>Reviewed the NOW Toaster's 3.5 kWh per slice. Called it a premium experience. It is.</li></ul></div>
+      <div class="job law"><div class="hd"><b>Associate, Contracts &amp; Fine Print</b><span class="when">Before Oddly</span></div>
+        <div class="org">A law firm he describes as "very large, in a confidential way"</div>
+        <ul><li>Drafted the clause that later became Oddly's checkbox: "Oddly, Inc. may independently invent this."</li>
+          <li>Specialized in fine print. Wrote fine print so fine it required its own fine print. Billed for both.</li>
+          <li>Left to join Oddly, Inc. after reading Stephen Stubborn's first business card and finding no typo he could not defend.</li></ul></div>
+      <h4>Education</h4>
+      <div class="job edu"><div class="hd"><b>Juris Doctor (J.D.)</b><span class="when">Law</span></div>
+        <div class="org">Fredrick's University for the Exceptionally Clever, Intelligent, and Creative (and stubborn) · School of Law</div>
+        <ul><li>Moot court: argued both sides of the same case and won. The judges are still reviewing who lost.</li>
+          <li>Note: <i>"Not Technically: The Law of Things That Were Fine."</i></li></ul></div>
+      <div class="job edu"><div class="hd"><b>Master of Finance (M.Fin.)</b><span class="when">Finance</span></div>
+        <div class="org">Fredrick's University for the Exceptionally Clever, Intelligent, and Creative (and stubborn) · School of Finance</div>
+        <ul><li>Thesis: <i>"A Loss Is Just a Profit That Hasn't Introduced Itself Yet."</i> Graded with distinction, deferred.</li>
+          <li>Also attended the same university as Stephen Stubborn. At the same time. In the same classes. No relation.</li></ul></div>
+      <h4>Skills</h4>
+      <div class="skills"><span class="lv">Deferred wins</span><span class="lv">Contracts</span><span class="lv">Fine print</span><span class="lv">Pricing at "free"</span><span>Corporate finance</span><span>Securities law</span><span>Saying "no relation"</span><span>Electricity accounting</span><span>Being confused for the CEO</span></div>
+      <h4>References</h4>
+      <p class="refs">Stephen Stubborn, Chief Executive Officer (no relation). He has written that Stephen Stupid is "the most financially correct person I have ever hired, and I have hired him once." Available upon request. Billable.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div data-r><div class="eyebrow">Frequently asked questions</div><h2>Asked. Answered. Invoiced.</h2></div>
+  <div class="faq" data-r>
+    <details><summary>Is he related to Stephen Stubborn?</summary><p>No relation. Despite the name. Despite the resemblance. Despite the matching height, the same university and the same classes. They are frequently confused for each other at industry dinners and have stopped correcting people.</p></details>
+    <details><summary>How is "Stupid" pronounced?</summary><p>Stefen Stupid. Unlike the CEO, he does not correct anyone's pronunciation. He invoices for it.</p></details>
+    <details><summary>Why does a CFO have a law degree?</summary><p>So that when the numbers are wrong, they are also legal. He says the two degrees "check each other's work." Neither has found anything.</p></details>
+    <details><summary>Has Oddly, Inc. ever lost money?</summary><p>No. Oddly, Inc. has had several deferred wins. A deferred win is money that has left the company to go and find more money. It will be back. He is very patient.</p></details>
+    <details><summary>Why is everything on the homepage free?</summary><p>Free is our lowest price. No competitor has ever beaten it. He checked, by lowering it further. It did not go lower.</p></details>
+    <details><summary>Did he really approve the NukeMow Fallout Pack at $2M a month?</summary><p>Yes. Unlimited launches, coverage from "My Lawn" to "My District". He calls it the plan that "pays for the neighbors."</p></details>
+    <details><summary>Who is older?</summary><p>Stephen Stubborn, by two years. Stephen Stupid books this as two years of experience he did not have to pay for.</p></details>
+    <details><summary>Can I hire him as my lawyer?</summary><p>He is not taking clients. If he were, his first piece of advice would be to check the box. You may independently invent it later.</p></details>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <p class="closer" data-r>"A loss is just a profit that hasn't introduced itself yet. We are very patient people."<small>— Stephen Stupid, pronounced Stefen Stupid · no relation</small></p>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly, Inc.</a>
+    <div class="links"><a href="/#leadership">Leadership</a><a href="stephen-stubborn.html">About Stephen Stubborn</a><a href="journey.html">The Journey of Oddly</a><a href="/">oddly-inc.com</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. Biographical information was provided by the subject and reviewed by the subject's legal department, which is the subject. The Deferred Win Calculator is for entertainment purposes and is not financial advice, legal advice, or advice. Losses entered are not recorded. They are deferred. Stephen Stupid is not related to Stephen Stubborn. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const els=document.querySelectorAll('[data-r]');
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});els.forEach(el=>io.observe(el));}else els.forEach(el=>el.classList.add('in'));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const CATS=[['Deferred win','The money has left to find more money. It will be back.'],['Strategic investment in experience','We now know what not to do. That knowledge is an asset. It is on the balance sheet.'],
+  ['Premium experience','Customers paid for it in a way. The way was us.'],['Subscription','This will happen again. That is recurring revenue, eventually.'],
+  ['Brand awareness','Everyone heard about it. You cannot buy that. We did not. It was free.'],['Pre-revenue','The revenue has not arrived yet. It has been invited.']];
+let n=0;
+$('#dForm').addEventListener('submit',e=>{e.preventDefault();const what=$('#dWhat').value.trim()||'Something went wrong';
+  const amt=Math.abs(parseFloat(($('#dAmt').value||'0').replace(/[^0-9.]/g,''))||0);n++;
+  const c=amt===0?['Free','It cost nothing. Free is our lowest price. This is the best possible outcome.']:CATS[(what.length+Math.floor(amt))%CATS.length];
+  $('#ledger').innerHTML=`<div class="r"><span>Event</span><span>${esc(what)}</span></div><div class="r"><span>Reported loss</span><span class="neg">−${fmt(amt)}</span></div>`+
+    `<div class="r"><span>Reclassified as</span><span>${c[0]}</span></div><div class="r"><span>Net result</span><span class="pos">+${fmt(amt)} (deferred)</span></div>`;
+  $('#dNote').innerHTML=esc(c[1])+'<br><span class="stamp">APPROVED · S. STUPID, J.D., M.FIN.</span>';
+  $('#dCount').textContent='Losses reclassified on this page: '+n;});
+})();
+</script>
+</body>
+</html>
