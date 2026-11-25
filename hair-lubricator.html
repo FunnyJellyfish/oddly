@@ -88,6 +88,14 @@
   @media(max-width:900px){.origin{grid-template-columns:1fr}}
   .origin p{color:var(--dim);font-size:17px;margin-bottom:16px}
   .origin p b{color:var(--text);font-weight:600}
+  .coinv{margin:0 0 18px;display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--oil);border-radius:16px;padding:14px}
+  .coinv img{width:150px;height:150px;border-radius:12px;object-fit:cover;display:block}
+  .coinv figcaption{display:flex;flex-direction:column;gap:4px;font-size:14.5px;color:var(--dim)}
+  .coinv .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--oil)}
+  .coinv b{font-family:'Fraunces',serif;font-size:24px;color:var(--text)}
+  .coinv a{color:var(--oil);font-family:'JetBrains Mono',monospace;font-size:12.5px;text-decoration:none;margin-top:4px}
+  .coinv a:hover{text-decoration:underline}
+  @media(max-width:480px){.coinv{grid-template-columns:96px 1fr}.coinv img{width:96px;height:96px}}
   .pull{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:600;line-height:1.25;border-left:3px solid var(--oil);padding-left:20px;margin:6px 0 18px}
   .pull cite{display:block;font-family:'JetBrains Mono',monospace;font-style:normal;font-size:12px;color:var(--dim);margin-top:12px;font-weight:400}
   .compare{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
@@ -237,7 +245,12 @@
       <p>So he did what he always does. He looked at Vincenzo's hair and said, "This can be improved." Vincenzo said it could not. Stephen agreed, and clarified that he meant his own hair. The two of them spent a weekend at Vincenzo's kitchen table designing the Oddly Hair Lubricator. Vincenzo supplied the oil, the technique, and the hair to copy. Stephen supplied the robotic lice.</p>
       <p class="pull">"Vincenzo's hair does this by itself. Mine needs 1,200 robots. That is not a disadvantage. That is a supply chain."<cite>— Stephen Stubborn, pronounced "Stefen Stu-Born"</cite></p>
     </div>
-    <div class="compare" data-r>
+    <div data-r>
+    <figure class="coinv">
+      <img src="media/vincenzo.jpg" alt="Vincenzo, co-inventor of the Oddly Hair Lubricator, smiling, with glossy swept-back black hair" width="900" height="900" loading="lazy">
+      <figcaption><span class="k">Co-inventor</span><b>Vincenzo</b><span>Self-lubricating since birth. Photographed without the Lubricator. He does not need it. That is the point.</span><a href="vincenzo.html">Meet Vincenzo &rarr;</a></figcaption>
+    </figure>
+    <div class="compare">
       <table>
         <thead><tr><th></th><th>Vincenzo</th><th>Stephen Stubborn, with Lubricator</th></tr></thead>
         <tbody>
@@ -249,6 +262,7 @@
           <tr><td>Product named after</td><td>Was promised the product</td><td class="yes">Got the top setting</td></tr>
         </tbody>
       </table>
+    </div>
     </div>
   </div>
 </div></section>
@@ -304,7 +318,7 @@
   </div>
   <div class="quotes">
     <div class="qc" data-r><p>"People asked why the lice are robotic. I asked why lice have never been useful. Nobody had an answer. Now they have jobs."</p><div class="by"><div class="av" style="overflow:hidden;padding:0"><img src="media/stephen-stubborn-face.jpg" alt="Stephen Stubborn" width="96" height="96" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block"></div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
-    <div class="qc vin" data-r><p>"I told him my hair just does this. He said, 'Not anymore. Now it is a platform.' I still do not know what he meant. My hair is fine."</p><div class="by"><div class="av">V</div><div><b>Vincenzo</b><small>Co-inventor · self-lubricating</small></div></div></div>
+    <div class="qc vin" data-r><p>"I told him my hair just does this. He said, 'Not anymore. Now it is a platform.' I still do not know what he meant. My hair is fine."</p><div class="by"><div class="av" style="overflow:hidden;padding:0"><img src="media/vincenzo-face.jpg" alt="Vincenzo" width="96" height="96" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block"></div><div><b><a href="vincenzo.html" style="color:inherit">Vincenzo</a></b><small>Co-inventor · self-lubricating</small></div></div></div>
     <div class="qc cfo" data-r><p>"Each unit includes 1,200 lice. Customers who lose some can buy more. Lice are a recurring revenue stream. They always have been."</p><div class="by"><div class="av" style="overflow:hidden;padding:0"><img src="media/stephen-stupid-face.jpg" alt="Stephen Stupid" width="96" height="96" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block"></div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
   </div>
 </div></section>
