@@ -124,6 +124,16 @@
   .sig{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple)}
   @media(max-width:520px){.wrap{padding:0 16px}section{padding:60px 0}.hero p.intro{font-size:17px}.stat .v{font-size:24px}}
   @media (prefers-reduced-motion:reduce){.js [data-r]{opacity:1;transform:none;transition:none}}
+  .friends{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:30px}
+  @media(max-width:820px){.friends{grid-template-columns:minmax(0,1fr)}}
+  .friend{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:3px solid #E9B949;border-radius:18px;padding:16px;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s}
+  .friend:hover{transform:translateY(-3px);border-color:#E9B949}
+  .friend img{width:120px;height:120px;border-radius:14px;object-fit:cover;display:block}
+  .friend .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#E9B949}
+  .friend b{display:block;font-family:'Fraunces',serif;font-size:26px;margin:4px 0}
+  .friend p{color:var(--dim);font-size:14.5px}
+  .friend .go{display:inline-block;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#E9B949}
+  @media(max-width:460px){.friend{grid-template-columns:84px 1fr}.friend img{width:84px;height:84px}}
 </style>
 </head>
 <body>
@@ -134,7 +144,7 @@
     <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
     Oddly, Inc.
   </a>
-  <nav class="nav"><a href="#facts">Facts</a><a href="#pronounce">Pronunciation</a><a href="#resume">Résumé</a><a href="#katana">Katana AI</a><a href="#faq">FAQ</a></nav>
+  <nav class="nav"><a href="#facts">Facts</a><a href="#pronounce">Pronunciation</a><a href="#resume">Résumé</a><a href="#katana">Katana AI</a><a href="#friends">Friends</a><a href="#faq">FAQ</a></nav>
   <a class="back" href="/#leadership">&larr; Leadership</a>
 </div></div>
 
@@ -233,6 +243,16 @@
       <div class="kat-log" id="kLog" aria-live="polite"><div class="m k">I am K-1. I am a sword. I have a brain. Ask me anything except to be put away.</div></div>
       <div class="chips" id="kChips"></div>
     </div>
+  </div>
+</div></section>
+
+<section id="friends"><div class="wrap">
+  <div data-r><div class="eyebrow">Stubborn's Friends</div><h2>He has friends.</h2><p class="lede">Stephen Stubborn would like it known that he has friends. He has provided a list. It has been verified by the friends, who were surprised to be asked.</p></div>
+  <div class="friends">
+    <a class="friend" href="vincenzo.html" data-r>
+      <img src="media/vincenzo.jpg" alt="Vincenzo" width="900" height="900" loading="lazy">
+      <div><span class="k">Co-inventor · Hair Lubricator</span><b>Vincenzo</b><p>Italian. Self-lubricating hair. The reason Oddly makes 1,200 robotic lice. Not an employee. Has turned down "Chief Shine Officer" several times.</p><span class="go">Meet Vincenzo &rarr;</span></div>
+    </a>
   </div>
 </div></section>
 

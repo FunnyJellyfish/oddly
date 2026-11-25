@@ -35,6 +35,7 @@ The site is plain static HTML. Each page is a single self-contained file with it
 | `journey.html` | The Journey of Oddly: essay and timeline | Corporate |
 | `stephen-stubborn.html` | About Stephen Stubborn: age, height, résumé, Katana AI, FAQ (linked from Leadership) | Corporate |
 | `stephen-stupid.html` | About Stephen Stupid, CFO (no relation): law and finance degrees, résumé, Deferred Win Calculator, FAQ | Corporate |
+| `vincenzo.html` | Vincenzo, co-inventor of the Hair Lubricator (under Stubborn's Friends on the Stephen Stubborn page) | Corporate |
 
 ### Software
 
