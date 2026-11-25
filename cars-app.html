@@ -190,7 +190,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 60px}
     <div class="meta"><span><b>2.4 MB</b> download</span><span><b>Free</b> · rockets sold separately</span><span>Certification: <b style="color:var(--amb)">Pending</b></span></div>
     <div class="stores">
       <button class="store" data-store="oStore"><span style="font-size:22px">🌀</span><span><span class="s1 mono">Get it on the</span><span class="s2">Oddly Store</span></span></button>
-      <button class="store" data-store="App Store"><span style="font-size:22px"></span><span><span class="s1 mono">Under review since 2024</span><span class="s2">App Store</span></span></button>
+      <button class="store" data-store="App Store"><span style="font-size:22px"></span><span><span class="s1 mono">Under review since November</span><span class="s2">App Store</span></span></button>
       <button class="store" data-store="Google Play"><span style="font-size:22px">▶</span><span><span class="s1 mono">Appeal in progress</span><span class="s2">Google Play</span></span></button>
     </div>
   </div>
@@ -231,7 +231,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 60px}
         <path class="route" d="M30 140 V100 H80 V60 H30 V20 H130 V60 H180 V100 H130 V140" fill="none" stroke="#5CF2C4" stroke-width="3"/>
         <circle cx="180" cy="20" r="12" fill="rgba(92,242,196,.25)"/><circle cx="180" cy="20" r="5" fill="#5CF2C4"/>
         <circle cx="130" cy="140" r="8" fill="#FF6B2C"/><text x="104" y="84" font-size="16">🦆</text></svg>
-      <span class="cert" style="color:var(--mint);border-color:rgba(92,242,196,.4)">BETA SINCE 2019</span>
+      <span class="cert" style="color:var(--mint);border-color:rgba(92,242,196,.4)">BETA SINCE AUGUST</span>
       <div class="eyebrow" style="margin-top:18px">Powered by Oddly Autonomous™</div>
       <h3>Oddly Autonomous Summon</h3>
       <p>Press Summon and your car leaves its parking space and drives to a location. The location is chosen by the car. You set your pin so the car knows what it is not doing.</p>
@@ -402,7 +402,7 @@ document.getElementById('mClose').addEventListener('click',()=>modal.classList.r
 modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('on');});
 
 // store badges
-const STORE={ 'oStore':'The Oddly Store version is the same file. Downloading it now.', 'App Store':'The App Store review has been in progress since 2024. Downloading the direct version instead.', 'Google Play':'Google Play has questions about the rockets. Downloading the direct version instead.'};
+const STORE={ 'oStore':'The Oddly Store version is the same file. Downloading it now.', 'App Store':'The App Store review has been in progress since November. Downloading the direct version instead.', 'Google Play':'Google Play has questions about the rockets. Downloading the direct version instead.'};
 document.querySelectorAll('[data-store]').forEach(b=>b.addEventListener('click',()=>{startDl();document.getElementById('mP').textContent=STORE[b.dataset.store];}));
 
 // size number honesty: compute real size

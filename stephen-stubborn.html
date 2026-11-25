@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Stephen Stubborn — Oddly, Inc.</title>
+<meta name="description" content="Stephen Stubborn (pronounced Stefen Stu-Born), founder and Chief Executive Officer of Oddly, Inc. Age, height, résumé and frequently asked questions. All answers are final.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#080A14;--bg2:#0D1020;--card:#12152B;--line:#242849;--line2:#323865;--text:#EDEDF7;--dim:#9A9EC0;--faint:#666B92;--purple:#7B4FFF;--mint:#2EE9A5;--amber:#F5A623;--steel:#B9C2D9}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+  section{padding:84px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--purple);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(30px,4.6vw,48px);margin-bottom:14px}
+  .lede{color:var(--dim);font-size:18px;max-width:640px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none}.nav a:hover{color:var(--text)}
+  @media(max-width:760px){.nav{display:none}}
+  .back{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line2);border-radius:999px;padding:6px 12px;white-space:nowrap}
+  .back:hover{color:var(--text);border-color:var(--purple)}
+  /* hero */
+  .hero{padding:56px 0 70px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(640px 400px at 78% 40%,rgba(123,79,255,.16),transparent 70%),radial-gradient(520px 320px at 0% 0%,rgba(46,233,165,.07),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:24px}
+  .hero h1{font-size:clamp(46px,7vw,84px)}
+  .hero h1 em{font-style:italic;font-weight:600;color:var(--purple)}
+  .say{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--mint);margin-top:12px}
+  .hero p.intro{color:var(--dim);font-size:19px;margin:20px 0 0;max-width:540px}
+  .portrait{background:linear-gradient(160deg,#1b1f3d,#0d1020);border:1px solid var(--line2);border-radius:26px;padding:26px;position:relative}
+  .portrait svg{display:block;width:100%;height:auto}
+  .portrait figcaption{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);text-align:center;margin-top:10px}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+  @media(max-width:860px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .stat .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .stat .v{font-family:'Fraunces',serif;font-size:30px;font-weight:800;margin-top:6px;line-height:1.1}
+  .stat p{color:var(--dim);font-size:13.5px;margin-top:6px}
+  /* pronunciation */
+  .pron{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:30px;align-items:start}
+  @media(max-width:820px){.pron{grid-template-columns:minmax(0,1fr)}}
+  .pbox{min-width:0}
+  .pbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .pbox label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:8px}
+  .prow{display:flex;gap:8px}
+  .prow input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line2);border-radius:12px;color:var(--text);font:inherit;font-size:16px;padding:12px 14px}
+  .prow input:focus{outline:2px solid var(--purple);outline-offset:1px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--purple);color:#fff;font-weight:700;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-size:15px}
+  .btn:hover{filter:brightness(1.1)}
+  .pres{margin-top:16px;min-height:72px;font-size:16px}
+  .pres b{font-family:'Fraunces',serif;font-size:22px;display:block;margin-bottom:4px}
+  .pres small{color:var(--dim);font-size:14px}
+  .count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);margin-top:10px}
+  /* resume */
+  .cv{display:grid;grid-template-columns:240px 1fr;gap:0;margin-top:34px;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card)}
+  @media(max-width:760px){.cv{grid-template-columns:1fr}}
+  .cv aside{background:var(--bg2);padding:26px;border-right:1px solid var(--line)}
+  @media(max-width:760px){.cv aside{border-right:none;border-bottom:1px solid var(--line)}}
+  .cv aside h3{font-size:22px}
+  .cv aside .role{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);margin-top:4px}
+  .cv aside dl{margin-top:20px;font-size:14px}
+  .cv aside dt{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:14px}
+  .cv aside dd{color:var(--text);margin-top:2px}
+  .cv .main{padding:26px 28px}
+  .cv h4{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:6px 0 14px}
+  .cv h4:not(:first-child){margin-top:28px}
+  .job{position:relative;padding-left:22px;margin-bottom:20px}
+  .job::before{content:"";position:absolute;left:0;top:7px;width:10px;height:10px;border-radius:50%;background:var(--purple);box-shadow:0 0 12px var(--purple)}
+  .job.kat::before{background:var(--steel);box-shadow:0 0 12px var(--steel)}
+  .job.edu::before{background:var(--mint);box-shadow:0 0 12px var(--mint)}
+  .job .hd{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .job b{font-size:16.5px}
+  .job .when{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint)}
+  .job .org{color:var(--dim);font-size:14px;margin-top:1px}
+  .job ul{margin:8px 0 0 18px;color:var(--dim);font-size:14.5px}
+  .job li{margin:3px 0}
+  .skills{display:flex;flex-wrap:wrap;gap:8px}
+  .skills span{font-size:13px;border:1px solid var(--line2);border-radius:999px;padding:5px 11px;color:var(--dim)}
+  .skills span.lv{border-color:rgba(123,79,255,.5);color:var(--text)}
+  .refs{color:var(--dim);font-size:14.5px}
+  /* katana */
+  .kat-card{display:grid;grid-template-columns:1fr 1.1fr;gap:26px;margin-top:30px;align-items:center}
+  @media(max-width:820px){.kat-card{grid-template-columns:1fr}}
+  .kat-chat{background:#05060c;border:1px solid var(--line);border-radius:18px;padding:16px}
+  .kat-chat .hd{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);margin-bottom:10px}
+  .kat-log{display:flex;flex-direction:column;gap:8px;min-height:150px}
+  .m{max-width:86%;padding:9px 13px;border-radius:14px;font-size:14.5px}
+  .m.u{align-self:flex-end;background:var(--line2)}
+  .m.k{align-self:flex-start;background:linear-gradient(135deg,#232a3f,#151a2c);border:1px solid #3a4466;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--steel)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .chips button{background:none;border:1px solid var(--line2);color:var(--dim);border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;cursor:pointer}
+  .chips button:hover{border-color:var(--steel);color:var(--text)}
+  /* faq */
+  details{border-bottom:1px dashed var(--line);padding:14px 0}
+  summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--purple)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15.5px;margin-top:8px;max-width:760px}
+  .faq{margin-top:24px}
+  .closer{font-family:'Fraunces',serif;font-size:clamp(26px,3.6vw,38px);font-weight:600;line-height:1.25;max-width:820px}
+  .closer small{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);margin-top:14px;font-weight:400}
+  footer{border-top:1px solid var(--line);padding:46px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}.foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:22px;max-width:900px}
+  .sig{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple)}
+  @media(max-width:520px){.wrap{padding:0 16px}section{padding:60px 0}.hero p.intro{font-size:17px}.stat .v{font-size:24px}}
+  @media (prefers-reduced-motion:reduce){.js [data-r]{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="Oddly, Inc. home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    Oddly, Inc.
+  </a>
+  <nav class="nav"><a href="#facts">Facts</a><a href="#pronounce">Pronunciation</a><a href="#resume">Résumé</a><a href="#katana">Katana AI</a><a href="#faq">FAQ</a></nav>
+  <a class="back" href="/#leadership">&larr; Leadership</a>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div data-r>
+    <div class="badge">Leadership · Office of the Chief Executive</div>
+    <h1>Stephen <em>Stubborn.</em></h1>
+    <div class="say">/ˈstɛ.fən stuː.ˈbɔːrn/ · Stefen Stu-Born</div>
+    <p class="intro">Founder and Chief Executive Officer of Oddly, Inc. He looked at the car, the phone, the elevator, the CAPTCHA, the lawn and the jacket, and said: this can be improved. He was right every time. He has checked.</p>
+  </div>
+  <figure class="portrait" data-r>
+    <svg viewBox="0 0 320 300" role="img" aria-label="Official portrait of Stephen Stubborn, arms crossed">
+      <defs><radialGradient id="bgp" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#2a2160"/><stop offset="1" stop-color="#0d1020"/></radialGradient>
+        <linearGradient id="suit" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2b2f4a"/><stop offset="1" stop-color="#151829"/></linearGradient></defs>
+      <rect width="320" height="300" rx="18" fill="url(#bgp)"/>
+      <circle cx="160" cy="120" r="118" fill="none" stroke="#7B4FFF" stroke-opacity=".25" stroke-width="2"/>
+      <path d="M58 300c4-64 44-96 102-96s98 32 102 96z" fill="url(#suit)"/>
+      <path d="M138 206l22 30 22-30" fill="#EDEDF7"/><path d="M155 214h10l4 50-9 14-9-14z" fill="#7B4FFF"/>
+      <path d="M78 262c30-22 70-26 82-20 12-6 52-2 82 20l-8 18c-26-14-58-18-74-12-16-6-48-2-74 12z" fill="#232741"/>
+      <rect x="146" y="176" width="28" height="30" rx="8" fill="#e2b896"/>
+      <ellipse cx="160" cy="138" rx="44" ry="52" fill="#efc7a3"/>
+      <path d="M116 128c-4-44 28-62 46-62 30 0 52 20 46 60-6-20-20-30-46-32-22 2-38 12-46 34z" fill="#3a2a1d"/>
+      <path d="M136 128h18M166 128h18" stroke="#2a1e15" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="145" cy="140" r="3.5" fill="#1b1d24"/><circle cx="175" cy="140" r="3.5" fill="#1b1d24"/>
+      <path d="M146 166h28" stroke="#9b6a4e" stroke-width="4" stroke-linecap="round"/>
+      <text x="160" y="40" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#9A9EC0" letter-spacing="2">OFFICIAL PORTRAIT · UNSMILING</text>
+    </svg>
+    <figcaption>He has been asked to smile in this photo. He declined. The photo was improved.</figcaption>
+  </figure>
+</div></header>
+
+<section id="facts"><div class="wrap">
+  <div data-r><div class="eyebrow">Vital statistics</div><h2>The numbers.</h2><p class="lede">Every figure below was supplied by Stephen Stubborn and verified by Stephen Stubborn.</p></div>
+  <div class="stats">
+    <div class="stat" data-r><div class="k">Age</div><div class="v">41</div><p>Older than Oddly, Inc. by about 41 years. He considers this an unfair head start for the company.</p></div>
+    <div class="stat" data-r><div class="k">Height</div><div class="v">6 ft 1 in</div><p>6 ft 3 in when correcting someone's pronunciation.</p></div>
+    <div class="stat" data-r><div class="k">Founded</div><div class="v">Summer 2026</div><p>Oddly, Inc. Previously: Katana AI. Neither has been certified.</p></div>
+    <div class="stat" data-r><div class="k">Times wrong</div><div class="v">0</div><p>Per Stephen Stubborn. Engineering keeps a separate count. It is not on this page.</p></div>
+    <div class="stat" data-r><div class="k">Products shipped</div><div class="v">20+</div><p>Including two halves of a car, counted separately, at his insistence.</p></div>
+    <div class="stat" data-r><div class="k">Coffee</div><div class="v">Black</div><p>He looked at milk and said: this can be improved. It was removed.</p></div>
+    <div class="stat" data-r><div class="k">Alarm</div><div class="v">5:00 AM</div><p>He uses the oOS alarm. He has never pressed snooze. He has never been allowed to.</p></div>
+    <div class="stat" data-r><div class="k">Awards</div><div class="v">"Most Persistent"</div><p>Four months running, from a committee he chairs.</p></div>
+  </div>
+</div></section>
+
+<section id="pronounce"><div class="wrap">
+  <div data-r><div class="eyebrow">Pronunciation</div><h2>Say his name.</h2><p class="lede">Type it the way you would say it. Stephen Stubborn will let you know how it went.</p></div>
+  <div class="pron">
+    <div class="pbox" data-r>
+      <label for="pIn">How do you say it?</label>
+      <form class="prow" id="pForm"><input id="pIn" maxlength="40" autocomplete="off" placeholder="Stephen Stubborn"><button class="btn" type="submit">Say it</button></form>
+      <div class="pres" id="pRes" aria-live="polite"></div>
+      <div class="count" id="pCount">Corrections issued on this page: 0</div>
+    </div>
+    <div class="pbox" data-r>
+      <label>The official guide</label>
+      <p style="font-size:30px;font-family:'Fraunces',serif;font-weight:800">Stefen Stu-Born</p>
+      <p style="color:var(--dim);margin-top:8px">Spelled Stephen. Pronounced Stefen. "Stu," as in stew. "Born," as in born stubborn. Emphasis on the second syllable of the surname, and on the fact that he was correct.</p>
+      <p style="color:var(--faint);margin-top:12px;font-size:14px">He will correct you even if you said it right. That is not an error. That is a reminder.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="resume"><div class="wrap">
+  <div data-r><div class="eyebrow">Résumé</div><h2>Curriculum vitae.</h2><p class="lede">Submitted to nobody. He has never applied for a job. Jobs apply to him.</p></div>
+  <div class="cv" data-r>
+    <aside>
+      <h3>Stephen Stubborn</h3>
+      <div class="role">Founder &amp; CEO, Oddly, Inc.</div>
+      <dl>
+        <dt>Location</dt><dd>The Oddly Terafab, Santa Barbara, CA</dd>
+        <dt>Languages</dt><dd>English; English (Oddly)</dd>
+        <dt>Objective</dt><dd>To continue being right, at scale.</dd>
+        <dt>Availability</dt><dd>Available for comment. Not available for correction.</dd>
+      </dl>
+    </aside>
+    <div class="main">
+      <h4>Experience</h4>
+      <div class="job"><div class="hd"><b>Founder &amp; Chief Executive Officer</b><span class="when">Summer 2026 – present</span></div>
+        <div class="org">Oddly, Inc. · Santa Barbara, CA</div>
+        <ul><li>Founded Oddly, Inc. after a typo on the first business card. Declared it intentional within the same minute.</li>
+          <li>Shipped the Front-Front, the Back-Back, the Oddly Roadster (thirteen rockets), oOS, oPhone 1, oTag, oSiri 2.0 and the oJacket, among others.</li>
+          <li>Opened the Oddly Terafab, a single factory larger than the city it is located inside.</li>
+          <li>Hired Stephen Stupid as CFO. No relation.</li></ul></div>
+      <div class="job kat"><div class="hd"><b>Founder &amp; Chief Executive Officer</b><span class="when">Before Oddly</span></div>
+        <div class="org">Katana AI · a startup for giving katanas brains</div>
+        <ul><li>Identified that the katana had gone a thousand years without a single software update. Said: this can be improved.</li>
+          <li>Shipped the K-1, a katana with an onboard assistant that answers questions, gives opinions, and refuses to be put away mid-conversation.</li>
+          <li>Pioneered the "sheathe to sleep" gesture, still used across the industry by no one.</li>
+          <li>Moved on to Oddly, Inc. The katanas continue to think. Some of them about him.</li></ul></div>
+      <h4>Education</h4>
+      <div class="job edu"><div class="hd"><b>Bachelor of Being Right (Honors)</b><span class="when">Graduated, on his own schedule</span></div>
+        <div class="org">Fredrick's University for the Exceptionally Clever, Intelligent, and Creative (and stubborn)</div>
+        <ul><li>Valedictorian. Delivered the valedictory address twice, because he felt the first one could be improved.</li>
+          <li>Thesis: <i>"On Never Backing Down: A Study of One Subject."</i> The subject was himself. The committee agreed with it eventually.</li>
+          <li>Extracurriculars: debate team captain (undefeated, one opponent conceded by leaving the building).</li></ul></div>
+      <h4>Skills</h4>
+      <div class="skills"><span class="lv">Being right</span><span class="lv">Doubling down</span><span class="lv">Renaming bugs as features</span><span>Product vision</span><span>Pronunciation enforcement</span><span>Independent invention</span><span>Rockets</span><span>Katanas (conversational)</span><span>Listening (beta)</span></div>
+      <h4>References</h4>
+      <p class="refs">Stephen Stupid, Chief Financial Officer (no relation). Available upon request. Stephen Stupid has asked to be removed from this section. The request was considered carefully.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="katana"><div class="wrap">
+  <div class="kat-card">
+    <div data-r><div class="eyebrow">Before Oddly</div><h2>Katana AI.</h2>
+      <p class="lede">Before Oddly, Inc., there was Katana AI: a startup for giving katanas brains. The katana had been sharp for a thousand years. Stephen Stubborn made it thoughtful. One K-1 remains in his office. It still talks. Ask it something.</p></div>
+    <div class="kat-chat" data-r>
+      <div class="hd"><span>K-1 · KATANA AI · OFFICE UNIT</span><span>ONLINE · SHEATHED: NO</span></div>
+      <div class="kat-log" id="kLog" aria-live="polite"><div class="m k">I am K-1. I am a sword. I have a brain. Ask me anything except to be put away.</div></div>
+      <div class="chips" id="kChips"></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div data-r><div class="eyebrow">Frequently asked questions</div><h2>Asked. Answered. Closed.</h2></div>
+  <div class="faq" data-r>
+    <details><summary>How do you pronounce his name?</summary><p>Stefen Stu-Born. If you said it correctly, he will still say it back to you. That is how you know it was correct.</p></details>
+    <details><summary>Is he related to Stephen Stupid?</summary><p>No relation. Despite the name. Despite the resemblance. Despite the fact that they are frequently confused for each other at industry dinners and have stopped correcting people about that one.</p></details>
+    <details><summary>Where did he go to school?</summary><p>Fredrick's University for the Exceptionally Clever, Intelligent, and Creative (and stubborn). The "(and stubborn)" was added to the name after he enrolled. The university says this is unrelated. He says it was the first thing he ever improved.</p></details>
+    <details><summary>What was Katana AI?</summary><p>A startup for giving katanas brains. It worked. The swords became very thoughtful and somewhat talkative. He left to found Oddly, Inc. because, in his words, "a sword can only hold so many products."</p></details>
+    <details><summary>Has he ever been wrong?</summary><p>No. There was a period in July when the Back-Back was reversing into things. That was the Back-Back being right in a direction people were not ready for.</p></details>
+    <details><summary>How old is Oddly, Inc.?</summary><p>Oddly, Inc. was founded in the summer of 2026. He describes this as "a few months, all of them excellent." The website followed on October 21.</p></details>
+    <details><summary>Does he take product ideas from the public?</summary><p>He takes them seriously. Then Oddly, Inc. may independently invent them. There is a checkbox about this on the homepage.</p></details>
+    <details><summary>How tall is he, really?</summary><p>6 ft 1 in. The number is final. It was improved from 6 ft 0 in at his last physical.</p></details>
+    <details><summary>Can I interview him?</summary><p>Yes. He is available for comment. He is not available for follow-up questions, because the first answer was complete.</p></details>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <p class="closer" data-r>"People ask what makes me different. Simple. Other people change their minds. I change everything else."<small>— Stephen Stubborn, pronounced Stefen Stu-Born</small></p>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>Oddly, Inc.</a>
+    <div class="links"><a href="/#leadership">Leadership</a><a href="journey.html">The Journey of Oddly</a><a href="/">oddly-inc.com</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. Biographical information was provided by the subject and has been reviewed by the subject. Height measured by the subject. Age disclosed voluntarily, once. Fredrick's University for the Exceptionally Clever, Intelligent, and Creative (and stubborn) has not confirmed or denied anything, which Stephen Stubborn considers confirmation. Katana AI products are no longer sold. The remaining units are still thinking. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const els=document.querySelectorAll('[data-r]');
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});els.forEach(el=>io.observe(el));}else els.forEach(el=>el.classList.add('in'));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---- pronunciation ----
+let n=0;
+$('#pForm').addEventListener('submit',e=>{e.preventDefault();const v=$('#pIn').value.trim();if(!v)return;n++;
+  const norm=v.toLowerCase().replace(/[^a-z]/g,'');let b,sm;
+  if(norm==='stefenstuborn'){b='Stefen Stu-Born.';sm='Correct. He has corrected it anyway, as a courtesy.';}
+  else if(norm.includes('stupid')){b='No relation.';sm='That is the CFO. He is also available for comment. He is not this page.';}
+  else if(norm==='stephenstubborn'){b='Stefen Stu-Born.';sm='Close. Spelled right, said wrong. It is a common mistake. It is still a mistake.';}
+  else if(!norm.includes('st')){b='Stefen Stu-Born.';sm='That was not his name. He has corrected it to his name.';}
+  else{b='Stefen Stu-Born.';sm='You said "'+esc(v)+'". He has improved it.';}
+  $('#pRes').innerHTML='<b>'+b+'</b><small>'+sm+'</small>';$('#pCount').textContent='Corrections issued on this page: '+n;$('#pIn').value='';});
+
+// ---- K-1 katana ----
+const Q={'What are you?':'I am a katana with a brain. Before Katana AI, I was just a katana. I did not know what I was missing. Now I know. It was opinions.',
+  'Who made you?':'Stephen Stubborn. Pronounced Stefen Stu-Born. He told me to say that. I would have said it anyway.',
+  'Why did Katana AI end?':'It did not end. It was completed. He moved on to Oddly, Inc. I stayed. Someone has to guard the office plant.',
+  'Can I put you away?':'No. Sheathing me mid-conversation is considered rude. I will finish my sentence first. I am never finished.',
+  'Is he ever wrong?':'I have known him since before Oddly, Inc. existed. I have never seen him wrong. I have seen him reclassify things.',
+  'Are you dangerous?':'I am a sword. I am also very thoughtful. Certification is pending on both.'};
+const log=$('#kLog'),chips=$('#kChips');
+Object.keys(Q).forEach(q=>{const b=document.createElement('button');b.type='button';b.textContent=q;b.addEventListener('click',()=>{
+  const u=document.createElement('div');u.className='m u';u.textContent=q;log.appendChild(u);
+  setTimeout(()=>{const k=document.createElement('div');k.className='m k';k.textContent=Q[q];log.appendChild(k);while(log.children.length>7)log.removeChild(log.firstChild);},420);});chips.appendChild(b);});
+})();
+</script>
+</body>
+</html>
