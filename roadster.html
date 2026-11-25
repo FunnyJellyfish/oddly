@@ -667,7 +667,7 @@ const flip=(()=>{
     plan(t){const a=thr(t);return{cx:x(t),cy:CEN+alt(t),r:rot(t),th:[a,a,a,a,a,0],v:spd(t)}},
     cam(p){return[p.cx-W*.42,Math.max(0,p.cy-CEN-150)]},
     hud(p,t){return[((p.cy-CEN)*.05).toFixed(1),pitchOf(p.r),Math.round(Math.max(...p.th)*128),this.burnAt(t).toFixed(1),'8/8']},
-    caps:[[0,2.6,'Oddly Roadster.','Eight seats · Eight rockets'],[2.6,4,'Ignition.','All eight rockets are real rockets'],[4,6.5,'Liftoff.','The minivan is now an aircraft'],[6.5,9,'Backflip.','Passengers face forward again in 0.7 seconds'],[9,11,'Cruise.','Cupholders remain level within reason'],[11,14,'Landing.','The aircraft is now a minivan'],[14,16.1,'“A sports car seats two. A minivan seats eight. The math is not close.”','Stephen Stubborn (Stefen Stu-Born), CEO']],
+    caps:[[0,2.6,'Oddly Roadster.','Eight seats · Thirteen rockets'],[2.6,4,'Ignition.','All eight perimeter rockets are real rockets'],[4,6.5,'Liftoff.','The minivan is now an aircraft'],[6.5,9,'Backflip.','Passengers face forward again in 0.7 seconds'],[9,11,'Cruise.','Cupholders remain level within reason'],[11,14,'Landing.','The aircraft is now a minivan'],[14,16.1,'“A sports car seats two. A minivan seats eight. The math is not close.”','Stephen Stubborn (Stefen Stu-Born), CEO']],
   };
 })();
 
