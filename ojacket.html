@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>oJacket — Oddly, Inc.</title>
+<meta name="description" content="Jackets warm up slowly. The oJacket warms up in 0.8 seconds, using a capacitor bank and heating elements sewn into the lining. Certification: Pending.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080A14; --bg2:#0D1020; --card:#12152B; --line:#242849; --line2:#323865;
+    --text:#EDEDF7; --dim:#9A9EC0; --faint:#666B92;
+    --purple:#7B4FFF; --mint:#2EE9A5; --amber:#F5A623; --ember:#FF7A2F; --ice:#7FD4FF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);margin-bottom:14px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  h2{font-size:clamp(32px,5vw,52px);margin-bottom:16px}
+  .lede{color:var(--dim);font-size:18px;max-width:660px}
+  .js [data-r]{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .js [data-r].in{opacity:1;transform:none}
+  .top{position:sticky;top:0;z-index:50;background:rgba(8,10,20,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:800;font-size:19px;text-decoration:none;white-space:nowrap}
+  .brand svg{width:30px;height:30px}
+  .nav{display:flex;gap:24px;font-size:14px;color:var(--dim)}
+  .nav a{text-decoration:none;transition:color .2s}
+  .nav a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ember);color:#1a0a02;font-weight:700;padding:13px 22px;border-radius:999px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,122,47,.3)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+  .btn.ghost:hover{border-color:var(--ember);box-shadow:none}
+  .top .btn{padding:8px 16px;font-size:13px}
+  @media(max-width:820px){.nav{display:none}}
+  .hero{padding:60px 0 72px;border-top:none;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 420px at 76% 45%,rgba(255,122,47,.14),transparent 70%),radial-gradient(560px 340px at 0% 0%,rgba(127,212,255,.08),transparent 70%)}
+  .hero .wrap{display:grid;grid-template-columns:.95fr 1.1fr;gap:44px;align-items:center;position:relative}
+  @media(max-width:960px){.hero .wrap{grid-template-columns:1fr}}
+  .badge{display:inline-flex;gap:8px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px dashed var(--amber);color:var(--amber);padding:6px 12px;border-radius:6px;margin-bottom:26px}
+  .badge i{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.2}}
+  .hero h1{font-size:clamp(52px,8vw,96px)}
+  .hero h1 em{font-style:italic;font-weight:600;background:linear-gradient(90deg,var(--ice),#fff 40%,var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--dim);font-size:19px;margin:22px 0 30px;max-width:520px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  /* thermal demo */
+  .demo{background:linear-gradient(180deg,#14172e,#0d1020);border:1px solid var(--line);border-radius:22px;padding:16px;position:relative;overflow:hidden}
+  .dhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .dhead .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .readout{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ember)}
+  .views{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .view{position:relative;border-radius:14px;overflow:hidden;background:#05060c;border:1px solid var(--line)}
+  .view canvas{display:block;width:100%;aspect-ratio:3/4}
+  .view .lbl{position:absolute;left:10px;top:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#cfd3ef;background:rgba(5,6,12,.6);padding:3px 7px;border-radius:6px}
+  .view .t{position:absolute;right:10px;bottom:8px;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;text-shadow:0 2px 8px #000}
+  .view .ts{position:absolute;left:10px;bottom:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#cfd3ef;text-shadow:0 2px 8px #000}
+  .scale{height:8px;border-radius:6px;margin:10px 2px 4px;background:linear-gradient(90deg,#120a40,#3a1c8a,#7a2aa0,#d43c5a,#ff7a2f,#ffd24a,#fff7d6)}
+  .scalelbl{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);margin:0 2px 10px}
+  .row{display:flex;align-items:center;gap:12px;margin:6px 2px 12px;font-size:13px;color:var(--dim)}
+  .row input{flex:1;accent-color:var(--ice)}
+  .row b{font-family:'JetBrains Mono',monospace;color:var(--ice);min-width:56px;text-align:right}
+  .cap{display:flex;align-items:center;gap:10px;margin:0 2px 12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--dim)}
+  .cap .bar{flex:1;height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+  .cap .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ice),#fff);transition:width .15s linear}
+  .cap b{min-width:44px;text-align:right;color:var(--text)}
+  .ctrl{display:grid;grid-template-columns:1fr 1.25fr;gap:10px}
+  .ctrl button{border-radius:14px;padding:13px 8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;cursor:pointer;border:1px solid var(--line2);transition:transform .12s}
+  .ctrl button:active{transform:scale(.97)}
+  .ctrl small{display:block;font-weight:400;font-size:10.5px;margin-top:2px;opacity:.75}
+  #wearBtn{background:var(--card);color:var(--text)}
+  #zapBtn{background:radial-gradient(circle at 50% 130%,#fff,var(--ember) 45%,#c2410c);color:#1a0a02;border:none;font-size:17px;letter-spacing:.06em;box-shadow:0 0 30px rgba(255,122,47,.35)}
+  #zapBtn:disabled{filter:grayscale(.7) brightness(.7);cursor:not-allowed;box-shadow:none}
+  .msg{margin-top:12px;font-size:14px;color:var(--dim);min-height:42px}
+  .msg b{color:var(--ember)}
+  .flash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 70% 50%,rgba(255,255,255,.85),rgba(255,122,47,.35) 35%,transparent 65%);opacity:0}
+  .flash.go{animation:fl .5s ease-out}
+  @keyframes fl{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
+  .ticker{background:linear-gradient(90deg,var(--ice),#fff,var(--ember));color:#08090f;overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;padding:10px 0}
+  .ticker span{display:inline-block;animation:tick 36s linear infinite;padding-left:100%}
+  @keyframes tick{to{transform:translateX(-100%)}}
+  .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.nums{grid-template-columns:1fr 1fr}}
+  .num{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .num .v{font-family:'JetBrains Mono',monospace;font-size:clamp(26px,3.4vw,36px);font-weight:700;color:var(--ember);line-height:1.1}
+  .num p{color:var(--dim);font-size:14.5px;margin-top:8px}
+  .layers{display:grid;grid-template-columns:1fr 1.1fr;gap:36px;align-items:center;margin-top:40px}
+  @media(max-width:880px){.layers{grid-template-columns:1fr}}
+  .stack{position:relative;height:380px}
+  .ly{position:absolute;left:8%;right:8%;height:86px;border-radius:18px;border:1px solid var(--line2);display:flex;align-items:center;padding:0 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.06em;transform:skewY(-8deg);transition:transform .4s,box-shadow .4s;cursor:default}
+  .ly:hover{transform:skewY(-8deg) translateX(14px)}
+  .ly span{transform:skewY(8deg)}
+  .ly1{top:0;background:linear-gradient(135deg,#2a2f4f,#1a1d33);color:#cfd3ef}
+  .ly2{top:72px;background:linear-gradient(135deg,#123247,#0b1c2a);color:var(--ice);box-shadow:0 0 30px rgba(127,212,255,.15) inset}
+  .ly3{top:144px;background:repeating-linear-gradient(90deg,#3a1607 0 8px,#5a220a 8px 10px);color:#ffb38a;box-shadow:0 0 34px rgba(255,122,47,.25) inset}
+  .ly4{top:216px;background:linear-gradient(135deg,#1e1a2a,#151320);color:var(--dim)}
+  .ly5{top:288px;background:linear-gradient(135deg,#0f2a22,#0b1a16);color:var(--mint)}
+  .feats{list-style:none}
+  .feats li{color:var(--dim);font-size:16px;padding:12px 0;border-bottom:1px dashed var(--line)}
+  .feats b{color:var(--text)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:860px){.two{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .panel h3{font-size:24px;margin-bottom:10px}
+  .specs{list-style:none}
+  .specs li{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .specs li:last-child{border-bottom:none}
+  .specs span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:2px;white-space:nowrap}
+  .specs span:last-child{text-align:right}
+  details{border-bottom:1px dashed var(--line);padding:12px 0}
+  details:last-child{border-bottom:none}
+  summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:'JetBrains Mono',monospace;color:var(--ember)}
+  details[open] summary::after{content:"−"}
+  details p{color:var(--dim);font-size:15px;margin-top:8px}
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:760px){.quotes{grid-template-columns:1fr}}
+  .qc{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:14px;padding:24px}
+  .qc.cfo{border-left-color:var(--mint)}
+  .qc p{font-family:'Fraunces',serif;font-size:21px;line-height:1.3;font-weight:600}
+  .qc .by{display:flex;gap:12px;align-items:center;margin-top:16px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:rgba(123,79,255,.15);color:var(--purple);flex:none}
+  .cfo .av{background:rgba(46,233,165,.12);color:var(--mint)}
+  .by b{display:block;font-size:15px}
+  .by small{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:900px){.plans{grid-template-columns:1fr}}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column}
+  .plan.best{border-color:var(--ember);box-shadow:0 0 0 1px rgba(255,122,47,.22) inset}
+  .plan .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .plan.best .tag{color:var(--ember)}
+  .plan h3{font-size:26px;margin:8px 0 2px}
+  .plan .price{font-family:'Fraunces',serif;font-size:36px;font-weight:800;margin:8px 0 12px}
+  .plan ul{list-style:none;margin-bottom:20px}
+  .plan li{color:var(--dim);font-size:15px;padding:6px 0;display:flex;gap:10px}
+  .plan li::before{content:"✓";color:var(--ember);font-weight:700}
+  .plan .btn{margin-top:auto}
+  .sizes{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .sizes button{background:none;border:1px solid var(--line2);color:var(--dim);border-radius:8px;padding:5px 10px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer}
+  .sizes button.on{border-color:var(--ember);color:var(--text)}
+  .ordermsg{margin-top:16px;font-size:14px;color:var(--dim);min-height:22px;text-align:center}
+  .ordermsg b{color:var(--ember)}
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;color:var(--dim)}
+  .foot .links a{text-decoration:none}
+  .foot .links a:hover{color:var(--text)}
+  .fine{color:var(--dim);font-size:12px;line-height:1.7;margin-top:24px;max-width:920px}
+  .sig{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ember)}
+  @media(max-width:520px){.wrap{padding:0 16px}section{padding:64px 0}.hero p{font-size:17px}.view .t{font-size:15px}.ctrl button{font-size:12.5px}#zapBtn{font-size:15px}}
+  @media (prefers-reduced-motion:reduce){.ticker span,.badge i{animation:none}.js [data-r]{opacity:1;transform:none;transition:none}.flash.go{animation-duration:.01s}}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="/" aria-label="Oddly, Inc. home">
+    <svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>
+    oJacket
+  </a>
+  <nav class="nav"><a href="#thermal">Thermal</a><a href="#inside">Inside</a><a href="#specs">Specs</a><a href="#order">Order</a></nav>
+  <a class="btn" href="#order">Order</a>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap">
+  <div data-r>
+    <div class="badge"><i></i>Certification: Pending</div>
+    <h1>oJacket. <em>Warm. Now.</em></h1>
+    <p>A jacket warms you up slowly, using you. That is the problem. You are the heater, and you are cold. We looked at that and said: this can be improved. The oJacket stores warmth in a bank of capacitors and releases all of it through heating elements in the lining, in 0.8 seconds.</p>
+    <div class="ctas">
+      <a class="btn" href="#thermal">See it on thermal</a>
+      <a class="btn ghost" href="#order">Order oJacket &rarr;</a>
+    </div>
+  </div>
+
+  <div class="demo" id="thermal" data-r>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="dhead"><span class="k">Thermal camera · live</span><span class="readout" id="state">Both subjects are cold. Outside: −5 °C.</span></div>
+    <div class="views">
+      <div class="view"><canvas id="cvA" aria-label="Thermal image of a person in a regular jacket"></canvas><span class="lbl">Regular jacket</span><span class="ts" id="tsA">0:00</span><span class="t" id="tA">22 °C</span></div>
+      <div class="view"><canvas id="cvB" aria-label="Thermal image of a person in an oJacket"></canvas><span class="lbl">oJacket</span><span class="ts" id="tsB">0.0 s</span><span class="t" id="tB">22 °C</span></div>
+    </div>
+    <div class="scale" aria-hidden="true"></div>
+    <div class="scalelbl"><span>−10 °C</span><span>15 °C</span><span>40 °C</span></div>
+    <label class="row">Outside <input type="range" id="out" min="-25" max="10" value="-5" aria-label="Outside temperature"><b id="outV">−5 °C</b></label>
+    <div class="cap">Capacitors <div class="bar"><i id="capBar"></i></div><b id="capV">100%</b></div>
+    <div class="ctrl">
+      <button id="wearBtn" type="button">Put both on<small>regular way: 12 min to warm</small></button>
+      <button id="zapBtn" type="button">DISCHARGE<small>oJacket · 0.8 s</small></button>
+    </div>
+    <div class="msg" id="msg" aria-live="polite">Two jackets. One of them has capacitors.</div>
+  </div>
+</div></header>
+
+<div class="ticker" aria-hidden="true"><span>WARM IN 0.8 SECONDS &nbsp;·&nbsp; 4.2 KILOJOULES OF COZY &nbsp;·&nbsp; YOUR HAIR MAY STAND UP. THIS MEANS IT IS CHARGED &nbsp;·&nbsp; ZIP FIRST, THEN DISCHARGE &nbsp;·&nbsp; MACHINE WASHABLE AFTER DISCHARGE &nbsp;·&nbsp; CERTIFICATION: PENDING &nbsp;·&nbsp; YOU ARE NO LONGER THE HEATER</span></div>
+
+<section id="numbers"><div class="wrap">
+  <div data-r>
+    <div class="eyebrow">The numbers</div>
+    <h2>Twelve minutes of shivering. Removed.</h2>
+    <p class="lede">A normal jacket does nothing until your body heats the air inside it. That takes about twelve minutes, which is twelve minutes of you heating a jacket. The oJacket heats you.</p>
+  </div>
+  <div class="nums">
+    <div class="num" data-r><div class="v">0.8 s</div><p>From cold to 38 °C. The zipper is still moving when it finishes.</p></div>
+    <div class="num" data-r><div class="v">900×</div><p>Faster than a regular jacket. We measured the regular jacket for twelve minutes. It was a long day.</p></div>
+    <div class="num" data-r><div class="v">4.2 kJ</div><p>Stored in the lining. Released all at once, because that is the fastest way.</p></div>
+    <div class="num" data-r><div class="v">40 min</div><p>Of warmth after each discharge. Then you plug it in. Or discharge again, if it is charged. It is not.</p></div>
+  </div>
+</div></section>
+
+<section id="inside"><div class="wrap">
+  <div data-r><div class="eyebrow">Inside the oJacket</div><h2>Five layers. One of them is lightning.</h2></div>
+  <div class="layers">
+    <div class="stack" data-r aria-label="The five layers of the oJacket">
+      <div class="ly ly1"><span>01 · SHELL · WINDPROOF, MOSTLY</span></div>
+      <div class="ly ly2"><span>02 · CAPACITOR BANK · 48 CELLS</span></div>
+      <div class="ly ly3"><span>03 · HEATING ELEMENTS · 14 ZONES</span></div>
+      <div class="ly ly4"><span>04 · INSULATION · KEEPS IT IN</span></div>
+      <div class="ly ly5"><span>05 · LINING · SOFT, GROUNDED</span></div>
+    </div>
+    <ul class="feats" data-r>
+      <li><b>Capacitor bank.</b> Forty-eight flat supercapacitor cells quilted into the shell. They charge from USB-C in 25 minutes and empty in under one second. That is what capacitors are for.</li>
+      <li><b>Heating elements.</b> Fourteen zones of woven heating mesh: chest, back, both arms, both pockets, and the collar, which we feel is underrated.</li>
+      <li><b>Discharge button.</b> Inside the left cuff. It is large and orange. Press it once. Holding it does nothing, except make you look determined.</li>
+      <li><b>Grounded lining.</b> The lining is grounded, so the electricity goes into the heating elements and not into you. Your hair may still stand up. This is a cosmetic feature.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section id="specs"><div class="wrap">
+  <div data-r><div class="eyebrow">Specifications</div><h2>The numbers, and the questions.</h2></div>
+  <div class="two">
+    <div class="panel" data-r>
+      <h3>Specs</h3>
+      <ul class="specs">
+        <li><span>Warm-up time</span><span>0.8 s to 38 °C</span></li>
+        <li><span>Regular jacket warm-up</span><span>About 12 min, as nature intended</span></li>
+        <li><span>Energy storage</span><span>48 supercapacitors · 4.2 kJ</span></li>
+        <li><span>Heating zones</span><span>14, including the collar</span></li>
+        <li><span>Warmth per discharge</span><span>40 min</span></li>
+        <li><span>Recharge</span><span>25 min, USB-C</span></li>
+        <li><span>Weight</span><span>1.9 kg (it is mostly capacitors)</span></li>
+        <li><span>Static</span><span>Some</span></li>
+        <li><span>Certification</span><span style="color:var(--amber)">Pending</span></li>
+      </ul>
+    </div>
+    <div class="panel" data-r>
+      <h3>Questions</h3>
+      <details><summary>Is it safe to wear a capacitor bank?</summary><p>The lining is grounded and the elements are sealed. The energy goes where it is told. It has always gone where it is told. Certification is pending to confirm this.</p></details>
+      <details><summary>Why does my hair stand up?</summary><p>The jacket is charged. So, a little, are you. It settles after discharge. We consider it a charge indicator you can see from across the street.</p></details>
+      <details><summary>Can I wash it?</summary><p>After discharge, yes, on cold. Never wash a charged oJacket. The washing machine will become warm very quickly, and then it will become a different appliance.</p></details>
+      <details><summary>What happens if I press Discharge twice?</summary><p>Nothing. The capacitors are empty. The jacket will vibrate once, politely, to remind you that you already did.</p></details>
+      <details><summary>Can I fly with it?</summary><p>Please discharge it at the gate. Several airports have asked us to say this.</p></details>
+    </div>
+  </div>
+</div></section>
+
+<section id="leadership"><div class="wrap">
+  <div data-r><div class="eyebrow">Leadership</div><h2>From the people who decided.</h2></div>
+  <div class="quotes">
+    <div class="qc" data-r><p>"For thousands of years, people have warmed jackets with their own bodies. They called it a jacket. It was a job. We gave the job to the capacitors."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stubborn</b><small>CEO · pronounced "Stefen Stu-Born"</small></div></div></div>
+    <div class="qc cfo" data-r><p>"The capacitors cost more than the jacket. The jacket costs more than the capacitors. I have checked this twice, and it is true both times."</p><div class="by"><div class="av">SS</div><div><b>Stephen Stupid</b><small>CFO · no relation</small></div></div></div>
+  </div>
+</div></section>
+
+<section id="order"><div class="wrap">
+  <div data-r><div class="eyebrow">Order</div><h2>Choose your warmth.</h2></div>
+  <div class="plans">
+    <div class="plan" data-r><div class="tag">Standard</div><h3>Jacket</h3><div class="price">$89</div><ul><li>A jacket</li><li>Warms in about 12 minutes</li><li>You are the heater</li></ul><button class="btn ghost" data-ed="Jacket" type="button">Order</button></div>
+    <div class="plan best" data-r><div class="tag">Flagship</div><h3>oJacket</h3><div class="price">$449</div>
+      <div class="sizes" role="group" aria-label="Size"><button type="button">S</button><button type="button" class="on">M</button><button type="button">L</button><button type="button">XL</button></div>
+      <ul><li>48-cell capacitor bank</li><li>14 heating zones</li><li>0.8 s to 38 °C</li><li>Static at no extra charge</li></ul><button class="btn" data-ed="oJacket" type="button">Order oJacket</button></div>
+    <div class="plan" data-r><div class="tag">Arctic</div><h3>oJacket Max</h3><div class="price">$899</div><ul><li>96 cells, two discharges</li><li>Heated hood and mittens</li><li>A second, larger orange button</li></ul><button class="btn ghost" data-ed="oJacket Max" type="button">Order</button></div>
+  </div>
+  <div class="ordermsg" id="ordermsg" aria-live="polite"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot">
+    <a class="brand" href="/" aria-label="Oddly, Inc. home"><svg viewBox="-128 -128 256 256" aria-hidden="true"><g fill="none" stroke-width="18" stroke-linecap="round"><path stroke="#7B4FFF" d="M96.59 25.88A100 100 0 0 1 -96.59 25.88 M-96.59 -25.88A100 100 0 0 1 96.59 -25.88"/><path stroke="#2EE9A5" d="M-21.13 50.75A50 56 0 0 1 -21.13 -50.75 M21.13 -50.75A50 56 0 0 1 21.13 50.75"/></g></svg>oJacket</a>
+    <div class="links"><a href="#thermal">Thermal</a><a href="#inside">Inside</a><a href="#specs">Specs</a><a href="/">Oddly, Inc.</a></div>
+  </div>
+  <p class="fine">© 2026 Oddly, Inc. The oJacket stores approximately 4.2 kJ in a supercapacitor bank and releases it through 14 woven heating zones in approximately 0.8 seconds. Warm-up time measured at the collar. Warmth duration depends on outside temperature, wind, and whether you zipped it first. Zip it first. Hair elevation is temporary and cosmetic. Do not wash, fold, or hug tightly while charged. Discharge at airport security when asked, and when not asked. The regular jacket shown for comparison is a regular jacket. Certification: Pending.</p>
+  <div class="sig">This is not a bug. — Oddly, Inc.</div>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const els=$$('[data-r]');
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1,rootMargin:'0px 0px -30px 0px'});els.forEach(el=>io.observe(el));}else els.forEach(el=>el.classList.add('in'));
+
+// ---------- thermal sim ----------
+// each subject: body core 37, "skin feel" T rises toward 38 inside jacket. Regular: tau ~ 12 min (sim at 60x). oJacket: 0.8 s.
+const SIM=60; // regular jacket runs at 60x speed
+const S={out:-5,A:{T:22,on:false,t0:0},B:{T:22,on:false,dis:false,t0:0,glow:0},cap:1,hair:0};
+const fmtT=v=>(v<0?'−':'')+Math.abs(Math.round(v))+' °C';
+const PAL=[[18,10,64],[58,28,138],[122,42,160],[212,60,90],[255,122,47],[255,210,74],[255,247,214]];
+function heat(v){const k=Math.max(0,Math.min(1,(v+10)/50))*(PAL.length-1),i=Math.min(PAL.length-2,Math.floor(k)),f=k-i,a=PAL[i],b=PAL[i+1];return `rgb(${a.map((x,j)=>Math.round(x+(b[j]-x)*f)).join(',')})`;}
+function setup(cv){const r=cv.getBoundingClientRect(),D=Math.min(2,devicePixelRatio||1);cv.width=r.width*D;cv.height=r.height*D;const g=cv.getContext('2d');g.setTransform(D,0,0,D,0,0);return {g,w:r.width,h:r.height};}
+let A=setup($('#cvA')),B=setup($('#cvB'));
+addEventListener('resize',()=>{A=setup($('#cvA'));B=setup($('#cvB'));});
+function drawPerson(c,s,isO,t){
+  const {g,w,h}=c;g.clearRect(0,0,w,h);
+  g.fillStyle=heat(S.out);g.fillRect(0,0,w,h);
+  // background noise
+  for(let i=0;i<40;i++){g.fillStyle=heat(S.out+((i*37)%7-3));g.globalAlpha=.25;g.fillRect((i*53)%w,(i*91)%h,w*.12,h*.06);}g.globalAlpha=1;
+  const cx=w/2,sc=Math.min(w/200,h/270);
+  g.save();g.translate(cx,h*.08);g.scale(sc,sc);
+  // head (skin always fairly warm, cheeks cool when cold)
+  const face=33+(s.T-22)*.15+(S.out<0?-2:0);
+  const hg=g.createRadialGradient(0,40,4,0,40,30);hg.addColorStop(0,heat(face+1));hg.addColorStop(1,heat(face-4));g.fillStyle=hg;g.beginPath();g.ellipse(0,40,22,27,0,0,7);g.fill();
+  // hair (stands up if charged oJacket)
+  const up=isO?S.hair:0;g.strokeStyle=heat(face-6);g.lineWidth=2.4;g.lineCap='round';
+  for(let i=-6;i<=6;i++){const a=-Math.PI/2+i*.17;const L=2.5+up*20+Math.sin(t*20+i)*up*1.5;g.beginPath();g.moveTo(Math.cos(a)*20,40+Math.sin(a)*25);g.lineTo(Math.cos(a)*(20+L*(1-up*.3)),40+Math.sin(a)*(25+L));g.stroke();}
+  // neck
+  g.fillStyle=heat(face-1);g.fillRect(-9,64,18,12);
+  // jacket torso + arms: jacket outer surface shows the warmth leaking: T_surface = mix(out, T, k)
+  const surf=v=>S.out+(v-S.out)*(isO?.62:.5);
+  const body=new Path2D();body.moveTo(-46,78);body.quadraticCurveTo(0,68,46,78);body.lineTo(54,190);body.quadraticCurveTo(0,200,-54,190);body.closePath();
+  const bg=g.createLinearGradient(0,78,0,200);bg.addColorStop(0,heat(surf(s.T)+2));bg.addColorStop(1,heat(surf(s.T)-3));g.fillStyle=bg;g.fill(body);
+  const arm=(sx)=>{const p=new Path2D();p.moveTo(sx*44,80);p.quadraticCurveTo(sx*74,96,sx*76,180);p.lineTo(sx*58,184);p.quadraticCurveTo(sx*56,110,sx*40,98);p.closePath();return p;};
+  [-1,1].forEach(sx=>{g.fillStyle=heat(surf(s.T)-1.5);g.fill(arm(sx));g.fillStyle=heat(face-4);g.beginPath();g.ellipse(sx*67,192,8,10,0,0,7);g.fill();});
+  // oJacket zones glow
+  if(isO){const gl=s.glow;if(gl>0.01){g.globalCompositeOperation='lighter';g.globalAlpha=Math.min(1,gl);
+      [[0,104,30,12],[0,140,34,12],[-30,170,10,8],[30,170,10,8],[0,80,24,6],[-62,130,6,30],[62,130,6,30]].forEach(([x,y,rx,ry])=>{const r=g.createRadialGradient(x,y,1,x,y,Math.max(rx,ry)*1.6);r.addColorStop(0,'rgba(255,240,200,.9)');r.addColorStop(1,'rgba(255,122,47,0)');g.fillStyle=r;g.beginPath();g.ellipse(x,y,rx*1.6,ry*1.8,0,0,7);g.fill();});
+      g.globalAlpha=1;g.globalCompositeOperation='source-over';}
+    // zipper line
+    g.strokeStyle='rgba(0,0,0,.25)';g.lineWidth=1.5;g.beginPath();g.moveTo(0,76);g.lineTo(0,196);g.stroke();}
+  else{g.strokeStyle='rgba(0,0,0,.25)';g.lineWidth=1.5;g.beginPath();g.moveTo(0,76);g.lineTo(0,196);g.stroke();}
+  // legs
+  g.fillStyle=heat(S.out+(s.T-S.out)*.3);g.fillRect(-40,196,34,70);g.fillRect(6,196,34,70);
+  // shiver lines when cold
+  const cold=Math.max(0,(30-s.T)/12);if(cold>0.05){g.strokeStyle=`rgba(127,212,255,${.5*Math.min(1,cold)})`;g.lineWidth=1.5;for(let i=0;i<3;i++){const y=100+i*28,o=Math.sin(t*28+i)*3;g.beginPath();g.moveTo(-70+o,y);g.lineTo(-62+o,y+5);g.moveTo(70-o,y);g.lineTo(62-o,y+5);g.stroke();}}
+  g.restore();
+}
+function say(h){$('#msg').innerHTML=h;}
+const clock=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+let last=performance.now(),running=true,lastLine=-1;
+function step(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;
+  // regular jacket: exponential toward target with tau=4 min (≈12 min to 95%) in sim time
+  const target=37.5-Math.max(0,-S.out)*.08;
+  if(S.A.on){const el=(now-S.A.t0)/1000*SIM;S.A.T+=(target-S.A.T)*(1-Math.exp(-dt*SIM/300));$('#tsA').textContent=clock(Math.min(el,5999));
+    const lines=[[60,'One minute. The regular jacket is thinking about it.'],[240,'Four minutes. The regular jacket would like you to know it is trying.'],[480,'Eight minutes. You are still heating the jacket.'],[720,'Twelve minutes. The regular jacket is warm. Congratulations to everyone involved.']];
+    lines.forEach((l,i)=>{if(el>=l[0]&&lastLine<i){lastLine=i;if(S.B.dis&&i<3&&(now-S.B.t0)<6000)return;say(l[1]+(i<3&&!S.B.dis?' <b>The oJacket is waiting for you to press Discharge.</b>':''));}});}
+  else S.A.T+=( (22+S.out*.2) - S.A.T)*(1-Math.exp(-dt/6));
+  // oJacket
+  if(S.B.dis){const el=(now-S.B.t0)/1000;$('#tsB').textContent=el<10?el.toFixed(1)+' s':clock(el*SIM);
+    if(el<.8){S.cap=Math.max(0,1-el/.8);S.B.glow=1;S.B.T=S.B.T0+(target+.5-S.B.T0)*(el/.8);S.hair=Math.max(0,S.hair-dt*3);}
+    else{S.cap=0;S.B.glow=Math.max(.15,S.B.glow-dt*.6);S.B.T+=(target-S.B.T)*(1-Math.exp(-dt*3));}}
+  else{S.B.T+=((22+S.out*.2)-S.B.T)*(1-Math.exp(-dt/6));S.hair=S.cap*.6+.05*Math.sin(t*3);}
+  $('#tA').textContent=fmtT(S.A.T);$('#tA').style.color=heat(S.A.T);$('#tB').textContent=fmtT(S.B.T);$('#tB').style.color=heat(S.B.T);
+  $('#capBar').style.width=(S.cap*100)+'%';$('#capV').textContent=Math.round(S.cap*100)+'%';
+  drawPerson(A,S.A,false,t);drawPerson(B,S.B,true,t);
+  if(running)requestAnimationFrame(step);
+}
+new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!running){running=true;last=performance.now();requestAnimationFrame(step);}if(!v)running=false;}).observe($('#thermal'));
+requestAnimationFrame(step);
+$('#out').addEventListener('input',e=>{S.out=+e.target.value;$('#outV').textContent=fmtT(S.out);$('#state').textContent='Outside: '+fmtT(S.out)+'.'+(S.out<=-20?' Very cold. The oJacket remains confident.':'');});
+$('#wearBtn').addEventListener('click',()=>{
+  S.A.on=true;S.A.t0=performance.now();S.A.T=Math.min(S.A.T,24);lastLine=-1;$('#wearBtn').innerHTML='Wearing both<small>regular jacket running at 60× speed</small>';
+  $('#state').textContent='Both jackets on. Zipped. Outside: '+fmtT(S.out)+'.';
+  say('Both jackets are on. The regular jacket has begun warming up, slowly, using you. The oJacket is charged. <b>Press Discharge.</b>');});
+$('#zapBtn').addEventListener('click',()=>{
+  if(S.resetReady){reset();return;}
+  if(S.B.dis){say('The capacitors are empty. The oJacket vibrated once, politely, to remind you that you already did.');return;}
+  if(!S.A.on)$('#wearBtn').click();
+  S.B.dis=true;S.B.t0=performance.now();S.B.T0=S.B.T;$('#zapBtn').disabled=true;$('#zapBtn').innerHTML='DISCHARGED<small>recharge: 25 min, USB-C</small>';
+  const f=$('#flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');
+  try{if(navigator.vibrate&&navigator.userActivation&&navigator.userActivation.hasBeenActive)navigator.vibrate(30);}catch(e){}
+  $('#state').textContent='oJacket discharged. 4.2 kJ released.';
+  setTimeout(()=>say('oJacket: warm in <b>0.8 seconds</b>. The regular jacket has been trying for '+clock((performance.now()-S.A.t0)/1000*SIM)+'. Its hair, unlike yours, did not stand up.'),850);
+  setTimeout(()=>{$('#zapBtn').disabled=false;$('#zapBtn').innerHTML='RECHARGE + RESET<small>skip the 25 minutes, this once</small>';S.resetReady=true;},5000);
+});
+function reset(){S.A={T:22,on:false,t0:0};S.B={T:22,on:false,dis:false,t0:0,glow:0};S.cap=1;S.resetReady=false;lastLine=-1;
+  $('#zapBtn').innerHTML='DISCHARGE<small>oJacket · 0.8 s</small>';$('#wearBtn').innerHTML='Put both on<small>regular way: 12 min to warm</small>';$('#tsA').textContent='0:00';$('#tsB').textContent='0.0 s';
+  say('Recharged. Both subjects have been sent back outside. They have agreed to this.');}
+// ---------- order ----------
+$$('.sizes button').forEach(b=>b.addEventListener('click',()=>{$$('.sizes button').forEach(x=>x.classList.toggle('on',x===b));}));
+$$('[data-ed]').forEach(b=>b.addEventListener('click',()=>{const ed=b.dataset.ed,size=($('.sizes .on')||{}).textContent||'M';
+  $('#ordermsg').innerHTML=ed==='Jacket'?'Order received for a <b>Jacket</b>. It will arrive cold, and it will stay that way until you warm it.':'Order received for the <b>'+ed+'</b>'+(ed==='oJacket'?' in size '+size:'')+'. It ships discharged. Your hair is safe until you plug it in.';}));
+})();
+</script>
+</body>
+</html>
