@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Big Blue Terminal: STINGRAYS</title>
+<style>
+:root{--acc:#b07cff;--bg:#050e1a;--panel:#0a1a2c;--line:#17324d;--cyan:#3cd2ff;--txt:#e6f2ff;--dim:#6f8fab;--bad:#ff4d4d;--good:#3ddc84}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,"SF Pro Display","Inter",system-ui,sans-serif;overflow:hidden}
+body{background-image:linear-gradient(#0b1e33 1px,transparent 1px),linear-gradient(90deg,#0b1e33 1px,transparent 1px);background-size:48px 48px}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,monospace}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:2px solid var(--acc);background:#030912cc}
+#logo{font-weight:800;letter-spacing:.06em;color:var(--cyan);font-size:18px;user-select:none}
+#teamtag{background:var(--acc);color:#0a0a0e;font-weight:900;padding:6px 14px;border-radius:8px;letter-spacing:.08em}
+#clock{font-size:22px;font-weight:700}
+#elapsed{color:var(--dim);font-size:14px;margin-left:10px}
+main{height:calc(100% - 64px);overflow:auto;padding:22px;display:flex;flex-direction:column;gap:20px}
+.screen{display:none}.screen.on{display:flex}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:900px) and (orientation:portrait){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:22px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;min-height:420px}
+.card h2{margin:0;font-size:15px;letter-spacing:.18em;color:var(--cyan)}
+.pips{display:flex;gap:6px}.pip{width:30px;height:8px;border-radius:4px;background:var(--line)}.pip.done{background:var(--acc)}.pip.cur{background:var(--cyan)}
+.ctitle{font-size:28px;font-weight:800;margin:0}
+.clue{font-size:21px;line-height:1.45;color:var(--txt)}
+.where{font-size:15px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.wins{display:flex;gap:10px;flex-wrap:wrap}
+.win{font-size:24px;font-weight:800;padding:8px 14px;border-radius:10px;border:2px solid var(--acc);color:var(--acc)}
+.win.live{background:var(--acc);color:#000;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.colors{display:flex;flex-direction:column;gap:8px}
+.crow{display:flex;gap:12px;align-items:center;font-size:18px;line-height:1.3}
+.sw{flex:0 0 44px;height:44px;border-radius:10px;border:2px solid #0006}
+.entry{display:flex;gap:10px;margin-top:auto}
+input.ans{flex:1;font-size:28px;padding:14px 16px;border-radius:12px;border:2px solid var(--line);background:#030a14;color:var(--txt);text-transform:uppercase;letter-spacing:.12em;font-weight:700;min-width:0}
+input.ans:focus{outline:none;border-color:var(--cyan)}
+button{font:inherit;font-weight:800;border:0;border-radius:12px;padding:14px 20px;font-size:20px;cursor:pointer;letter-spacing:.05em}
+.go{background:var(--acc);color:#0a0a0e}
+.hint{background:transparent;color:var(--dim);border:2px solid var(--line);font-size:16px;padding:10px 14px;align-self:flex-start}
+.hintbox{background:#0f2a44;border-left:4px solid var(--cyan);padding:12px 14px;border-radius:8px;font-size:18px;line-height:1.4}
+.msg{min-height:26px;font-weight:800;font-size:19px;letter-spacing:.06em}
+.msg.bad{color:var(--bad)}.msg.good{color:var(--good)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.lock{position:absolute;inset:0;background:#050e1ae8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:22px;font-weight:800;text-align:center;padding:20px}
+.lock .big{font-size:64px;color:var(--cyan)}
+.done{align-items:center;justify-content:center;text-align:center}
+.done .ctitle{color:var(--good)}
+/* start screen */
+#s-start{flex:1;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:18px}
+#s-start .t1{font-size:22px;letter-spacing:.3em;color:var(--cyan);font-weight:800}
+#s-start .t2{font-size:72px;font-weight:900;margin:0}
+#s-start .t3{font-size:24px;color:var(--txt);max-width:720px;line-height:1.4}
+#count{font-size:120px;font-weight:900;color:var(--acc)}
+/* final */
+#s-final{flex-direction:column;gap:18px}
+.fhead{font-size:40px;font-weight:900;margin:0;color:var(--acc)}
+.rules{font-size:19px;line-height:1.5;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:16px 20px}
+.cipher{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;padding:10px 0}
+.cword{display:flex;gap:8px;padding:10px;border-radius:14px;background:#0a1a2c;border:2px dashed var(--line)}
+.cl{display:flex;flex-direction:column;align-items:center;gap:6px}
+.chip{font-size:18px;font-weight:800;background:#030a14;border:2px solid var(--acc);border-radius:8px;padding:6px 8px;white-space:nowrap}
+.cl input{width:54px;height:60px;text-align:center;font-size:30px;font-weight:900;border-radius:10px;border:2px solid var(--line);background:#030a14;color:var(--txt);text-transform:uppercase}
+.cl input:focus{outline:none;border-color:var(--cyan)}
+#verified{display:none;text-align:center;font-size:30px;font-weight:900;color:var(--good);padding:20px;border:3px solid var(--good);border-radius:16px;line-height:1.4}
+/* gm */
+#gm{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;z-index:9}
+#gm .box{background:#0b1626;border:2px solid var(--cyan);border-radius:16px;padding:20px;width:min(760px,94vw);max-height:90vh;overflow:auto;font-size:16px;line-height:1.5}
+#gm button{font-size:15px;padding:10px 12px;margin:4px 4px 0 0;background:#1d3a5c;color:#fff}
+#gm .warn{color:#ffb347;font-weight:800}
+#modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:10}#modal .mbox{background:#0b1626;border:2px solid var(--acc);border-radius:16px;padding:24px;width:min(520px,90vw);font-size:21px;line-height:1.4}.mbtns{display:flex;justify-content:flex-end;gap:12px;margin-top:18px}
+.hackbox{background:#030a14;border:2px dashed var(--acc);border-radius:14px;padding:16px;text-align:center}
+.show{font-size:34px;font-weight:900;letter-spacing:.08em;color:var(--txt)}
+.lamps{display:flex;gap:14px;justify-content:center}.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:18px;color:var(--dim)}
+.bulb{width:46px;height:46px;border-radius:50%;border:3px solid var(--line);background:#081525}.bulb.on{background:#ffe066;border-color:#fff3b0;box-shadow:0 0 18px #ffe066}
+.ghist{display:flex;flex-direction:column;gap:6px;max-height:190px;overflow:auto}
+.grow{display:flex;gap:6px;align-items:center;justify-content:center}
+.gd{width:42px;height:46px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;background:#2a3a4c}
+.gd.g{background:#2fb862;color:#000}.gd.y{background:#f2c230;color:#000}
+.pegs{font-size:22px;letter-spacing:.15em;min-width:110px;text-align:left;color:var(--txt)}
+.mkey{margin:12px auto 0;border-collapse:collapse;font-size:17px;font-weight:800}.mkey td{border:1px solid var(--line);padding:4px 6px;text-align:center}.mkey tr:first-child td{color:var(--cyan)}
+#toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:var(--acc);color:#000;font-weight:900;padding:14px 26px;border-radius:12px;font-size:22px;display:none;z-index:8}
+</style>
+</head>
+<body>
+<header>
+  <div id="logo">OPERATION BIG BLUE</div>
+  <div><span style="font-size:12px;color:var(--dim);letter-spacing:.12em;margin-right:8px">MISSION TIME</span><span id="clock" class="mono">--:--:--</span><span id="elapsed" class="mono"></span></div>
+  <div id="teamtag"></div>
+</header>
+<main>
+  <section id="s-start" class="screen">
+    <div class="t1">SECURE TERMINAL</div>
+    <h1 class="t2" id="startTeam"></h1>
+    <div class="t3" id="startWhere"></div>
+    <div id="count" class="mono"></div>
+    <button class="go" id="arm">ARM TERMINAL</button>
+    <div class="t3" style="font-size:17px;color:var(--dim)">Tap ARM so the terminal can make sounds. It unlocks when the TVs say the mission begins.</div>
+  </section>
+
+  <section id="s-play" class="screen" style="flex-direction:column;gap:20px">
+    <div class="grid">
+      <div class="card" id="fieldCard"></div>
+      <div class="card" id="sigCard"></div>
+    </div>
+  </section>
+
+  <section id="s-final" class="screen"></section>
+</main>
+<div id="toast"></div>
+<div id="modal"><div class="mbox"><div id="mtext"></div><input id="minput" class="ans" type="password" inputmode="numeric" autocomplete="off" style="display:none;margin-top:12px;width:100%"><div class="mbtns"><button id="mno" class="hint" style="font-size:18px">Cancel</button><button id="myes" class="go">OK</button></div></div></div>
+<div id="gm"><div class="box" id="gmbox"></div></div>
+
+<script>
+/* ===================== GAME DATA (generated) =====================
+   FIELD = house clues. Edit clue text / answers here if you need to.
+   Answers ignore spaces, dashes, and capitalization. Multiple accepted answers are allowed. */
+const TEAM   = {"id": "stingrays", "name": "STINGRAYS", "accent": "#b07cff", "start": "the Living Room", "floor": "Floor 2", "signals": [{"tv": "living", "tvName": "Living Room", "kind": "code", "windows": [57660, 58020, 58380, 58740, 59100, 59460, 59820, 60180, 60540, 60900, 61260, 61620, 61980], "code": "DY9K"}, {"tv": "theater", "tvName": "Movie Theater", "kind": "color", "windows": [57840, 58200, 58560, 58920, 59280, 59640, 60000, 60360, 60720, 61080, 61440, 61800, 62160], "shown": "RED", "questions": {"RED": {"q": "How many MINUTES are you locked out if you jerk the door?", "a": ["2", "TWO"]}, "BLUE": {"q": "How many POUNDS can the elevator hold?", "a": ["800"]}, "GREEN": {"q": "How many bullet points are on the elevator sign?", "a": ["9", "NINE"]}}, "answer": ["2", "TWO"]}, {"tv": "br7", "tvName": "Bedroom 7", "kind": "code", "windows": [57660, 58020, 58380, 58740, 59100, 59460, 59820, 60180, 60540, 60900, 61260, 61620, 61980], "code": "7EP3"}], "cipher": [[[5, 7, 2], [7, 5, 2], [7, 14, 1], [5, 13, 3], [3, 8, 2], [8, 7, 1]], [[2, 8, 3], [8, 2, 1]], [[6, 12, 1], [1, 3, 2], [3, 10, 4]], [[7, 9, 3], [6, 7, 4], [6, 11, 5], [5, 5, 3], [5, 5, 1]], [[9, 4, 4], [7, 2, 3], [7, 2, 2]]], "message": "CLOSET BY TEN MINUS SIX"};
+const FIELD  = [
+ {
+  "title": "Node Count",
+  "clue": "Every mission TV is a numbered NODE (look in its top-right corner). MULTIPLY the node numbers of the Living Room TV and the Game Room TV.",
+  "answer": [
+   "6",
+   "SIX"
+  ],
+  "hint": "Visit both TVs. The number comes right after the word NODE."
+ },
+ {
+  "title": "Shifted Signal",
+  "clue": "Enemy agents shifted every letter ONE step forward in the alphabet (A became B). Decode this hero's name: <b style='font-size:26px;letter-spacing:.1em'>JSPO NBO</b><br>Then find his poster in the Theater. What NUMBER is in its title?",
+  "answer": [
+   "3",
+   "THREE"
+  ],
+  "hint": "Shift each letter back by one: J becomes I, S becomes R... He wears a red and gold suit."
+ },
+ {
+  "title": "Sign Language",
+  "clue": "The Big Blue sign on the stairs between Floor 1 and Floor 2 is hiding a word. Number the words of the Big Blue sign in reading order (Big = 1, Blue = 2, ...; skip the year). Each code is WORD-LETTER:<br><b style='font-size:26px;letter-spacing:.06em'>5-1 · 4-1 · 7-2 · 5-3 · 3-2</b>",
+  "answer": [
+   "SHORE"
+  ],
+  "hint": "Write the words down in order: 1 Big, 2 Blue, 3 Beach, 4 House... Then 5-1 means the 1st letter of word 5."
+ },
+ {
+  "title": "Poster Math",
+  "clue": "In the Movie Theater: count the BLADES on the black-and-white hero, and the CHARACTERS walking the yellow brick road. MULTIPLY them.",
+  "answer": [
+   "24",
+   "TWENTYFOUR"
+  ],
+  "hint": "The blades are on the Wolverine poster. The road is on the Wizard of Oz poster."
+ },
+ {
+  "title": "The Glowing Box",
+  "clue": "A glowing box on the wall must NEVER be unplugged. Read its small print: if it gets damaged, WHO has to pay? Enter that one word.",
+  "answer": [
+   "RESIDENT",
+   "THERESIDENT"
+  ],
+  "hint": "It's the white box with the blue light and a dark blue label. Read the first sentence of the small print."
+ },
+ {
+  "title": "Ruby Feet",
+  "clue": "On the yellow-brick-road poster, what COLOR are the girl's shoes?",
+  "answer": [
+   "RED",
+   "RUBY",
+   "RUBYRED"
+  ],
+  "hint": "Wizard of Oz poster. Look at Dorothy's feet."
+ }
+];
+const GLOBAL = {"gameStart": 57600, "window": 45, "colorHex": {"RED": "#e0201b", "BLUE": "#1f5fe0", "GREEN": "#14a83c"}};
+const HACKS  = [{"type": "text", "title": "Pattern Lock", "prompt": "The firewall wants the next number in its pattern:", "show": "2 · 4 · 8 · 16 · 32 · ?", "answer": ["64", "SIXTYFOUR"], "hint": "Each number is double the one before it."}, {"type": "lock", "mode": "wordle", "digits": 4, "code": "5927", "title": "Crack the Lock", "prompt": "Guess the 4-digit code. No digit repeats. GREEN = right digit in the right spot. YELLOW = right digit in the wrong spot. GRAY = not in the code.", "hint": "Try 0123, then 4567, then 89 plus two digits you know. Find which digits are in it first, then their spots."}, {"type": "text", "title": "Mirror Cipher", "prompt": "This password was flipped through the alphabet MIRROR below. Each letter swaps with the one above or below it (A↔Z, B↔Y...). Decode it:", "show": "I Z W R L", "answer": ["RADIO"], "key": [["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"], ["Z", "Y", "X", "W", "V", "U", "T", "S", "R", "Q", "P", "O", "N"]], "hint": "Find I in the key. The letter above it is R. Do the same for each letter."}];
+const GM_PIN = "7700";
+/* ================================================================== */
+
+const $ = s => document.querySelector(s);
+const KEY = "obb_" + TEAM.id;
+const norm = s => (s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(KEY + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(KEY + k, JSON.stringify(v)); } catch (e) {} }
+};
+let st = store.get("state", { f: 0, s: 0, hints: {}, final: false, verified: false, armed: false, preview: false });
+st.hacked = st.hacked || {}; st.guesses = st.guesses || {}; st.fails = st.fails || {};
+let offset = store.get("offset", 0);          // seconds: shift if the TVs were started late
+const save = () => store.set("state", st);
+
+document.documentElement.style.setProperty("--acc", TEAM.accent);
+$("#teamtag").textContent = "TEAM " + TEAM.name;
+$("#startTeam").textContent = "TEAM " + TEAM.name;
+$("#startWhere").textContent = "Your mission starts in " + TEAM.start + ". Stay with your team.";
+
+/* Game delayed 1 hour: TV videos are played starting 4:50 PM real time, so "mission time" = real time − 1 hour.
+   Everything on the terminal (clock, unlock, TV windows) runs on mission time so it matches the TV clocks. */
+const CLOCK_SHIFT = -3600;
+function nowSec() { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds() + d.getMilliseconds() / 1000 + CLOCK_SHIFT; }
+function fmt(t, secs) {
+  t = Math.round(t); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, s = t % 60;
+  return ((h + 11) % 12 + 1) + ":" + String(m).padStart(2, "0") + (secs ? ":" + String(s).padStart(2, "0") : "");
+}
+function mmss(t) { t = Math.max(0, Math.ceil(t)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); }
+
+/* ---------- audio ---------- */
+let AC = null;
+function beep(freqs, dur = 0.12, vol = 0.25) {
+  if (!AC) return;
+  let t = AC.currentTime;
+  freqs.forEach(f => {
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = "square"; o.frequency.value = f; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + dur); t += dur * 0.9;
+  });
+}
+const sGood = () => beep([660, 880, 1320], 0.11), sBad = () => beep([220, 160], 0.2), sBig = () => beep([523, 659, 784, 1047, 1319], 0.14);
+$("#arm").onclick = () => {
+  try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); } catch (e) {}
+  st.armed = true; save(); sGood(); $("#arm").textContent = "ARMED ✓";
+};
+document.addEventListener("touchstart", () => { if (!AC && st.armed) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } }, { once: true });
+
+function ask(text, withInput, cb) {
+  $("#mtext").textContent = text; const mi = $("#minput"); mi.style.display = withInput ? "block" : "none"; mi.value = "";
+  $("#modal").style.display = "flex"; if (withInput) setTimeout(() => mi.focus(), 50);
+  const close = ok => { $("#modal").style.display = "none"; if (ok) cb(mi.value); };
+  $("#myes").onclick = () => close(true); $("#mno").onclick = () => close(false);
+  mi.onkeydown = e => { if (e.key === "Enter") close(true); };
+}
+function toast(t) { const el = $("#toast"); el.textContent = t; el.style.display = "block"; clearTimeout(toast.h); toast.h = setTimeout(() => el.style.display = "none", 2600); }
+
+/* ---------- screens ---------- */
+function show(id) { document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); }
+function started() { return st.preview || nowSec() >= GLOBAL.gameStart + offset; }
+
+function pips(n, cur) { let h = '<div class="pips">'; for (let i = 0; i < n; i++) h += `<div class="pip ${i < cur ? "done" : i === cur ? "cur" : ""}"></div>`; return h + "</div>"; }
+
+function hintLocked(key) { const until = st.hints[key]; return until && until > Date.now() ? (until - Date.now()) / 1000 : 0; }
+
+function renderField() {
+  const c = $("#fieldCard");
+  if (st.f >= FIELD.length) {
+    c.className = "card done"; c.innerHTML = `<h2>FIELD OPS</h2>${pips(FIELD.length, FIELD.length)}<div class="ctitle">FIELD OPS COMPLETE ✓</div><div class="clue">${st.s >= TEAM.signals.length ? "" : "Finish your SIGNALS to unlock the final transmission."}</div>`;
+    return;
+  }
+  const step = FIELD[st.f], hk = "f" + st.f, hinted = st.hints[hk] !== undefined;
+  c.className = "card";
+  c.innerHTML = `<h2>FIELD OPS · ${st.f + 1}/${FIELD.length}</h2>${pips(FIELD.length, st.f)}
+    <div class="ctitle">${step.title}</div><div class="clue">${step.clue}</div>
+    ${hinted && !hintLocked(hk) ? `<div class="hintbox">💡 ${step.hint}</div>` : (hinted ? "" : `<button class="hint" data-h="${hk}">Request hint (locks for 60s)</button>`)}
+    <div class="msg" id="fmsg"></div>
+    <div class="entry"><input class="ans" id="fin" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ANSWER"><button class="go" id="fgo">ENTER</button></div>
+    ${hintLocked(hk) ? `<div class="lock"><div>DECRYPTING HINT…</div><div class="big mono" data-lock="${hk}">${mmss(hintLocked(hk))}</div></div>` : ""}`;
+  $("#fgo").onclick = () => submitField();
+  $("#fin").onkeydown = e => { if (e.key === "Enter") submitField(); };
+  bindHint(c);
+}
+function submitField() {
+  const v = norm($("#fin").value), step = FIELD[st.f];
+  if (!v) return;
+  if (step.answer.map(norm).includes(v)) { st.f++; save(); sGood(); toast("ACCESS GRANTED"); render(); }
+  else { sBad(); const m = $("#fmsg"); m.className = "msg bad"; m.textContent = "ACCESS DENIED"; $("#fieldCard").classList.add("shake"); setTimeout(() => $("#fieldCard").classList.remove("shake"), 400); $("#fin").select(); }
+}
+
+function upcoming(sig) {
+  const n = nowSec(), out = [];
+  for (const w of sig.windows) { const s = w + offset; if (s + GLOBAL.window > n) out.push(s); if (out.length >= 4) break; }
+  return out;
+}
+function renderSig() {
+  const c = $("#sigCard"), N = TEAM.signals.length;
+  if (st.s >= N) {
+    c.className = "card done"; c.innerHTML = `<h2>SIGNALS</h2>${pips(N, N)}<div class="ctitle">SIGNALS COMPLETE ✓</div><div class="clue">${st.f >= FIELD.length ? "" : "Finish your FIELD OPS to unlock the final transmission."}</div>`;
+    return;
+  }
+  if (!st.hacked[st.s]) { renderHack(c); return; }
+  const sig = TEAM.signals[st.s], hk = "s" + st.s, hinted = st.hints[hk] !== undefined;
+  const ups = upcoming(sig), n = nowSec(), secs = offset % 60 !== 0;
+  const winH = ups.length ? ups.map(s => `<span class="win mono ${n >= s && n < s + GLOBAL.window ? "live" : ""}">${n >= s && n < s + GLOBAL.window ? "LIVE NOW" : fmt(s, secs)}</span>`).join("")
+                          : `<span class="clue">No more transmissions. Find a grown-up (Game Master).</span>`;
+  let body;
+  if (sig.kind === "code") {
+    body = `<div class="ctitle">Intercept the Code</div>
+      <div class="clue">A secret code for TEAM ${TEAM.name} will appear on the <b>${sig.tvName.toUpperCase()}</b> TV for 45 seconds at one of these times:</div>
+      <div class="wins">${winH}</div>`;
+  } else {
+    const rows = ["RED", "BLUE", "GREEN"].map(col => `<div class="crow"><div class="sw" style="background:${GLOBAL.colorHex[col]}"></div><div><b>${col}:</b> ${sig.questions[col].q}</div></div>`).join("");
+    body = `<div class="ctitle">Reverse Signal</div>
+      <div class="clue">At one of these times, the <b>${sig.tvName.toUpperCase()}</b> TV will glow a color for TEAM ${TEAM.name}. Your question depends on the color:</div>
+      <div class="wins">${winH}</div><div class="colors">${rows}</div>`;
+  }
+  const hint = sig.kind === "code" ? "The TV plays a beep and shows INCOMING 10 seconds before your code. Be in the room early, and work on FIELD OPS while you wait."
+                                   : "All the answers are on a sign somewhere in the house. It's posted next to the elevator door on every floor.";
+  c.className = "card";
+  c.innerHTML = `<h2>SIGNALS · ${st.s + 1}/${N}</h2>${pips(N, st.s)}<div class="where">Source: ${sig.tvName}</div>${body}
+    ${hinted && !hintLocked(hk) ? `<div class="hintbox">💡 ${hint}</div>` : (hinted ? "" : `<button class="hint" data-h="${hk}">Request hint (locks for 60s)</button>`)}
+    <div class="msg" id="smsg"></div>
+    <div class="entry"><input class="ans" id="sin" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="${sig.kind === "code" ? "CODE" : "ANSWER"}"><button class="go" id="sgo">ENTER</button></div>
+    ${hintLocked(hk) ? `<div class="lock"><div>DECRYPTING HINT…</div><div class="big mono" data-lock="${hk}">${mmss(hintLocked(hk))}</div></div>` : ""}`;
+  $("#sgo").onclick = () => submitSig();
+  $("#sin").onkeydown = e => { if (e.key === "Enter") submitSig(); };
+  bindHint(c);
+  c.dataset.sig = ups.join(",");
+}
+function renderHack(c) {
+  const N = TEAM.signals.length, k = st.s, h = HACKS[k], hk = "h" + k, hinted = st.hints[hk] !== undefined;
+  const fwk = "fw" + k, fw = hintLocked(fwk), hl = hintLocked(hk);
+  let puzzle = "";
+  if (h.type === "text") puzzle = `<div class="hackbox"><div class="show mono">${h.show}</div>${h.key ? `<table class="mkey mono">${h.key.map(r => `<tr>${r.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</table>` : ""}</div>`;
+  if (h.type === "binary") puzzle = `<div class="hackbox"><div class="lamps">${h.lamps.map((v, i) => `<div class="lamp"><span>${v}</span><div class="bulb ${h.lit[i] ? "on" : ""}"></div></div>`).join("")}</div></div>`;
+  if (h.type === "lock") {
+    const gs = st.guesses[k] || [];
+    puzzle = `<div class="hackbox"><div class="ghist">${gs.length ? gs.map(g => lockRow(h, g)).join("") : `<div class="where">No guesses yet</div>`}</div></div>`;
+  }
+  c.className = "card";
+  c.innerHTML = `<h2>SIGNALS · ${k + 1}/${N}</h2>${pips(N, k)}<div class="where">Source: ENCRYPTED 🔒</div>
+    <div class="ctitle">Hack the Transmission: ${h.title}</div>
+    <div class="clue">Break this firewall to find out WHERE and WHEN your next signal broadcasts.<br>${h.prompt}</div>${puzzle}
+    ${hinted && !hl ? `<div class="hintbox">💡 ${h.hint}</div>` : (hinted ? "" : `<button class="hint" data-h="${hk}">Request hint (locks for 60s)</button>`)}
+    <div class="msg" id="hmsg"></div>
+    <div class="entry"><input class="ans" id="hin" autocomplete="off" autocorrect="off" spellcheck="false" ${h.type === "lock" ? `inputmode="numeric" maxlength="${h.digits}" placeholder="${"#".repeat(h.digits)}"` : `placeholder="ANSWER"`}><button class="go" id="hgo">HACK</button></div>
+    <div class="where" style="margin-top:4px">Already caught your ${TEAM.signals[k].kind === "code" ? "code" : "answer"} on a TV? Enter it here:</div>
+    <div class="entry" style="margin-top:0"><input class="ans" id="sin" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="${TEAM.signals[k].kind === "code" ? "CODE" : "ANSWER"}"><button class="go" id="sgo">ENTER</button></div>
+    <div class="msg" id="smsg"></div>
+    ${fw ? `<div class="lock"><div>🛡 FIREWALL LOCKOUT</div><div style="font-size:17px;color:var(--dim)">Too many wrong tries</div><div class="big mono" data-lock="${fwk}">${mmss(fw)}</div></div>`
+         : hl ? `<div class="lock"><div>DECRYPTING HINT…</div><div class="big mono" data-lock="${hk}">${mmss(hl)}</div></div>` : ""}`;
+  $("#hgo").onclick = submitHack;
+  $("#sgo").onclick = () => submitSig();
+  $("#sin").onkeydown = e => { if (e.key === "Enter") submitSig(); };
+  $("#hin").onkeydown = e => { if (e.key === "Enter") submitHack(); };
+  bindHint(c);
+}
+function lockRow(h, g) {
+  if (h.mode === "wordle") return `<div class="grow">${[...g].map((d, i) => `<div class="gd ${d === h.code[i] ? "g" : h.code.includes(d) ? "y" : ""}">${d}</div>`).join("")}</div>`;
+  let ex = 0, mis = 0; [...g].forEach((d, i) => { if (d === h.code[i]) ex++; else if (h.code.includes(d)) mis++; });
+  return `<div class="grow">${[...g].map(d => `<div class="gd">${d}</div>`).join("")}<div class="pegs">${"●".repeat(ex)}${"○".repeat(mis)}${ex + mis === 0 ? "—" : ""}</div></div>`;
+}
+function hackFail(msg, limit) {
+  const k = st.s; st.fails[k] = (st.fails[k] || 0) + 1;
+  if (st.fails[k] % limit === 0) { st.hints["fw" + k] = Date.now() + 30000; save(); sBad(); renderSig(); return; }
+  save(); sBad(); renderSig();
+  const m = $("#hmsg"); if (m) { m.className = "msg bad"; m.textContent = msg + ` (${limit - (st.fails[k] % limit)} tries before lockout)`; }
+  $("#sigCard").classList.add("shake"); setTimeout(() => $("#sigCard").classList.remove("shake"), 400);
+}
+function submitHack() {
+  const k = st.s, h = HACKS[k], raw = $("#hin").value;
+  if (h.type === "lock") {
+    const g = raw.replace(/[^0-9]/g, "");
+    if (g.length !== h.digits) { $("#hmsg").className = "msg bad"; $("#hmsg").textContent = `Enter exactly ${h.digits} digits.`; return; }
+    if (new Set(g).size !== g.length) { $("#hmsg").className = "msg bad"; $("#hmsg").textContent = "No digit repeats in this code."; return; }
+    (st.guesses[k] = st.guesses[k] || []).push(g); save();
+    if (g === h.code) return hackWin();
+    return hackFail("ACCESS DENIED", 8);
+  }
+  const v = norm(raw); if (!v) return;
+  if (h.answer.map(norm).includes(v)) return hackWin();
+  hackFail("ACCESS DENIED", 4);
+}
+function hackWin() {
+  st.hacked[st.s] = true; save(); sBig(); toast("FIREWALL BREACHED"); delete $("#sigCard").dataset.k; renderSig();
+}
+
+function submitSig() {
+  const v = norm($("#sin").value), sig = TEAM.signals[st.s];
+  if (!v) return;
+  const ok = sig.kind === "code" ? v === norm(sig.code) : sig.answer.map(norm).includes(v);
+  if (ok) { st.s++; save(); sGood(); toast("SIGNAL DECODED"); render(); }
+  else { sBad(); const m = $("#smsg"); m.className = "msg bad"; m.textContent = sig.kind === "code" ? "INVALID CODE" : "WRONG. Did you see the right color?"; $("#sigCard").classList.add("shake"); setTimeout(() => $("#sigCard").classList.remove("shake"), 400); $("#sin").select(); }
+}
+function bindHint(c) {
+  c.querySelectorAll("[data-h]").forEach(b => b.onclick = () => {
+    ask("Request a hint? This mission locks for 60 seconds while it decrypts.", false, () => {
+      st.hints[b.dataset.h] = Date.now() + 60000; save(); beep([300, 250, 200], 0.15); render();
+    });
+  });
+}
+
+/* ---------- final ---------- */
+function renderFinal() {
+  const f = $("#s-final");
+  let html = `<div class="fhead">FINAL TRANSMISSION LOCATED</div>
+    <div class="rules">Your last message is hidden in plain sight: <b>the elevator instructions sign on ${TEAM.floor}</b>.<br>
+    Each code is <b class="mono">BULLET – WORD – LETTER</b>. Only count the <b>bullet points</b> (skip the title and the lines under it).
+    Count words inside that bullet point only, and ignore punctuation. Example: <span class="mono">1-2-1</span> = bullet 1, word 2, letter 1 = <b>N</b>.<br>
+    Then work out what the message means. That's where the loot is.</div>
+    <div class="cipher">`;
+  let i = 0;
+  TEAM.cipher.forEach(w => {
+    html += `<div class="cword">`;
+    w.forEach(([b, wd, l]) => { html += `<div class="cl"><div class="chip mono">${b}-${wd}-${l}</div><input maxlength="1" data-i="${i++}" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></div>`; });
+    html += `</div>`;
+  });
+  html += `</div><div class="msg" id="xmsg" style="text-align:center"></div>
+    <button class="go" id="xgo" style="align-self:center;font-size:26px;padding:16px 40px">VERIFY MESSAGE</button>
+    <div id="verified"></div>`;
+  f.innerHTML = html;
+  const ins = [...f.querySelectorAll(".cl input")];
+  const saved = store.get("letters", []);
+  ins.forEach((inp, k) => {
+    inp.value = saved[k] || "";
+    inp.oninput = () => { inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g, ""); store.set("letters", ins.map(x => x.value)); if (inp.value && ins[k + 1]) ins[k + 1].focus(); };
+    inp.onkeydown = e => { if (e.key === "Backspace" && !inp.value && ins[k - 1]) ins[k - 1].focus(); };
+  });
+  $("#xgo").onclick = () => {
+    const target = TEAM.message.replace(/ /g, ""), got = ins.map(x => x.value || "_").join("");
+    if (got.includes("_")) { $("#xmsg").className = "msg bad"; $("#xmsg").textContent = "Fill in every letter first."; return; }
+    let wrong = 0; for (let k = 0; k < target.length; k++) if (got[k] !== target[k]) wrong++;
+    if (wrong === 0) { st.verified = true; save(); sBig(); showVerified(); }
+    else { sBad(); $("#xmsg").className = "msg bad"; $("#xmsg").textContent = `${wrong} letter${wrong > 1 ? "s are" : " is"} wrong. Recount carefully!`; }
+  };
+  if (st.verified) showVerified();
+}
+function showVerified() {
+  const v = $("#verified"); v.style.display = "block";
+  v.innerHTML = `MESSAGE VERIFIED ✓<br><span style="color:var(--txt);font-size:22px">“${TEAM.message}”<br>Work out what it means. Then GO. First team to the loot wins!</span>`;
+  $("#xgo").style.display = "none"; $("#xmsg").textContent = "";
+}
+
+/* ---------- main loop ---------- */
+let lastKey = "";
+function render() {
+  lastKey = "";
+  if (!started()) { show("s-start"); return; }
+  if (st.f >= FIELD.length && st.s >= TEAM.signals.length) {
+    if (!st.final) { st.final = true; save(); sBig(); }
+    if (!$("#s-final").classList.contains("on")) { show("s-final"); renderFinal(); }
+    return;
+  }
+  show("s-play"); renderField(); renderSig();
+}
+let wasStarted = started();
+function tick() {
+  const n = nowSec();
+  $("#clock").textContent = fmt(n, true);
+  if (started()) $("#elapsed").textContent = st.preview ? " PREVIEW" : " +" + mmss(n - GLOBAL.gameStart - offset);
+  if (!started()) { $("#count").textContent = mmss(GLOBAL.gameStart + offset - n); if ($("#arm") && st.armed) $("#arm").textContent = "ARMED ✓"; }
+  if (started() && !wasStarted) { wasStarted = true; sBig(); toast("MISSION START"); render(); }
+  // live updates without wiping typed text
+  document.querySelectorAll("[data-lock]").forEach(el => { const r = hintLocked(el.dataset.lock); if (r <= 0) { const keep = keepInputs(); render(); restoreInputs(keep); } else el.textContent = mmss(r); });
+  const sc = $("#sigCard");
+  if ($("#s-play").classList.contains("on") && st.s < TEAM.signals.length && sc && st.hacked[st.s]) {
+    const sig = TEAM.signals[st.s], ups = upcoming(sig);
+    const key = ups.join(",") + "|" + ups.map(s => n >= s && n < s + GLOBAL.window).join("");
+    if (key !== sc.dataset.k) { const had = sc.dataset.k; sc.dataset.k = key; if (had !== undefined) { const keep = keepInputs(); renderSig(); sc.dataset.k = key; restoreInputs(keep); } }
+  }
+}
+function keepInputs() { return { f: $("#fin") ? $("#fin").value : "", s: $("#sin") ? $("#sin").value : "", a: document.activeElement && document.activeElement.id }; }
+function restoreInputs(k) { if ($("#fin")) $("#fin").value = k.f; if ($("#sin")) $("#sin").value = k.s; if (k.a && $("#" + k.a)) $("#" + k.a).focus(); }
+
+/* ---------- Game Master panel: tap the logo 5 times ---------- */
+let taps = 0, tapT;
+$("#logo").onclick = () => { taps++; clearTimeout(tapT); tapT = setTimeout(() => taps = 0, 1500); if (taps >= 5) { taps = 0; ask("Game Master PIN", true, v => { if (v === GM_PIN) openGM(); }); } };
+function openGM() {
+  const ph = FIELD.some(s => s.answer.includes("SETME") || /\[/.test(s.clue + s.hint));
+  let h = `<h3 style="margin-top:0">GAME MASTER · TEAM ${TEAM.name}</h3>
+    ${ph ? `<div class="warn">⚠ Some FIELD OPS clues still have placeholders ([BRACKETS] or SETME).</div>` : ""}
+    <p><b>Progress:</b> Field ${st.f}/${FIELD.length} · Signals ${st.s}/${TEAM.signals.length} · Final ${st.verified ? "verified" : st.final ? "open" : "locked"}</p>
+    <p><b>TV clock offset:</b> ${offset}s. If you pressed play on the TVs late, add that many seconds.<br>
+    <button data-o="-30">−30s</button><button data-o="-5">−5s</button><button data-o="5">+5s</button><button data-o="30">+30s</button><button data-o="0">Reset 0</button></p>
+    <p><b>Field Ops answers</b><br>${FIELD.map((s, i) => `${i + 1}. ${s.title}: <span class="mono">${s.answer.join(" / ")}</span>`).join("<br>")}</p>
+    <p><b>Hacks</b><br>${HACKS.map((h, i) => `${i + 1}. ${h.title}: <span class="mono">${h.type === "lock" ? h.code : h.answer[0]}</span> ${st.hacked[i] ? "✓" : ""}`).join("<br>")}</p>
+    <p><b>Signals</b><br>${TEAM.signals.map((s, i) => `${i + 1}. ${s.tvName}: ${s.kind === "code" ? "code <span class='mono'>" + s.code + "</span>" : "glows " + s.shown + " → <span class='mono'>" + s.answer[0] + "</span>"}`).join("<br>")}</p>
+    <p><b>Final:</b> ${TEAM.floor} sign → “${TEAM.message}” → closet next to Room 4</p>
+    <button id="gSkipF">Skip Field step</button><button id="gHack">Solve current hack</button><button id="gSkipS">Skip Signal step</button>
+    <button id="gPrev">${st.preview ? "Turn OFF preview" : "Preview (ignore 4:00 lock)"}</button>
+    <button id="gReset" style="background:#7a1d1d">Reset team</button>
+    <button id="gClose" style="background:#2e7d32">Close</button>`;
+  $("#gmbox").innerHTML = h; $("#gm").style.display = "flex";
+  $("#gmbox").querySelectorAll("[data-o]").forEach(b => b.onclick = () => { const d = +b.dataset.o; offset = d === 0 ? 0 : offset + d; store.set("offset", offset); openGM(); });
+  $("#gSkipF").onclick = () => { if (st.f < FIELD.length) st.f++; save(); openGM(); };
+  $("#gHack").onclick = () => { if (st.s < TEAM.signals.length) st.hacked[st.s] = true; save(); openGM(); };
+  $("#gSkipS").onclick = () => { if (st.s < TEAM.signals.length) st.s++; save(); openGM(); };
+  $("#gPrev").onclick = () => { st.preview = !st.preview; save(); openGM(); };
+  $("#gReset").onclick = () => { $("#gm").style.display = "none"; ask("Erase ALL progress for this team?", false, () => { st = { f: 0, s: 0, hints: {}, final: false, verified: false, armed: st.armed, preview: false, hacked: {}, guesses: {}, fails: {} }; save(); store.set("letters", []); openGM(); }); };
+  $("#gClose").onclick = () => { $("#gm").style.display = "none"; wasStarted = started(); render(); };
+}
+
+if (st.armed) $("#arm").textContent = "ARMED ✓";
+render(); tick(); setInterval(tick, 250);
+</script>
+</body>
+</html>
