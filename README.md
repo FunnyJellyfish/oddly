@@ -33,6 +33,7 @@ The site is plain static HTML. Each page is a single self-contained file with it
 | `osiri.html` | oSiri 2.0 (beta) | AI |
 | `ojacket.html` | oJacket | Apparel |
 | `ophone2.html` | oPhone 2: eight cameras, oThink Pro, Neural Core (with its own launch film) | Phones |
+| `premium-rewards.html` | Oddly Premium Rewards credit card (fictional), partnered with Leema (leema.oddly-inc.com) | Finance |
 | `journey.html` | The Journey of Oddly: essay and timeline | Corporate |
 | `stephen-stubborn.html` | About Stephen Stubborn: age, height, résumé, Katana AI, FAQ (linked from Leadership) | Corporate |
 | `stephen-stupid.html` | About Stephen Stupid, CFO (no relation): law and finance degrees, résumé, Deferred Win Calculator, FAQ | Corporate |
